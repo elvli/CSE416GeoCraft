@@ -1,12 +1,11 @@
-
 import React from 'react'
-import {navbar, nav, button} from 'react-bootstrap'
+// import {navbar, nav, button} from 'react-bootstrap'
 
 export default function AppBanner() {
     return(
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a class="navbar-brand" href="#">Navbar</a>
-          <button type="button" class="btn btn-primary">Click Here (Test)</button>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+          <p className="navbar-brand">GeoCraft</p>
+          <button type="button" className="btn btn-primary">Click Here (Test)</button>
         </nav>
     )
 }
