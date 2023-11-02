@@ -4,27 +4,25 @@ const cors = require('cors')
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser')
 
+// CREATE OUR SERVER
+dotenv.config()
+const PORT = process.env.PORT || 4000;
+const app = express()
+
+// SETUP THE MIDDLEWARE
+app.use(express.urlencoded({ extended: true }))
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    credentials: true
+}))
+app.use(express.json())
+app.use(cookieParser())
+
+// SETUP OUR OWN ROUTERS AS MIDDLEWARE
+
+// INITIALIZE OUR DATABASE OBJECT
 const db = require('./db')
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = process.env.DB_CONNECT;
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
-}
-run().catch(console.dir);
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+
+// PUT THE SERVER IN LISTENING MODE
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
