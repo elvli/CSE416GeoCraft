@@ -1,39 +1,63 @@
-/* App.js */
 .App {
   text-align: center;
-  overflow: hidden;
 }
 
-.row1 {
-  position: relative;
-  height: 95vh;
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
 
-.background {
-  position: absolute;
-  z-index: 0;
-  pointer-events: auto;
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
 }
 
-.foreground {
-  position: relative;
-  z-index: 1;
-  /* display: inline-block; */
-  float: left;
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
 }
 
-/* AppBanner.js */
-.app-banner {
-  height: 5vh;
+.App-link {
+  color: #61dafb;
 }
 
-/* LeftSideBar.js */
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bi::before {
+  display: inline-block;
+  content: "";
+  vertical-align: -.125em;
+  background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23333' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}
+
+.navbar {
+  min-height: 5vh;
+}
+
+/* This for the collapsable Sidebar menus */
+/* Left sidebar */
 #left-wrapper {
   overflow-x: hidden;
 }
 
 #left-sidebar-wrapper {
-  min-height: 95vh;
+  min-height: 94vh;
   margin-left: -15rem;
   -webkit-transition: margin .25s ease-out;
   -moz-transition: margin .25s ease-out;
@@ -72,26 +96,4 @@
   border-bottom-left-radius: 0px;
 }
 
-/* RightSideBar.js */
-
-
-/* MapBackground.js */
-.map-container {
-  position: relative;
-  height: 95vh;
-  width: 100vw;
-}
-
-.long-lat-bar {
-  position: relative;
-  background-color: rgba(35, 55, 75, 0.9);
-  color: #fff;
-  padding: 6px 12px;
-  font-family: monospace;
-  z-index: 1;
-  position: absolute;
-  top: 2;       /* change this to 0 if we make the import button a modal or whatever*/
-  left: 0;
-  margin: 12px;
-  border-radius: 4px;
-}
+/* Right sidebar */
