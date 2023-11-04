@@ -1,14 +1,20 @@
 import './App.css';
 
 import React from 'react'
-import { AppBanner, LeftSideBar} from './components'
+import { AppBanner, LeftSideBar, MapBackground} from './components'
 
 function App() {
   return (
     <div className="App">
       <AppBanner/>
-      <LeftSideBar/>
-
+      <div className="row1">
+          <div className="background">
+            <MapBackground />
+          </div>
+          <div className="foreground">
+            <LeftSideBar />
+          </div>
+      </div>
     </div>
   );
 }
