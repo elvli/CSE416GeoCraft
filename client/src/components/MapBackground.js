@@ -17,12 +17,14 @@ export default function LeftSideBar() {
 //   const [count, setCount] = useState(1);
 
 useEffect(() => {
-    if (map.current) return; // initialize map only once
+    if (map.current || typeof window === 'undefined') return; // Check for the browser environment
+    const mapboxgl = require('mapbox-gl'); // or import mapboxgl from 'mapbox-gl';
+
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
       center: [lng, lat],
-      zoom: zoom
+      zoom: 10,
     });
 
     map.current.on('move', () => {
