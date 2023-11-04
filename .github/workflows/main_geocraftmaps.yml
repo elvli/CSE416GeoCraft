@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -27,6 +27,9 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+          
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -47,6 +50,9 @@ jobs:
         with:
           name: node-app
 
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
@@ -55,3 +61,6 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8941A85804FF42A1A7E4C071AF6D95B8 }}
           package: .
+      - run: |
+          cd client
+          npm install
