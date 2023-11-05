@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "name": "client",
   "version": "0.1.0",
   "private": true,
@@ -43,5 +42,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-react": "^7.22.15"
   }
 }
