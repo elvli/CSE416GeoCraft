@@ -14,7 +14,7 @@
 }
 
 #left-sidebar-wrapper {
-  min-height: 94vh;
+  height: 95vh;
   margin-left: -15rem;
   -webkit-transition: margin .25s ease-out;
   -moz-transition: margin .25s ease-out;
