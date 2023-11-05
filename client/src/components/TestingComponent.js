@@ -5,7 +5,7 @@ import "../App.css";
 export default function TestingComponent() {
     const [testStrings, setTestStrings] = useState([]);
     const [stringInput, setStringInput] = useState({testString: ""});
-    const baseUrl = "http://localhost:4000";
+    const baseUrl = "mongodb://geocraftmapsdb:FvG00KuXU8a0CrPI4wNX4bpO9ABF3wT76LCcpgpRwZXORQ4I7Zh7jzE6AVctvO5pV6o1y8q8GPFJACDbxBc4OQ==@geocraftmapsdb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@geocraftmapsdb@";
  
 
     useEffect(() => {
@@ -46,7 +46,7 @@ export default function TestingComponent() {
 
         <h2>Input your string here</h2>
         <input
-            placeholder="test strsing"
+            placeholder="test string"
             onChange={handleChange}
             name="testString"
             value={stringInput.testString}
