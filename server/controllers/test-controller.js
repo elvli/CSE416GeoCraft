@@ -5,12 +5,16 @@ createTestString = async (req, res) => {
 
     const body = req.body.testString;
     const newTestString = new Test(body);
-    const savedTestString = await newTestString.save();
+    const savedTestString = await newTestString.save()
+        .then((user) => res.json(user))
+        .catch((err) => console.log(err));
 }
 
 getTests = async (req, res) => { 
     console.log("FINDING TEST STRINGS IN THE BACKEND")
     Test.find()
+        .then((tests) => res.json(tests))
+        .catch((err) => console.log(err));
 }
 
 // createTestString = async (req, res) => {
