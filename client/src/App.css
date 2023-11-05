@@ -3,8 +3,12 @@
   overflow: hidden;
 }
 
-.navbar {
+.app-banner {
   height: 5vh;
+}
+
+.navbar {
+  min-height: 5vh;
 }
 
 /* This for the collapsable Sidebar menus */
@@ -14,7 +18,7 @@
 }
 
 #left-sidebar-wrapper {
-  height: 95vh;
+  min-height: 95vh;
   margin-left: -15rem;
   -webkit-transition: margin .25s ease-out;
   -moz-transition: margin .25s ease-out;
