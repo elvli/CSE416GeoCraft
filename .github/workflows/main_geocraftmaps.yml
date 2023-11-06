@@ -65,10 +65,11 @@ jobs:
         with: 
           build: |
             cd client
+            npm install
             npm run build
           start: |
             cd client
-            npm start
+            npm cypress run
 
   deploy:
     runs-on: ubuntu-latest
