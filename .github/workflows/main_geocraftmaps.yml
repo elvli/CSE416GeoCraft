@@ -21,15 +21,19 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: npm install, build, and test
+      - name: server - npm install, build, and test
+          cd server
+          npm install
+          node index.js
+
+      - name: client - npm install, build, and test
         run: |
           cd client
           npm install
-          cd ..
-          cd server
-          npm install
           npm run build --if-present
           npm run test --if-present
+
+
           
       - name: Zip artifact for deployment
         uses: TheDoctor0/zip-release@0.7.6
