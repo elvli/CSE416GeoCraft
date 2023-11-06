@@ -1,3 +1,3 @@
-const baseUrl = "https://testttttapp.azurewebsites.net";
+const baseUrl = "https://geocraftmaps.azurewebsites.net";
 
 export default baseUrl;
