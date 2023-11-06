@@ -51,3 +51,6 @@ app.get('*', (req,res) =>{
 app.listen(port, () => {
   console.log(`Server is running on post ${port}`);
 });
+
+// Export the Express app
+module.exports = app;
