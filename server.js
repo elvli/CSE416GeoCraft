@@ -26,7 +26,7 @@ const User = new mongoose.model("User", userSchema);
 
 app.get("/get-users", (req, res) => {
   User.find()
-    .then((users) => res.status(200).json(users))
+    .then((users) => res.json(users))
     .catch((err) => console.log(err));
 });
 
@@ -51,6 +51,3 @@ app.get('*', (req,res) =>{
 app.listen(port, () => {
   console.log(`Server is running on post ${port}`);
 });
-
-// Export the Express app
-module.exports = app;
