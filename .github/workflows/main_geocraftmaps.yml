@@ -56,7 +56,12 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
-    needs: build
+    - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
 
     steps:
       - name: Checkout
