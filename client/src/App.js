@@ -1,27 +1,50 @@
-import React from "react";
+import { useEffect } from "react";
+import "./App.css";
+import baseUrl from "./baseUrl";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-// We use Route in order to define the different routes of our application
-import { Route, Routes } from "react-router-dom";
+import { AppBanner, LeftSideBar } from './components'
 
-// We import all the components we need in our app
-import Navbar from "./components/navbar";
-import RecordList from "./components/recordList";
-import Edit from "./components/edit";
-import Create from "./components/create";
+function App() {
+  const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
 
-const App = () => {
+  useEffect(() => {
+    axios
+      .get(`${baseUrl}/get-users`)
+      .then((res) => setUsers(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
-    <div>
-      <Navbar />
-      <div style={{ margin: 20 }}>
-      <Routes>
-        <Route exact path="/" element={<RecordList />} />
-        <Route path="/edit/:id" element={<Edit />} />
-        <Route path="/create" element={<Create />} />
-      </Routes>
+    <div className="App">
+      <AppBanner />
+
+      <div className="background">
+        <div className="testRead">
+          <h1>READ THIS</h1>
+          {users &&
+            users.length > 0 &&
+            users.map((user) => {
+              return (
+                <div>
+                  <h3>
+                    {user.name} {user.lastName}
+                  </h3>
+                </div>
+              );
+            })}
+        </div>
       </div>
+      <div className="foreground">
+        <LeftSideBar />
+      </div>
+
+      <button onClick={() => navigate("create")}>Create</button>
     </div>
   );
-};
+}
 
 export default App;
