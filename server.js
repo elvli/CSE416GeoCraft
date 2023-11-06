@@ -26,7 +26,7 @@ const User = new mongoose.model("User", userSchema);
 
 app.get("/get-users", (req, res) => {
   User.find()
-    .then((users) => res.json(users))
+    .then((users) => res.status(200).json(users))
     .catch((err) => console.log(err));
 });
 
