@@ -11,7 +11,7 @@ export const createTestString = (testString) => {
     })
 } 
 
-export const getTests = () => axios.get(`${baseUrl}/tests`)
+export const getTests = () => axios.get(`${baseURL}/tests`)
 
 const apis = {
     createTestString,
