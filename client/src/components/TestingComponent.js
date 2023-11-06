@@ -19,7 +19,9 @@ export default function TestingComponent() {
     useEffect(() => {
         let tests = []
         async function asyncGetTests() {
+            console.log('useEffect GET TESTS')
             const response = await api.getTests();
+            console.log("After getTests()")
             if (response.data.success) {
                 console.log("got test strings from mongo")
                 tests = response.data.testString;
@@ -40,7 +42,9 @@ export default function TestingComponent() {
 
     const saveData = (event) => {
         async function asyncCreateNewTest() {
+            console.log('saveData started')
             let payload = {testString: stringInput}
+            console.log('payload set: ', payload.testString)
             const response = await api.createTestString(payload);
             if (response.data.success) {
                 console.log("test string added to mongo")
