@@ -57,14 +57,13 @@ jobs:
         runs-on: ubuntu-latest
         
         steps:
-
           
-
+          - uses: actions/checkout@v2
           - name: Set up Node.js
             uses: actions/setup-node@v2
             with:
               node-version: '18.x'
-          - uses: actions/checkout@v2
+          
           - run: cd client
           - run: npm install
           - run: npx cypress run
