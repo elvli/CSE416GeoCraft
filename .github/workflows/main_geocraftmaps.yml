@@ -22,17 +22,26 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-
-
-      - name: client - npm install, build, and test
+      
+      - name: Install npm packages - server
+        run: |
+          cd server
+          npm install       
+      
+      - name: Install npm packages, build then copy files - client
         run: |
           cd client
           npm install
-          npm run build --if-present
+          npm run build
           npm run test --if-present
 
+      # - name: client - npm install, build, and test
+      #   run: |
+      #     cd client
+      #     npm install
+      #     npm run build --if-present
+      #     npm run test --if-present
 
-          
       - name: Zip artifact for deployment
         uses: TheDoctor0/zip-release@0.7.6
         with:
