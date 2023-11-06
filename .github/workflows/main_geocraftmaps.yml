@@ -9,23 +9,6 @@ on:
       - main
   workflow_dispatch:
 
-jobs1:
-  build:
-    runs-on: windows-latest
-    environment: production
-    concurrency: production
-    steps: 
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-      - name: client - npm install, build, and test
-        run: |
-          cd server
-          npm install
-          node index.js
 
 
 jobs:
@@ -39,6 +22,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
+
+      - name: client - npm install, build, and test
+        run: |
+          cd server
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
 
 
       - name: client - npm install, build, and test
