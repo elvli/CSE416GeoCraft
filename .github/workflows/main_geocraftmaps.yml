@@ -63,13 +63,13 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with: 
-          build: |
-            cd client
-            npm install
-            npm run build
+          # build: |
+          #   cd client
+          #   npm install
+          #   npm run build
           start: |
             cd client
-            npm cypress run
+            npx cypress run
 
   deploy:
     runs-on: ubuntu-latest
