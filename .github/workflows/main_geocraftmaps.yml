@@ -27,6 +27,9 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+          cd ..
+          cd server
+          npm install
           
       - name: Zip artifact for deployment
         uses: TheDoctor0/zip-release@0.7.6
