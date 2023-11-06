@@ -4,6 +4,14 @@ createTestString = async (req, res) => {
     console.log("REGISTERING USER IN BACKEND");
 
     const body = req.body.testString;
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a Playlist',
+        })
+    }
+
     const newTestString = new Test(body);
     const savedTestString = await newTestString.save()
         .then((user) => res.json(user))
@@ -11,10 +19,19 @@ createTestString = async (req, res) => {
 }
 
 getTests = async (req, res) => { 
-    console.log("FINDING TEST STRINGS IN THE BACKEND")
-    Test.find()
-        .then((tests) => res.json(tests))
-        .catch((err) => console.log(err));
+    await Test.find({}, (err, tests) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err})
+        }
+        if (!tests.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: 'tests not found'})
+        }
+        else {
+            return res.status(200).json({ success: true, testStings: tests })
+        }
+    }).catch(err => console.log(err))
 }
 
 // createTestString = async (req, res) => {

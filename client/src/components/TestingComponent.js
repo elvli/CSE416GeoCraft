@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import "../App.css";
+import api from "..store/store-request-api"
 
 export default function TestingComponent() {
     const [testStrings, setTestStrings] = useState([]);
@@ -8,12 +9,29 @@ export default function TestingComponent() {
     const baseUrl = "mongodb://geocraftmapsdb:FvG00KuXU8a0CrPI4wNX4bpO9ABF3wT76LCcpgpRwZXORQ4I7Zh7jzE6AVctvO5pV6o1y8q8GPFJACDbxBc4OQ==@geocraftmapsdb.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@geocraftmapsdb@";
  
 
+    // useEffect(() => {
+    // axios
+    //     .get(`${baseUrl}/get-tests`)
+    //     .then((res) => setTestStrings(res.data))
+    //     .catch((err) => console.log(err));
+    // }, []);
+
     useEffect(() => {
-    axios
-        .get(`${baseUrl}/get-tests`)
-        .then((res) => setTestStrings(res.data))
-        .catch((err) => console.log(err));
-    }, []);
+        let tests = []
+        async function asyncGetTests() {
+            const response = await api.getTests();
+            if (response.data.success) {
+                console.log("got test strings from mongo")
+                tests = response.data.testString;
+            }
+            else {
+                console.log("COULDNT GET TEST STRINGS")
+            }
+
+            setTestStrings(tests);
+        }
+        asyncGetTests();
+    });
 
     const handleChange = (event) => {
         const { value } = event.target;
@@ -21,13 +39,27 @@ export default function TestingComponent() {
     };
 
     const saveData = (event) => {
-        event.preventDefault();
-
-        axios
-        .post(`${baseUrl}/tests`, stringInput)
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err));
+        async function asyncCreateNewTest() {
+            let payload = {testString: stringInput}
+            const response = await api.createTestString(payload);
+            if (response.data.success) {
+                console.log("test string added to mongo")
+            }
+            else {
+                console.log("COULDNT ADD TEST STRING")
+            }
+        }
+        asyncCreateNewTest();
     };
+
+    // const saveData = (event) => {
+    //     event.preventDefault();
+
+    //     axios
+    //     .post(`${baseUrl}/tests`, stringInput)
+    //     .then((res) => console.log(res))
+    //     .catch((err) => console.log(err));
+    // };
 
     return (
     <div className="App">
