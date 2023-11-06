@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { Axios } from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
     baseURL: 'https://geocraftmaps.azurewebsites.net',
@@ -11,7 +11,7 @@ export const createTestString = (testString) => {
     })
 } 
 
-export const getTests = () => api.get(`/tests/`)
+export const getTests = () => axios.get(`${baseUrl}/tests`)
 
 const apis = {
     createTestString,
