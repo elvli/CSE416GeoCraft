@@ -25,7 +25,8 @@ jobs:
         run: |
           cd server
           npm install
-          node index.js
+          npm run build --if-present
+          npm run test --if-present
 
       - name: client - npm install, build, and test
         run: |
