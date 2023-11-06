@@ -16,6 +16,42 @@ export default function TestingComponent() {
     //     .catch((err) => console.log(err));
     // }, []);
 
+    // useEffect(() => {
+    //     let tests = []
+    //     async function asyncGetTests() {
+    //         const response = await api.getTests();
+    //         if (response.data.success) {
+    //             console.log("got test strings from mongo")
+    //             tests = response.data.testString;
+    //         }
+    //         else {
+    //             console.log("COULDNT GET TEST STRINGS")
+    //         }
+
+    //         setTestStrings(tests);
+    //     }
+    //     asyncGetTests();
+    // });
+
+    const handleChange = (event) => {
+        const { value } = event.target;
+        setStringInput(value);
+    };
+
+    const saveData = (event) => {
+        async function asyncCreateNewTest() {
+            let payload = {testString: stringInput}
+            const response = await api.createTestString(payload.testString);
+            if (response.data.success) {
+                console.log("test string added to mongo")
+            }
+            else {
+                console.log("COULDNT ADD TEST STRING")
+            }
+        }
+        asyncCreateNewTest();
+    };
+
 
     // const saveData = (event) => {
     //     event.preventDefault();
