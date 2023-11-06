@@ -11,7 +11,7 @@ export const createTestString = (testString) => {
     })
 } 
 
-export const getTests = () => api.get(`/tests/`)
+export const getTests = () => api.get(`/tests`)
 
 const apis = {
     createTestString,
