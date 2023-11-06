@@ -3,7 +3,7 @@ axios.defaults.withCredentials = true;
 const baseURL = 'https://geocraftmaps.azurewebsites.net';
 
 const api = axios.create({
-    baseURL: 'https://geocraftmaps.azurewebsites.net:4000',
+    baseURL: 'https://geocraftmaps.azurewebsites.net:4000/api',
 })
 
 export const createTestString = (str) => {
