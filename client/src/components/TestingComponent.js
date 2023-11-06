@@ -16,45 +16,6 @@ export default function TestingComponent() {
     //     .catch((err) => console.log(err));
     // }, []);
 
-    useEffect(() => {
-        let tests = []
-        async function asyncGetTests() {
-            console.log('useEffect GET TESTS')
-            const response = await api.getTests();
-            console.log("After getTests()")
-            if (response.data.success) {
-                console.log("got test strings from mongo")
-                tests = response.data.testString;
-            }
-            else {
-                console.log("COULDNT GET TEST STRINGS")
-            }
-
-            setTestStrings(tests);
-        }
-        asyncGetTests();
-    });
-
-    const handleChange = (event) => {
-        const { value } = event.target;
-        setStringInput(value);
-    };
-
-    const saveData = (event) => {
-        async function asyncCreateNewTest() {
-            console.log('saveData started')
-            let payload = {testString: stringInput}
-            console.log('payload set: ', payload.testString)
-            const response = await api.createTestString(payload);
-            if (response.data.success) {
-                console.log("test string added to mongo")
-            }
-            else {
-                console.log("COULDNT ADD TEST STRING")
-            }
-        }
-        asyncCreateNewTest();
-    };
 
     // const saveData = (event) => {
     //     event.preventDefault();
