@@ -8,30 +8,24 @@ export default function TestingComponent() {
     const [stringInput, setStringInput] = useState({testString: ""});
     const baseUrl = "http://geocraftmaps.azurewebsites.net";
  
+    useEffect(() => {
+        let tests = []
+        async function asyncGetTests() {
+            console.log('useEffect GET TESTS')
+            const response = await api.getTests();
+            console.log("After getTests()")
+            if (response.data.success) {
+                console.log("got test strings from mongo")
+                tests = response.data.testString;
+            }
+            else {
+                console.log("COULDNT GET TEST STRINGS")
+            }
 
-    // useEffect(() => {
-    // axios
-    //     .get(`${baseUrl}/get-tests`)
-    //     .then((res) => setTestStrings(res.data))
-    //     .catch((err) => console.log(err));
-    // }, []);
-
-    // useEffect(() => {
-    //     let tests = []
-    //     async function asyncGetTests() {
-    //         const response = await api.getTests();
-    //         if (response.data.success) {
-    //             console.log("got test strings from mongo")
-    //             tests = response.data.testString;
-    //         }
-    //         else {
-    //             console.log("COULDNT GET TEST STRINGS")
-    //         }
-
-    //         setTestStrings(tests);
-    //     }
-    //     asyncGetTests();
-    // });
+            setTestStrings(tests);
+        }
+        asyncGetTests();
+    });
 
     const handleChange = (event) => {
         const { value } = event.target;
@@ -40,8 +34,10 @@ export default function TestingComponent() {
 
     const saveData = (event) => {
         async function asyncCreateNewTest() {
+            console.log('saveData started')
             let payload = {testString: stringInput}
-            const response = await api.createTestString(payload.testString);
+            console.log('payload set: ', payload.testString)
+            const response = await api.createTestString(payload);
             if (response.data.success) {
                 console.log("test string added to mongo")
             }
@@ -51,7 +47,6 @@ export default function TestingComponent() {
         }
         asyncCreateNewTest();
     };
-
 
     // const saveData = (event) => {
     //     event.preventDefault();
