@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
 import "../App.css";
-import api from "..store/store-request-api"
+import api from "../store/store-request-api"
 
 export default function TestingComponent() {
     const [testStrings, setTestStrings] = useState([]);
