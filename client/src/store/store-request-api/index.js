@@ -6,10 +6,10 @@ const api = axios.create({
     baseURL: 'https://geocraftmaps.azurewebsites.net:4000',
 })
 
-export const createTestString = (testString) => {
+export const createTestString = (str) => {
     return api.post(`/tests/`, {
         // SPECIFY THE PAYLOAD
-        testString: testString,
+        testString: str,
     })
 } 
 

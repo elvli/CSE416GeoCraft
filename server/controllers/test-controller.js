@@ -3,7 +3,7 @@ const Test = require('../models/test-model')
 createTestString = async (req, res) => {
     console.log("REGISTERING USER IN BACKEND");
 
-    const body = req.body.testString;
+    const body = req.body;
 
     if (!body) {
         return res.status(400).json({
@@ -29,7 +29,7 @@ getTests = async (req, res) => {
                 .json({ success: false, error: 'tests not found'})
         }
         else {
-            return res.status(200).json({ success: true, testStings: tests })
+            return res.status(200).json({ success: true, testStrings: tests })
         }
     }).catch(err => console.log(err))
 }
@@ -103,3 +103,7 @@ getTests = async (req, res) => {
 //         res.status(500).send();
 //     }
 // } 
+module.exports = {
+    createTestString,
+    getTests
+}
