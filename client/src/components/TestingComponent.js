@@ -37,7 +37,7 @@ export default function TestingComponent() {
             console.log('saveData started')
             let payload = {testString: stringInput}
             console.log('payload set: ', payload.testString)
-            const response = await api.createTestString(payload);
+            const response = await api.createTestString(payload.testString);
             if (response.data.success) {
                 console.log("test string added to mongo")
             }
