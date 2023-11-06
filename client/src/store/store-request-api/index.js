@@ -1,5 +1,7 @@
 import axios, { Axios } from 'axios'
 axios.defaults.withCredentials = true;
+const baseURL = 'https://geocraftmaps.azurewebsites.net';
+
 const api = axios.create({
     baseURL: 'https://geocraftmaps.azurewebsites.net',
 })
