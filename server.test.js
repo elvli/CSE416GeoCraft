@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('./server'); // Import your Express app
 const mongoose = require('mongoose');
 const User = mongoose.model('User'); // Import the User model
+const URI = "mongodb+srv://geocraftcluster:geomapss@geocraftdb.7izyqmj.mongodb.net/?retryWrites=true&w=majority"
 
 // Sample user data for testing
 const sampleUser = {
@@ -12,7 +13,7 @@ jest.setTimeout(20000);
 beforeAll(async () => {
   // Connect to the testing database
   require('dotenv').config({ path: './.env' });
-  await mongoose.connect(process.env.MONGO_URI, {
+  await mongoose.connect(URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
