@@ -37,6 +37,7 @@ jobs:
 
       - name: client - npm install, build, and test
         run: |
+          npm install
           npx jest --forceExit
           cd client
           npm install
