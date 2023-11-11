@@ -3,8 +3,8 @@ import baseUrl from "./baseUrl";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { React, useState, useEffect } from "react";
-
-import { AppBanner, LeftSideBar, RightSideBar, MapBackground, LoginScreen, SignUpScreen } from './components'
+import { Route, Routes, Outlet, Navigate} from "react-router-dom";
+import { AppBanner, LeftSideBar, RightSideBar, MapBackground, LoginScreen, SignUpScreen, HomeScreen } from './components'
 
 function App() {
   const navigate = useNavigate();
@@ -19,37 +19,11 @@ function App() {
 
   return (
     <div className="App">
-      <AppBanner />
-      <div className="row1">
-        {/* <div className="background">
-          <div className="testRead">
-            <h1>READ THIS</h1>
-            {users &&
-              users.length > 0 &&
-              users.map((user) => {
-                return (
-                  <div>
-                    <h3>
-                      {user.name} {user.lastName}
-                    </h3>
-                  </div>
-                );
-              })}
-          </div>
-        </div> */}
-
-        <div className="background">
-          <MapBackground />
-        </div>
-
-        <div className="foreground">
-          <LeftSideBar />
-          <RightSideBar />
-        </div>
-
-      </div>
-
-      {/* <button onClick={() => navigate("create")}>Create</button> */}
+        <Routes>
+          <Route index element={<HomeScreen/>}/>
+          <Route path="sign-up/" element={<SignUpScreen/>}/>
+          <Route path="login/" element={<LoginScreen/>}/>
+        </Routes> 
     </div>
   );
 }
