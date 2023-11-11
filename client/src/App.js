@@ -41,14 +41,14 @@ function App() {
         <div className="background">
           <MapBackground />
         </div>
-        
+
         <div className="foreground">
           <LeftSideBar />
         </div>
 
       </div>
 
-      <button onClick={() => navigate("create")}>Create</button>
+      {/* <button onClick={() => navigate("create")}>Create</button> */}
     </div>
   );
 }
