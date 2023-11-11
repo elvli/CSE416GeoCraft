@@ -1,0 +1,34 @@
+@use "../../styles/theme" as theme;
+
+.login-credentials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 70vh;
+    .form-items {
+        width: 30vw;
+        background-color: theme.$superlightgray;
+    }
+    .form-button {
+        width: 30vw;
+        background-color: theme.$slightlighterthanblack !important;
+        border-color: theme.$slightlighterthanblack;
+        height: 5vh;
+    }
+    .form-button:hover {
+        background-color: gray !important;
+        border-color: gray;
+    }
+    .register {
+        display: flex;
+        flex-direction: row;
+        column-gap: 16vw;
+        #register-items {
+            
+        }
+    }
+    .heading {
+        font-weight: bolder;
+    }
+}
