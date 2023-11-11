@@ -51,7 +51,7 @@ export default function AppBanner() {
 
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark app-banner">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark app-banner" style={{justifyContent: "space-between"}}>
 
       {isEditing ? (
           <div className="float-left">
@@ -77,6 +77,7 @@ export default function AppBanner() {
       <Button 
         className="navbar-brand .banner-button btn btn-dark mx-auto" 
         onClick={handleLogoClick}
+        style={{ maxHeight: '5vh' }}
       >
         <img src={GeoCraftLogo}
           alt="GeoCraft Logo"
@@ -85,7 +86,7 @@ export default function AppBanner() {
         />
       </Button>
 
-      <Dropdown className="position-fixed" style={{ right: '0', maxHeight: '4vh', zIndex: 1000 }}>
+      <Dropdown className="position-fixed" style={{ right: '0', maxHeight: '5vh', zIndex: 1000, marginRight: '4px' }}>
         <Dropdown.Toggle variant="dark" id="dropdown-basic">
           <Person className="fs-4" />
         </Dropdown.Toggle>
