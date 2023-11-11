@@ -3,6 +3,11 @@
   overflow: hidden;
 }
 
+.row1 {
+  position: relative;
+  height: 95vh;
+}
+
 .background {
   position: absolute;
   z-index: 0;
@@ -16,12 +21,14 @@
   float: left;
 }
 
+/* Database Test */
 .testRead {
   text-align: center;
   position: flex;
   /* float: right; */
 }
 
+/* AppBanner.js */
 .app-banner {
   height: 5vh;
 }
@@ -30,8 +37,7 @@
   min-height: 5vh;
 }
 
-/* This for the collapsable Sidebar menus */
-/* Left sidebar */
+/* LeftSideBar.js */
 #left-wrapper {
   overflow-x: hidden;
 }
@@ -76,4 +82,25 @@
   border-bottom-left-radius: 0px;
 }
 
-/* Right sidebar */
+/* RightSideBar.js */
+
+/* MapBackground.js */
+.map-container {
+  position: relative;
+  height: 95vh;
+  width: 100vw;
+}
+
+.long-lat-bar {
+  position: relative;
+  background-color: rgba(35, 55, 75, 0.9);
+  color: #fff;
+  padding: 6px 12px;
+  font-family: monospace;
+  z-index: 1;
+  position: absolute;
+  top: 2;       /* change this to 0 if we make the import button a modal or whatever*/
+  left: 0;
+  margin: 12px;
+  border-radius: 4px;
+}

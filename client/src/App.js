@@ -1,11 +1,10 @@
-import { useEffect } from "react";
-import "./App.css";
+import './App.css';
 import baseUrl from "./baseUrl";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { React, useState, useEffect } from "react";
 
-import { AppBanner, LeftSideBar } from './components'
+import { AppBanner, LeftSideBar, MapBackground } from './components'
 
 function App() {
   const navigate = useNavigate();
@@ -21,25 +20,32 @@ function App() {
   return (
     <div className="App">
       <AppBanner />
+      <div className="row1">
+        {/* <div className="background">
+          <div className="testRead">
+            <h1>READ THIS</h1>
+            {users &&
+              users.length > 0 &&
+              users.map((user) => {
+                return (
+                  <div>
+                    <h3>
+                      {user.name} {user.lastName}
+                    </h3>
+                  </div>
+                );
+              })}
+          </div>
+        </div> */}
 
-      <div className="background">
-        <div className="testRead">
-          <h1>READ THIS</h1>
-          {users &&
-            users.length > 0 &&
-            users.map((user) => {
-              return (
-                <div>
-                  <h3>
-                    {user.name} {user.lastName}
-                  </h3>
-                </div>
-              );
-            })}
+        <div className="background">
+          <MapBackground />
         </div>
-      </div>
-      <div className="foreground">
-        <LeftSideBar />
+        
+        <div className="foreground">
+          <LeftSideBar />
+        </div>
+
       </div>
 
       <button onClick={() => navigate("create")}>Create</button>
