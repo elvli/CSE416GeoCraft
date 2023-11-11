@@ -37,6 +37,17 @@
   min-height: 5vh;
 }
 
+.banner-logo {
+  max-Width: '2px'
+}
+
+.banner-button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
 /* LeftSideBar.js */
 #left-wrapper {
   overflow-x: hidden;
