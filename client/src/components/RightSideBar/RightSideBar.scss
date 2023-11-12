@@ -1,0 +1,77 @@
+@use "../../styles/theme" as theme;
+
+#right-wrapper {
+  overflow-x: hidden;
+  position: fixed;
+  right: 0;
+}
+
+#right-sidebar-wrapper {
+  min-height: 95vh;
+  margin-right: -24rem;
+  transition: margin 0.25s ease-out;
+
+  .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+  }
+
+  .list-group {
+    width: 24rem;
+  }
+}
+
+#right-wrapper.toggled #right-sidebar-wrapper {
+  margin-right: 24rem;
+}
+
+@media (min-width: 768px) {
+  #right-sidebar-wrapper {
+    margin-right: 0;
+  }
+
+  #right-wrapper.toggled #right-sidebar-wrapper {
+    margin-right: -24rem;
+  }
+}
+
+#right-menu-toggle {
+  height: 5vh;
+  width: 2vh;
+  color: black;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.custom-scrollbar {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: darkgray transparent;
+  overflow: auto;
+  max-height: 83vh;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: darkgray;
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+.comment-btn {
+    margin-left: 35px;
+    margin-top: 10px;
+}
+
+.form-control {
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 16vw;
+    height: 40px;
+}
