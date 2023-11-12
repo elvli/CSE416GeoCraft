@@ -50,5 +50,6 @@
     "moduleNameMapper": {
       "axios": "axios/dist/node/axios.cjs"
     }
-  }
+  },
+  "assets": ["src/web.config"]
 }
