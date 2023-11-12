@@ -22,7 +22,7 @@ export default function SignUpScreen () {
         <div>
             <AppBanner/>
             <div className="sign-up-screen">
-                <h1 className="heading">Sign Up</h1>
+                <h1 className="heading">Sign In</h1>
                 <br/>
                 <br/>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
