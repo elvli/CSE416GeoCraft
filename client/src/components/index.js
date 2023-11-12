@@ -5,6 +5,7 @@ import RightSideBar from './RightSideBar'
 import LoginScreen from './Login/LoginScreen'
 import SignUpScreen from './SignUp/SignUpScreen'
 import HomeScreen from './HomeScreen'
+import CommentCard from './CommentCard'
 import PasswordReset from './PasswordReset/PasswordReset'
 
 export { 
@@ -15,5 +16,6 @@ export {
     LoginScreen,
     SignUpScreen,
     HomeScreen,
+    CommentCard,
     PasswordReset,
 }
