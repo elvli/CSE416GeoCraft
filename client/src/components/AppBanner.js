@@ -77,7 +77,7 @@ export default function AppBanner() {
       <Button 
         className="navbar-brand .banner-button btn btn-dark mx-auto" 
         onClick={handleLogoClick}
-        style={{ maxHeight: '5vh' }}
+        style={{ maxHeight: '5vh' , position: "absolute", right: "50%"}}
       >
         <img src={GeoCraftLogo}
           alt="GeoCraft Logo"
