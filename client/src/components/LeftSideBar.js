@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { PencilFill } from 'react-bootstrap-icons';
+import { Button, Dropdown } from 'react-bootstrap';
+import { PencilFill, PeopleFill, Person, PersonFill, Plus, Filter } from 'react-bootstrap-icons';
+import '../App.css'
 // import {navbar, nav, button} from 'react-bootstrap'
 // import 'bootstrap/dist/css/bootstrap.min.css'
 // import 'bootstrap-icons/font/bootstrap-icons.css'
@@ -24,13 +26,33 @@ export default function LeftSideBar() {
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="left-wrapper">
       <div className="bg-light border-right" id="left-sidebar-wrapper">
         {/* <div className="left-sidebar-heading">Menu</div> */}
-        <div className="list-group list-group-flush">
-          <p className="list-group-item list-group-item-action bg-light">Options</p>
-          <p className="list-group-item list-group-item-action bg-light">Click the pencil to collapse</p>
-          <p className="list-group-item list-group-item-action bg-light">Mongo tests are hiding under the sidebar</p>
-          <p className="list-group-item list-group-item-action bg-light">collapse to see</p>
-          <p className="list-group-item list-group-item-action bg-light">Option</p>
-          <p className="list-group-item list-group-item-action bg-light">Option</p>
+        <div className="list-group list-group-flush" style={{justifyContent: "space-between"}}>
+          <div>
+            <Button className='btn list-button btn-light' style={{width: "5vw", height: "5vh", transform:"translate(-15%, 0%)"}}>
+              <Plus style={{width: "2vw", height: "3vh"}}/>
+            </Button>
+            <Button className='btn list-button btn-light' style={{width: "5vw", height: "5vh", transform:"translate(0%, 0%)"}}>
+              <PeopleFill style={{width: "2vw", height: "3vh"}}/>
+            </Button>
+            <Button className='btn list-button btn-light' style={{width: "5vw", height: "5vh", transform:"translate(15%, 0%)"}}>
+              <PersonFill style={{width: "2vw", height: "3vh"}}/>
+            </Button>
+          </div>
+          <div>
+            <div>
+              <input type="search" id="form1" className="form-control" placeholder="Type query" aria-label="Search" style={{transform:"translate(2%, 0%)", width:'80%'}}/>
+            </div>
+            <Dropdown className='position-fixed' style={{width:'width: "20%"', transform:"translate(489%, -105%)", textAlign: 'right', marginRight: '4px'}}>
+                <Dropdown.Toggle variant="light" id="dropdown-basic">
+                  <Filter/>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item>Sort by date(newest to oldest)</Dropdown.Item>
+                  <Dropdown.Item>Sort by date(oldest to newest)</Dropdown.Item>
+                  <Dropdown.Item>Most popular</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+          </div>
         </div>
       </div>
 
