@@ -9,14 +9,14 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZ
 // const shp = require("shpjs");
 
 export default function LeftSideBar() {
-    const mapContainer = useRef(null);
-    const map = useRef(null);
-    const [lng, setLng] = useState(-73.12);
-    const [lat, setLat] = useState(40.91);
-    const [zoom, setZoom] = useState(10);
-//   const [count, setCount] = useState(1);
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const [lng, setLng] = useState(-73.12);
+  const [lat, setLat] = useState(40.91);
+  const [zoom, setZoom] = useState(10);
+  //   const [count, setCount] = useState(1);
 
-useEffect(() => {
+  useEffect(() => {
     if (map.current || typeof window === 'undefined') return; // Check for the browser environment
     const mapboxgl = require('mapbox-gl'); // or import mapboxgl from 'mapbox-gl';
 
@@ -54,14 +54,14 @@ useEffect(() => {
     // })
   });
 
-    return (
-        <div>
-        {/* <input type="file" style={{ height: '2.3vh', width: '100%' }} onChange={handleFile}/> */}
-        <div className="long-lat-bar">
-            Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
-        </div>
+  return (
+    <div>
+      {/* <input type="file" style={{ height: '2.3vh', width: '100%' }} onChange={handleFile}/> */}
+      <div className="long-lat-bar">
+        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+      </div>
 
-        <div ref={mapContainer} className="map-container" />
-        </div>
-    );
+      <div ref={mapContainer} className="map-container" />
+    </div>
+  );
 }
