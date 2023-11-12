@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap';
 import { ChatRightText, Send } from 'react-bootstrap-icons';
-import CommentCard from './CommentCard';
+import CommentCard from '../CommentCard';
+import "./RightSideBar.scss";
 
 export default function RightSideBar() {
   const [isToggled, setIsToggled] = useState(false);
@@ -36,8 +37,8 @@ export default function RightSideBar() {
 
       <div className="bg-light border-left" id="right-sidebar-wrapper">
         <div className="list-group">
-          <p className="list-group-item list-group-item-action bg-light">Comments</p>
-          <div className="list-group-item list-group-item-action bg-light custom-scrollbar" style={{ overflow: "auto", maxHeight: "83vh" }}>
+          <p className="list-group-item bg-light">Comments</p>
+          <div className="list-group-item bg-light custom-scrollbar">
             <CommentCard />
             <CommentCard />
             <CommentCard />
@@ -53,7 +54,7 @@ export default function RightSideBar() {
             <CommentCard />
             <CommentCard />
           </div>
-          
+
           <div className="row">
             <div className="col-md-8">
               <input
@@ -62,20 +63,14 @@ export default function RightSideBar() {
                 placeholder="Comment"
                 value={textInput}
                 onChange={handleInputChange}
-                style={{ marginLeft: "10px", marginTop: "10px", width: '16vw', height: '40px' }}
                 onKeyDown={handleKeyDown}
               />
             </div>
             <div className="col-md-4">
-              <Button
-                className="btn btn-primary btn-block"
-                onClick={handleSubmit}
-                style={{ marginLeft: "35px", marginTop: "10px" }}
-              >
+              <Button className="btn-primary comment-btn" onClick={handleSubmit}>
                 <Send />
               </Button>
             </div>
-
           </div>
         </div>
       </div>
