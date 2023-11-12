@@ -2,7 +2,7 @@ import React from "react"
 import '../App.css';
 import AppBanner from "./AppBanner";
 import { MapBackground } from ".";
-import LeftSideBar from "./LeftSideBar";
+import LeftSideBar from "./LeftSideBar/LeftSideBar";
 import RightSideBar from "./RightSideBar/RightSideBar";
 export default function HomeScreen () {
     return(

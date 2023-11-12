@@ -1,5 +1,5 @@
 import AppBanner from './AppBanner'
-import LeftSideBar from './LeftSideBar'
+import LeftSideBar from './LeftSideBar/LeftSideBar'
 import MapBackground from './MapBackground'
 import RightSideBar from './RightSideBar/RightSideBar'
 import LoginScreen from './Login/LoginScreen'

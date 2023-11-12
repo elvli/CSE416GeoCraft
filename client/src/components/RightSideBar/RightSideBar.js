@@ -15,17 +15,17 @@ export default function RightSideBar() {
 
   const handleInputChange = (event) => {
     setTextInput(event.target.value);
-  };
+  }
 
   const handleSubmit = () => {
     console.log('Comment Entered:', textInput);
-  };
+  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleSubmit();
     }
-  };
+  }
 
   return (
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="right-wrapper">
