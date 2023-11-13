@@ -7,6 +7,8 @@ import SignUpScreen from './SignUp/SignUpScreen'
 import HomeScreen from './HomeScreen'
 import CommentCard from './CommentCard'
 import PasswordReset from './PasswordReset/PasswordReset'
+import MapCard from './mapCard'
+import MapCreateModal from './MapCreateModal/MapCreateModal'
 
 export { 
     AppBanner,
@@ -18,4 +20,6 @@ export {
     HomeScreen,
     CommentCard,
     PasswordReset,
+    MapCard,
+    MapCreateModal,
 }

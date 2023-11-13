@@ -1,29 +1,73 @@
 import React from "react";
+import { useState } from "react";
 import "./MapCreateModal.scss";
 import AppBanner from "../AppBanner";
 import App from "../../App";
 import Form  from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-
-export default function MapCreateModal () {
+import  CloseButton  from "react-bootstrap/CloseButton";
+import { XLg } from "react-bootstrap-icons";
+import Modal from "react-bootstrap/Modal";
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+export default function MapCreateModal (props) {
+    const {show, handleClose} = props
+    const [validated, setValidated] = useState(false)
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        
+        setValidated(true);
+      };
+      const handleClosing = (event) => {
+        setValidated(false);
+        handleClose(event)
+      }
 
     return(
-        <div class="modal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Modal body text goes here.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-                </div>
-            </div>
+        <div>
+            <Modal centered show={show} onHide={handleClose}>      
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Create Your Map</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Group>
+                            <Form.Label>Enter the Name of Your Map</Form.Label>
+                            <Form.Control className="map-name" required type="text" placeholder="Map Name" />
+                        </Form.Group>
+                        <br/>
+                        <Form.Group>
+                            <Form.Label>Select Your Map Type</Form.Label>
+                            <Form.Select required>
+                                <option value="">Select your map type</option>
+                                <option value="1">Heat Map</option>
+                                <option value="2">Point Map</option>
+                                <option value="3">Proportional Symbols Map</option>
+                                <option value="2">Choropleth Map</option>
+                                <option value="3">Arrow Map</option>
+                            </Form.Select>
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClosing}>
+                            Close
+                        </Button>
+                        <Form.Group>
+                            <Button variant="primary" type="submit" onClick={handleSubmit}>
+                                Create
+                            </Button>
+                        </Form.Group>
+                        
+                    </Modal.Footer>
+                </Form>
+                
+            </Modal>
         </div>
-        )
+    )
 }

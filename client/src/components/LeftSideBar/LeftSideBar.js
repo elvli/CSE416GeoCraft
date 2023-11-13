@@ -1,20 +1,17 @@
 import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
-import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
+import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash } from 'react-bootstrap-icons';
 import './LeftSideBar.scss'
-
-export default function LeftSideBar() {
+import MapCard from '../mapCard';
+export default function LeftSideBar (props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-
+  const {handleNewMap} = props;
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
 
-  const handleNewMap = () => {
-    console.log('handleNewMap');
-  }
 
   const handleUserMaps = () => {
     console.log('handleUserMaps');
@@ -95,7 +92,8 @@ export default function LeftSideBar() {
           <div className="list-group editing-tools">
             <p className="list-group-item bg-light">User Maps</p>
             <div className="list-group-item bg-light custom-scrollbar">
-              hi
+                <MapCard/>
+
             </div>
 
 

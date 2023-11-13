@@ -4,7 +4,16 @@ import AppBanner from "./AppBanner";
 import { MapBackground } from ".";
 import LeftSideBar from "./LeftSideBar/LeftSideBar";
 import RightSideBar from "./RightSideBar/RightSideBar";
+import MapCreateModal from "./MapCreateModal/MapCreateModal";
+import { useState } from "react";
 export default function HomeScreen () {
+    const [show, setShow] = useState(false);
+    async function handleClose(event) {
+        setShow(false)
+    }
+    async function handleNewMap(event) {
+        setShow(true)
+    }
     return(
         <div>
             <AppBanner />
@@ -31,12 +40,12 @@ export default function HomeScreen () {
                 </div>
 
                 <div className="foreground">
-                <LeftSideBar />
+                <LeftSideBar handleNewMap={handleNewMap}/>
                 <RightSideBar />
                 </div>
 
             </div>
-
+                <MapCreateModal show={show} handleClose={handleClose} />
             {/* <button onClick={() => navigate("create")}>Create</button> */}
         </div>
     )
