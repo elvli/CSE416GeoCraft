@@ -1,4 +1,4 @@
-describe('LeftSideBar Component', () => {
+describe('LeftSideBar Component Collapse', () => {
   it('should collapse when the button is clicked', () => {
     // Visit your app's URL or the specific page containing the sidebar
     cy.visit('https://geocraftmaps.azurewebsites.net/');
