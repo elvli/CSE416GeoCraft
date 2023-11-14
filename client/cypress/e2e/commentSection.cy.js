@@ -19,6 +19,7 @@ describe('Comment Section Collapse', () => {
 
   describe('Write a comment', () => {
     beforeEach(() => {
+      cy.viewport(1200, 800);
       cy.visit('https://geocraftmaps.azurewebsites.net/'); // Replace with the actual path to your app
     });
   
@@ -26,7 +27,7 @@ describe('Comment Section Collapse', () => {
       const commentText = 'Testing Cypress';
   
       // Find the comment input and type text
-      cy.get('.form-control').eq(0).type(commentText).should('have.value', commentText);
+      cy.get('.form-control').eq(1).scrollIntoView().type(commentText).should('have.value', commentText);
     });
   });
   
