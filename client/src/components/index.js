@@ -9,6 +9,7 @@ import CommentCard from './CommentCard'
 import PasswordReset from './PasswordReset/PasswordReset'
 import MapCard from './mapCard'
 import MapCreateModal from './MapCreateModal/MapCreateModal'
+import DeleteMapModal from './DeleteMapModal/DeleteMapModal'
 
 export { 
     AppBanner,
@@ -22,4 +23,5 @@ export {
     PasswordReset,
     MapCard,
     MapCreateModal,
+    DeleteMapModal
 }

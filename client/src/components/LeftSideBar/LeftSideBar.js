@@ -6,7 +6,7 @@ import MapCard from '../mapCard';
 export default function LeftSideBar (props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const {handleNewMap} = props;
+  const {handleNewMap, handleDeleteMap} = props;
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -91,10 +91,9 @@ export default function LeftSideBar (props) {
 
           <div className="list-group editing-tools">
             <p className="list-group-item bg-light">User Maps</p>
-            <div className="list-group-item bg-light custom-scrollbar">
-                <MapCard/>
-
-            </div>
+            <Button className='btn btn-light delete-map-btn' onClick={handleDeleteMap}>
+              <Trash className='icon-btn' />
+            </Button>
 
 
 

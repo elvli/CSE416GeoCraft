@@ -6,13 +6,21 @@ import LeftSideBar from "./LeftSideBar/LeftSideBar";
 import RightSideBar from "./RightSideBar/RightSideBar";
 import MapCreateModal from "./MapCreateModal/MapCreateModal";
 import { useState } from "react";
+import DeleteMapModal from "./DeleteMapModal/DeleteMapModal";
 export default function HomeScreen () {
     const [show, setShow] = useState(false);
+    const [deleteMapShow, setDeleteMapShow] = useState(false);
     async function handleClose(event) {
         setShow(false)
     }
     async function handleNewMap(event) {
         setShow(true)
+    }
+    async function handleDeleteMapClose(event) {
+        setDeleteMapShow(false)
+    }
+    async function handleDeleteMap(event) {
+        setDeleteMapShow(true);
     }
     return(
         <div>
@@ -40,12 +48,13 @@ export default function HomeScreen () {
                 </div>
 
                 <div className="foreground">
-                <LeftSideBar handleNewMap={handleNewMap}/>
+                <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap}/>
                 <RightSideBar />
                 </div>
 
             </div>
                 <MapCreateModal show={show} handleClose={handleClose} />
+                <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
             {/* <button onClick={() => navigate("create")}>Create</button> */}
         </div>
     )
