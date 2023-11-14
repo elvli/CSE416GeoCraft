@@ -6,7 +6,7 @@ import MapCard from '../mapCard';
 export default function LeftSideBar (props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const {handleNewMap, handleDeleteMap} = props;
+  const {handleNewMap, handleDeleteMap, handleEditRegion} = props;
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -90,7 +90,9 @@ export default function LeftSideBar (props) {
           </div>
 
           <div className="list-group editing-tools">
-            <p className="list-group-item bg-light">User Maps</p>
+            <Button className='btn btn-light delete-map-btn' onClick={handleEditRegion}>
+              <p> User Maps</p>
+            </Button>
             <Button className='btn btn-light delete-map-btn' onClick={handleDeleteMap}>
               <Trash className='icon-btn' />
             </Button>

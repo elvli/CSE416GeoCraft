@@ -1,7 +1,7 @@
 import React from "react"
 import '../App.css';
 import AppBanner from "./AppBanner";
-import { MapBackground } from ".";
+import { EditRegionModal, MapBackground } from ".";
 import LeftSideBar from "./LeftSideBar/LeftSideBar";
 import RightSideBar from "./RightSideBar/RightSideBar";
 import MapCreateModal from "./MapCreateModal/MapCreateModal";
@@ -10,6 +10,7 @@ import DeleteMapModal from "./DeleteMapModal/DeleteMapModal";
 export default function HomeScreen () {
     const [show, setShow] = useState(false);
     const [deleteMapShow, setDeleteMapShow] = useState(false);
+    const [editRegionShow, setEditRegionShow] = useState(false);
     async function handleClose(event) {
         setShow(false)
     }
@@ -21,6 +22,12 @@ export default function HomeScreen () {
     }
     async function handleDeleteMap(event) {
         setDeleteMapShow(true);
+    }
+    async function handleEditRegionClose(event) {
+        setEditRegionShow(false)
+    }
+    async function handleEditRegion(event) {
+        setEditRegionShow(true);
     }
     return(
         <div>
@@ -48,13 +55,14 @@ export default function HomeScreen () {
                 </div>
 
                 <div className="foreground">
-                <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap}/>
+                <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion}/>
                 <RightSideBar />
                 </div>
 
             </div>
                 <MapCreateModal show={show} handleClose={handleClose} />
                 <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
+                <EditRegionModal editRegionShow={editRegionShow} handleEditRegionClose={handleEditRegionClose} />
             {/* <button onClick={() => navigate("create")}>Create</button> */}
         </div>
     )
