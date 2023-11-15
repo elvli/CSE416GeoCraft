@@ -1,0 +1,64 @@
+.map-card {
+    margin-top: -8px !important;
+    margin-bottom: 18px !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    .card-header {
+        max-height: 6vh;
+        z-index: 2;
+        .username {
+            transform: translate(0%, 20%);
+            float: left;
+            margin: 0;
+        }
+    }
+
+    .options-button-options {
+        font-size: 12.1px;
+    }
+
+    .card-body {
+        z-index: 1;
+    }
+
+    .comment-text {
+        z-index: 1;
+        float: left;
+    }
+}
+
+.map-card:hover {
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .like-button {
+    transform: translate(0%, -30%);
+    background-color: #ffffff;
+  }
+
+  .dislike-button {
+    transform: translate(0%, -30%);
+    background-color: #ffffff;
+  }
+
+  .options-button {
+    transform: translate(30%, -6%);
+    float: right;
+    font-size: 11px;
+    
+  }
+
+  .like-button:hover {
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  }
+  .dislike-button:hover {
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .flex-row-reverse {
+    transform: translate(0%, 30%);
+  }
+
