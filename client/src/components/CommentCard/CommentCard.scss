@@ -1,0 +1,25 @@
+.comment-card {
+    margin-top: -8px;
+    margin-bottom: 18px;
+
+    .card-header {
+        max-height: 6vh;
+        overflow: hidden;
+
+        .profile-pic {
+            float: left;
+            margin-left: -6px;
+            margin-right: 8px;
+            font-size: 26px
+        }
+
+        .username {
+            float: left;
+            margin: 0;
+        }
+    }
+
+    .comment-text {
+        float: left;
+    }
+}
