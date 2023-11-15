@@ -2,14 +2,31 @@ import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash } from 'react-bootstrap-icons';
 import './LeftSideBar.scss'
-import MapCard from '../MapCard/mapCard';
-export default function LeftSideBar(props) {
+import MapCard from '../MapCard/MapCard';
+export default function LeftSideBar (props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const { handleNewMap, handleDeleteMap, handleEditRegion } = props;
+  const {handleNewMap, handleDeleteMap, handleEditRegion} = props;
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
+  }
+
+  var testMap1 = {
+    title: 'test map 1',
+    author: 'Darren',
+    likes: ['Darren', 'Brian'],
+    dislikes: [],
+    published: true
+
+  }
+
+  var testMap2 = {
+    title: 'test map 2',
+    author: 'Brian',
+    likes: ['Darren'],
+    dislikes: ['Brian'],
+    published: false
   }
 
 
@@ -49,7 +66,7 @@ export default function LeftSideBar(props) {
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="left-wrapper">
       <div className="bg-light border-right" id="left-sidebar-wrapper">
         <div className="list-group list-group-flush tools-list">
-          <div>
+          <div className='column-tools'>
             <Button className='btn btn-light new-map-btn' onClick={handleNewMap}>
               <Plus className='icon-btn' />
             </Button>
@@ -78,7 +95,7 @@ export default function LeftSideBar(props) {
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   <FunnelFill />
                 </Dropdown.Toggle>
-                <Dropdown.Menu>
+                <Dropdown.Menu className='dropdown-menu'>
                   <Dropdown.Item onClick={handleSortNewest}>Sort by date (newest to oldest)</Dropdown.Item>
                   <Dropdown.Item onClick={handleSortOldest}>Sort by date (oldest to newest)</Dropdown.Item>
                   <Dropdown.Item onClick={handleSortAtoZ}>Sort Alphabetically (A to Z)</Dropdown.Item>
@@ -93,13 +110,11 @@ export default function LeftSideBar(props) {
             <Button className='btn btn-light delete-map-btn' onClick={handleEditRegion}>
               <p> User Maps</p>
             </Button>
-            <Button className='btn btn-light delete-map-btn' onClick={handleDeleteMap}>
-              <Trash className='icon-btn' />
-            </Button>
-
-
-
           </div>
+          <MapCard map={testMap1} functions={handleDeleteMap}/>
+          <MapCard map={testMap2} functions={handleDeleteMap}/>
+
+
         </div>
       </div>
 

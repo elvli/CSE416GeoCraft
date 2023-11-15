@@ -66,6 +66,10 @@
   }
 }
 
+.col-md-4 {
+  z-index: 3;
+}
+
 .icon-btn {
   width: 2vw;
   height: 3vh;
@@ -84,6 +88,11 @@
   text-align: right;
   margin-top: 0px;
   margin-left: 0px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  z-index: 9999999;
 }
 
 .pencil-icon-btn {
