@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash } from 'react-bootstrap-icons';
 import './EditSideBar.scss'
-import MapCard from '../MapCard/mapCard';
+import MapCard from '../MapCard/MapCard';
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
