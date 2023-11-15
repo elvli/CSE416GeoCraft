@@ -114,12 +114,18 @@
     background-color: theme.$dark;
     min-width: 3vw;
     min-height: 95vh;
+    
 }
 .button {
     max-width: 2.5vw;
     height: 5vh;
-    transform: translate(35%, 0%)
+    transform: translate(35%, 0%);
+    
 }
+#close-button {
+  transform: translate(35%, 65vh);
+}
+
 
 #left-tool {
     transform: translate(0, 10%)

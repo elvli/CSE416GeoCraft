@@ -5,10 +5,11 @@ import './EditSideBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
+import { XLg } from 'react-bootstrap-icons';
+import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 export default function EditSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
-
+  const [show, setShow] = useState(false);
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -38,6 +39,11 @@ export default function EditSideBar(props) {
             <Row>
               <Button className="button" variant="dark">
                 <Gear />
+              </Button>
+            </Row>
+            <Row>
+                <Button className="button" id="close-button" variant="dark" onClick={()=>setShow(true)}>
+                <XLg/>
               </Button>
             </Row>
           </Col>
@@ -78,6 +84,7 @@ export default function EditSideBar(props) {
           </div>
         </div>
       </div>
+      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event)=>{setShow(false)}}/>
     </div>
   )
 }
