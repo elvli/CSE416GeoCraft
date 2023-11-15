@@ -1,0 +1,35 @@
+@use "../../styles/theme" as theme;
+
+.confirm-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 75vh;
+
+   
+} 
+.confirm-item  {
+        width: 30vw;
+        background-color: theme.$superlightgray;
+    }
+.confirm-button {
+    width: 30vw;
+    background-color: theme.$slightlighterthanblack !important;
+    border-color: theme.$slightlighterthanblack;
+    height: 5vh;
+    transform: translate(1%,0);
+    &:hover {
+        width: 30vw;
+        background-color: gray !important;
+        border-color: gray;
+        height: 5vh;
+    }
+}
+
+h1 {
+    font-weight: bolder;
+}
+p {
+    font-size: 18px;
+}

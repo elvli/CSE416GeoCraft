@@ -12,6 +12,7 @@ import MapCreateModal from './MapCreateModal/MapCreateModal'
 import DeleteMapModal from './DeleteMapModal/DeleteMapModal'
 import EditRegionModal from './EditRegionModal/EditRegionModal'
 import VerifyScreen from './VerifyScreen/VerifyScreen'
+import ConfirmScreen from './ConfirmScreen/ConfirmScreen'
 
 export { 
     AppBanner,
@@ -28,4 +29,5 @@ export {
     DeleteMapModal,
     EditRegionModal,
     VerifyScreen,
+    ConfirmScreen,
 }

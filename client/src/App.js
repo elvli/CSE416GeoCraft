@@ -3,7 +3,7 @@ import baseUrl from "./baseUrl";
 import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { LoginScreen, SignUpScreen, HomeScreen, PasswordReset, VerifyScreen } from './components'
+import { LoginScreen, SignUpScreen, HomeScreen, PasswordReset, VerifyScreen, ConfirmScreen } from './components'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const [users, setUsers] = useState([]);
@@ -41,6 +41,7 @@ function App() {
           <Route path="login/" element={<LoginScreen />}/>
           <Route path="password-reset/" element={<PasswordReset />}/>
           <Route path="verify/" element={<VerifyScreen />}/>
+          <Route path="confirm/" element={<ConfirmScreen />}/>
         </Routes> 
     </div>
   );
