@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap';
 import { ChatRightText, Send } from 'react-bootstrap-icons';
-import CommentCard from '../CommentCard';
+import CommentCard from '../CommentCard/CommentCard';
 import "./RightSideBar.scss";
 
 export default function RightSideBar() {

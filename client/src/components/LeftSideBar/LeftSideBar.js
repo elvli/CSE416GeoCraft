@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash } from 'react-bootstrap-icons';
 import './LeftSideBar.scss'
-import MapCard from '../mapCard';
+import MapCard from '../MapCard/mapCard';
 export default function LeftSideBar (props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');

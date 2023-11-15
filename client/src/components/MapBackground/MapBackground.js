@@ -1,4 +1,4 @@
-import '../App.css';
+import './MapBackground.scss';
 import React, { useRef, useEffect, useState } from 'react';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
