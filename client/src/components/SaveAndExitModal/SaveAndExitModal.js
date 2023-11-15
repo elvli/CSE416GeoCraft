@@ -9,13 +9,16 @@ export default function SaveAndExitModal(props) {
   const { saveAndExitShow, handlesaveAndExitShowClose } = props
   const navigate = useNavigate();
   const handleSubmit = (event) => {
-    navigate(-1)
-    handlesaveAndExitShowClose(event)
+    event.preventDefault();
+    event.stopPropagation();
+    navigate("/")
+
     
   };
   const handleClosing = (event) => {
-    navigate(-1)
-    handlesaveAndExitShowClose(event)
+    event.preventDefault();
+    event.stopPropagation();
+    navigate("/")
   }
 
   return (

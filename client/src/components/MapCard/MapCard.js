@@ -7,6 +7,11 @@ import { Navigate } from 'react-router-dom';
 export default function MapCard(props) {
   const { map, functions } = props
   const [toEdit, setToEdit] = useState(false);
+  function onClickfoo(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setToEdit(true)
+  }
   if(toEdit) {
       return <Navigate to="/edit"/>
   }
@@ -27,7 +32,7 @@ export default function MapCard(props) {
   </div>
 
   let others = <div className='d-flex flex-row-reverse'>
-    <Button className='btn btn-light dislike-button'><PenFill onClick={()=>{setToEdit(true)}}/></Button>
+    <Button className='btn btn-light dislike-button'><PenFill onClick={onClickfoo}/></Button>
   </div>
   if (map.published) {
     dropdown = <div className='options-button'>

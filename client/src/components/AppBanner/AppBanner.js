@@ -13,7 +13,15 @@ export default function AppBanner() {
   const [text, setText] = useState('USA Map');
   const [goToLogin, setGoToLogin] = useState(false)
   const [createAccount, setCreateAccount] = useState(false)
-
+  const [toEdit, setToEdit] = useState(false);
+  function onClickfoo(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setToEdit(true)
+  }
+  if(toEdit) {
+      return <Navigate to="/"/>
+  }
   if (goToLogin) {
     // setGoToLogin(false)
     return <Navigate to="/login" />
@@ -46,7 +54,7 @@ export default function AppBanner() {
 
       <Button
         className="navbar-brand .banner-button btn btn-dark mx-auto home-button"
-        onClick={handleLogoClick}
+        onClick={onClickfoo}
       >
         <img src={GeoCraftLogo}
           alt="GeoCraft Logo"

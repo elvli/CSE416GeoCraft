@@ -4,8 +4,18 @@ import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import GeoCraftLogoBlack from '../Icons/GeoCraftLogoBlack.png'
-
+import { Navigate } from "react-router-dom";
+import { useState } from "react";
 export default function LoginScreen() {
+  const [toEdit, setToEdit] = useState(false);
+  function onClickfoo(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setToEdit(true)
+  }
+  if(toEdit) {
+      return <Navigate to="/"/>
+  }
   return (
     <div className="login-screen">
       <div>
@@ -35,7 +45,7 @@ export default function LoginScreen() {
           </div>
           <br />
           <Form.Group>
-            <Button className="form-button" type="submit">Sign In</Button>
+            <Button className="form-button"  onClick={onClickfoo} type="submit">Sign In</Button>
           </Form.Group>
         </Form>
       </div>
