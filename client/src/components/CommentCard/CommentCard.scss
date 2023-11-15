@@ -1,25 +1,27 @@
 .comment-card {
-    margin-top: -8px;
-    margin-bottom: 18px;
+  margin-top: -8px;
+  margin-bottom: 18px;
 
-    .card-header {
-        max-height: 6vh;
-        overflow: hidden;
+  .card-title {
+    max-height: 6vh;
+    overflow: hidden;
+    margin-bottom: -10px;
 
-        .profile-pic {
-            float: left;
-            margin-left: -6px;
-            margin-right: 8px;
-            font-size: 26px
-        }
-
-        .username {
-            float: left;
-            margin: 0;
-        }
+    .profile-pic {
+      float: left;
+      margin-left: 10px;
+      margin-right: 8px;
+      margin-top: 10px;
+      font-size: 26px
     }
 
-    .comment-text {
-        float: left;
+    .username {
+      float: left;
+      margin-top: 10px;
     }
+  }
+
+  .comment-text {
+    float: left;
+  }
 }
