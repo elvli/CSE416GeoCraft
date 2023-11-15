@@ -57,13 +57,13 @@ export default function EditSideBar(props) {
               <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
-                  <Accordion.Body>
-                    Data Stuff
+                  <Accordion.Body className="d-flex justify-content-between">
+                    <input type="file" id="my_file_input" />
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Heat Map Data</Accordion.Header>
-                  <Accordion.Body>
+                  <Accordion.Body className="d-flex justify-content-between">
                     Heat Map Stuff
                   </Accordion.Body>
                 </Accordion.Item>
