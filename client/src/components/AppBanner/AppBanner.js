@@ -6,12 +6,24 @@ import GeoCraftLogo from '.././Icons/GeoCraftGlobeWhite.png';
 import { useState, useRef } from 'react';
 import { Button, Dropdown } from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
+import { Navigate } from 'react-router-dom'
 
 
 export default function AppBanner() {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState('Map Name Double Click to Edit');
   const inputRef = useRef();
+  const [goToLogin, setGoToLogin] = useState(false)
+  const [createAccount, setCreateAccount] = useState(false)
+
+  if(goToLogin) {
+   // setGoToLogin(false)
+    return <Navigate to= "/login"/>
+  }
+  if(createAccount) {
+   // setGoToLogin(false)
+    return <Navigate to= "/sign-up"/>
+  }
 
   const handleDoubleClick = () => {
     setIsEditing(true);
@@ -90,8 +102,8 @@ export default function AppBanner() {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
-          <Dropdown.Item onClick={handleCreateAccount}>Create New Account</Dropdown.Item>
+          <Dropdown.Item onClick={()=> {setGoToLogin(true)}}>Log Out</Dropdown.Item>
+          <Dropdown.Item onClick={()=> {setCreateAccount(true)}}>Create New Account</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </nav>
