@@ -1,6 +1,6 @@
 import React from "react";
 import "./LoginScreen.scss";
-import AppBanner from "../AppBanner";
+import AppBanner from "../AppBanner/AppBanner";
 import App from "../../App";
 import Form  from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";

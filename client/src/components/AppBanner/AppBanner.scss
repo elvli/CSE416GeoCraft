@@ -1,0 +1,26 @@
+.app-banner {
+  justify-content: space-between;
+}
+
+.name-input {
+  margin-top: -10px;
+}
+
+.banner-edit {
+  margin-top: 12px;
+  margin-left: 12px;
+}
+
+.home-button {
+  max-height: 5vh;
+  position: absolute;
+  right: 50%;
+
+}
+
+.account-dropdown{
+  right: 0;
+  max-height: '5vh';
+  z-index: 1000;
+  margin-right: '4px';
+}

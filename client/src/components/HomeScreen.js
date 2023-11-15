@@ -1,6 +1,6 @@
 import React from "react"
 import '../App.css';
-import AppBanner from "./AppBanner";
+import AppBanner from "./AppBanner/AppBanner";
 import { EditRegionModal, MapBackground } from ".";
 import LeftSideBar from "./LeftSideBar/LeftSideBar";
 import RightSideBar from "./RightSideBar/RightSideBar";

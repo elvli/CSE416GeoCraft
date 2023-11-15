@@ -1,4 +1,4 @@
-import AppBanner from './AppBanner'
+import AppBanner from './AppBanner/AppBanner'
 import LeftSideBar from './LeftSideBar/LeftSideBar'
 import MapBackground from './MapBackground'
 import RightSideBar from './RightSideBar/RightSideBar'

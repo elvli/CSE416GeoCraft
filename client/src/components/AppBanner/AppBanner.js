@@ -1,7 +1,8 @@
 import React from 'react'
-import '../App.css'
+import '../../App.css'
+import './AppBanner.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import GeoCraftLogo from './Icons/GeoCraftGlobeWhite.png';
+import GeoCraftLogo from '.././Icons/GeoCraftGlobeWhite.png';
 import { useState, useRef } from 'react';
 import { Button, Dropdown} from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
@@ -51,10 +52,10 @@ export default function AppBanner() {
 
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark app-banner" style={{justifyContent: "space-between"}}>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark app-banner">
 
       {isEditing ? (
-          <div className="float-left">
+          <div className="float-left name-input">
             <input
               ref={inputRef}
               type="text"
@@ -66,18 +67,16 @@ export default function AppBanner() {
             />
           </div>
         ) : (
-          <p className="navbar-brand" 
-            onDoubleClick={handleDoubleClick} 
-            style={{ marginTop: '12px', marginLeft: '12px' }}
+          <p className="navbar-brand banner-edit" 
+            onDoubleClick={handleDoubleClick}  
           >
             {text}
           </p>
         )}
 
       <Button 
-        className="navbar-brand .banner-button btn btn-dark mx-auto" 
+        className="navbar-brand .banner-button btn btn-dark mx-auto home-button" 
         onClick={handleLogoClick}
-        style={{ maxHeight: '5vh' , position: "absolute", right: "50%"}}
       >
         <img src={GeoCraftLogo}
           alt="GeoCraft Logo"
@@ -86,7 +85,7 @@ export default function AppBanner() {
         />
       </Button>
 
-      <Dropdown className="position-fixed" style={{ right: '0', maxHeight: '5vh', zIndex: 1000, marginRight: '4px' }}>
+      <Dropdown className="position-fixed account-dropdown">
         <Dropdown.Toggle variant="dark" id="dropdown-basic">
           <Person className="fs-4" />
         </Dropdown.Toggle>
