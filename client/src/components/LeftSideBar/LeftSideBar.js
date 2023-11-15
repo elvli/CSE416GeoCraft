@@ -6,10 +6,16 @@ import MapCard from '../MapCard/MapCard';
 export default function LeftSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const { handleNewMap, handleDeleteMap, handleEditRegion } = props;
+  const {handleNewMap, handleDeleteMap, handleEditRegion, handleFork, handleExport} = props;
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
+  }
+
+  var functions = {
+    handleDeleteMap: handleDeleteMap,
+    handleFork: handleFork,
+    handleExport: handleExport
   }
 
   var testMap1 = {
@@ -110,9 +116,9 @@ export default function LeftSideBar(props) {
             <Button className='btn btn-light delete-map-btn' onClick={handleEditRegion}>
               <p> User Maps</p>
             </Button>
-          </div>
-          <MapCard map={testMap1} functions={handleDeleteMap} />
-          <MapCard map={testMap2} functions={handleDeleteMap} />
+          </div> 
+          <MapCard map={testMap1} functions={functions}/>
+          <MapCard map={testMap2} functions={functions}/>
 
 
         </div>
