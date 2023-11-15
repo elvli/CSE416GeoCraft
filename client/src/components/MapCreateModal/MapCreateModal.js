@@ -1,17 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import "./MapCreateModal.scss";
-import AppBanner from "../AppBanner/AppBanner";
-import App from "../../App";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import CloseButton from "react-bootstrap/CloseButton";
-import { XLg } from "react-bootstrap-icons";
 import Modal from "react-bootstrap/Modal";
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+
 export default function MapCreateModal(props) {
   const { show, handleClose } = props
   const [validated, setValidated] = useState(false)

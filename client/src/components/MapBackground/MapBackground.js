@@ -4,11 +4,12 @@ import React, { useRef, useEffect, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // import rewind from "@mapbox/geojson-rewind";
 import mapboxgl from 'mapbox-gl';
+// import usaGeoJSON from '../SampleGeoJSONs/USA_adm0-2.json';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA';
 // const shp = require("shpjs");
 
-export default function LeftSideBar() {
+export default function MapBackground() {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [lng, setLng] = useState(-73.12);
@@ -34,24 +35,23 @@ export default function LeftSideBar() {
     });
 
     // Hard Code for GEOJSON ########################
-    // map.current.on('load', () => {
-    //   map.current.addSource('usa-border', {
-    //     type: 'geojson',
-    //     data: jsonfile
-    //     //'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/USA.json'
-    //   });
+    map.current.on('load', () => {
+      map.current.addSource('usa-border', {
+        type: 'geojson',
+        data: 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/USA.json'
+      });
 
-    //   map.current.addLayer({
-    //     id: "usa",
-    //     type: "line",
-    //     source: "usa-border",
-    //     paint: {
-    //       "line-opacity": 1,
-    //       "line-color": "#f05c5c",
-    //       "line-width": 7
-    //     },
-    //   })
-    // })
+      map.current.addLayer({
+        id: "usa",
+        type: "line",
+        source: "usa-border",
+        paint: {
+          "line-opacity": 1,
+          "line-color": "#FFFFFF",
+          "line-width": 7
+        },
+      })
+    })
   });
 
   return (

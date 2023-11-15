@@ -8,7 +8,7 @@ import Col from "react-bootstrap/Col";
 
 export default function SignUpScreen() {
   const [validated, setValidated] = useState(false)
-  
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {

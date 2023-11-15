@@ -10,52 +10,28 @@ import { Navigate } from 'react-router-dom'
 
 
 export default function AppBanner() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState('Map Name Double Click to Edit');
-  const inputRef = useRef();
+  const [text, setText] = useState('USA Map');
   const [goToLogin, setGoToLogin] = useState(false)
   const [createAccount, setCreateAccount] = useState(false)
 
-  if(goToLogin) {
-   // setGoToLogin(false)
-    return <Navigate to= "/login"/>
+  if (goToLogin) {
+    // setGoToLogin(false)
+    return <Navigate to="/login" />
   }
-  if(createAccount) {
-   // setGoToLogin(false)
-    return <Navigate to= "/sign-up"/>
+  if (createAccount) {
+    // setGoToLogin(false)
+    return <Navigate to="/sign-up" />
   }
 
-  const handleDoubleClick = () => {
-    setIsEditing(true);
-  };
+  // const handleLogout = () => {
+  //   // Handle logout logic
+  //   console.log('Logging out...');
+  // };
 
-  const handleSave = () => {
-    setIsEditing(false);
-  };
-
-  const handleInputChange = (e) => {
-    setText(e.target.value);
-  };
-
-  const handleBlur = () => {
-    handleSave();
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleSave();
-    }
-  };
-
-  const handleLogout = () => {
-    // Handle logout logic
-    console.log('Logging out...');
-  };
-
-  const handleCreateAccount = () => {
-    // Handle create account logic
-    console.log('Creating a new account...');
-  };
+  // const handleCreateAccount = () => {
+  //   // Handle create account logic
+  //   console.log('Creating a new account...');
+  // };
 
   const handleLogoClick = () => {
     // Handle create account logic
@@ -64,26 +40,9 @@ export default function AppBanner() {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark app-banner">
-
-      {isEditing ? (
-        <div className="float-left name-input">
-          <input
-            ref={inputRef}
-            type="text"
-            className="form-control"
-            value={text}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-          />
-        </div>
-      ) : (
-        <p className="navbar-brand banner-edit"
-          onDoubleClick={handleDoubleClick}
-        >
-          {text}
-        </p>
-      )}
+      <p className="navbar-brand banner-edit">
+        {text}
+      </p>
 
       <Button
         className="navbar-brand .banner-button btn btn-dark mx-auto home-button"
@@ -102,8 +61,8 @@ export default function AppBanner() {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={()=> {setGoToLogin(true)}}>Log Out</Dropdown.Item>
-          <Dropdown.Item onClick={()=> {setCreateAccount(true)}}>Create New Account</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log Out</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setCreateAccount(true) }}>Create New Account</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </nav>

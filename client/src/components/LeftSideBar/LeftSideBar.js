@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
-import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash } from 'react-bootstrap-icons';
-import './LeftSideBar.scss'
+import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
 import MapCard from '../MapCard/MapCard';
+import './LeftSideBar.scss'
+
 export default function LeftSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const {handleNewMap, handleDeleteMap, handleEditRegion, handleFork, handleExport} = props;
+  const { handleNewMap, handleDeleteMap, handleEditRegion, handleFork, handleExport } = props;
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -19,12 +20,11 @@ export default function LeftSideBar(props) {
   }
 
   var testMap1 = {
-    title: 'test map 1',
+    title: 'USA Map',
     author: 'Darren',
     likes: ['Darren', 'Brian'],
     dislikes: [],
     published: true
-
   }
 
   var testMap2 = {
@@ -34,7 +34,6 @@ export default function LeftSideBar(props) {
     dislikes: ['Brian'],
     published: false
   }
-
 
   const handleUserMaps = () => {
     console.log('handleUserMaps');
@@ -112,15 +111,9 @@ export default function LeftSideBar(props) {
             </div>
           </div>
 
-          <div className="list-group editing-tools">
-            <Button className='btn btn-light delete-map-btn' onClick={handleEditRegion}>
-              <p> User Maps</p>
-            </Button>
-          </div> 
-          <MapCard map={testMap1} functions={functions}/>
-          <MapCard map={testMap2} functions={functions}/>
-
-
+          <div className="list-group editing-tools"><p></p></div>
+          <MapCard map={testMap1} functions={functions} />
+          <MapCard map={testMap2} functions={functions} />
         </div>
       </div>
 

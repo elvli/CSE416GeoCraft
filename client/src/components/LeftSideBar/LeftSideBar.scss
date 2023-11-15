@@ -88,11 +88,15 @@
   text-align: right;
   margin-top: 0px;
   margin-left: 0px;
+
+  .dropdown-toggle::after {
+    display: none;
+  }
 }
 
 .dropdown-menu {
   position: absolute;
-  z-index: 9999999;
+  z-index: 3;
 }
 
 .pencil-icon-btn {
