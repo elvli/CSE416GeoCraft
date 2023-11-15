@@ -26,7 +26,7 @@ export default function EditSideBar(props) {
                 <ViewStacked />
               </Button>
             </Row>
-            <Row>
+            {/* <Row>
               <Button className="button" variant="dark">
                 <PencilSquare />
               </Button>
@@ -40,7 +40,7 @@ export default function EditSideBar(props) {
               <Button className="button" variant="dark">
                 <Gear />
               </Button>
-            </Row>
+            </Row> */}
             <Row>
                 <Button className="button" id="close-button" variant="dark" onClick={()=>setShow(true)}>
                 <XLg/>
@@ -56,24 +56,12 @@ export default function EditSideBar(props) {
 
               <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="0">
-                  <Accordion.Header>Edit Border</Accordion.Header>
-                  <Accordion.Body>
-                    Border Stuff
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey="1">
-                  <Accordion.Header>Edit Regions</Accordion.Header>
-                  <Accordion.Body>
-                    Region Stuff
-                  </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey="2">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body>
                     Data Stuff
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey="3">
+                <Accordion.Item eventKey="1">
                   <Accordion.Header>Heat Map Data</Accordion.Header>
                   <Accordion.Body>
                     Heat Map Stuff
