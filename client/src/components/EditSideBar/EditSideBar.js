@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Button, Table } from 'react-bootstrap';
 import { Gear, ViewStacked, PencilSquare, Wrench } from 'react-bootstrap-icons';
 import './EditSideBar.scss'
@@ -22,6 +22,9 @@ export default function EditSideBar(props) {
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'X Coordinate', 'Y Coordinate'
   ]);
+  const [jsonData, setJsonData] = useState('');
+  const downloadLinkRef = useRef(null);
+  
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -63,6 +66,24 @@ export default function EditSideBar(props) {
       handleEditBlur();
       handleHeaderBlur();
     }
+  };
+  const downloadJson = () => {
+    // Generate JSON data here before triggering download
+    const json = JSON.stringify({ headers: tableHeaders, data: tableData });
+    setJsonData(json);
+
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // Set the href and download attributes using the ref
+    downloadLinkRef.current.href = url;
+    downloadLinkRef.current.download = 'table_data.json';
+
+    // Trigger a click on the anchor to start the download
+    downloadLinkRef.current.click();
+
+    // Revoke the URL to free up resources
+    URL.revokeObjectURL(url);
   };
 
 
@@ -112,7 +133,7 @@ export default function EditSideBar(props) {
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Heat Map Data</Accordion.Header>
-                  <Accordion.Body className="d-flex justify-content-between">
+                  <Accordion.Body >
                   <Table striped bordered hover>
                       <thead>
                         <tr>
@@ -164,6 +185,10 @@ export default function EditSideBar(props) {
                         ))}
                       </tbody>
                     </Table>
+                    <Button variant="primary" onClick={() => { downloadJson(); }}>
+                      Download JSON
+                    </Button>
+                    <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
