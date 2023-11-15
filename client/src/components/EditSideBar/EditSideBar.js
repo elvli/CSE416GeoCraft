@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
-import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash } from 'react-bootstrap-icons';
+import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash, Gear, ViewStacked, PencilSquare, Wrench } from 'react-bootstrap-icons';
 import './EditSideBar.scss'
 import MapCard from '../MapCard/mapCard';
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+
 export default function EditSideBar (props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
@@ -25,22 +26,22 @@ export default function EditSideBar (props) {
                 <Col id="left-tool">
                     <Row>
                         <Button  className="button"variant="dark"onClick={toggleSideBar}>
-                            <i class="bi bi-copy"></i>
+                            <ViewStacked/>
                         </Button>   
                     </Row>
                     <Row>
                         <Button  className="button"variant="dark">
-                            <i class="bi bi-pencil-square"></i>
+                            <PencilSquare/>
                         </Button>   
                     </Row>
                     <Row>
                         <Button  className="button"variant="dark">
-                            <i class="bi bi-wrench"></i>
+                            <Wrench/>
                         </Button>   
                     </Row>
                     <Row>
                         <Button  className="button"variant="dark">
-                            <i class="bi bi-gear"></i>
+                            <Gear/>
                         </Button>   
                     </Row>
                 </Col>
