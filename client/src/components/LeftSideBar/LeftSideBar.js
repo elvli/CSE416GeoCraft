@@ -18,6 +18,7 @@ export default function LeftSideBar (props) {
     likes: ['Darren', 'Brian'],
     dislikes: [],
     published: true
+
   }
 
   var testMap2 = {
@@ -109,12 +110,9 @@ export default function LeftSideBar (props) {
             <Button className='btn btn-light delete-map-btn' onClick={handleEditRegion}>
               <p> User Maps</p>
             </Button>
-            <Button className='btn btn-light delete-map-btn' onClick={handleDeleteMap}>
-              <Trash className='icon-btn' />
-            </Button>
           </div>
-          <MapCard map={testMap1}/>
-          <MapCard map={testMap2}/>
+          <MapCard map={testMap1} functions={handleDeleteMap}/>
+          <MapCard map={testMap2} functions={handleDeleteMap}/>
 
 
         </div>

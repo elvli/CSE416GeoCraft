@@ -3,7 +3,7 @@ import {Button, Dropdown} from "react-bootstrap";
 import { Trash, HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PenFill } from 'react-bootstrap-icons';
 import './MapCard.scss'
 export default function MapCard(props){
-    const { map } = props
+    const { map, functions } = props
     let icon = "apples"
     async function handleDelete(event) {
         document.getElementById("map-create-modal").classList.add("is-visible")
@@ -15,7 +15,7 @@ export default function MapCard(props){
                             </Dropdown.Toggle>
                             <Dropdown.Menu className='dropdown-menu'>
                                 <Dropdown.Item className='options-button-options'>Fork</Dropdown.Item>
-                                <Dropdown.Item className='options-button-options'>Delete</Dropdown.Item>
+                                <Dropdown.Item onClick={functions} className='options-button-options'>Delete</Dropdown.Item>
                                 <Dropdown.Item className='options-button-options'>Rename</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -32,7 +32,7 @@ export default function MapCard(props){
                             </Dropdown.Toggle>
                             <Dropdown.Menu className='dropdown-menu'>
                                 <Dropdown.Item className='options-button-options'>Fork</Dropdown.Item>
-                                <Dropdown.Item className='options-button-options'>Delete</Dropdown.Item>
+                                <Dropdown.Item onClick={functions} className='options-button-options'>Delete</Dropdown.Item>
                                 <Dropdown.Item className='options-button-options'>Export</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
