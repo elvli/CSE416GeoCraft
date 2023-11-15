@@ -4,18 +4,25 @@ import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmScreen() {
   const [validated, setValidated] = useState(false)
 
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      setValidated(true);
     }
-    setValidated(true);
-  };
+    else {
+      event.preventDefault();
+      event.stopPropagation();
+      navigate("/login")
+    }
+  }
 
   return (
     <div>

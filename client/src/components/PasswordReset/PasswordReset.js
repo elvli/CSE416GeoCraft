@@ -6,20 +6,25 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 // import Col from "react-bootstrap/Col";
 import GeoCraftLogoBlack from '../Icons/GeoCraftLogoBlack.png'
-
+import { useNavigate } from "react-router-dom";
 
 export default function PasswordReset() {
   const [validated, setValidated] = useState(false)
 
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      setValidated(true);
     }
-    setValidated(true);
-  };
-
+    else {
+      event.preventDefault();
+      event.stopPropagation();
+      navigate("/verify")
+    }
+  }
   return (
     <div>
       <AppBanner />
