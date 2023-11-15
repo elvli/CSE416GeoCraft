@@ -6,29 +6,43 @@
     justify-content: center;
     flex-direction: column;
     height: 70vh;
+
     .form-items {
         width: 30vw;
         background-color: theme.$superlightgray;
     }
+
     .form-button {
         width: 30vw;
         background-color: theme.$slightlighterthanblack !important;
         border-color: theme.$slightlighterthanblack;
         height: 5vh;
+        margin-left: 10px;
     }
+
     .form-button:hover {
         background-color: gray !important;
         border-color: gray;
     }
+
     .register {
         display: flex;
         flex-direction: row;
         column-gap: 16vw;
-        #register-items {
-            
+        margin-left: 10px;
+
+        .register-items {
+            margin-top: 15px;
+            margin-bottom: 15px;
         }
     }
+
     .heading {
         font-weight: bolder;
     }
+}
+
+.sign-in-logo{
+    margin-top: 100px;
+    margin-bottom: -150px;
 }
