@@ -23,17 +23,17 @@ export default function VerifyScreen() {
             <AppBanner/>
             <div className="verify-screen">
                 <Row className="rows">
-                    <h1>Password Reset</h1>
-                    <p>Enter your email, we'll send you a code</p>
+                    <h1>Verify Your Code</h1>
+                    <p>Check your email for the code we sent</p>
                 </Row>
                 <br/>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group>
-                        <Form.Control className="verify-item" required type="email" placeholder="Email" size="lg"/>
+                        <Form.Control className="verify-item" required type="code" placeholder="Enter Code" size="lg"/>
                     </Form.Group>
                     <br/> <br/>
                     <Form.Group>
-                        <Button className="verify-button" type="submit">Next</Button>
+                        <Button className="verify-button" type="submit">Enter</Button>
                     </Form.Group>
                 </Form>
             </div>

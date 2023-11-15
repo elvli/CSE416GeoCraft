@@ -16,8 +16,9 @@
         background-color: theme.$slightlighterthanblack !important;
         border-color: theme.$slightlighterthanblack;
         height: 5vh;
+        transform: translate(1%,0);
     }
-    &:hover {
+    .verify-button:hover {
         width: 30vw;
         background-color: gray !important;
         border-color: gray;

@@ -3,7 +3,7 @@ import baseUrl from "./baseUrl";
 import axios from "axios";
 import { React, useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import { LoginScreen, SignUpScreen, HomeScreen, PasswordReset } from './components'
+import { LoginScreen, SignUpScreen, HomeScreen, PasswordReset, VerifyScreen } from './components'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 function App() {
   const [users, setUsers] = useState([]);
@@ -35,10 +35,13 @@ function App() {
   ]);
   return (
     <div className="App">
-        <RouterProvider
-          router={router}
-          fallbackElement={<HomeScreen/>}
-        />
+        <Routes>
+          <Route index element={<HomeScreen/>}/>
+          <Route path="sign-up/" element={<SignUpScreen />}/>
+          <Route path="login/" element={<LoginScreen />}/>
+          <Route path="password-reset/" element={<PasswordReset />}/>
+          <Route path="verify/" element={<VerifyScreen />}/>
+        </Routes> 
     </div>
   );
 }
