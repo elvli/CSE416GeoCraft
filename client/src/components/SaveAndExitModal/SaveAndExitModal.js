@@ -3,14 +3,18 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 export default function SaveAndExitModal(props) {
   const { saveAndExitShow, handlesaveAndExitShowClose } = props
-
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
+    navigate(-1)
     handlesaveAndExitShowClose(event)
+    
   };
   const handleClosing = (event) => {
+    navigate(-1)
     handlesaveAndExitShowClose(event)
   }
 
@@ -28,7 +32,7 @@ export default function SaveAndExitModal(props) {
             No
           </Button>
           <Form.Group>
-            <Button variant="primary" type="submit" onClick={handleSubmit}>
+            <Button variant="primary" onClick={handleSubmit}>
               Yes
             </Button>
           </Form.Group>
