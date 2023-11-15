@@ -4,12 +4,13 @@ import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+// import Col from "react-bootstrap/Col";
 import GeoCraftLogoBlack from '../Icons/GeoCraftLogoBlack.png'
 
 
 export default function PasswordReset() {
   const [validated, setValidated] = useState(false)
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -18,6 +19,7 @@ export default function PasswordReset() {
     }
     setValidated(true);
   };
+
   return (
     <div>
       <AppBanner />

@@ -6,9 +6,11 @@ import Modal from "react-bootstrap/Modal";
 
 export default function DeleteMapModal(props) {
   const { deleteMapShow, handleDeleteMapClose } = props
+
   const handleSubmit = (event) => {
     handleDeleteMapClose(event)
   };
+
   const handleClosing = (event) => {
     handleDeleteMapClose(event)
   }

@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 
-export default function MapList(){
+export default function MapList() {
 
-    return(
-        'a'
-    )
-
+  return (
+    'a'
+  )
 }
