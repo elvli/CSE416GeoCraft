@@ -1,10 +1,15 @@
 import React from 'react'
+import { useState } from 'react';
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PenFill } from 'react-bootstrap-icons';
 import './MapCard.scss'
+import { Navigate } from 'react-router-dom';
 export default function MapCard(props) {
   const { map, functions } = props
-
+  const [toEdit, setToEdit] = useState(false);
+  if(toEdit) {
+      return <Navigate to="/edit"/>
+  }
   // async function handleDelete(event) {
   //   document.getElementById("map-create-modal").classList.add("is-visible")
   // }
@@ -22,7 +27,7 @@ export default function MapCard(props) {
   </div>
 
   let others = <div className='d-flex flex-row-reverse'>
-    <Button className='btn btn-light dislike-button'><PenFill /></Button>
+    <Button className='btn btn-light dislike-button'><PenFill onClick={()=>{setToEdit(true)}}/></Button>
   </div>
   if (map.published) {
     dropdown = <div className='options-button'>
