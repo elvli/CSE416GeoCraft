@@ -69,6 +69,7 @@ export default function AppBanner() {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
+          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log In</Dropdown.Item>
           <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log Out</Dropdown.Item>
           <Dropdown.Item onClick={() => { setCreateAccount(true) }}>Create New Account</Dropdown.Item>
         </Dropdown.Menu>

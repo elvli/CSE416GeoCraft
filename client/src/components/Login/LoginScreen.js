@@ -11,8 +11,10 @@ export default function LoginScreen() {
   const [toEdit, setToEdit] = useState(false);
   const [validated, setValidated] = useState(false)
   const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
@@ -21,10 +23,18 @@ export default function LoginScreen() {
     else {
       event.preventDefault();
       event.stopPropagation();
-      navigate("/")
+      navigate("/");
     }
-    
+
   };
+
+  const handleGuest = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    navigate("/");
+  }
+
   // function onClickfoo(event) {
   //   event.preventDefault();
   //   event.stopPropagation();
@@ -40,7 +50,7 @@ export default function LoginScreen() {
       </div>
       <img src={GeoCraftLogoBlack} className="sign-in-logo" />
       <div>
-        <Form className="login-credentials"noValidate validated={validated} onSubmit={handleSubmit}>
+        <Form className="login-credentials" noValidate validated={validated} onSubmit={handleSubmit}>
           <h1 className="heading">Sign In</h1>
           <br />
           <Form.Group>
@@ -64,7 +74,9 @@ export default function LoginScreen() {
           <Form.Group>
             <Button className="form-button" type="submit">Sign In</Button>
           </Form.Group>
+          
         </Form>
+            <Button className="guest-button" onClick={handleGuest}>Continue as Guest</Button>
       </div>
     </div>
   )

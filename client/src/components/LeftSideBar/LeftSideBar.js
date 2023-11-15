@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
-import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
+import { Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
 import MapCard from '../MapCard/MapCard';
 import './LeftSideBar.scss'
 
@@ -120,7 +120,7 @@ export default function LeftSideBar(props) {
 
       <nav className="navbar">
         <button className="btn btn-light" id="left-menu-toggle" onClick={toggleSideBar}>
-          <Pencil className='pencil-icon-btn' />
+          <Map className='pencil-icon-btn' />
         </button>
       </nav>
     </div>
