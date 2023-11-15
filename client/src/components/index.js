@@ -14,23 +14,27 @@ import EditRegionModal from './EditRegionModal/EditRegionModal'
 import VerifyScreen from './VerifyScreen/VerifyScreen'
 import ConfirmScreen from './ConfirmScreen/ConfirmScreen'
 import EditScreen from './EditScreen/EditScreen'
+import ForkMapModal from './ForkMapModal/ForkMapModal'
+import ExportMapModal from './ExportMapModal/ExportMapModal'
 
-export { 
-    AppBanner,
-    LeftSideBar,
-    MapBackground,
-    RightSideBar,
-    LoginScreen,
-    SignUpScreen,
-    HomeScreen,
-    CommentCard,
-    PasswordReset,
-    MapCard,
-    MapCreateModal,
-    DeleteMapModal,
-    EditRegionModal,
-    VerifyScreen,
-    ConfirmScreen,
-    EditScreen,
+export {
+  AppBanner,
+  LeftSideBar,
+  MapBackground,
+  RightSideBar,
+  LoginScreen,
+  SignUpScreen,
+  HomeScreen,
+  CommentCard,
+  PasswordReset,
+  MapCard,
+  MapCreateModal,
+  DeleteMapModal,
+  EditRegionModal,
+  VerifyScreen,
+  ConfirmScreen,
+  EditScreen,
+  ForkMapModal,
+  ExportMapModal
 
 }
