@@ -21,7 +21,7 @@ export default function PasswordReset() {
   return (
     <div>
       <AppBanner />
-      <img src={GeoCraftLogoBlack} className="sign-in-logo"/>
+      <img src={GeoCraftLogoBlack} className="sign-in-logo" />
       <div className="password-reset-screen">
         <Row className="rows">
           <h1>Password Reset</h1>

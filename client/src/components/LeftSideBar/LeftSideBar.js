@@ -3,10 +3,10 @@ import { Button, Dropdown } from 'react-bootstrap';
 import { Pencil, PeopleFill, PersonFill, Plus, FunnelFill, Trash } from 'react-bootstrap-icons';
 import './LeftSideBar.scss'
 import MapCard from '../MapCard/mapCard';
-export default function LeftSideBar (props) {
+export default function LeftSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const {handleNewMap, handleDeleteMap, handleEditRegion} = props;
+  const { handleNewMap, handleDeleteMap, handleEditRegion } = props;
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
