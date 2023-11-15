@@ -7,6 +7,7 @@ import Modal from "react-bootstrap/Modal";
 export default function EditRegionModal(props) {
   const { editRegionShow, handleEditRegionClose } = props
   const [validated, setValidated] = useState(false)
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -16,6 +17,7 @@ export default function EditRegionModal(props) {
 
     setValidated(true);
   };
+
   const handleClosing = (event) => {
     setValidated(false);
     handleEditRegionClose(event)
