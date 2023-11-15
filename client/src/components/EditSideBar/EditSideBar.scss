@@ -1,0 +1,126 @@
+@use "../../styles/theme" as theme;
+
+#left-wrapper {
+  overflow-x: hidden;
+  position: fixed;
+  left: 0;
+}
+
+#left-sidebar-wrapper {
+  min-height: 95vh;
+  margin-left: -24rem;
+  transition: margin .25s ease-out;
+
+  .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+  }
+
+  .list-group {
+    width: 24rem;
+  }
+}
+
+#left-wrapper.toggled #left-sidebar-wrapper {
+  margin-left: 0;
+}
+
+@media (min-width: 768px) {
+  #left-sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #left-wrapper.toggled #left-sidebar-wrapper {
+    margin-left: -24rem;
+  }
+}
+
+#left-menu-toggle {
+  height: 5vh;
+  width: 2vh;
+  color: black;
+  // border-radius: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.tools-list {
+  margin-top: 5px;
+
+  .new-map-btn {
+    width: 5vw;
+    height: 5vh;
+    transform: translate(-15%, 0%);
+  }
+
+  .user-maps-btn {
+    width: 5vw;
+    height: 5vh;
+    transform: translate(0%, 0%);
+  }
+
+  .my-maps-btn {
+    width: 5vw;
+    height: 5vh;
+    transform: translate(15%, 0%);
+  }
+}
+
+.icon-btn {
+  width: 2vw;
+  height: 3vh;
+}
+
+#form1 {
+  margin-top: 4px;
+  margin-left: 8px;
+  width: 16vw;
+  height: 38px;
+}
+
+.filter-btn {
+  width: 20%;
+  transform: translate(50px, 4px);
+  text-align: right;
+  margin-top: 0px;
+  margin-left: 0px;
+}
+
+.pencil-icon-btn {
+  margin-left: -8px;
+  margin-bottom: 4px;
+}
+
+.editing-tools {
+  margin-top: 4px;
+}
+.accordion {
+    width: 90%;
+    transform: translate(5%,5%)
+}
+.accordion-button {
+    background-color: white !important;
+    &:focus {
+        box-shadow: none;
+        border-color: rgba(0,0,0,.125);
+    }
+    &:not(.collapsed) {
+        box-shadow: none;
+        color: none
+    }
+ }
+
+ .left-bar {
+    background-color: theme.$dark;
+    min-width: 3vw;
+    min-height: 95vh;
+}
+.button {
+    max-width: 2.5vw;
+    height: 5vh;
+    transform: translate(35%, 0%)
+}
+
+#left-tool {
+    transform: translate(0, 10%)
+}

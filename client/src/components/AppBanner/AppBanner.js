@@ -4,7 +4,7 @@ import './AppBanner.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GeoCraftLogo from '.././Icons/GeoCraftGlobeWhite.png';
 import { useState, useRef } from 'react';
-import { Button, Dropdown} from 'react-bootstrap';
+import { Button, Dropdown } from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
 
 
@@ -50,32 +50,31 @@ export default function AppBanner() {
     console.log('Clicked the Logo...');
   };
 
-
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark app-banner">
 
       {isEditing ? (
-          <div className="float-left name-input">
-            <input
-              ref={inputRef}
-              type="text"
-              className="form-control"
-              value={text}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              onKeyDown={handleKeyDown}
-            />
-          </div>
-        ) : (
-          <p className="navbar-brand banner-edit" 
-            onDoubleClick={handleDoubleClick}  
-          >
-            {text}
-          </p>
-        )}
+        <div className="float-left name-input">
+          <input
+            ref={inputRef}
+            type="text"
+            className="form-control"
+            value={text}
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+      ) : (
+        <p className="navbar-brand banner-edit"
+          onDoubleClick={handleDoubleClick}
+        >
+          {text}
+        </p>
+      )}
 
-      <Button 
-        className="navbar-brand .banner-button btn btn-dark mx-auto home-button" 
+      <Button
+        className="navbar-brand .banner-button btn btn-dark mx-auto home-button"
         onClick={handleLogoClick}
       >
         <img src={GeoCraftLogo}
