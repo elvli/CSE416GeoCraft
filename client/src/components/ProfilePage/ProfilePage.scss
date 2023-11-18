@@ -1,5 +1,32 @@
-.left-bar {
-    background-color: white;
-    width: 20vw;
-    height: 95vh;
+.username-text {
+  margin-top: 150px;
 }
+
+.tab-content {
+  margin-top: 20px;
+}
+
+.profile-banner {
+  background-color: #000;
+  height: 200px;
+}
+
+.profile-pic {
+  width: 150px;
+  z-index: 1;
+}
+
+.edit-profile-btn {
+  z-index: 1;
+}
+
+.add-map {
+  transform: translate(10px, -8px);
+  width: 23.5vw;
+  height: 132px;
+  margin-right: 18px;
+  .add-map-btn {
+    font-size: 16pt;
+  }
+}
+

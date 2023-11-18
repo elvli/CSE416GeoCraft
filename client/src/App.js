@@ -32,7 +32,6 @@ function App() {
       path: "/password-reset",
       element: <PasswordReset />,
     },
-    ,
     {
       path: "/profile",
       element: <ProfilePage />,
