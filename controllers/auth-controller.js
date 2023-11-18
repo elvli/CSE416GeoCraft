@@ -99,6 +99,7 @@ logoutUser = async (req, res) => {
 registerUser = async (req, res) => {
     console.log("REGISTERING USER IN BACKEND");
     try {
+        console.log(req.body)
         const { firstName, lastName, username, email, confirmEmail, password, confirmPassword } = req.body;
         console.log("create user: " + firstName + " " + lastName + " " + email + " " + confirmEmail +" "+ password + " " + confirmPassword);
         // if (!firstName || !lastName || !email || !username || !password || !passwordVerify) {
