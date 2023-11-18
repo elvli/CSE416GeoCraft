@@ -25,7 +25,6 @@ export default function LoginScreen() {
       event.stopPropagation();
       navigate("/");
     }
-
   };
 
   const handleGuest = (event) => {
@@ -35,14 +34,6 @@ export default function LoginScreen() {
     navigate("/");
   }
 
-  // function onClickfoo(event) {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  //   setToEdit(true)
-  // }
-  // if(toEdit) {
-  //     return <Navigate to="/"/>
-  // }
   return (
     <div className="login-screen">
       <div>
