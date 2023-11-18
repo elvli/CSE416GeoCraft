@@ -23,7 +23,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npx nodemon server.js",
     "build": "react-scripts build",
     "test": "NODE_ENV=test jest --setupFiles dotenv/config",
     "eject": "react-scripts eject"
