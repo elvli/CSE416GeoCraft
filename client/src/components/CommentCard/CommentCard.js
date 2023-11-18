@@ -6,7 +6,7 @@ export default function CommentCard() {
   return (
     <div className="card comment-card">
       <div className="card-title">
-        <PersonCircle className="profile-pic" />
+        <PersonCircle className="profile-pic-comm" />
         <p className="username">Example User</p>
       </div>
 
