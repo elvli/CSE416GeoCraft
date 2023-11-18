@@ -43,6 +43,7 @@ export default function HomeScreen() {
 
   return (
     <div>
+      <div style={{ height: '5vh' }} />
       <AppBanner />
       <div className="row1">
         {/* <div className="background">
