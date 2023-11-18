@@ -17,6 +17,7 @@ const app = express();
 
 // http://localhost:3001
 // https://geocraftmaps.azurewebsites.net
+// https://geocraftserver.azurewebsites.net/
 app.use(cors({
     origin: ["https://geocraftmaps.azurewebsites.net"],
     credentials: true

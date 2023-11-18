@@ -1,18 +1,18 @@
 {
   "files": {
     "main.css": "/static/css/main.ef8141a0.css",
-    "main.js": "/static/js/main.ba783bb9.js",
+    "main.js": "/static/js/main.a864963c.js",
     "static/js/787.d5fa4d18.chunk.js": "/static/js/787.d5fa4d18.chunk.js",
     "static/media/bootstrap-icons.woff?": "/static/media/bootstrap-icons.449ad8adf6ae0424b7ed.woff",
     "static/media/bootstrap-icons.woff2?": "/static/media/bootstrap-icons.dea24bf5a7646d8b84e7.woff2",
     "static/media/GeoCraftGlobeWhite.png": "/static/media/GeoCraftGlobeWhite.2d47438d81fd6924c560.png",
     "index.html": "/index.html",
     "main.ef8141a0.css.map": "/static/css/main.ef8141a0.css.map",
-    "main.ba783bb9.js.map": "/static/js/main.ba783bb9.js.map",
+    "main.a864963c.js.map": "/static/js/main.a864963c.js.map",
     "787.d5fa4d18.chunk.js.map": "/static/js/787.d5fa4d18.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ef8141a0.css",
-    "static/js/main.ba783bb9.js"
+    "static/js/main.a864963c.js"
   ]
 }
