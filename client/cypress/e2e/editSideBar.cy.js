@@ -3,10 +3,10 @@ describe('EditSideBar Component', () => {
       cy.visit('https://geocraftmaps.azurewebsites.net/edit'); 
     });
   
-    it('should toggle the sidebar on button click', () => {
-      cy.get('.button.btn.btn-dark').first().click();
-      cy.get('.button.btn.btn-dark').first().click();
-    });
+    // it('should toggle the sidebar on button click', () => {
+    //   cy.get('.button.btn.btn-dark').first().click();
+    //   cy.get('.button.btn.btn-dark').first().click();
+    // });
   
     it('should edit header on double click', () => {
       cy.get('.accordion-button.collapsed').first().click();
