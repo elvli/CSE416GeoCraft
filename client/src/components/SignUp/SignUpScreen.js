@@ -5,11 +5,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 export default function SignUpScreen() {
   const [validated, setValidated] = useState(false)
   const navigate = useNavigate();
+  
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -38,7 +39,7 @@ export default function SignUpScreen() {
               <Form.Control className="name" required type="text" placeholder="First Name" size="lg" />
             </Form.Group>
             <Form.Group as={Col}>
-              <Form.Control className="name" required type="text" placeholder="Last Name" size="lg" />
+              <Form.Control className="last-name" required type="text" placeholder="Last Name" size="lg" />
             </Form.Group>
           </Row>
           <br />
