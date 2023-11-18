@@ -76,3 +76,8 @@ jobs:
           
       - name: 'Delete Zip'
         run: rm release.zip
+
+      - name: 'Run nodemon on Azure Web App'
+        run: |
+          az webapp restart --name 'GeoCraftMaps' --resource-group '<Your-Resource-Group-Name>'
+          az webapp ssh --name 'GeoCraftMaps' --resource-group '<Your-Resource-Group-Name>' --command "cd /home/site/wwwroot && npx nodemon server.js"
