@@ -7,6 +7,7 @@ import { useState } from "react";
 export default function EditScreen () {
     return(
         <div>
+            <div style={{ height: '5vh' }} />
             <AppBanner />
             <div className="row1">
 
