@@ -25,8 +25,13 @@
   max-height: '5vh';
   z-index: 1000;
   margin-right: '4px';
-  
+
   .dropdown-toggle::after {
     display: none;
   }
+}
+
+.dropdown-btn {
+  text-decoration: none;
+  color: inherit;
 }

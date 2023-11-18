@@ -1,21 +1,23 @@
-import AppBanner from './AppBanner/AppBanner'
-import LeftSideBar from './LeftSideBar/LeftSideBar'
-import MapBackground from './MapBackground/MapBackground'
-import RightSideBar from './RightSideBar/RightSideBar'
-import LoginScreen from './Login/LoginScreen'
-import SignUpScreen from './SignUp/SignUpScreen'
-import HomeScreen from './HomeScreen'
-import CommentCard from './CommentCard/CommentCard'
-import PasswordReset from './PasswordReset/PasswordReset'
-import MapCard from './MapCard/MapCard'
-import MapCreateModal from './MapCreateModal/MapCreateModal'
-import DeleteMapModal from './DeleteMapModal/DeleteMapModal'
-import EditRegionModal from './EditRegionModal/EditRegionModal'
-import VerifyScreen from './VerifyScreen/VerifyScreen'
-import ConfirmScreen from './ConfirmScreen/ConfirmScreen'
-import EditScreen from './EditScreen/EditScreen'
-import ForkMapModal from './ForkMapModal/ForkMapModal'
-import ExportMapModal from './ExportMapModal/ExportMapModal'
+import AppBanner from './AppBanner/AppBanner.js'
+import LeftSideBar from './LeftSideBar/LeftSideBar.js'
+import MapBackground from './MapBackground/MapBackground.js'
+import RightSideBar from './RightSideBar/RightSideBar.js'
+import LoginScreen from './Login/LoginScreen.js'
+import SignUpScreen from './SignUp/SignUpScreen.js'
+import HomeScreen from './HomeScreen.js'
+import CommentCard from './CommentCard/CommentCard.js'
+import PasswordReset from './PasswordReset/PasswordReset.js'
+import MapCard from './MapCard/MapCard.js'
+import MapCreateModal from './MapCreateModal/MapCreateModal.js'
+import DeleteMapModal from './DeleteMapModal/DeleteMapModal.js'
+import EditRegionModal from './EditRegionModal/EditRegionModal.js'
+import VerifyScreen from './VerifyScreen/VerifyScreen.js'
+import ConfirmScreen from './ConfirmScreen/ConfirmScreen.js'
+import EditScreen from './EditScreen/EditScreen.js'
+import ForkMapModal from './ForkMapModal/ForkMapModal.js'
+import ExportMapModal from './ExportMapModal/ExportMapModal.js'
+import ProfilePage from './ProfilePage/ProfilePage.js'
+import ProfileSideBar from './ProfileSideBar/ProfileSideBar.js'
 
 export {
   AppBanner,
@@ -35,6 +37,7 @@ export {
   ConfirmScreen,
   EditScreen,
   ForkMapModal,
-  ExportMapModal
-
+  ExportMapModal,
+  ProfilePage,
+  ProfileSideBar,
 }
