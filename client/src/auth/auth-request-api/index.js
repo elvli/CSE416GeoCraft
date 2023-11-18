@@ -20,6 +20,7 @@ export const logoutUser = () => api.get(`/logout/`)
 
 export const registerUser = (firstName, lastName, username, email, confirmEmail, password, confirmPassword) => {
     console.log("IN AUTH_REQUEST_API/INDEX.JS")
+    console.log(firstName)
     return api.post(`/register/`, {
         firstName: firstName,
         lastName: lastName,
