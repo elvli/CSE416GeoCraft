@@ -72,7 +72,7 @@ jobs:
           app-name: 'GeoCraftMaps'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8941A85804FF42A1A7E4C071AF6D95B8 }}
-          package: release.zip
+          package: .
           
       - name: 'Delete Zip'
         run: rm release.zip
