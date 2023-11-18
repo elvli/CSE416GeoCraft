@@ -21,7 +21,8 @@ const app = express();
 app.use(cors({
     origin: ["https://geocraftmaps.azurewebsites.net"],
     credentials: true,
-    allowedHeaders: true
+    allowedHeaders: true,
+    methods: 'GET,PUT,POST,DELETE',
 }))
 app.use(express.json());
 
