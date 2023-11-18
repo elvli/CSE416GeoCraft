@@ -1,7 +1,7 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
-    baseURL: 'https://geocraftmaps.azurewebsites.net',
+    baseURL: 'https://geocraft-backend.onrender.com',
     //https://geocraftserver.azurewebsites.net
     //https://geocraftmaps.azurewebsites.net
     // http://localhost:3001
