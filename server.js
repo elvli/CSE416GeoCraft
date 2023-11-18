@@ -17,13 +17,20 @@ const app = express();
 
 // http://localhost:3001
 // https://geocraftmaps.azurewebsites.net
-// https://geocraftserver.azurewebsites.net/
-app.use(cors({
-    origin: ["https://geocraftmaps.azurewebsites.net"],
-    credentials: true
-}))
-app.use(express.json());
-
+// https://geocraftserver.azurewebsites.net
+// app.use(cors({
+//     origin: ["https://geocraft-backend.onrender.com"],
+//     credentials: true,
+//     allowedHeaders: true,
+//     methods: 'GET,PUT,POST,DELETE',
+// }))
+// app.use(express.json());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://geocraftmaps.azurewebsites.net');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -55,11 +62,11 @@ app.post('/register', AuthController.registerUser)
 //     .then((user) => res.json(user))
 //     .catch((err) => console.log(err));
 // });
-app.use(express.static('./client/build'))
+// app.use(express.static('./client/build'))
 
-app.get('*', (req,res) =>{
-  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-})
+// app.get('*', (req,res) =>{
+//   res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+// })
 
 app.listen(PORT, () => {
   console.log(`Server is running on post ${PORT}`);
