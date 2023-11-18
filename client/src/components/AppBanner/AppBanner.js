@@ -3,11 +3,11 @@ import '../../App.css'
 import './AppBanner.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import GeoCraftLogo from '.././Icons/GeoCraftGlobeWhite.png';
-import { useState, useRef } from 'react';
+// import { useState, useRef } from 'react';
 import { Button, Dropdown } from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
-import { Navigate } from 'react-router-dom'
-import { useNavigate, Link } from "react-router-dom";
+// import { Navigate, useNavigate } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 
 export default function AppBanner() {
@@ -61,20 +61,18 @@ export default function AppBanner() {
       <p className="navbar-brand banner-edit">
         {"USA Map"}
       </p>
-
-      <Button
-        className="navbar-brand .banner-button btn btn-dark mx-auto home-button"
+      <Link to='/'>
+        <Button
+          className="navbar-brand .banner-button btn btn-dark mx-auto home-button"
         // onClick={() => { setToEdit(true) }}
-      >
-        <Link to='/'>
+        >
           <img src={GeoCraftLogo}
             alt="GeoCraft Logo"
             className="banner-logo img-fluid"
             style={{ maxHeight: '4vh' }}
           />
-        </Link>
-      </Button>
-
+        </Button>
+      </Link>
       <Dropdown className="position-fixed account-dropdown">
         <Dropdown.Toggle variant="dark" id="dropdown-basic">
           <Person className="fs-4" />

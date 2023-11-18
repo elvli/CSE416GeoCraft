@@ -17,7 +17,6 @@ import EditScreen from './EditScreen/EditScreen.js'
 import ForkMapModal from './ForkMapModal/ForkMapModal.js'
 import ExportMapModal from './ExportMapModal/ExportMapModal.js'
 import ProfilePage from './ProfilePage/ProfilePage.js'
-import ProfileSideBar from './ProfileSideBar/ProfileSideBar.js'
 
 export {
   AppBanner,
@@ -39,5 +38,4 @@ export {
   ForkMapModal,
   ExportMapModal,
   ProfilePage,
-  ProfileSideBar,
 }

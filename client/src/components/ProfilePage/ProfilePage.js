@@ -1,9 +1,10 @@
 import React from "react"
 import '../../App.css';
 import AppBanner from "../AppBanner/AppBanner";
-import { MapBackground, MapCard, MapCreateModal } from "..";
-import ProfileSideBar from "../ProfileSideBar/ProfileSideBar";
+import { MapCard } from "..";
 import { useState } from "react";
+import "./ProfilePage.scss";
+
 export default function EditScreen(props) {
   const { handleNewMap, handleDeleteMap, handleFork, handleExport } = props;
   const [activeTab, setActiveTab] = useState('myMaps');
@@ -44,9 +45,9 @@ export default function EditScreen(props) {
     if (includeAddMap) {
       rows.push(
         <div class="row g-2" key={0}>
-          <div class="col-md-3 mb-2">
-            <button type="button" class="btn btn-outline-dark w-100 h-100" onClick={handleNewMap}>
-              +
+          <div class="col-md-3 mb-3 add-map">
+            <button type="button" class="btn btn-outline-dark w-100 h-100 add-map-btn" onClick={handleNewMap}>
+              + Create new map
             </button>
           </div>
 
@@ -81,32 +82,36 @@ export default function EditScreen(props) {
       <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col">
 
-          <div class="text-white d-flex flex-row" style={{ backgroundColor: "#000", height: "200px", }}>
-            <div class="ms-4 mt-5 d-flex flex-column" style={{ width: "150px" }}>
+          <div class="text-white d-flex flex-row profile-banner">
+            <div class="ms-4 mt-5 d-flex flex-column">
               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt1ceyneFkZchgkrwN7dZxWNl_C5Dctvc5BzNh_rEzPQ&s"
-                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
-                style={{ width: "150px", zIndex: "1" }} />
-              <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
-                style={{ zIndex: "1" }}>
+                class="img-fluid img-thumbnail mt-4 mb-2 profile-pic"
+              />
+
+              <button type="button" class="btn btn-outline-dark edit-profile-btn" data-mdb-ripple-color="dark">
                 Edit profile
               </button>
             </div>
-            <div class="ms-3" style={{ marginTop: "150px" }}>
-              <h5>Example Username</h5>
+
+            <div class="ms-3 username-text">
+              <h2>Example Username</h2>
             </div>
           </div>
-          <div class="p-4" style={{ backgroundColor: "#f8f9fa" }}>
+
+          <div class="p-4 bg-light">
             <div class="d-flex justify-content-end text-center py-1">
               <div>
                 <p class="mb-1 h5">5</p>
                 <p class="small text-muted mb-0">Maps</p>
               </div>
+
               <div class="px-3">
                 <p class="mb-1 h5">15</p>
                 <p class="small text-muted mb-0">Likes</p>
               </div>
             </div>
           </div>
+
           <div class="card-body p-4 text-black">
             {/* <div class="mb-5">
               <p class="lead fw-normal mb-1">About</p>
@@ -136,8 +141,7 @@ export default function EditScreen(props) {
                 </button>
               </div>
             </nav>
-
-            <div className="tab-content" style={{ marginTop: '20px' }}>
+            <div className="tab-content" >
               {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
               {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)}
             </div>
