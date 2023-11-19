@@ -34,7 +34,7 @@ export default function CommentCard() {
               </Col>
               <Col>
                 <Row>
-                  <p className="username">Example User</p>
+                  <p className="comment-username">Example User</p>
                 </Row>
                 <Row>
                   <Card.Text className='comment-text'>
