@@ -33,10 +33,10 @@ function authManager() {
     verifyUser = (req) => {
         try {
             const token = req.cookies.token;
+            console.log(token)
             if (!token) {
                 return null;
             }
-
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
             return decodedToken.userId;
         } catch (err) {
