@@ -9,28 +9,28 @@ import { LoginScreen, SignUpScreen, HomeScreen, PasswordReset, VerifyScreen, Con
 function App() {
 
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <HomeScreen />,
-    },
-    {
-      path: "/sign-up",
-      element: <SignUpScreen />,
-    },
-    {
-      path: "/login",
-      element: <LoginScreen />,
-    },
-    {
-      path: "/password-reset",
-      element: <PasswordReset />,
-    },
-    {
-      path: "/profile",
-      element: <ProfilePage />,
-    },
-  ]);
+  // const router = createBrowserRouter([
+  //   {
+  //     path: "/",
+  //     element: <HomeScreen />,
+  //   },
+  //   {
+  //     path: "/sign-up",
+  //     element: <SignUpScreen />,
+  //   },
+  //   {
+  //     path: "/login",
+  //     element: <LoginScreen />,
+  //   },
+  //   {
+  //     path: "/password-reset",
+  //     element: <PasswordReset />,
+  //   },
+  //   {
+  //     path: "/profile",
+  //     element: <ProfilePage />,
+  //   },
+  // ]);
   return (
     <div className="App">
       <AuthContextProvider>

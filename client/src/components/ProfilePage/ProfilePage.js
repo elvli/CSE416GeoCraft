@@ -1,15 +1,42 @@
 import { React, useState, useContext } from "react";
 import '../../App.css';
-import AppBanner from "../AppBanner/AppBanner";
-import { MapCard } from "..";
 import AuthContext from '../../auth'
+import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../../components'
 import "./ProfilePage.scss";
 
-export default function EditScreen(props) {
+export default function ProfilePage() {
   const { auth } = useContext(AuthContext);
-  const { handleNewMap, handleDeleteMap, handleFork, handleExport } = props;
   const [activeTab, setActiveTab] = useState('myMaps');
+  const [newMapShow, setNewMapShow] = useState(false);
+  const [deleteMapShow, setDeleteMapShow] = useState(false);
+  const [forkMapShow, setForkMapShow] = useState(false);
+  const [exportMapShow, setExportMapShow] = useState(false);
   const username = auth.getUsername();
+
+  async function handleClose(event) {
+    setNewMapShow(false)
+  }
+  async function handleNewMap(event) {
+    setNewMapShow(true)
+  }
+  async function handleDeleteMapClose(event) {
+    setDeleteMapShow(false)
+  }
+  async function handleDeleteMap(event) {
+    setDeleteMapShow(true);
+  }
+  async function handleForkClose(event) {
+    setForkMapShow(false)
+  }
+  async function handleFork(event) {
+    setForkMapShow(true);
+  }
+  async function handleExportClose(event) {
+    setExportMapShow(false)
+  }
+  async function handleExport(event) {
+    setExportMapShow(true);
+  }
 
   var testMap1 = {
     title: 'USA Map',
@@ -150,6 +177,10 @@ export default function EditScreen(props) {
           </div>
         </div>
       </div >
+      <MapCreateModal show={newMapShow} handleClose={handleClose} />
+      <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
+      <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
+      <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
     </div >
   );
 }

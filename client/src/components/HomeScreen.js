@@ -5,16 +5,17 @@ import { useState } from "react";
 import { AppBanner, LeftSideBar, RightSideBar, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../components'
 
 export default function HomeScreen() {
-  const [show, setShow] = useState(false);
+  const [newMapShow, setNewMapShow] = useState(false);
   const [deleteMapShow, setDeleteMapShow] = useState(false);
   const [editRegionShow, setEditRegionShow] = useState(false);
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
+  
   async function handleClose(event) {
-    setShow(false)
+    setNewMapShow(false)
   }
   async function handleNewMap(event) {
-    setShow(true)
+    setNewMapShow(true)
   }
   async function handleDeleteMapClose(event) {
     setDeleteMapShow(false)
@@ -73,7 +74,7 @@ export default function HomeScreen() {
         </div>
 
       </div>
-      <MapCreateModal show={show} handleClose={handleClose} />
+      <MapCreateModal show={newMapShow} handleClose={handleClose} />
       <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
       <EditRegionModal editRegionShow={editRegionShow} handleEditRegionClose={handleEditRegionClose} />
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
