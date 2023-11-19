@@ -1,12 +1,14 @@
 import { React, useState } from "react";
 import AuthContext from '../../auth'
-import "./LoginScreen.scss";
 import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import GeoCraftLogoBlack from '../Icons/GeoCraftLogoBlack.png'
 import { useNavigate } from "react-router-dom";
+import GeoCraftLogoBlack from '../Icons/GeoCraftLogoBlack.png'
+import "./LoginScreen.scss";
+
 export default function LoginScreen() {
+  const { auth } = useContext(AuthContext);
   const [toEdit, setToEdit] = useState(false);
   const [validated, setValidated] = useState(false)
   const navigate = useNavigate();
