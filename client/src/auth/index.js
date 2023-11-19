@@ -158,6 +158,15 @@ function AuthContextProvider(props) {
     return initials;
   }
 
+  auth.getUsername = function () {
+    let username = "";
+    if (auth.user) {
+      username += auth.user.username.charAt(0)
+    }
+    console.log("username: " + username);
+    return username;
+  }
+
   auth.guestLogin = async function () {
     try {
       const response = await api.loginUser("guest@gmail.com", "GuestPassword");

@@ -1,11 +1,12 @@
-import React from "react"
+import { React, useState, useContext} from "react";
 import '../../App.css';
 import AppBanner from "../AppBanner/AppBanner";
 import { MapCard } from "..";
-import { useState } from "react";
+import AuthContext from '../../auth'
 import "./ProfilePage.scss";
 
 export default function EditScreen(props) {
+  const { auth } = useContext(AuthContext);
   const { handleNewMap, handleDeleteMap, handleFork, handleExport } = props;
   const [activeTab, setActiveTab] = useState('myMaps');
 
@@ -28,7 +29,7 @@ export default function EditScreen(props) {
     handleFork: handleFork,
     handleExport: handleExport
   }
-
+  
   const publishedArray = [testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1];
   const unpubArray = [testMap2, testMap2, testMap2, testMap2, testMap2]
 
@@ -94,7 +95,7 @@ export default function EditScreen(props) {
             </div>
 
             <div class="ms-3 username-text">
-              <h2>Example Username</h2>
+              <h2>{() => auth.getUsername()}</h2>
             </div>
           </div>
 
