@@ -161,7 +161,7 @@ function AuthContextProvider(props) {
   auth.getUsername = function () {
     let username = "";
     if (auth.user) {
-      username += auth.user.username.charAt(0)
+      username += auth.user.username
     }
     console.log("username: " + username);
     return username;
