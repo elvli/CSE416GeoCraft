@@ -90,11 +90,11 @@ export default function EditSideBar(props) {
   return (
     <div>
 
-      <div className={`d-flex flex-row`} id="left-wrapper">
-        <div className="left-bar">
-          <Col id="left-tool">
+      <div className={`d-flex flex-row`} id="edit-left-wrapper">
+        <div className="edit-left-bar">
+          <Col id="edit-left-tool">
             <Row>
-              <Button className="button" variant="dark" onClick={toggleSideBar}>
+              <Button className="edit-button" variant="dark" onClick={toggleSideBar}>
                 <ViewStacked />
               </Button>
             </Row>
@@ -114,15 +114,15 @@ export default function EditSideBar(props) {
               </Button>
             </Row> */}
             <Row>
-                <Button className="button" id="close-button" variant="dark" onClick={()=>setShow(true)}>
+                <Button className="edit-button" id="edit-close-button" variant="dark" onClick={()=>setShow(true)}>
                 <XLg/>
               </Button>
             </Row>
           </Col>
 
         </div>
-        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="left-sidebar-wrapper">
-          <div className="list-group list-group-flush tools-list">
+        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="edit-left-sidebar-wrapper">
+          <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
               <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="0">
