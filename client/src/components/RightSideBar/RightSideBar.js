@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Button } from 'react-bootstrap';
 import { ChatRightText, Send } from 'react-bootstrap-icons';
 import CommentCard from '../CommentCard/CommentCard';
 import "./RightSideBar.scss";
+import AuthContext from '../../auth'
 
 export default function RightSideBar() {
+  const { auth } = useContext(AuthContext);
   const [isToggled, setIsToggled] = useState(false);
   const [textInput, setTextInput] = useState('');
 
@@ -64,10 +66,11 @@ export default function RightSideBar() {
                 value={textInput}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
+                disabled={!auth.loggedIn}
               />
             </div>
             <div className="col-md-4">
-              <Button className="btn-primary comment-btn" onClick={handleSubmit}>
+              <Button className="btn-primary comment-btn" onClick={handleSubmit} disabled={!auth.loggedIn}>
                 <Send />
               </Button>
             </div>

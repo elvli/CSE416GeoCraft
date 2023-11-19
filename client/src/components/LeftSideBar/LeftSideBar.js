@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
 import MapCard from '../MapCard/MapCard';
 import './LeftSideBar.scss'
+import AuthContext from '../../auth'
 
 export default function LeftSideBar(props) {
+  const { auth } = useContext(AuthContext);
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
   const { handleNewMap, handleDeleteMap, handleEditRegion, handleFork, handleExport } = props;
+  var loggedIn = !auth.loggedIn
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -67,21 +70,31 @@ export default function LeftSideBar(props) {
     setQueryInput(event.target.value);
   }
 
+
+  var tools = <div className='column-tools'>
+    <Button className='btn btn-light new-map-btn' onClick={handleNewMap}>
+      <Plus className='icon-btn' />
+    </Button>
+    <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
+      <PeopleFill className='icon-btn' />
+    </Button>
+    <Button className='btn btn-light my-maps-btn' onClick={handleMyMaps}>
+      <PersonFill className='icon-btn' />
+    </Button>
+  </div>
+  if (!auth.loggedIn) {
+    tools = <div className='column-tools'>
+      <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
+        <PeopleFill className='icon-btn' />
+      </Button>
+    </div>
+  }
+
   return (
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="left-wrapper">
       <div className="bg-light border-right" id="left-sidebar-wrapper">
         <div className="list-group list-group-flush tools-list">
-          <div className='column-tools'>
-            <Button className='btn btn-light new-map-btn' onClick={handleNewMap}>
-              <Plus className='icon-btn' />
-            </Button>
-            <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
-              <PeopleFill className='icon-btn' />
-            </Button>
-            <Button className='btn btn-light my-maps-btn' onClick={handleMyMaps}>
-              <PersonFill className='icon-btn' />
-            </Button>
-          </div>
+          {tools}
 
           <div className="row">
             <div className="col-md-7 form1">

@@ -13,39 +13,7 @@ import { Link } from "react-router-dom";
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
-  // const [text, setText] = useState('USA Map');
-  // const [createAccount, setCreateAccount] = useState(false)
-  // const [toEdit, setToEdit] = useState(false);
-  // const [toProfile, setGoToProfile] = useState(false);
-  // const navigate = useNavigate();
 
-  // function onClickfoo(event) {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-  //   setToEdit(false)
-  // }
-  // if (toEdit) {
-  //   setToEdit(false)
-  //   window.location.href = "/";
-  //   // navigate('/')  ****** READ ME READ ME navigate() will leave two entries in history, meaning
-  //   // you would have to click back twice to get to the original page. This might not be relevant later
-  //   // because we would 
-  // }
-  // if (goToLogin) {
-  //   setGoToLogin(false)
-  //   // return <Navigate to="/login" />
-  //   window.location.href = "/login";
-  // }
-  // if (createAccount) {
-  //   setCreateAccount(false)
-  //   // return <Navigate to="/sign-up" />
-  //   window.location.href = "/sign-up";
-  // }
-  // if (toProfile) {
-  //   setGoToProfile(false)
-  //   // navigate("/profile");
-  //   window.location.href = "/profile";
-  // }
 
   const handleLogout = () => {
     // Handle logout logic
@@ -53,15 +21,31 @@ export default function AppBanner() {
     auth.logoutUser();
   };
 
-  // const handleCreateAccount = () => {
-  //   // Handle create account logic
-  //   console.log('Creating a new account...');
-  // };
+  var dropdown = <Dropdown.Menu>
+          {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log In</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log Out</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setCreateAccount(true) }}>Create New Account</Dropdown.Item> */}
+
+          <Dropdown.Item><Link className="dropdown-btn" to='/profile'>My Profile</Link></Dropdown.Item>
+          <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
+        </Dropdown.Menu>
+
+  if (!auth.loggedIn){
+    dropdown = <Dropdown.Menu>
+          {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log In</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log Out</Dropdown.Item>
+          <Dropdown.Item onClick={() => { setCreateAccount(true) }}>Create New Account</Dropdown.Item> */}
+          <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log In</Link></Dropdown.Item>
+          <Dropdown.Item><Link class="dropdown-btn" to='/sign-up'>Create New Account</Link></Dropdown.Item>
+        </Dropdown.Menu>
+  }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top app-banner">
       <p className="navbar-brand banner-edit">
-        {"USA Map"}
+        {"Map of Italy"}
       </p>
       <Link to='/'>
         <Button
@@ -77,20 +61,8 @@ export default function AppBanner() {
       <Dropdown className="position-fixed account-dropdown">
         <Dropdown.Toggle variant="dark" id="dropdown-basic">
           <Person className="fs-4" />
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu>
-          {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
-          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log In</Dropdown.Item>
-          <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log Out</Dropdown.Item>
-          <Dropdown.Item onClick={() => { setCreateAccount(true) }}>Create New Account</Dropdown.Item> */}
-
-          <Dropdown.Item><Link className="dropdown-btn" to='/profile'>My Profile</Link></Dropdown.Item>
-          <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log In</Link></Dropdown.Item>
-          {/* <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log Out</Link></Dropdown.Item> */}
-          <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
-          <Dropdown.Item><Link class="dropdown-btn" to='/sign-up'>Create New Account</Link></Dropdown.Item>
-        </Dropdown.Menu>
+        </Dropdown.Toggle> 
+        {dropdown}
       </Dropdown>
     </nav>
   )
