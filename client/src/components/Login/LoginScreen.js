@@ -10,7 +10,8 @@ import "./LoginScreen.scss";
 export default function LoginScreen() {
   const { auth } = useContext(AuthContext);
   const [toEdit, setToEdit] = useState(false);
-  const [validated, setValidated] = useState(false)
+  const [validated, setValidated] = useState(false);
+  // const [validMSG, setValidMSG] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -41,6 +42,7 @@ export default function LoginScreen() {
 
   if (auth.errorMessage !== null) {
     console.log('LOGIN ERR')
+    // setValidMSG("Incorrect username or password. Try again or click Forgot password to reset.");
   }
 
   return (
@@ -57,13 +59,13 @@ export default function LoginScreen() {
             <Form.Control required className="form-items" name="email" type="email" placeholder="Email" size="lg" />
           </Form.Group>
           <Form.Control.Feedback type="invalid">
-            {auth.errorMessage !== null ? auth.errorMessage : "Please enter a valid email."}
+            {/* {auth.errorMessage !== null ? auth.errorMessage : "Please enter a valid email."} */}
           </Form.Control.Feedback>
           <br />
           <Form.Group>
             <Form.Control required className="form-items" name="password" type="password" placeholder="Password" size="lg" />
             <Form.Control.Feedback type="invalid">
-              {auth.errorMessage !== null ? auth.errorMessage : "Please enter a valid password."}
+              {auth.errorMessage !== null ? "Incorrect email or password. Try again or click Trouble signing in to reset it." : "TSET"}
             </Form.Control.Feedback>
           </Form.Group>
           <br />
