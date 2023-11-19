@@ -2,24 +2,22 @@
 
 #left-wrapper {
   overflow-x: hidden;
-  position: relative;
-  display: flex;
+  position: fixed;
   left: 0;
 }
 
 #left-sidebar-wrapper {
-  
   min-height: 95vh;
-  margin-left: -10rem;
-  transition: margin .025s ease-out;
-  margin: auto;
+  margin-left: -24rem;
+  transition: margin .25s ease-out;
+
   .sidebar-heading {
     padding: 0.875rem 1.25rem;
     font-size: 1.2rem;
   }
 
   .list-group {
-    width: 20rem;
+    width: 24rem;
   }
 }
 
@@ -33,17 +31,17 @@
   }
 
   #left-wrapper.toggled #left-sidebar-wrapper {
-    margin-left: -20rem;
+    margin-left: -24rem;
   }
 }
 
 #left-menu-toggle {
   height: 5vh;
-  width: 2vh; 
-  color: white;
-  border: 0;
-  position: relative;
-  background-color: transparent !important;
+  width: 2vh;
+  color: black;
+  // border-radius: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
 .tools-list {
@@ -102,18 +100,10 @@
 }
 
 .pencil-icon-btn {
-  margin-left: -4px;
+  margin-left: -8px;
   margin-bottom: 4px;
-  transition: margin .25s ease-out;
-  color: white;
 }
 
 .editing-tools {
   margin-top: 4px;
-}
-
-.left-side-bar-button {
-  width: 20%;
-  padding: 0;
-  margin-left: 1rem;
 }
