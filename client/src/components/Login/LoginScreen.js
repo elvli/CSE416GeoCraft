@@ -39,6 +39,10 @@ export default function LoginScreen() {
     navigate("/");
   }
 
+  if (auth.errorMessage !== null) {
+    console.log('LOGIN ERR')
+  }
+
   return (
     <div className="login-screen">
       <div>
