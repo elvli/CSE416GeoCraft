@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
-import { Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
+import { MapFill, Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
 import MapCard from '../MapCard/MapCard';
 import './LeftSideBar.scss'
 
@@ -12,6 +12,20 @@ export default function LeftSideBar(props) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
+  var map = <button className="btn btn-light fs-4" id="left-menu-toggle" onClick={toggleSideBar} style={{width:"30px", marginLeft: '0rem'}}>
+    <MapFill className='pencil-icon-btn' />
+  </button>
+  if (!isToggled){
+    map = <button className="btn btn-light fs-4" id="left-menu-toggle" onClick={toggleSideBar} style={{width:"30px", marginLeft: '0rem'}}>
+            <MapFill className='pencil-icon-btn' />
+          </button>
+  }
+  else{
+    map = <button className="btn btn-light fs-4" id="left-menu-toggle" onClick={toggleSideBar} style={{width:"30px", marginLeft: '4rem'}}>
+            <Map className='pencil-icon-btn' />
+          </button>
+  }
+
 
   var functions = {
     handleDeleteMap: handleDeleteMap,
@@ -69,8 +83,8 @@ export default function LeftSideBar(props) {
 
   return (
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="left-wrapper">
-      <div className="bg-light border-right" id="left-sidebar-wrapper">
-        <div className="list-group list-group-flush tools-list">
+      <div className="bg-light border-right" id="left-sidebar-wrapper" style={{width:'320px'}}>
+        <div className="list-group list-group-flush tools-list" style={{width:'320px'}}>
           <div className='column-tools'>
             <Button className='btn btn-light new-map-btn' onClick={handleNewMap}>
               <Plus className='icon-btn' />
@@ -83,7 +97,7 @@ export default function LeftSideBar(props) {
             </Button>
           </div>
 
-          <div className="row">
+          <div className="row" >
             <div className="col-md-8">
               <input
                 type="text"
@@ -116,13 +130,7 @@ export default function LeftSideBar(props) {
           <MapCard map={testMap2} functions={functions} />
         </div>
       </div>
-
-
-      <nav className="navbar">
-        <button className="btn btn-light" id="left-menu-toggle" onClick={toggleSideBar}>
-          <Map className='pencil-icon-btn' />
-        </button>
-      </nav>
+        {map}
     </div>
   )
 }
