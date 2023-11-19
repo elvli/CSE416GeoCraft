@@ -58,16 +58,15 @@ export default function LoginScreen() {
           <Form.Group>
             <Form.Control required className="form-items" name="email" type="email" placeholder="Email" size="lg" />
           </Form.Group>
-          <Form.Control.Feedback type="invalid">
-            {/* {auth.errorMessage !== null ? auth.errorMessage : "Please enter a valid email."} */}
-          </Form.Control.Feedback>
           <br />
           <Form.Group>
             <Form.Control required className="form-items" name="password" type="password" placeholder="Password" size="lg" />
-            <Form.Control.Feedback type="invalid">
-              {auth.errorMessage !== null ? "Incorrect email or password. Try again or click Trouble signing in to reset it." : "TSET"}
-            </Form.Control.Feedback>
           </Form.Group>
+          {auth.errorMessage !== null && (
+            <div className="login-error-message text-danger">
+              Incorrect username or password. Try again or click Forgot password to reset.
+            </div>
+          )}
           <br />
           <div className="register">
             <div className="register-items">
@@ -83,8 +82,11 @@ export default function LoginScreen() {
             <Button className="form-button" type="submit">Sign In</Button>
           </Form.Group>
 
+          <Form.Group>
+            <Button className="guest-button" onClick={handleGuest}>Continue as Guest</Button>
+          </Form.Group>
+
         </Form>
-        <Button className="guest-button" onClick={handleGuest}>Continue as Guest</Button>
       </div>
     </div>
   )
