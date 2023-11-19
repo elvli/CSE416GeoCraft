@@ -90,7 +90,7 @@ function AuthContextProvider(props) {
             errorMessage: null
           }
         })
-        history.push("/login");
+        history("/login");
         console.log("NOW WE ATTEMPT A LOGIN");
         auth.loginUser(email, password);
         console.log("LOGGED IN");
@@ -143,7 +143,7 @@ function AuthContextProvider(props) {
         type: AuthActionType.LOGOUT_USER,
         payload: null
       })
-      history.push("/");
+      history("/");
     }
   }
 
@@ -169,7 +169,7 @@ function AuthContextProvider(props) {
             errorMessage: null
           }
         })
-        history.push("/");
+        history("/");
       }
     } catch (error) {
       try {
