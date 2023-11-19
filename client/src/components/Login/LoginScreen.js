@@ -56,14 +56,14 @@ export default function LoginScreen() {
           <h1 className="heading">Sign In</h1>
           <br />
           <Form.Group>
-            <Form.Control required className="form-items" name="email" type="email" placeholder="Email" size="lg" isInvalid={validated && !form.checkValidity() && auth.errorMessage !== null}/>
+            <Form.Control required className="form-items" name="email" type="email" placeholder="Email" size="lg" />
           </Form.Group>
           <Form.Control.Feedback type="invalid">
             {/* {auth.errorMessage !== null ? auth.errorMessage : "Please enter a valid email."} */}
           </Form.Control.Feedback>
           <br />
           <Form.Group>
-            <Form.Control required className="form-items" name="password" type="password" placeholder="Password" size="lg" isInvalid={validated && !form.checkValidity() && auth.errorMessage !== null}/>
+            <Form.Control required className="form-items" name="password" type="password" placeholder="Password" size="lg" />
             <Form.Control.Feedback type="invalid">
               {auth.errorMessage !== null ? "Incorrect email or password. Try again or click Trouble signing in to reset it." : "TSET"}
             </Form.Control.Feedback>
