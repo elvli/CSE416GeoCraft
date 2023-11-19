@@ -45,7 +45,9 @@ function authManager() {
     }
 
     signToken = (userId) => {
-        return jwt.sign(userId, process.env.JWT_SECRET, {expiresIn: '1h'});
+        return jwt.sign({
+            userId: userId
+        }, process.env.JWT_SECRET);
     }
 
     return this;
