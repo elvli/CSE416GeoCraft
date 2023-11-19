@@ -121,7 +121,7 @@ function AuthContextProvider(props) {
             errorMessage: null
           }
         })
-        history.push("/");
+        history("/");
       }
     } catch (error) {
       authReducer({
@@ -129,7 +129,8 @@ function AuthContextProvider(props) {
         payload: {
           user: auth.user,
           loggedIn: false,
-          errorMessage: error.response.data.errorMessage
+          errorMessage: "REGISTER USER ERROR (BACK)"
+          // errorMessage: error.response.data.errorMessage
         }
       })
     }
