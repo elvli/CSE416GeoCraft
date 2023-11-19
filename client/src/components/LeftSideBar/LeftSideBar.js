@@ -84,7 +84,7 @@ export default function LeftSideBar(props) {
           </div>
 
           <div className="row">
-            <div className="col-md-8">
+            <div className="col-md-7 form1">
               <input
                 type="text"
                 id="form1"
