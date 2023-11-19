@@ -12,9 +12,9 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZ
 export default function MapBackground() {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-73.12);
-  const [lat, setLat] = useState(40.91);
-  const [zoom, setZoom] = useState(10);
+  const [lng, setLng] = useState(12.7971);
+  const [lat, setLat] = useState(41.8473);
+  const [zoom, setZoom] = useState(5.43);
   //   const [count, setCount] = useState(1);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ export default function MapBackground() {
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/dark-v11',
       center: [lng, lat],
-      zoom: 10,
+      zoom: zoom,
     });
 
     map.current.on('move', () => {
@@ -38,7 +38,7 @@ export default function MapBackground() {
     map.current.on('load', () => {
       map.current.addSource('usa-border', {
         type: 'geojson',
-        data: 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/USA.json'
+        data: 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm0-2.json'
       });
 
       map.current.addLayer({
