@@ -1,7 +1,8 @@
-import React from 'react'
+import { React, useContext } from 'react'
 import '../../App.css'
 import './AppBanner.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import AuthContext from '../../auth'
 import GeoCraftLogo from '.././Icons/GeoCraftGlobeWhite.png';
 // import { useState, useRef } from 'react';
 import { Button, Dropdown } from 'react-bootstrap';
@@ -11,8 +12,8 @@ import { Link } from "react-router-dom";
 
 
 export default function AppBanner() {
+  const { auth } = useContext(AuthContext);
   // const [text, setText] = useState('USA Map');
-  // const [goToLogin, setGoToLogin] = useState(false)
   // const [createAccount, setCreateAccount] = useState(false)
   // const [toEdit, setToEdit] = useState(false);
   // const [toProfile, setGoToProfile] = useState(false);
@@ -46,10 +47,11 @@ export default function AppBanner() {
   //   window.location.href = "/profile";
   // }
 
-  // const handleLogout = () => {
-  //   // Handle logout logic
-  //   console.log('Logging out...');
-  // };
+  const handleLogout = () => {
+    // Handle logout logic
+    console.log('Log out button clicked');
+    auth.logoutUser();
+  };
 
   // const handleCreateAccount = () => {
   //   // Handle create account logic
@@ -64,7 +66,6 @@ export default function AppBanner() {
       <Link to='/'>
         <Button
           className="navbar-brand .banner-button btn btn-dark mx-auto home-button"
-        // onClick={() => { setToEdit(true) }}
         >
           <img src={GeoCraftLogo}
             alt="GeoCraft Logo"
@@ -86,7 +87,8 @@ export default function AppBanner() {
 
           <Dropdown.Item><Link className="dropdown-btn" to='/profile'>My Profile</Link></Dropdown.Item>
           <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log In</Link></Dropdown.Item>
-          <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log Out</Link></Dropdown.Item>
+          {/* <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log Out</Link></Dropdown.Item> */}
+          <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
           <Dropdown.Item><Link class="dropdown-btn" to='/sign-up'>Create New Account</Link></Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
