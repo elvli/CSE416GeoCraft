@@ -144,7 +144,7 @@ function AuthContextProvider(props) {
         type: AuthActionType.LOGOUT_USER,
         payload: null
       })
-      history("/");
+      history("/login");
     }
   }
 
