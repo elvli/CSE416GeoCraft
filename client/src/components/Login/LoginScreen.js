@@ -52,9 +52,15 @@ export default function LoginScreen() {
           <Form.Group>
             <Form.Control required className="form-items" name="email" type="email" placeholder="Email" size="lg" />
           </Form.Group>
+          <Form.Control.Feedback type="invalid">
+            {auth.errorMessage !== null ? auth.errorMessage : "Please enter a valid email."}
+          </Form.Control.Feedback>
           <br />
           <Form.Group>
             <Form.Control required className="form-items" name="password" type="password" placeholder="Password" size="lg" />
+            <Form.Control.Feedback type="invalid">
+              {auth.errorMessage !== null ? auth.errorMessage : "Please enter a valid password."}
+            </Form.Control.Feedback>
           </Form.Group>
           <br />
           <div className="register">
