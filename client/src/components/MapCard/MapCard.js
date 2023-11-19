@@ -58,7 +58,7 @@ export default function MapCard(props) {
     <div>
       <div className="card map-card">
         <div className="card-header">
-          <p className="username">{map.title}</p>
+          <p className="map-title">{map.title}</p>
           {dropdown}
 
         </div>
