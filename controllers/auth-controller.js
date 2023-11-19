@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs')
 getLoggedIn = async (req, res) => {
     try {
         let userId = auth.verifyUser(req);
+        console.log('IN GET LOGGED IN')
+        console.log(req)
         if (!userId) {
             return res.status(200).json({
                 loggedIn: false,
