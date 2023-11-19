@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 const path = require('path')
 const AuthController = require('./controllers/auth-controller')
+const cookieParser = require('cookie-parser')
 
 
 require("dotenv").config();
@@ -25,6 +26,8 @@ const app = express();
 //     methods: 'GET,PUT,POST,DELETE',
 // }))
 app.use(express.json());
+app.use(cookieParser())
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://geocraftmaps.azurewebsites.net');
   res.header('Access-Control-Allow-Credentials', 'true');
