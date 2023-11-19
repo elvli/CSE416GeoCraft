@@ -25,9 +25,8 @@ const app = express();
 //     methods: 'GET,PUT,POST,DELETE',
 // }))
 app.use(express.json());
-const allowedOrigins = ['https://geocraftmaps.azurewebsites.net', 'http://localhost:3000'];
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', allowedOrigins);
+  res.header('Access-Control-Allow-Origin', 'https://geocraftmaps.azurewebsites.net');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
