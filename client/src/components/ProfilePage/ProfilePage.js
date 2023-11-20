@@ -159,7 +159,7 @@ export default function ProfilePage() {
               </div>
 
               <div class="px-3">
-                <p class="mb-1 h5">15</p>
+                <p class="mb-1 h5">{store.idNamePairs.length}</p>
                 <p class="small text-muted mb-0">Likes</p>
               </div>
             </div>
