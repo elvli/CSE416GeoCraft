@@ -23,14 +23,10 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Jest Test
+      - name: Jest tests and create optimized build
         run: |
           npm install
           npx jest --forceExit
-
-
-      - name: Create optimized build
-        run: |
           cd client
           npm install
           npm run build --if-present
