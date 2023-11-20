@@ -69,13 +69,13 @@ export default function LeftSideBar(props) {
 
 
   var tools = <div className='column-tools'>
-    <Button className='btn btn-light new-map-btn' onClick={handleNewMap}>
+    <Button className='btn btn-light new-map-btn' aria-label="Create New Map" onClick={handleNewMap}>
       <Plus className='icon-btn' />
     </Button>
-    <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
+    <Button className='btn btn-light user-maps-btn' aria-label="View Community Maps" onClick={handleUserMaps}>
       <PeopleFill className='icon-btn' />
     </Button>
-    <Button className='btn btn-light my-maps-btn' onClick={handleMyMaps}>
+    <Button className='btn btn-light my-maps-btn' aria-label="View My Maps" onClick={handleMyMaps}>
       <PersonFill className='icon-btn' />
     </Button>
   </div>
