@@ -1,10 +1,12 @@
 import { React, useState, useContext } from "react";
 import '../../App.css';
 import AuthContext from '../../auth'
+import GlobalStoreContext from "../../store";
 import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../../components'
 import "./ProfilePage.scss";
 
 export default function ProfilePage() {
+  const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('myMaps');
   const [newMapShow, setNewMapShow] = useState(false);
@@ -16,9 +18,9 @@ export default function ProfilePage() {
   async function handleClose(event) {
     setNewMapShow(false)
   }
-  async function handleNewMap(event) {
-    setNewMapShow(true)
-  }
+  // async function handleNewMap(event) {
+  //   setNewMapShow(true)
+  // }
   async function handleDeleteMapClose(event) {
     setDeleteMapShow(false)
   }
@@ -38,72 +40,84 @@ export default function ProfilePage() {
     setExportMapShow(true);
   }
 
-  var testMap1 = {
-    title: 'USA Map',
-    author: 'Darren',
-    likes: ['Darren', 'Brian'],
-    dislikes: [],
-    published: true
-  }
-  var testMap2 = {
-    title: 'test map 2',
-    author: 'Brian',
-    likes: ['Darren'],
-    dislikes: ['Brian'],
-    published: false
-  }
+  // var testMap1 = {
+  //   title: 'USA Map',
+  //   author: 'Darren',
+  //   likes: ['Darren', 'Brian'],
+  //   dislikes: [],
+  //   published: true
+  // }
+  // var testMap2 = {
+  //   title: 'test map 2',
+  //   author: 'Brian',
+  //   likes: ['Darren'],
+  //   dislikes: ['Brian'],
+  //   published: false
+  // }
   var functions = {
     handleDeleteMap: handleDeleteMap,
     handleFork: handleFork,
     handleExport: handleExport
   }
 
-  const publishedArray = [testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1];
-  const unpubArray = [testMap2, testMap2, testMap2, testMap2, testMap2]
+  // const publishedArray = [testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1, testMap1];
+  // const unpubArray = [testMap2, testMap2, testMap2, testMap2, testMap2]
 
-  const createMapCards = (maps, functions) => {
-    return maps.map((map, index) => (
-      <div class="col-md-3 mb-2" key={index}>
-        <MapCard map={map} functions={functions} />
-      </div>
-    ));
-  };
+  // const createMapCards = (maps, functions) => {
+  //   return maps.map((map, index) => (
+  //     <div class="col-md-3 mb-2" key={index}>
+  //       <MapCard map={map} functions={functions} />
+  //     </div>
+  //   ));
+  // };
 
-  const createRows = (maps, functions, includeAddMap) => {
-    const rows = [];
-    if (includeAddMap) {
-      rows.push(
-        <div class="row g-2" key={0}>
-          <div class="col-md-3 mb-3 add-map">
-            <button type="button" class="btn btn-outline-dark w-100 h-100 add-map-btn" onClick={handleNewMap}>
-              + Create new map
-            </button>
-          </div>
+  // const createRows = (maps, functions, includeAddMap) => {
+  //   const rows = [];
+  //   if (includeAddMap) {
+  //     rows.push(
+  //       <div class="row g-2" key={0}>
+  //         <div class="col-md-3 mb-3 add-map">
+  //           <button type="button" class="btn btn-outline-dark w-100 h-100 add-map-btn" onClick={handleNewMap}>
+  //             + Create new map
+  //           </button>
+  //         </div>
 
-          {createMapCards(maps.slice(0, 3), functions)}
-        </div>
-      );
+  //         {createMapCards(maps.slice(0, 3), functions)}
+  //       </div>
+  //     );
+  //   }
+
+  //   else {
+  //     rows.push(
+  //       <div class="row g-2" key={0}>
+  //         {createMapCards(maps.slice(0, 4), functions)}
+  //       </div>
+  //     );
+  //   }
+
+  //   for (let i = 3; i < maps.length; i += 4) {
+  //     const rowMaps = maps.slice(i, i + 4);
+  //     rows.push(
+  //       <div class="row g-2" key={i}>
+  //         {createMapCards(rowMaps, functions)}
+  //       </div>
+  //     );
+  //   }
+
+  //   return rows;
+  // };
+
+  var mapCardsList = <div>
+    {
+      store.idNamePairs.map((pair) =>
+        <MapCard
+          key={pair._id}
+          map={pair}
+          functions={functions}
+        />
+      )
     }
-
-    else {
-      rows.push(
-        <div class="row g-2" key={0}>
-          {createMapCards(maps.slice(0, 4), functions)}
-        </div>
-      );
-    }
-
-    for (let i = 3; i < maps.length; i += 4) {
-      const rowMaps = maps.slice(i, i + 4);
-      rows.push(
-        <div class="row g-2" key={i}>
-          {createMapCards(rowMaps, functions)}
-        </div>
-      );
-    }
-
-    return rows;
-  };
+  </div>
 
   return (
     <div class="profile-container">
@@ -151,8 +165,6 @@ export default function ProfilePage() {
                 <p class="font-italic mb-0">Photographer</p>
               </div>
             </div> */}
-
-            {/* <p class="lead fw-normal mb-0">My Maps</p> */}
             <nav>
               <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <button
@@ -172,8 +184,10 @@ export default function ProfilePage() {
               </div>
             </nav>
             <div className="tab-content" >
-              {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
-              {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)}
+              {/* {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
+              {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)} */}
+              {activeTab === 'myMaps' && mapCardsList}
+              {activeTab === 'likedMaps' && mapCardsList}
             </div>
           </div>
         </div>
