@@ -34,7 +34,7 @@ function GlobalStoreContextProvider(props) {
     store.createNewMap = async function (title, mapType) {
         let newMapName = title
         console.log(auth.user)
-        const response = await api.createPlaylist(newMapName, auth.user.username, auth.user.email, mapType);
+        const response = await api.createMap(newMapName, auth.user.username, auth.user.email, mapType);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
