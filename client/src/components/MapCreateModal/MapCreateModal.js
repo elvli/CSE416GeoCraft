@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import "./MapCreateModal.scss";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -19,7 +19,7 @@ export default function MapCreateModal(props) {
     else {
       event.preventDefault();
       event.stopPropagation();
-      // const formData = new FormData(event.currentTarget);
+      const formData = new FormData(event.currentTarget);
       // store.createNewMap(
       //   formData.get("mapName"),
       //   formData.get("mapType")
