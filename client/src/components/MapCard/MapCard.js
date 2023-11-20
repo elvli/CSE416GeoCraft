@@ -9,17 +9,19 @@ export default function MapCard(props) {
   const { auth } = useContext(AuthContext);
   const { map, functions } = props
   const [toEdit, setToEdit] = useState(false);
+
   function onClickfoo(event) {
     event.preventDefault();
     event.stopPropagation();
     setToEdit(true)
   }
+
   if(toEdit) {
       return <Navigate to="/edit"/>
   }
   // async function handleDelete(event) {
   //   document.getElementById("map-create-modal").classList.add("is-visible")
-  // }
+  // }D
   let dropdown = <div className='options-button'>
     <Dropdown>
       <Dropdown.Toggle variant="light" id="dropdown-basic">
