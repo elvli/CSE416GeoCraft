@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-  // Returning false prevents Cypress from
-  // failing the test when an unhandled exception occurs
-  return false;
-});
-
 describe('EditSideBar Component', () => {
     beforeEach(() => {
       cy.visit('https://geocraftmaps.azurewebsites.net/edit'); 
@@ -25,7 +19,7 @@ describe('EditSideBar Component', () => {
     });
   
     it('should open SaveAndExitModal on close button click', () => {
-      cy.get('#edit-close-button').click();
-      cy.get('.modal-dialog.modal-dialog-centered').should('be.visible');
+      cy.get('#close-button').click();
+      cy.get('.modal-content').should('be.visible');
     });
   });

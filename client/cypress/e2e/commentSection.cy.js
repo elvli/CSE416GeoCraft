@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-  // Returning false prevents Cypress from
-  // failing the test when an unhandled exception occurs
-  return false;
-});
-
 describe('Comment Section', () => {
     beforeEach(() => {
       cy.viewport(1200, 800);
@@ -27,7 +21,7 @@ describe('Comment Section', () => {
       const commentText = 'Testing Cypress';
   
       // Find the comment input and type text
-      // cy.get('.form-control').eq(1).scrollIntoView().type(commentText).should('have.value', commentText);
+      cy.get('.form-control').eq(1).scrollIntoView().type(commentText).should('have.value', commentText);
     });
   });
   
