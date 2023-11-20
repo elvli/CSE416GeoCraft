@@ -10,7 +10,8 @@ import { Link } from "react-router-dom";
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
-  const username = auth.getUsername();
+  const username = auth.getUsername() ?  auth.getUsername() : 'Guest';
+  
   const handleLogout = () => {
     // Handle logout logic
     console.log('Log out button clicked');
