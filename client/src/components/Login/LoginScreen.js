@@ -1,4 +1,4 @@
-import { React, useState, useContext } from "react";
+import { React, useState, useContext, useEffect } from "react";
 import AuthContext from '../../auth'
 import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
@@ -13,9 +13,11 @@ export default function LoginScreen() {
   // const [validMSG, setValidMSG] = useState("");
   const navigate = useNavigate();
 
-  if (auth.loggedIn){
-    navigate("/");
-  }
+  useEffect(() => {
+    if (auth.loggedIn){
+      navigate("/");
+    }
+  });
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;

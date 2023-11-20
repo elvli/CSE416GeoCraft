@@ -1,4 +1,4 @@
-import { React, useState, useContext } from "react";
+import { React, useState, useContext, useEffect } from "react";
 import AuthContext from '../../auth'
 import "./SignUpScreen.scss";
 import AppBanner from "../AppBanner/AppBanner";
@@ -39,9 +39,12 @@ export default function SignUpScreen() {
 
   };
 
-  if (auth.loggedIn){
-    navigate("/");
-  }
+  useEffect(() => {
+    if (auth.loggedIn){
+      navigate("/");
+    }
+  });
+  
 
 
   return (
