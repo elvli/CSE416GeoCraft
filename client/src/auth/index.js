@@ -70,6 +70,9 @@ function AuthContextProvider(props) {
         }
       });
     }
+    else {
+      auth.loginUser('Guest@guest.com', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+    }
   }
 
   auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword) {

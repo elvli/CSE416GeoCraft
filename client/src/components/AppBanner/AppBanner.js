@@ -28,7 +28,7 @@ export default function AppBanner() {
     <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
   </Dropdown.Menu>
 
-  if (!auth.loggedIn) {
+  if (auth.user.email == 'Guest@guest.com') {
     dropdown = <Dropdown.Menu>
       {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
           <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log In</Dropdown.Item>

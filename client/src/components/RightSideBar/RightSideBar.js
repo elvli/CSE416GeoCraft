@@ -66,7 +66,7 @@ export default function RightSideBar() {
                 value={textInput}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                disabled={!auth.loggedIn}
+                disabled={auth.user.email == 'Guest@guest.com'}
               />
             </div>
             <div className="col-md-4">
