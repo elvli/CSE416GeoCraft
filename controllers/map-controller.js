@@ -121,8 +121,8 @@ getMapPairs = async (req, res) => {
     }
     async function asyncFindList(email) {
       console.log("find all Maps owned by: " + email);
-      await Map.find({ ownerEmail: email }).then( (err, mapdata) => {
-        console.log("found Maps: " + JSON.stringify(mapdata));
+      await Map.find({ ownerEmail: email }).then( (mapdata) => {
+        console.log((mapdata));
       //   if (err) {
       //     return res.status(400).json({ success: false, error: err })
       //   }
