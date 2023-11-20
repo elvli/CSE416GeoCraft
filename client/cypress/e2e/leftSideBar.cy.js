@@ -1,9 +1,3 @@
-Cypress.on('uncaught:exception', (err, runnable) => {
-  // Returning false prevents Cypress from
-  // failing the test when an unhandled exception occurs
-  return false;
-});
-
 describe('LeftSideBar Component', () => {
   beforeEach(() => {
     cy.visit('https://geocraftmaps.azurewebsites.net/'); 
@@ -25,11 +19,11 @@ describe('LeftSideBar Component', () => {
 
   it('modal should show when plus button is clicked', () => {
 
-    // // Find the button that triggers the modal and click it
-    // cy.get('.btn.btn-light.new-map-btn.btn.btn-primary').click();
+    // Find the button that triggers the modal and click it
+    cy.get('.btn.btn-light.new-map-btn.btn.btn-primary').click();
 
-    // // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
-    // cy.get('.modal-content').should('be.visible');
+    // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
+    cy.get('.modal-content').should('be.visible');
 
     // Wait for a moment to allow for any animation or transition to complete
     cy.wait(1000);
@@ -48,15 +42,18 @@ describe('LeftSideBar Component', () => {
   });
 
   it('should handle new map button click', () => {
-    // cy.get('.new-map-btn').click();
+    cy.get('.new-map-btn').click();
+    // Add assertions or interact with the new map modal if applicable
   });
 
   it('should handle user maps button click', () => {
-    // cy.get('.user-maps-btn').click();
+    cy.get('.user-maps-btn').click();
+    // Add assertions or interact with the user maps section if applicable
   });
 
   it('should handle my maps button click', () => {
-    // cy.get('.my-maps-btn').click();
+    cy.get('.my-maps-btn').click();
+    // Add assertions or interact with the my maps section if applicable
   });
 
   it('should handle query input change', () => {
@@ -65,38 +62,39 @@ describe('LeftSideBar Component', () => {
   });
 
   it('should handle dropdown item clicks', () => {
-    // cy.get('.filter-btn').click();
-    // cy.contains('.dropdown-item', 'Sort by date (newest to oldest)').click();
+    cy.get('.filter-btn').click();
+    cy.contains('.dropdown-item', 'Sort by date (newest to oldest)').click();
+    // Add assertions based on the expected behavior after clicking the dropdown item
   });
 
   it('should interact with MapCard elements and open delete modal', () => {
-    // cy.get('.map-card').first().find('.options-button').click();
-    // // Wait for the dropdown to appear (adjust the selector if needed)
-    // cy.get('.dropdown-menu.show').should('be.visible');
-    // // Click on the "Delete" option within the dropdown
-    // cy.contains('.dropdown-item', 'Delete').click();
-    // // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
-    // cy.get('.modal-content').should('be.visible');
+    cy.get('.map-card').first().find('.options-button').click();
+    // Wait for the dropdown to appear (adjust the selector if needed)
+    cy.get('.dropdown-menu').should('be.visible');
+    // Click on the "Delete" option within the dropdown
+    cy.contains('.dropdown-item', 'Delete').click();
+    // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
+    cy.get('.modal-content').should('be.visible');
   });
 
   it('should open fork modal', () => {
-    // cy.get('.map-card').first().find('.options-button').click();
-    // // Wait for the dropdown to appear (adjust the selector if needed)
-    // cy.get('.dropdown-menu.show').should('be.visible');
-    // // Click on the "Delete" option within the dropdown
-    // cy.contains('.dropdown-item', 'Fork').click();
-    // // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
-    // cy.get('.modal-content').should('be.visible');
+    cy.get('.map-card').first().find('.options-button').click();
+    // Wait for the dropdown to appear (adjust the selector if needed)
+    cy.get('.dropdown-menu').should('be.visible');
+    // Click on the "Delete" option within the dropdown
+    cy.contains('.dropdown-item', 'Fork').click();
+    // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
+    cy.get('.modal-content').should('be.visible');
   });
 
   it('should open export modal', () => {
-    // cy.get('.map-card').first().find('.options-button').click();
-    // // Wait for the dropdown to appear (adjust the selector if needed)
-    // cy.get('.dropdown-menu.show').should('be.visible');
-    // // Click on the "Delete" option within the dropdown
-    // cy.contains('.dropdown-item', 'Export').click();
-    // // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
-    // cy.get('.modal-content').should('be.visible');
+    cy.get('.map-card').first().find('.options-button').click();
+    // Wait for the dropdown to appear (adjust the selector if needed)
+    cy.get('.dropdown-menu').should('be.visible');
+    // Click on the "Delete" option within the dropdown
+    cy.contains('.dropdown-item', 'Export').click();
+    // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
+    cy.get('.modal-content').should('be.visible');
   });
 });
 

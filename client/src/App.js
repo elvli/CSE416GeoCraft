@@ -34,20 +34,21 @@ function App() {
   // ]);
   return (
     <div className="App">
-      <AuthContextProvider>
-        <GlobalStoreContextProvider>
-          <Routes>
-            <Route index element={<HomeScreen />} />
-            <Route path="sign-up/" element={<SignUpScreen />} />
-            <Route path="login/" element={<LoginScreen />} />
-            <Route path="password-reset/" element={<PasswordReset />} />
-            <Route path="verify/" element={<VerifyScreen />} />
-            <Route path="confirm/" element={<ConfirmScreen />} />
-            <Route path="edit/" element={<EditScreen />} />
-            <Route path="profile/" element={<ProfilePage />} />
-          </Routes>
-        </GlobalStoreContextProvider>
-      </AuthContextProvider>
+      <GlobalStoreContextProvider>
+        <AuthContextProvider>
+            <Routes>
+              <Route index element={<HomeScreen />} />
+              <Route path="sign-up/" element={<SignUpScreen />} />
+              <Route path="login/" element={<LoginScreen />} />
+              <Route path="password-reset/" element={<PasswordReset />} />
+              <Route path="verify/" element={<VerifyScreen />} />
+              <Route path="confirm/" element={<ConfirmScreen />} />
+              <Route path="edit/" element={<EditScreen />} />
+              <Route path="profile/" element={<ProfilePage />} />
+            </Routes>
+        </AuthContextProvider>
+      </GlobalStoreContextProvider>
+      
     </div>
   );
 }
