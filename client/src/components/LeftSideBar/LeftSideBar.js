@@ -35,7 +35,6 @@ export default function LeftSideBar(props) {
       )
     }
   </div>
-
   const handleUserMaps = () => {
     console.log('handleUserMaps');
   }

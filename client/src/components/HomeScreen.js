@@ -45,9 +45,9 @@ export default function HomeScreen() {
     setExportMapShow(true);
   }
 
-//   useEffect(() => {
-//     store.loadIdNamePairs();
-// });
+  useEffect(() => {
+    store.loadIdNamePairs();
+});
 
   return (
     <div>

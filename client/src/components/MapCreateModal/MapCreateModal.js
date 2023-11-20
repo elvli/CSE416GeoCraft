@@ -4,18 +4,29 @@ import "./MapCreateModal.scss";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-
+import GlobalStoreContext from "../../store";
 export default function MapCreateModal(props) {
   const { show, handleClose } = props
+  const { store } = useContext(GlobalStoreContext);
   const [validated, setValidated] = useState(false)
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      setValidated(true);
+    }
+    else {
+      event.preventDefault();
+      event.stopPropagation();
+      const formData = new FormData(event.currentTarget);
+      store.createNewMap(
+        formData.get("mapName"),
+        formData.get("mapType")
+      )
     }
 
-    setValidated(true);
+    
   };
   const handleClosing = (event) => {
     setValidated(false);
@@ -32,12 +43,12 @@ export default function MapCreateModal(props) {
           <Modal.Body>
             <Form.Group>
               <Form.Label>Enter the Name of Your Map</Form.Label>
-              <Form.Control className="map-name" required type="text" placeholder="Map Name" />
+              <Form.Control className="map-name" name="mapName" required type="text" placeholder="Map Name" />
             </Form.Group>
             <br />
             <Form.Group>
               <Form.Label>Select Your Map Type</Form.Label>
-              <Form.Select required>
+              <Form.Select name="mapType" required >
                 <option value="">Select your map type</option>
                 <option value="1">Heat Map</option>
                 <option value="2">Point Map</option>
