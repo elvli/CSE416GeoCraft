@@ -1,9 +1,10 @@
 const express = require("express");
 const cors = require('cors');
 const mongoose = require("mongoose");
-const path = require('path')
+// const path = require('path')
 const AuthController = require('./controllers/auth-controller')
 const cookieParser = require('cookie-parser')
+const auth = require('./auth')
 
 
 require("dotenv").config();
@@ -40,6 +41,7 @@ mongoose
   .then(() => console.log("DATABASE IS CONNECTED..."))
   .catch((err) => console.log(err));
 
+
 // Auth routes
 // const authRouter = require('./routes/auth-router')
 // app.use('/auth', authRouter)
@@ -47,6 +49,14 @@ app.get('/loggedIn', AuthController.getLoggedIn)
 app.post('/login', AuthController.loginUser)
 app.get('/logout', AuthController.logoutUser)
 app.post('/register', AuthController.registerUser)
+
+app.post('/playlist', auth.verify, PlaylistController.createPlaylist)
+app.delete('/playlist/:id', auth.verify, PlaylistController.deletePlaylist)
+app.get('/playlist/:id', auth.verify, PlaylistController.getPlaylistById)
+app.get('/playlistpairs', auth.verify, PlaylistController.getPlaylistPairs)
+app.put('/playlist/:id', auth.verify, PlaylistController.updatePlaylist)
+app.put('/playlists/:id', auth.verify, PlaylistController.updateUserFeedback)
+app.get('/playlists', auth.verify, PlaylistController.getPublishedLists)
 // app.get("/get-users", (req, res) => {
 //   User.find()
 //     .then((users) => res.json(users))
