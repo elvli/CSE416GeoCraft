@@ -1,7 +1,7 @@
 describe('LeftSideBar Component', () => {
-  beforeEach(() => {
-    cy.visit('https://geocraftmaps.azurewebsites.net/'); 
-  });
+  // beforeEach(() => {
+  //   cy.visit('https://geocraftmaps.azurewebsites.net/'); 
+  // });
 
   it('should collapse when the button is clicked', () => {
     // // Ensure that the sidebar is initially not collapsed
