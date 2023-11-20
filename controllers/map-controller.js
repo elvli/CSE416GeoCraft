@@ -107,22 +107,26 @@ getMapById = async (req, res) => {
 }
 
 getMapPairs = async (req, res) => {
-  // if (auth.verifyUser(req) === null) {
-  //   return res.status(400).json({
-  //     errorMessage: 'UNAUTHORIZED'
-  //   })
-  // }
+  if (auth.verifyUser(req) === null) {
+    return res.status(400).json({
+      errorMessage: 'UNAUTHORIZED'
+    })
+  }
   console.log("getMapPairs called");
   await User.findOne({ _id: req.userId }).then((data) => {
-    console.log(data)
-    /*async function asyncFindList(email) {
+    if(!data) {
+      return res
+                        .status(404)
+                        .json({ success: false, error: 'User not found not found' })
+    }
+    async function asyncFindList(email) {
       console.log("find all Maps owned by: " + email);
-      await Map.find({ ownerEmail: email }, (err, maps) => {
-        console.log("found Maps: " + JSON.stringify(maps));
+      await Map.find({ ownerEmail: email }).then( (err, mapdata) => {
+        console.log("found Maps: " + JSON.stringify(mapdata));
         if (err) {
           return res.status(400).json({ success: false, error: err })
         }
-        if (!maps) {
+        if (!mapdata) {
           console.log("!maps.length");
           return res
             .status(404)
@@ -132,8 +136,8 @@ getMapPairs = async (req, res) => {
           console.log("Send the Maps pairs");
           // PUT ALL THE LISTS INTO ID, NAME PAIRS
           let pairs = [];
-          for (let key in maps) {
-            let list = maps[key];
+          for (let key in mapdata) {
+            let list = mapdata[key];
             let pair = {
               _id: list._id,
               name: list.name,
@@ -153,8 +157,9 @@ getMapPairs = async (req, res) => {
           return res.status(200).json({ success: true, idNamePairs: pairs })
         }
       }).catch(err => console.log(err))
-    }*/
-  })
+    }
+    asyncFindList(data.email)
+  }).catch((err) => console.log(err))
 }
 
 getMaps = async (req, res) => {
