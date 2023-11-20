@@ -6,10 +6,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpScreen() {
   const { auth } = useContext(AuthContext);
   const [validated, setValidated] = useState(false)
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
