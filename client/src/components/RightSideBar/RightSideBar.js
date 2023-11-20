@@ -66,11 +66,11 @@ export default function RightSideBar() {
                 value={textInput}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                disabled={auth.user.email == 'Guest@guest.com'}
+                disabled={auth.user && auth.user.email == 'Guest@guest.com'}
               />
             </div>
             <div className="col-md-4">
-              <Button className="btn-primary comment-btn" onClick={handleSubmit} disabled={!auth.loggedIn}>
+              <Button className="btn-primary comment-btn" onClick={handleSubmit} disabled={auth.user && auth.user.email == 'Guest@guest.com'}>
                 <Send />
               </Button>
             </div>

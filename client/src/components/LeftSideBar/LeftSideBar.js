@@ -79,7 +79,7 @@ export default function LeftSideBar(props) {
       <PersonFill className='icon-btn' />
     </Button>
   </div>
-  if (auth.user.email == 'Guest@guest.com') {
+  if (auth.user && auth.user.email == 'Guest@guest.com') {
     tools = <div className='column-tools'>
       <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
         <PeopleFill className='icon-btn' />
