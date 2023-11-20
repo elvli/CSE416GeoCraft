@@ -34,8 +34,8 @@ function App() {
   // ]);
   return (
     <div className="App">
-      <GlobalStoreContextProvider>
-        <AuthContextProvider>
+      <AuthContextProvider>
+        <GlobalStoreContextProvider>
             <Routes>
               <Route index element={<HomeScreen />} />
               <Route path="sign-up/" element={<SignUpScreen />} />
@@ -46,8 +46,8 @@ function App() {
               <Route path="edit/" element={<EditScreen />} />
               <Route path="profile/" element={<ProfilePage />} />
             </Routes>
-        </AuthContextProvider>
-      </GlobalStoreContextProvider>
+        </GlobalStoreContextProvider>
+      </AuthContextProvider>
       
     </div>
   );
