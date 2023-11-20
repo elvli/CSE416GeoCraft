@@ -1,12 +1,15 @@
 describe('EditSideBar Component', () => {
     beforeEach(() => {
-      cy.visit('https://geocraftmaps.azurewebsites.net/edit'); 
+      // Perform login operation
+      cy.visit('https://geocraftmaps.azurewebsites.net/login');
+      // Input valid login credentials
+      cy.get('[name="email"]').type('elvenli54@gmail.com');
+      cy.get('[name="password"]').type('123123123');
+
+      // Submit the form
+      cy.get('.form-button').click();
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit');
     });
-  
-    // it('should toggle the sidebar on button click', () => {
-    //   cy.get('.button.btn.btn-dark').first().click();
-    //   cy.get('.button.btn.btn-dark').first().click();
-    // });
   
     it('should edit header on double click', () => {
       cy.get('.accordion-button.collapsed').first().click();
