@@ -19,11 +19,11 @@ export default function MapCreateModal(props) {
     else {
       event.preventDefault();
       event.stopPropagation();
-      const formData = new FormData(event.currentTarget);
-      store.createNewMap(
-        formData.get("mapName"),
-        formData.get("mapType")
-      )
+      // const formData = new FormData(event.currentTarget);
+      // store.createNewMap(
+      //   formData.get("mapName"),
+      //   formData.get("mapType")
+      // )
     }
 
     
