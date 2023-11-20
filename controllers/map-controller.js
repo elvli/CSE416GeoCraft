@@ -113,21 +113,21 @@ getMapPairs = async (req, res) => {
   //   })
   // }
   console.log("getMapPairs called");
-  const email = await User.findOne({ _id: req.userId }).then((data) => {
-    if(!data) {
-      return res
-                        .status(404)
-                        .json({ success: false, error: 'User not found not found' })
-    }
-    return data.email
-    // async function asyncFindList(email) {
-    //   console.log("find all Maps owned by: " + email);
+  // const email = await User.findOne({ _id: req.userId }).then((data) => {
+  //   if(!data) {
+  //     return res
+  //                       .status(404)
+  //                       .json({ success: false, error: 'User not found not found' })
+  //   }
+  //   return data.email
+  //   // async function asyncFindList(email) {
+  //   //   console.log("find all Maps owned by: " + email);
       
-    // }
-    // asyncFindList(data.email)
-  }).catch((err) => console.log(err))
-  console.log(email)
-  await Map.find({  }).then( (data) => {
+  //   // }
+  //   // asyncFindList(data.email)
+  // }).catch((err) => console.log(err))
+  // console.log(email)
+  Map.find({  }).then( (data) => {
     console.log((data));
   //   if (err) {
   //     return res.status(400).json({ success: false, error: err })
