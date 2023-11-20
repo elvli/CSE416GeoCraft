@@ -7,6 +7,7 @@ export const GlobalStoreContext = createContext({});
 
 export const GlobalStoreActionType = {
     DISPLAY_MAP: "DISPLAY_MAP",
+    LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
 }
 
 const tps = new jsTPS();
@@ -22,7 +23,7 @@ function GlobalStoreContextProvider(props) {
         switch(type){
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
-                    idNamePairs: payload,
+                    idNamePairs: payload.idNamePairs,
                 });
             }
 
@@ -38,10 +39,7 @@ function GlobalStoreContextProvider(props) {
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
-            storeReducer({
-                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS, 
-                payload: store.loadIdNamePairs
-            })
+            store.loadIdNamePairs()
         }
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
@@ -54,23 +52,12 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
                 console.log(pairsArray);
-                // storeReducer({
-                //     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                //     payload: {
-                //         pairsArray: pairsArray,
-                //         sortedBy: 0
-                //     }
-                // });
-                // storeReducer({
-                //     type: GlobalStoreActionType.DISPLAY_PLAYLIST,
-                //     payload: {
-                //         idNamePairs: pairsArray
-                //     }
-                // });
-                // else{
-                //     // store.sortIdNamePairs(store.sortedBy, pairsArray)
-                // }
-                //return pairsArray
+                storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: {
+                        idNamePairs: pairsArray
+                    }
+                });
             }
             else {
                 console.log("API FAILED TO GET THE LIST PAIRS");
