@@ -195,7 +195,7 @@ export default function ProfilePage() {
             <div className="tab-content" >
               {/* {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
               {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)} */}
-              {activeTab === 'myMaps' && createRows(store.idNamePairs)}
+              {activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))}
               {activeTab === 'likedMaps' && createRows(store.idNamePairs)}
             </div>
           </div>
