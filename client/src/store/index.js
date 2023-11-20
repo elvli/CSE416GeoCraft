@@ -70,7 +70,7 @@ function GlobalStoreContextProvider(props) {
                 // else{
                 //     // store.sortIdNamePairs(store.sortedBy, pairsArray)
                 // }
-                return pairsArray
+                //return pairsArray
             }
             else {
                 console.log("API FAILED TO GET THE LIST PAIRS");
