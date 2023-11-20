@@ -23,7 +23,7 @@ const mapSchema = new Schema(
         publishedDate: {type: Date},
         likes: {type: Array, required: false},
         dislikes: {type: Array, required: false},
-        listens: {type: Number, required: false},
+        views: {type: Number, required: false},
     },
     { timestamps: true },
 )

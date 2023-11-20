@@ -60,13 +60,13 @@ export default function MapCard(props) {
     <div>
       <div className="card map-card">
         <div className="card-header">
-          <p className="map-title">{map.title}</p>
+          <p className="map-title">{map.name}</p>
           {dropdown}
 
         </div>
 
         <div className="card-body" >
-          <p className="card-text comment-text">By: {map.author}</p>
+          <p className="card-text comment-text">By: {map.ownerName}</p>
           {others}
 
         </div>

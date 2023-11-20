@@ -34,7 +34,7 @@ export const updateUserFeedback = (id, map) => {
         map : map
     })
 }
-export const getPublishedLists = () => api.get('/maps/')
+export const getPublishedMaps = () => api.get('/maps/')
 
 const apis = {
     createMap,
@@ -43,7 +43,7 @@ const apis = {
     getMapPairs,
     updateMapById,
     updateUserFeedback,
-    getPublishedLists,
+    getPublishedMaps,
 }
 
 export default apis

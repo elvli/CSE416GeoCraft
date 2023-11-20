@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react'
+import { GlobalStoreContext } from '../../store'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
 import MapCard from '../MapCard/MapCard';
@@ -6,11 +7,12 @@ import './LeftSideBar.scss'
 import AuthContext from '../../auth'
 
 export default function LeftSideBar(props) {
+  const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const { handleNewMap, handleDeleteMap, handleEditRegion, handleFork, handleExport } = props;
-  var loggedIn = !auth.loggedIn
+  const { handleNewMap, handleDeleteMap, handleFork, handleExport } = props;
+
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -22,21 +24,17 @@ export default function LeftSideBar(props) {
     handleExport: handleExport
   }
 
-  var testMap1 = {
-    title: 'USA Map',
-    author: 'Darren',
-    likes: ['Darren', 'Brian'],
-    dislikes: [],
-    published: true
-  }
-
-  var testMap2 = {
-    title: 'test map 2',
-    author: 'Brian',
-    likes: ['Darren'],
-    dislikes: ['Brian'],
-    published: false
-  }
+  var maps = <div>
+    {
+      store.idNamePairs.map((pair) =>
+        <MapCard
+          key = {pair._id}
+          map = {pair}
+          functions = {functions}
+        />
+      )
+    }
+  </div>
 
   const handleUserMaps = () => {
     console.log('handleUserMaps');
@@ -125,8 +123,7 @@ export default function LeftSideBar(props) {
           </div>
 
           <div className="list-group editing-tools"><p></p></div>
-          <MapCard map={testMap1} functions={functions} />
-          <MapCard map={testMap2} functions={functions} />
+          {maps}
         </div>
       </div>
 

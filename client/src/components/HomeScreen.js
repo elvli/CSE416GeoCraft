@@ -1,8 +1,9 @@
 import React from "react"
 import '../App.css';
 import { EditRegionModal, MapBackground } from ".";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { AppBanner, LeftSideBar, RightSideBar, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../components'
+import { GlobalStoreContext } from '../store' 
 
 export default function HomeScreen() {
   const [newMapShow, setNewMapShow] = useState(false);
@@ -10,6 +11,8 @@ export default function HomeScreen() {
   const [editRegionShow, setEditRegionShow] = useState(false);
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
+  const { store } = useContext(GlobalStoreContext);
+  
   
   async function handleClose(event) {
     setNewMapShow(false)
@@ -41,6 +44,10 @@ export default function HomeScreen() {
   async function handleExport(event) {
     setExportMapShow(true);
   }
+
+  useEffect(() => {
+    store.loadIdNamePairs();
+});
 
   return (
     <div>
