@@ -24,7 +24,7 @@ export default function MapCard(props) {
   // }D
   let dropdown = <div className='options-button'>
     <Dropdown>
-      <Dropdown.Toggle variant="light" id="dropdown-basic">
+      <Dropdown.Toggle variant="light" id="dropdown-basic" disabled={!auth.loggedIn}>
         <ThreeDotsVertical />
       </Dropdown.Toggle>
       <Dropdown.Menu className='dropdown-menu'>
@@ -36,7 +36,7 @@ export default function MapCard(props) {
   </div>
 
   let others = <div className='d-flex flex-row-reverse'>
-    <Button className='btn btn-light dislike-button'><PenFill onClick={onClickfoo}/></Button>
+    <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><PenFill onClick={onClickfoo}/></Button>
   </div>
   if (map.published) {
     dropdown = <div className='options-button'>
