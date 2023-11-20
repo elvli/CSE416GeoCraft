@@ -20,10 +20,10 @@ export default function MapCreateModal(props) {
       event.preventDefault();
       event.stopPropagation();
       const formData = new FormData(event.currentTarget);
-      // store.createNewMap(
-      //   formData.get("mapName"),
-      //   formData.get("mapType")
-      // )
+      store.createNewMap(
+        formData.get("mapName"),
+        formData.get("mapType")
+      )
     }
 
     
