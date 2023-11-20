@@ -25,6 +25,7 @@ export default function MapCreateModal(props) {
         formData.get("mapName"),
         formData.get("mapType")
       )
+      handleClose(event)
     }
 
     
