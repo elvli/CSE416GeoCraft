@@ -23,20 +23,14 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Jest tests and create optimized build
+      - name: client - npm install, build, and test
         run: |
           npm install
           npx jest --forceExit
           cd client
           npm install
           npm run build --if-present
-
-      - name: Cyress Test
-        run: |
           npx cypress run
-
-      - name: Nodemon Install
-        run: |
           cd..
           npm install -g nodemon
           
