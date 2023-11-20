@@ -1,6 +1,6 @@
 .map-card {
-  margin-top: -8px !important;
-  margin-bottom: 18px !important;
+  margin-top: 8px !important;
+  margin-bottom: 10px !important;
   margin-left: 10px !important;
   margin-right: 10px !important;
 
@@ -9,13 +9,14 @@
     z-index: 2;
 
     .map-title {
-      transform: translate(0%, 20%);
       float: left;
+      font-size: 18px;
       margin: 0;
-      font-size: 16px;
-      width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
+      transform: translate(0%, 20%);
+      width: 180px;
+      white-space: nowrap;
     }
   }
 
