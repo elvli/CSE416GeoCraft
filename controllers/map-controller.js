@@ -107,11 +107,11 @@ getMapById = async (req, res) => {
 }
 
 getMapPairs = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: 'UNAUTHORIZED'
-    })
-  }
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(400).json({
+  //     errorMessage: 'UNAUTHORIZED'
+  //   })
+  // }
   console.log("getMapPairs called");
   const email = await User.findOne({ _id: req.userId }).then((data) => {
     if(!data) {
@@ -126,13 +126,14 @@ getMapPairs = async (req, res) => {
     // }
     // asyncFindList(data.email)
   }).catch((err) => console.log(err))
-  await Map.find({ ownerEmail: email }).then( (mapdata) => {
-    console.log((mapdata));
+  console.log(email)
+  await Map.find({ ownerEmail: email }).then( (data) => {
+    console.log((data));
   //   if (err) {
   //     return res.status(400).json({ success: false, error: err })
   //   }
   //   if (!mapdata) {
-  //     console.log("!maps.length");
+  //     console.log("!)maps.length");
   //     return res
   //       .status(404)
   //       .json({ success: false, error: 'Maps not found' })
