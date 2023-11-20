@@ -107,17 +107,26 @@ export default function ProfilePage() {
   //   return rows;
   // };
 
-  var mapCardsList = <div>
-    {
-      store.idNamePairs.map((pair) =>
-        <MapCard
-          key={pair._id}
-          map={pair}
-          functions={functions}
-        />
-      )
+  function createRows(mapCards) {
+    const rows = [];
+    const cardsPerRow = 4;
+
+    for (let i = 0; i < mapCards.length; i += cardsPerRow) {
+      const row = mapCards.slice(i, i + cardsPerRow).map((map, index) => (
+        <div className="col-md-3 mb-2" key={index}>
+          <MapCard map={map} functions={functions} />
+        </div>
+      ));
+
+      rows.push(
+        <div className="row g-2" key={i / cardsPerRow}>
+          {row}
+        </div>
+      );
     }
-  </div>
+
+    return <div>{rows}</div>;
+  }
 
   return (
     <div class="profile-container">
@@ -186,8 +195,8 @@ export default function ProfilePage() {
             <div className="tab-content" >
               {/* {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
               {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)} */}
-              {activeTab === 'myMaps' && mapCardsList}
-              {activeTab === 'likedMaps' && mapCardsList}
+              {activeTab === 'myMaps' && createRows(store.idNamePairs)}
+              {activeTab === 'likedMaps' && createRows(store.idNamePairs)}
             </div>
           </div>
         </div>
