@@ -38,7 +38,7 @@ function GlobalStoreContextProvider(props) {
         console.log("createNewList response: " + response);
         if (response.status === 201) {
             tps.clearAllTransactions();
-            store.loadIdNamePairs();
+            storeReducer({type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS, payload: {pairsArray: store.loadIdNamePairs}})
         }
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
