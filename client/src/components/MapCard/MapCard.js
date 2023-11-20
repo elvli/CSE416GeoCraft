@@ -41,7 +41,7 @@ export default function MapCard(props) {
   if (map.published) {
     dropdown = <div className='options-button'>
       <Dropdown>
-        <Dropdown.Toggle variant="light" id="dropdown-basic" disabled={auth.user && auth.user.email == 'Guest@guest.com'}>
+        <Dropdown.Toggle variant="light" id="dropdown-basic" disabled={auth.user.email == 'Guest@guest.com'}>
           <ThreeDotsVertical />
         </Dropdown.Toggle>
         <Dropdown.Menu className='dropdown-menu'>
@@ -53,8 +53,8 @@ export default function MapCard(props) {
     </div>
 
     others = <div className='d-flex flex-row-reverse'>
-      <Button className='btn btn-light dislike-button' disabled={auth.user && auth.user.email == 'Guest@guest.com'}><HandThumbsDownFill /> {map.dislikes.length}</Button>
-      <Button className='btn btn-light like-button' disabled={auth.user && auth.user.email == 'Guest@guest.com'}><HandThumbsUpFill /> {map.likes.length}</Button>
+      <Button className='btn btn-light dislike-button' disabled={auth.user.email == 'Guest@guest.com'}><HandThumbsDownFill /> {map.dislikes.length}</Button>
+      <Button className='btn btn-light like-button' disabled={auth.user.email == 'Guest@guest.com'}><HandThumbsUpFill /> {map.likes.length}</Button>
     </div>
   }
 
