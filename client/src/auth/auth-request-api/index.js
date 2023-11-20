@@ -1,46 +1,41 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
-    baseURL: 'https://geocraftmapsbackend.onrender.com',
-    //https://geocraftserver.azurewebsites.net
-    //https://geocraftmaps.azurewebsites.net
-    // http://localhost:3001
+  baseURL: 'https://geocraftmapsbackend.onrender.com',
+  //https://geocraftserver.azurewebsites.net
+  //https://geocraftmaps.azurewebsites.net
+  // http://localhost:3001
 })
 
 export const getLoggedIn = () => api.get(`/loggedIn/`);
 
 export const loginUser = (email, password) => {
-    return api.post(`/login/`, {
-        email: email,
-        password: password
-    })
+  return api.post(`/login/`, {
+    email: email,
+    password: password
+  })
 }
 
 export const logoutUser = () => api.get(`/logout/`)
 
 export const registerUser = (firstName, lastName, username, email, confirmEmail, password, confirmPassword) => {
-    console.log("IN AUTH_REQUEST_API/INDEX.JS")
-    console.log(firstName)
-    return api.post(`/register/`, {
-        firstName: firstName,
-        lastName: lastName,
-        username: username,
-        email: email,
-        confirmEmail: confirmEmail,
-        password: password,
-        confirmPassword: confirmPassword
-    })
-    // .catch(error => {
-    //     console.error("Error in registerUser request (FRONT):", error);
-    //     throw error; // Re-throw the error to propagate it to the calling function
-    // });
+  console.log("Registering User (Front)")
+  return api.post(`/register/`, {
+    firstName: firstName,
+    lastName: lastName,
+    username: username,
+    email: email,
+    confirmEmail: confirmEmail,
+    password: password,
+    confirmPassword: confirmPassword
+  })
 }
 
 const apis = {
-    getLoggedIn,
-    loginUser,
-    logoutUser,
-    registerUser
+  getLoggedIn,
+  loginUser,
+  logoutUser,
+  registerUser
 }
 
 export default apis

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import api from './auth-request-api/index'
 
 const AuthContext = createContext();
-console.log("create AuthContext: " + AuthContext);
 
 export const AuthActionType = {
   GET_LOGGED_IN: "GET_LOGGED_IN",
@@ -74,14 +73,9 @@ function AuthContextProvider(props) {
   }
 
   auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword) {
-    console.log("REGISTERING USER");
     try {
-      console.log("TRY REGISTER");
       const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword);
-      console.log("Response:", response);
-      console.log("CREATED REGISTER RESPONSE");
       if (response.status === 200) {
-        console.log("REGISTERED SUCCESSFULLY");
         authReducer({
           type: AuthActionType.REGISTER_USER,
           payload: {
@@ -90,10 +84,7 @@ function AuthContextProvider(props) {
             errorMessage: null
           }
         })
-        // history("/login");
-        console.log("NOW WE ATTEMPT A LOGIN");
         auth.loginUser(email, password);
-        console.log("LOGGED IN");
       }
     } catch (error) {
       authReducer({
@@ -109,7 +100,6 @@ function AuthContextProvider(props) {
 
   auth.loginUser = async function (email, password) {
     try {
-      console.log('LOGIN STARTED (FRONT)')
       const response = await api.loginUser(email, password);
       console.log('LOGIN SUCCESS')
       if (response.status === 200) {
@@ -154,7 +144,6 @@ function AuthContextProvider(props) {
       initials += auth.user.firstName.charAt(0);
       initials += auth.user.lastName.charAt(0);
     }
-    console.log("user initials: " + initials);
     return initials;
   }
 
@@ -185,7 +174,6 @@ function AuthContextProvider(props) {
       try {
         const response = await api.registerUser("Guest", "User", "Guest", "guest@gmail.com", "guest@gmail.com", "GuestPassword", "GuestPassword");
         if (response.status === 200) {
-          console.log("Registered Sucessfully");
           authReducer({
             type: AuthActionType.REGISTER_USER,
             payload: {
@@ -195,7 +183,6 @@ function AuthContextProvider(props) {
             }
           })
           auth.loginUser("guest@gmail.com", "GuestPassword");
-          console.log("GUEST LOGGED IN");
         }
       } catch (error) {
         authReducer({
