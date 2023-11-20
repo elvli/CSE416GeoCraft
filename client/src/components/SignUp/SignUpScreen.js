@@ -33,7 +33,13 @@ export default function SignUpScreen() {
       );
     }
 
+    
+
   };
+
+  if (auth.loggedIn){
+    navigate("/");
+  }
 
 
   return (
@@ -86,7 +92,7 @@ export default function SignUpScreen() {
           <br />
           <Row>
             <Form.Group>
-              <Button className="sign-up-button" type="submit">Sign In</Button>
+              <Button className="sign-up-button" type="submit">Sign Up</Button>
             </Form.Group>
           </Row>
         </Form>

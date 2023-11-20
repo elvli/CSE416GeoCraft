@@ -14,6 +14,10 @@ export default function LoginScreen() {
   // const [validMSG, setValidMSG] = useState("");
   const navigate = useNavigate();
 
+  if (auth.loggedIn){
+    navigate("/");
+  }
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
 
