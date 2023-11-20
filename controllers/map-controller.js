@@ -23,7 +23,7 @@ createMap = (req, res) => {
     return res.status(400).json({ success: false, error: err })
   }
 
-  User.findOne({ _id: req.userId }, (err, user) => {
+  User.findOne({ _id: req.userId }).then((user) => {
     console.log("user found: " + JSON.stringify(user));
     user.maps.push(map._id);
     user
@@ -127,7 +127,7 @@ getMapPairs = async (req, res) => {
     // asyncFindList(data.email)
   }).catch((err) => console.log(err))
   console.log(email)
-  await Map.find({ ownerEmail: email }).then( (data) => {
+  await Map.find({  }).then( (data) => {
     console.log((data));
   //   if (err) {
   //     return res.status(400).json({ success: false, error: err })
