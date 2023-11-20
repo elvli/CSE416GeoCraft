@@ -113,9 +113,9 @@ getMapPairs = async (req, res) => {
   //   })
   // }
   console.log("getMapPairs called");
-  await User.findOne({ _id: req.userId }, (err, user) => {
-    console.log("find user with id " + req.userId);
-    async function asyncFindList(email) {
+  await User.findOne({ _id: req.userId }).then((data) => {
+    console.log(data)
+    /*async function asyncFindList(email) {
       console.log("find all Maps owned by: " + email);
       await Map.find({ ownerEmail: email }, (err, maps) => {
         console.log("found Maps: " + JSON.stringify(maps));
@@ -153,9 +153,8 @@ getMapPairs = async (req, res) => {
           return res.status(200).json({ success: true, idNamePairs: pairs })
         }
       }).catch(err => console.log(err))
-    }
-    asyncFindList(user.email);
-  }).catch(err => console.log(err))
+    }*/
+  })
 }
 
 getMaps = async (req, res) => {
