@@ -113,53 +113,55 @@ getMapPairs = async (req, res) => {
     })
   }
   console.log("getMapPairs called");
-  await User.findOne({ _id: req.userId }).then((data) => {
+  const email = await User.findOne({ _id: req.userId }).then((data) => {
     if(!data) {
       return res
                         .status(404)
                         .json({ success: false, error: 'User not found not found' })
     }
-    async function asyncFindList(email) {
-      console.log("find all Maps owned by: " + email);
-      await Map.find({ ownerEmail: email }).then( (mapdata) => {
-        console.log((mapdata));
-      //   if (err) {
-      //     return res.status(400).json({ success: false, error: err })
-      //   }
-      //   if (!mapdata) {
-      //     console.log("!maps.length");
-      //     return res
-      //       .status(404)
-      //       .json({ success: false, error: 'Maps not found' })
-      //   }
-      //   else {
-      //     console.log("Send the Maps pairs");
-      //     // PUT ALL THE LISTS INTO ID, NAME PAIRS
-      //     let pairs = [];
-      //     for (let key in mapdata) {
-      //       let list = mapdata[key];
-      //       let pair = {
-      //         _id: list._id,
-      //         name: list.name,
-      //         ownerEmail: list.ownerEmail,
-      //         ownerName: list.ownerName,
-      //         data: list.data,
-      //         published: list.published,
-      //         publishedDate: list.publishedDate,
-      //         likes: list.likes,
-      //         dislikes: list.dislikes,
-      //         views: list.views,
-      //         createdAt: list.createdAt,
-      //         updatedAt: list.updatedAt,
-      //       };
-      //       pairs.push(pair);
-      //     }
-      //     return res.status(200).json({ success: true, idNamePairs: pairs })
-      //   }
-       }).catch(err => console.log(err))
-    }
-    asyncFindList(data.email)
+    return data.email
+    // async function asyncFindList(email) {
+    //   console.log("find all Maps owned by: " + email);
+      
+    // }
+    // asyncFindList(data.email)
   }).catch((err) => console.log(err))
+  await Map.find({ ownerEmail: email }).then( (mapdata) => {
+    console.log((mapdata));
+  //   if (err) {
+  //     return res.status(400).json({ success: false, error: err })
+  //   }
+  //   if (!mapdata) {
+  //     console.log("!maps.length");
+  //     return res
+  //       .status(404)
+  //       .json({ success: false, error: 'Maps not found' })
+  //   }
+  //   else {
+  //     console.log("Send the Maps pairs");
+  //     // PUT ALL THE LISTS INTO ID, NAME PAIRS
+  //     let pairs = [];
+  //     for (let key in mapdata) {
+  //       let list = mapdata[key];
+  //       let pair = {
+  //         _id: list._id,
+  //         name: list.name,
+  //         ownerEmail: list.ownerEmail,
+  //         ownerName: list.ownerName,
+  //         data: list.data,
+  //         published: list.published,
+  //         publishedDate: list.publishedDate,
+  //         likes: list.likes,
+  //         dislikes: list.dislikes,
+  //         views: list.views,
+  //         createdAt: list.createdAt,
+  //         updatedAt: list.updatedAt,
+  //       };
+  //       pairs.push(pair);
+  //     }
+  //     return res.status(200).json({ success: true, idNamePairs: pairs })
+  //   }
+   }).catch(err => console.log(err))
 }
 
 getMaps = async (req, res) => {
