@@ -19,7 +19,7 @@ describe('EditSideBar Component', () => {
     });
   
     it('should open SaveAndExitModal on close button click', () => {
-      cy.get('#close-button').click();
+      cy.get('#edit-close-button').click();
       cy.get('.modal-content').should('be.visible');
     });
   });
