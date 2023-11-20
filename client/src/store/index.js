@@ -58,16 +58,16 @@ function GlobalStoreContextProvider(props) {
                 //         sortedBy: 0
                 //     }
                 // });
-                storeReducer({
-                    type: GlobalStoreActionType.DISPLAY_PLAYLIST,
-                    payload: {
-                        idNamePairs: pairsArray
-                    }
-                });
+                // storeReducer({
+                //     type: GlobalStoreActionType.DISPLAY_PLAYLIST,
+                //     payload: {
+                //         idNamePairs: pairsArray
+                //     }
+                // });
                 // else{
                 //     // store.sortIdNamePairs(store.sortedBy, pairsArray)
                 // }
-                
+                return data
             }
             else {
                 console.log("API FAILED TO GET THE LIST PAIRS");
