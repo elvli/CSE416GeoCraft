@@ -114,6 +114,7 @@ export default function ProfilePage() {
           <div class="text-white d-flex flex-row profile-banner">
             <div class="ms-4 mt-5 d-flex flex-column">
               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt1ceyneFkZchgkrwN7dZxWNl_C5Dctvc5BzNh_rEzPQ&s"
+                alt="Default Profile Pic"
                 class="img-fluid img-thumbnail mt-4 mb-2 profile-pic"
               />
 

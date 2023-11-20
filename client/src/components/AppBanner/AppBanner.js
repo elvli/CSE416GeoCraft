@@ -4,17 +4,13 @@ import './AppBanner.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AuthContext from '../../auth'
 import GeoCraftLogo from '.././Icons/GeoCraftGlobeWhite.png';
-// import { useState, useRef } from 'react';
 import { Button, Dropdown } from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
-// import { Navigate, useNavigate } from 'react-router-dom'
 import { Link } from "react-router-dom";
-
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
-
-
+  const username = auth.getUsername();
   const handleLogout = () => {
     // Handle logout logic
     console.log('Log out button clicked');
@@ -22,24 +18,24 @@ export default function AppBanner() {
   };
 
   var dropdown = <Dropdown.Menu>
-          {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
+    {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
           <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log In</Dropdown.Item>
           <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log Out</Dropdown.Item>
           <Dropdown.Item onClick={() => { setCreateAccount(true) }}>Create New Account</Dropdown.Item> */}
 
-          <Dropdown.Item><Link className="dropdown-btn" to='/profile'>My Profile</Link></Dropdown.Item>
-          <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
-        </Dropdown.Menu>
+    <Dropdown.Item><Link className="dropdown-btn" to='/profile'>My Profile</Link></Dropdown.Item>
+    <Dropdown.Item onClick={handleLogout}>Log Out</Dropdown.Item>
+  </Dropdown.Menu>
 
-  if (!auth.loggedIn){
+  if (!auth.loggedIn) {
     dropdown = <Dropdown.Menu>
-          {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
+      {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
           <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log In</Dropdown.Item>
           <Dropdown.Item onClick={() => { setGoToLogin(true) }}>Log Out</Dropdown.Item>
           <Dropdown.Item onClick={() => { setCreateAccount(true) }}>Create New Account</Dropdown.Item> */}
-          <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log In</Link></Dropdown.Item>
-          <Dropdown.Item><Link class="dropdown-btn" to='/sign-up'>Create New Account</Link></Dropdown.Item>
-        </Dropdown.Menu>
+      <Dropdown.Item><Link class="dropdown-btn" to='/login'>Log In</Link></Dropdown.Item>
+      <Dropdown.Item><Link class="dropdown-btn" to='/sign-up'>Create New Account</Link></Dropdown.Item>
+    </Dropdown.Menu>
   }
 
   return (
@@ -60,8 +56,10 @@ export default function AppBanner() {
       </Link>
       <Dropdown className="position-fixed account-dropdown">
         <Dropdown.Toggle variant="dark" id="dropdown-basic">
-          <Person className="fs-4" />
-        </Dropdown.Toggle> 
+          {/* <div className="appbanner-username">{"Username"}</div> */}
+          {username}
+          <Person className="fs-4 profile-dropdown" />
+        </Dropdown.Toggle>
         {dropdown}
       </Dropdown>
     </nav>
