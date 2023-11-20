@@ -107,12 +107,12 @@ getMapById = async (req, res) => {
 }
 
 getMapPairs = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: 'UNAUTHORIZED'
-    })
-  }
-  console.log("getMapPairs");
+  // if (auth.verifyUser(req) === null) {
+  //   return res.status(400).json({
+  //     errorMessage: 'UNAUTHORIZED'
+  //   })
+  // }
+  console.log("getMapPairs called");
   await User.findOne({ _id: req.userId }, (err, user) => {
     console.log("find user with id " + req.userId);
     async function asyncFindList(email) {
