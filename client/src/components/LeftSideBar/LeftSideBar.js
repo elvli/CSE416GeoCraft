@@ -28,9 +28,9 @@ export default function LeftSideBar(props) {
     {
       store.idNamePairs.map((pair) =>
         <MapCard
-          key = {pair._id}
-          map = {pair}
-          functions = {functions}
+          key={pair._id}
+          map={pair}
+          functions={functions}
         />
       )
     }
@@ -120,9 +120,12 @@ export default function LeftSideBar(props) {
               </Dropdown>
             </div>
           </div>
-
-          <div className="list-group editing-tools"><p></p></div>
-          {maps}
+          <div className="list-group">
+            <div className="list-group editing-tools"><p></p></div>
+            <div className="list-group-item bg-light custom-scrollbar">
+              {maps}
+            </div>
+          </div>
         </div>
       </div>
 
