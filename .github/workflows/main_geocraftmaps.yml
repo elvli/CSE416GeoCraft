@@ -26,11 +26,11 @@ jobs:
       - name: client - npm install, build, and test
         run: |
           npm install
-          #npx jest --forceExit
+          npx jest --forceExit
           cd client
           npm install
           npm run build --if-present
-          #npx cypress run
+          npx cypress run
           cd..
           npm install -g nodemon
           
