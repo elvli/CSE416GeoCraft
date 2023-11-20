@@ -154,7 +154,7 @@ export default function ProfilePage() {
           <div class="p-4 bg-light">
             <div class="d-flex justify-content-end text-center py-1">
               <div>
-                <p class="mb-1 h5">5</p>
+                <p class="mb-1 h5">{(store.idNamePairs.filter(pair => pair.ownerName === username)).length}</p>
                 <p class="small text-muted mb-0">Maps</p>
               </div>
 
