@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../../store'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
@@ -17,6 +17,10 @@ export default function LeftSideBar(props) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
+
+  useEffect(() => {
+    store.loadIdNamePairs();
+  }, []);
 
   var functions = {
     handleDeleteMap: handleDeleteMap,
