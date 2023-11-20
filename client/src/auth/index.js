@@ -23,7 +23,7 @@ function AuthContextProvider(props) {
     try{
       auth.getLoggedIn();
     }catch(error){
-      auth.guestLogin()
+      
     }
     
   }, []);
@@ -201,52 +201,6 @@ function AuthContextProvider(props) {
       }
     }
   }
-
-  auth.loginGuest = async function() {
-    // guest info will be FN: Guest LN: Guest Email: Guest@guest.com pass: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-    try{
-        const response = await api.loginUser('Guest@guest.com', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: response.data.user,
-                    loggedIn: true,
-                    errorMessage: null
-                }
-            })
-            history.push("/");
-        }
-    } catch(error){
-        try{   
-            const response = await api.registerUser('Guest', 'Guest', 'Guest@guest.com', 'G', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');   
-            if (response.status === 200) {
-                console.log("Registered Sucessfully");
-                authReducer({
-                    type: AuthActionType.REGISTER_USER,
-                    payload: {
-                        user: response.data.user,
-                        loggedIn: true,
-                        errorMessage: null
-                    }
-                })
-                history.push("/login");
-                console.log("NOW WE LOGIN");
-                auth.loginUser('Guest@guest.com', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-                console.log("LOGGED IN");
-            }
-        } catch(error){
-            authReducer({
-                type: AuthActionType.REGISTER_USER,
-                payload: {
-                    user: auth.user,
-                    loggedIn: false,
-                    errorMessage: error.response.data.errorMessage
-                }
-            })
-        }
-    }
-}
 
   return (
     <AuthContext.Provider value={{
