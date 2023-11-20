@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require("mongoose");
 // const path = require('path')
 const AuthController = require('./controllers/auth-controller')
+const MapController = require('./controllers/map-controller')
 const cookieParser = require('cookie-parser')
 const auth = require('./auth')
 
@@ -50,13 +51,13 @@ app.post('/login', AuthController.loginUser)
 app.get('/logout', AuthController.logoutUser)
 app.post('/register', AuthController.registerUser)
 
-app.post('/playlist', auth.verify, PlaylistController.createPlaylist)
-app.delete('/playlist/:id', auth.verify, PlaylistController.deletePlaylist)
-app.get('/playlist/:id', auth.verify, PlaylistController.getPlaylistById)
-app.get('/playlistpairs', auth.verify, PlaylistController.getPlaylistPairs)
-app.put('/playlist/:id', auth.verify, PlaylistController.updatePlaylist)
-app.put('/playlists/:id', auth.verify, PlaylistController.updateUserFeedback)
-app.get('/playlists', auth.verify, PlaylistController.getPublishedLists)
+app.post('/map', auth.verify, MapController.createPlaylist)
+app.delete('/map/:id', auth.verify, MapController.deletePlaylist)
+app.get('/map/:id', auth.verify, MapController.getPlaylistById)
+app.get('/mapPairs', auth.verify, MapController.getPlaylistPairs)
+app.put('/map/:id', auth.verify, MapController.updatePlaylist)
+app.put('/map/:id', auth.verify, MapController.updateUserFeedback)
+app.get('/map', auth.verify, MapController.getPublishedLists)
 // app.get("/get-users", (req, res) => {
 //   User.find()
 //     .then((users) => res.json(users))
