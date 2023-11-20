@@ -74,3 +74,5 @@ app.post('/register', AuthController.registerUser)
 app.listen(PORT, () => {
   console.log(`Server is running on post ${PORT}`);
 });
+
+module.exports = app;
