@@ -1,9 +1,10 @@
 import './App.css';
-import baseUrl from "./baseUrl";
-import axios from "axios";
-import { React, useState, useEffect } from "react";
-import { Route, Routes, createBrowserRouter } from "react-router-dom";
+// import baseUrl from "./baseUrl";
+// import axios from "axios";
+import { React} from "react";
+import { Route, Routes} from "react-router-dom";
 import { AuthContextProvider } from './auth';
+import { GlobalStoreContextProvider } from './store';
 import { LoginScreen, SignUpScreen, HomeScreen, PasswordReset, VerifyScreen, ConfirmScreen, EditScreen, ProfilePage } from './components'
 
 function App() {
@@ -34,16 +35,18 @@ function App() {
   return (
     <div className="App">
       <AuthContextProvider>
-        <Routes>
-          <Route index element={<HomeScreen />} />
-          <Route path="sign-up/" element={<SignUpScreen />} />
-          <Route path="login/" element={<LoginScreen />} />
-          <Route path="password-reset/" element={<PasswordReset />} />
-          <Route path="verify/" element={<VerifyScreen />} />
-          <Route path="confirm/" element={<ConfirmScreen />} />
-          <Route path="edit/" element={<EditScreen />} />
-          <Route path="profile/" element={<ProfilePage />} />
-        </Routes>
+        <GlobalStoreContextProvider>
+          <Routes>
+            <Route index element={<HomeScreen />} />
+            <Route path="sign-up/" element={<SignUpScreen />} />
+            <Route path="login/" element={<LoginScreen />} />
+            <Route path="password-reset/" element={<PasswordReset />} />
+            <Route path="verify/" element={<VerifyScreen />} />
+            <Route path="confirm/" element={<ConfirmScreen />} />
+            <Route path="edit/" element={<EditScreen />} />
+            <Route path="profile/" element={<ProfilePage />} />
+          </Routes>
+        </GlobalStoreContextProvider>
       </AuthContextProvider>
     </div>
   );
