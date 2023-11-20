@@ -34,9 +34,6 @@ export default function SignUpScreen() {
         formData.get('confirmPassword'),
       );
     }
-
-    
-
   };
 
   useEffect(() => {
@@ -45,8 +42,6 @@ export default function SignUpScreen() {
     }
   });
   
-
-
   return (
     <div>
       <AppBanner />
