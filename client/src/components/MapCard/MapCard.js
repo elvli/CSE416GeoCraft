@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useContext } from 'react';
 import { Button, Dropdown } from "react-bootstrap";
-import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PenFill } from 'react-bootstrap-icons';
+import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill } from 'react-bootstrap-icons';
 import './MapCard.scss'
 import { Navigate } from 'react-router-dom';
 import AuthContext from '../../auth'
@@ -35,8 +35,8 @@ export default function MapCard(props) {
     </Dropdown>
   </div>
 
-  let others = <div className='d-flex flex-row-reverse'>
-    <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><PenFill onClick={onClickfoo}/></Button>
+  let mapCardButtons = <div className='d-flex flex-row-reverse'>
+    <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><PencilFill onClick={onClickfoo}/></Button>
   </div>
   if (map.published) {
     dropdown = <div className='options-button'>
@@ -52,7 +52,7 @@ export default function MapCard(props) {
       </Dropdown>
     </div>
 
-    others = <div className='d-flex flex-row-reverse'>
+    mapCardButtons = <div className='d-flex flex-row-reverse'>
       <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><HandThumbsDownFill /> {map.dislikes.length}</Button>
       <Button className='btn btn-light like-button' disabled={!auth.loggedIn}><HandThumbsUpFill /> {map.likes.length}</Button>
     </div>
@@ -69,8 +69,7 @@ export default function MapCard(props) {
 
         <div className="card-body" >
           <p className="card-text comment-text">By: {map.ownerName}</p>
-          {others}
-
+          {mapCardButtons}
         </div>
       </div>
     </div>
