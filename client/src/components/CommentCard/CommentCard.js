@@ -1,6 +1,6 @@
 import React from 'react'
 import './CommentCard.scss'
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
 import Card from 'react-bootstrap/Card';
 import Col from 'react-bootstrap/Col'
