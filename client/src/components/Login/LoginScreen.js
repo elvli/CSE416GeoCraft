@@ -1,4 +1,4 @@
-import { React, useState, useContext } from "react";
+import { React, useState, useContext, useEffect } from "react";
 import AuthContext from '../../auth'
 import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
@@ -9,10 +9,15 @@ import "./LoginScreen.scss";
 
 export default function LoginScreen() {
   const { auth } = useContext(AuthContext);
-  const [toEdit, setToEdit] = useState(false);
   const [validated, setValidated] = useState(false);
   // const [validMSG, setValidMSG] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth.loggedIn){
+      navigate("/");
+    }
+  });
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -50,7 +55,7 @@ export default function LoginScreen() {
       <div>
         <AppBanner />
       </div>
-      <img src={GeoCraftLogoBlack} className="sign-in-logo" />
+      <img src={GeoCraftLogoBlack} alt="Geocraft Logo" className="sign-in-logo" />
       <div>
         <Form className="login-credentials" noValidate validated={validated} onSubmit={handleSubmit}>
           <h1 className="heading">Sign In</h1>

@@ -1,16 +1,23 @@
-import { React, useState } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import "./VerifyScreen.scss";
 import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
-// import Col from "react-bootstrap/Col";
 import { useNavigate } from "react-router-dom";
+import AuthContext from '../../auth'
 
 export default function VerifyScreen() {
+  const { auth } = useContext(AuthContext);
   const [validated, setValidated] = useState(false)
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth.loggedIn) {
+      navigate("/");
+    }
+  });
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -24,6 +31,7 @@ export default function VerifyScreen() {
       navigate("/confirm")
     }
   }
+  
   return (
     <div>
       <AppBanner />
