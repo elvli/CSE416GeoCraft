@@ -16,6 +16,15 @@ export default function MapCard(props) {
     setToEdit(true)
   }
 
+  function handleLike(event) {
+    event.stopPropagation();
+    store.likeList(auth.user.email, idNamePair, auth.user)
+  }
+  function handleDislike(event) {
+      event.stopPropagation();
+      store.dislikeList(auth.user.email, idNamePair, auth.user)
+  }
+
   if(toEdit) {
       return <Navigate to="/edit"/>
   }
@@ -53,8 +62,8 @@ export default function MapCard(props) {
     </div>
 
     mapCardButtons = <div className='d-flex flex-row-reverse'>
-      <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><HandThumbsDownFill /> {map.dislikes.length}</Button>
-      <Button className='btn btn-light like-button' disabled={!auth.loggedIn}><HandThumbsUpFill /> {map.likes.length}</Button>
+      <Button className='btn btn-light dislike-button' onClick={handleDislike} disabled={!auth.loggedIn}><HandThumbsDownFill /> {map.dislikes.length}</Button>
+      <Button className='btn btn-light like-button' onClick={handleLike} disabled={!auth.loggedIn}><HandThumbsUpFill /> {map.likes.length}</Button>
     </div>
   }
 
