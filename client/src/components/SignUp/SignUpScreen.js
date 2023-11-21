@@ -1,10 +1,6 @@
 import { React, useState, useContext, useEffect } from "react";
 import AuthContext from '../../auth'
 import "./SignUpScreen.scss";
-// import Form from "react-bootstrap/Form";
-// import Button from "react-bootstrap/Button";
-// import Row from "react-bootstrap/Row";
-// import Col from "react-bootstrap/Col";
 import { Form, Row, Col, Button, Card } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 
@@ -56,12 +52,27 @@ export default function SignUpScreen() {
     const confirmEmailInput = event.target.value;
     setConfirmEmail(confirmEmailInput);
     setEmailMatchError(confirmEmailInput !== userEmail);
+
+    if (confirmEmailInput !== userEmail) {
+      event.target.setCustomValidity("Emails do not match.")
+    }
+    else {
+      event.target.setCustomValidity('');
+    }
   };
   
   const handlePasswordChange = (event) => {
     const password = event.target.value;
     setPasswordCheck(password);
     setPasswordLengthError(password.length < 8);
+
+    if (password.length < 8) {
+      event.target.setCustomValidity(`Password must be at least ${ 8} characters.`);
+    } 
+    else {
+      event.target.setCustomValidity('');
+    }
+
     setPasswordMatchError(password !== confirmPassCheck);
   };
   
@@ -69,6 +80,11 @@ export default function SignUpScreen() {
     const confirmPass = event.target.value;
     setConfirmPassCheck(confirmPass);
     setPasswordMatchError(passwordCheck !== confirmPass || confirmPass.length < 8);
+    if (passwordCheck !== confirmPass) {
+      event.target.setCustomValidity('Passwords do not match.');
+    } else {
+      event.target.setCustomValidity('');
+    }
   };
 
   useEffect(() => {
