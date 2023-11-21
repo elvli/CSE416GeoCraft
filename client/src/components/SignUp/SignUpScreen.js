@@ -150,6 +150,9 @@ export default function SignUpScreen() {
               </Form.Group>
             </Row>
           </Form>
+          <div className="login-ref">
+              <a href="/login">Already have an account? Click here.</a>
+            </div>
         </Card.Body>
       </Card>
     </div>
