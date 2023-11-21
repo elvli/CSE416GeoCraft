@@ -5,19 +5,17 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  height: 70vh;
 
   .form-items {
-    width: 30vw;
+    width: 576px;
     background-color: theme.$superlightgray;
   }
 
   .form-button {
-    width: 30vw;
+    height: 54px;
+    width: 576px;
     background-color: theme.$slightlighterthanblack !important;
     border-color: theme.$slightlighterthanblack;
-    height: 5vh;
-    margin-left: 10px;
   }
 
   .form-button:hover {
@@ -28,8 +26,7 @@
   .register {
     display: flex;
     flex-direction: row;
-    column-gap: 16vw;
-    margin-left: 10px;
+    column-gap: 304px;
 
     .register-items {
       margin-top: 15px;
@@ -42,14 +39,15 @@
   }
 }
 
-.sign-in-logo {
-  margin-top: 100px;
-  margin-bottom: -150px;
+.guest-button {
+  height: 54px;
+  width: 576px;
+  margin-top: 10px;
+  margin-left: 4px;
+  margin-right: 4px;
 }
 
-.guest-button{
-  width: 30vw;
-  height: 5vh;
-  margin-top:  10px;
-  margin-left: 8px;
+.login-input {
+  margin-left: 4px;
+  margin-right: 4px;
 }

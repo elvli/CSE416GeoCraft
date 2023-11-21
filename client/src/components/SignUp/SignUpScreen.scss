@@ -1,7 +1,7 @@
 @use "../../styles/theme" as theme;
 
 .background-container {
-  background-image: url('../Images/san_rafael-20000-sdb-028198-preview-2.png');  // Update the path accordingly
+  background-image: url('../Images/san_rafael-20000-sdb-028198-preview-2.png'); // Update the path accordingly
   background-size: cover;
   background-position: center;
 }
@@ -13,26 +13,26 @@
   flex-direction: column;
 
   .sign-up-item {
-    width: 30vw;
+    width: 576px;
     background-color: theme.$superlightgray;
   }
 
   .name {
-    width: 14.3vw;
+    width: 274px;
     background-color: theme.$superlightgray;
   }
 
   .last-name {
-    width: 14.3vw;
-    margin-left: 2px;
+    width: 274px;
     background-color: theme.$superlightgray;
+    margin-left: 2px;
   }
 
   .sign-up-button {
+    height: 54px;
+    width: 576px;
     background-color: theme.$slightlighterthanblack !important;
     border-color: theme.$slightlighterthanblack;
-    height: 5vh;
-    width: 30vw;
     margin-left: 10px;
     margin-right: 10px;
   }
