@@ -1,8 +1,6 @@
 import { React, useState, useContext, useEffect } from "react";
 import AuthContext from '../../auth'
-import AppBanner from "../AppBanner/AppBanner";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import { Form, Button, Card, Row, Col} from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import "./LoginScreen.scss";
@@ -51,48 +49,47 @@ export default function LoginScreen() {
   }
 
   return (
-    <div className="login-screen">
-      <div>
-        <AppBanner />
-      </div>
-      <img src={GeoCraftLogoBlack} alt="Geocraft Logo" className="sign-in-logo" />
-      <div>
-        <Form className="login-credentials" noValidate validated={validated} onSubmit={handleSubmit}>
-          <h1 className="heading">Sign In</h1>
-          <br />
-          <Form.Group>
-            <Form.Control required className="form-items" name="email" type="email" placeholder="Email" size="lg" />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Control required className="form-items" name="password" type="password" placeholder="Password" size="lg" />
-          </Form.Group>
-          {auth.errorMessage !== null && (
-            <div className="login-error-message text-danger">
-              Incorrect username or password. Try again or click Forgot password to reset.
-            </div>
-          )}
-          <br />
-          <div className="register">
-            <div className="register-items">
-              <a href="/password-reset">Trouble Signing in? Click here.</a>
-            </div>
-            <div className="register-items">
-              <a href="/sign-up">Sign Up</a>
-            </div>
+    <div className="d-flex align-items-center justify-content-center vh-100 background-container">
+      <Card className="sign-up-screen">
+        <Card.Body>
+          <div className="login-screen text-center">
+            <img src={GeoCraftLogoBlack} alt="Geocraft Logo" />
+            <Form className="login-credentials" noValidate validated={validated} onSubmit={handleSubmit}>
+              <h1 className="heading">Sign In</h1>
+              <br />
+              <Form.Group>
+                <Form.Control required className="form-items login-input" name="email" type="email" placeholder="Email" size="lg" />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Control required className="form-items login-input" name="password" type="password" placeholder="Password" size="lg" />
+              </Form.Group>
+              {auth.errorMessage !== null && (
+                <div className="login-error-message text-danger">
+                  Incorrect username or password. Try again or click Forgot password to reset.
+                </div>
+              )}
+              <br />
+              <div className="register">
+                <div className="register-items">
+                  <a href="/password-reset">Trouble Signing in? Click here.</a>
+                </div>
+                <div className="register-items">
+                  <a href="/sign-up">Sign Up</a>
+                </div>
+              </div>
+              <br />
+              <Form.Group>
+                <Button className="form-button" type="submit">Sign In</Button>
+              </Form.Group>
 
+              <Form.Group>
+                <Button className="guest-button" onClick={handleGuest}>Continue as Guest</Button>
+              </Form.Group>
+            </Form>
           </div>
-          <br />
-          <Form.Group>
-            <Button className="form-button" type="submit">Sign In</Button>
-          </Form.Group>
-
-          <Form.Group>
-            <Button className="guest-button" onClick={handleGuest}>Continue as Guest</Button>
-          </Form.Group>
-
-        </Form>
-      </div>
+        </Card.Body>
+      </Card>
     </div>
   )
 }
