@@ -1,36 +1,52 @@
 @use "../../styles/theme" as theme;
 
+.background-container {
+  background-image: url('../Images/san_rafael-20000-sdb-028198-preview-2.png');  // Update the path accordingly
+  background-size: cover;
+  background-position: center;
+}
+
 .sign-up-screen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 85vh;
-    .sign-up-item {
-        width: 30vw;
-        background-color: theme.$superlightgray;
-    }
-    .name {
-        width: 14.3vw;
-        background-color: theme.$superlightgray;
-    }
-    .last-name {
-        width: 14.3vw;
-        margin-left: 2px;
-        background-color: theme.$superlightgray;
-    }
-    .sign-up-button {
-        background-color: theme.$slightlighterthanblack !important;
-        border-color: theme.$slightlighterthanblack;
-        height: 5vh;
-        width: 30vw;
-        margin-left: 10px;
-    }
-    .sign-up-button:hover {
-        background-color: gray !important;
-        border-color: gray;
-    }
-    .heading {
-        font-weight: bolder;
-    }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  .sign-up-item {
+    width: 30vw;
+    background-color: theme.$superlightgray;
+  }
+
+  .name {
+    width: 14.3vw;
+    background-color: theme.$superlightgray;
+  }
+
+  .last-name {
+    width: 14.3vw;
+    margin-left: 2px;
+    background-color: theme.$superlightgray;
+  }
+
+  .sign-up-button {
+    background-color: theme.$slightlighterthanblack !important;
+    border-color: theme.$slightlighterthanblack;
+    height: 5vh;
+    width: 30vw;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .sign-up-button:hover {
+    background-color: gray !important;
+    border-color: gray;
+  }
+
+  .heading {
+    font-weight: bolder;
+  }
+}
+
+.sign-up-error-message {
+  margin-bottom: -24px;
 }

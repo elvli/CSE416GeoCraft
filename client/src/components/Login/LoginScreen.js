@@ -4,7 +4,7 @@ import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
-import GeoCraftLogoBlack from '../Icons/GeoCraftLogoBlack.png'
+import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import "./LoginScreen.scss";
 
 export default function LoginScreen() {

@@ -4,7 +4,7 @@ import AppBanner from "../AppBanner/AppBanner";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
-import GeoCraftLogoBlack from '../Icons/GeoCraftLogoBlack.png'
+import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import { useNavigate } from "react-router-dom";
 import AuthContext from '../../auth'
 

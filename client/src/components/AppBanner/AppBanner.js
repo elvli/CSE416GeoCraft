@@ -3,7 +3,7 @@ import '../../App.css'
 import './AppBanner.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AuthContext from '../../auth'
-import GeoCraftLogo from '.././Icons/GeoCraftGlobeWhite.png';
+import GeoCraftLogo from '.././Images/GeoCraftGlobeWhite.png';
 import { Button, Dropdown } from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
 import { Link } from "react-router-dom";
