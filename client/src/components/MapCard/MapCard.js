@@ -67,7 +67,7 @@ export default function MapCard(props) {
     </div>
 
     mapCardButtons = <div className='d-flex flex-row-reverse'>
-      <Button className='btn btn-light dislike-button'  disabled={!auth.loggedIn}><HandThumbsDownFill /> {map.dislikes.length}</Button>
+      <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><HandThumbsDownFill /> {map.dislikes.length}</Button>
       <Button className='btn btn-light like-button' disabled={!auth.loggedIn}><HandThumbsUpFill /> {map.likes.length}</Button>
     </div>
   }
