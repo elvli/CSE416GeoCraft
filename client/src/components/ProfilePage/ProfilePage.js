@@ -14,6 +14,7 @@ export default function ProfilePage() {
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
   const username = auth.getUsername();
+  const email = auth.getEmail();
 
   async function handleClose(event) {
     setNewMapShow(false)
@@ -159,7 +160,7 @@ export default function ProfilePage() {
               </div>
 
               <div class="px-3">
-                <p class="mb-1 h5">{(store.idNamePairs.filter(pair => pair.likes.includes(pair.ownerEmail))).length}</p>
+                <p class="mb-1 h5">{(store.idNamePairs.filter(pair => pair.likes.includes(email))).length}</p>
                 <p class="small text-muted mb-0">Likes</p>
               </div>
             </div>
@@ -196,7 +197,7 @@ export default function ProfilePage() {
               {/* {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
               {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)} */}
               {activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))}
-              {activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(pair.ownerEmail)))}
+              {activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(email)))}
             </div>
           </div>
         </div>
