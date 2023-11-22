@@ -83,28 +83,49 @@ deleteMap = async (req, res) => {
 }
 
 getMapById = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: 'UNAUTHORIZED'
-    })
-  }
-  console.log("Find Map with id: " + JSON.stringify(req.params.id));
+  try {
+    const user = auth.verifyUser(req);
 
-  await Map.findById({ _id: req.params.id }, (err, list) => {
-    if (err) {
-      return res.status(400).json({ success: false, error: err });
-    }
-    console.log("Found list: " + JSON.stringify(list));
-
-    // DOES THIS LIST BELONG TO THIS USER?
-    async function asyncFindUser(list) {
-      await User.findOne({ email: list.ownerEmail }, (err, user) => {
-        return res.status(200).json({ success: true, map: list })
+    if (!user) {
+      return res.status(401).json({
+        errorMessage: 'UNAUTHORIZED'
       });
     }
-    asyncFindUser(list);
-  }).catch(err => console.log(err))
-}
+
+    console.log("Find Map with id: " + JSON.stringify(req.params.id));
+
+    const list = await Map.findById(req.params.id);
+
+    if (!list) {
+      return res.status(404).json({
+        success: false,
+        error: 'Map not found'
+      });
+    }
+
+    // Check if the list belongs to the authenticated user
+    const owner = await User.findOne({ email: list.ownerEmail });
+
+    if (!owner || owner._id.toString() !== user._id.toString()) {
+      return res.status(401).json({
+        errorMessage: 'UNAUTHORIZED'
+      });
+    }
+
+    console.log("Found list: " + JSON.stringify(list));
+
+    return res.status(200).json({
+      success: true,
+      map: list
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error'
+    });
+  }
+};
 
 getMapPairs = async (req, res) => {
   // if (auth.verifyUser(req) === null) {
