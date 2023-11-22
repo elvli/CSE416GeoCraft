@@ -86,6 +86,7 @@ function GlobalStoreContextProvider(props) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
+                    store.loadIdNamePairs()
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }
@@ -114,6 +115,7 @@ store.dislikeList = function (email, idNamePair, user) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
+                    store.loadIdNamePairs()
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }

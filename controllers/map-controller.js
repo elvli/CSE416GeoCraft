@@ -302,18 +302,13 @@ updateUserFeedback = async (req, res) => {
         errorMessage: 'UNAUTHORIZED'
       });
     }
-
     const body = req.body.map;
-    console.log("updateUserFeedback: " + JSON.stringify(body));
-    console.log("req.body.name: " + req.body.name);
-
     if (!body) {
       return res.status(400).json({
         success: false,
         error: 'You must provide a body to update',
       });
     }
-
     // Use async/await with findOneAndUpdate
     const updatedMap = await Map.findOneAndUpdate(
       { _id: req.params.id },
@@ -327,16 +322,13 @@ updateUserFeedback = async (req, res) => {
       },
       { new: true, runValidators: true }
     );
-
     if (!updatedMap) {
       return res.status(404).json({
         success: false,
         error: 'Map not found!',
       });
     }
-
     console.log("Updated map: " + JSON.stringify(updatedMap));
-
     return res.status(200).json({
       success: true,
       map: updatedMap,
