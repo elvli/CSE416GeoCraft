@@ -91,30 +91,22 @@ getMapById = async (req, res) => {
         errorMessage: 'UNAUTHORIZED'
       });
     }
-
     console.log("Find Map with id: " + JSON.stringify(req.params.id));
-
     const list = await Map.findById(req.params.id);
-    console.log(list);
-
     if (!list) {
       return res.status(404).json({
         success: false,
         error: 'Map not found'
       });
     }
-
     // Check if the list belongs to the authenticated user
     const owner = await User.findOne({ email: list.ownerEmail });
-
     if (!owner || !user || !owner._id || !user._id || owner._id.toString() !== user._id.toString()) {
       return res.status(401).json({
         errorMessage: 'UNAUTHORIZED'
       });
     }    
-
     console.log("Found list: " + JSON.stringify(list));
-
     return res.status(200).json({
       success: true,
       map: list
@@ -257,68 +249,55 @@ getPublishedMaps = async (req, res) => {
 }
 
 updateMap = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: 'UNAUTHORIZED'
-    })
-  }
-  const body = req.body
-  console.log("updateMap: " + JSON.stringify(body));
-  console.log("req.body.name: " + req.body.name);
+  try {
+    const user = auth.verifyUser(req);
 
-  if (!body) {
-    return res.status(400).json({
-      success: false,
-      error: 'You must provide a body to update',
-    })
-  }
-
-  Map.findOne({ _id: req.params.id }, (err, map) => {
-    console.log("map found: " + JSON.stringify(map));
-    if (err) {
-      return res.status(404).json({
-        err,
-        message: 'Map not found!',
-      })
-    }
-
-    // DOES THIS LIST BELONG TO THIS USER?
-    async function asyncFindUser(list) {
-      await User.findOne({ email: list.ownerEmail }, (err, user) => {
-
-        console.log("correct user!");
-        console.log("req.body.name: " + req.body.name);
-
-        list.name = body.map.name;
-        // list.songs = body.map.songs;
-        list.published = body.map.published;
-        list.publishedDate = body.map.publishedDate;
-        list.likes = body.map.likes;
-        list.dislikes = body.map.dislikes;
-        list.views = body.map.views;
-        list
-          .save()
-          .then(() => {
-            console.log("SUCCESS!!!");
-            return res.status(200).json({
-              success: true,
-              id: list._id,
-              message: 'Map updated!',
-            })
-          })
-          .catch(error => {
-            console.log("FAILURE: " + JSON.stringify(error));
-            return res.status(404).json({
-              error,
-              message: 'Map not updated!',
-            })
-          })
-
+    if (!user) {
+      return res.status(401).json({
+        errorMessage: 'UNAUTHORIZED'
       });
     }
-    asyncFindUser(map);
-  })
-}
+
+    const body = req.body;
+    console.log("updateMap: " + JSON.stringify(body));
+    console.log("req.body.name: " + req.body.name);
+
+    if (!body) {
+      return res.status(400).json({
+        success: false,
+        error: 'You must provide a body to update',
+      });
+    }
+
+    // Use async/await with findOneAndUpdate
+    const updatedMap = await Map.findOneAndUpdate(
+      { _id: req.params.id },
+      body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedMap) {
+      return res.status(404).json({
+        success: false,
+        error: 'Map not found!',
+      });
+    }
+
+    console.log("Updated map: " + JSON.stringify(updatedMap));
+
+    return res.status(200).json({
+      success: true,
+      map: updatedMap,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error',
+    });
+  }
+};
+
 
 updateUserFeedback = async (req, res) => {
   if (auth.verifyUser(req) === null) {
