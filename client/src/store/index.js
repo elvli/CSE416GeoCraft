@@ -87,7 +87,7 @@ function GlobalStoreContextProvider(props) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
                     if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
-                    else store.loadPublishedLists();
+                    // else store.loadPublishedLists();
                 }
             }
             updateMap(id, map)
@@ -115,7 +115,7 @@ store.dislikeList = function (email, idNamePair, user) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
                     if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
-                    else store.loadPublishedLists();
+                    // else store.loadPublishedLists();
                 }
             }
             updateMap(id, map)
