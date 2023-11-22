@@ -3,6 +3,7 @@ import './CommentCard.scss'
 import { useState, useContext } from 'react';
 import { PersonCircle } from 'react-bootstrap-icons';
 import Card from 'react-bootstrap/Card';
+import GlobalStoreContext from "../../store";
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import { Button, Dropdown } from "react-bootstrap";
