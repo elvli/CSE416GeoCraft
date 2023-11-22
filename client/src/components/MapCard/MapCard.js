@@ -6,10 +6,12 @@ import './MapCard.scss'
 import { Navigate } from 'react-router-dom';
 import AuthContext from '../../auth'
 export default function MapCard(props) {
+  const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
-  const { map, functions } = props
+  const { map, functions, idNamePair, selected } = props
   const [toEdit, setToEdit] = useState(false);
-  const { idNamePair, selected } = props;
+
+  store.history = useHistory();
 
   function onClickfoo(event) {
     event.preventDefault();
