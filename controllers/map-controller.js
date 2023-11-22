@@ -99,13 +99,7 @@ getMapById = async (req, res) => {
         error: 'Map not found'
       });
     }
-    // Check if the list belongs to the authenticated user
-    const owner = await User.findOne({ email: list.ownerEmail });
-    if (!owner || !user || !owner._id || !user._id || owner._id.toString() !== user._id.toString()) {
-      return res.status(401).json({
-        errorMessage: 'UNAUTHORIZED'
-      });
-    }    
+    
     console.log("Found list: " + JSON.stringify(list));
     return res.status(200).json({
       success: true,
