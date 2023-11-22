@@ -9,7 +9,7 @@ import { GlobalStoreContext } from '../../store'
 export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
-  const { map, functions, idNamePair, selected } = props
+  const { map, functions, selected } = props
   const [toEdit, setToEdit] = useState(false);
 
 
@@ -21,11 +21,11 @@ export default function MapCard(props) {
 
   function handleLike(event) {
     event.stopPropagation();
-    store.likeList(auth.user.email, idNamePair, auth.user)
+    store.likeList(auth.user.email, map, auth.user)
   }
   function handleDislike(event) {
       event.stopPropagation();
-      store.dislikeList(auth.user.email, idNamePair, auth.user)
+      store.dislikeList(auth.user.email, map, auth.user)
   }
 
   if(toEdit) {
