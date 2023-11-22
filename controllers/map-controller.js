@@ -95,6 +95,7 @@ getMapById = async (req, res) => {
     console.log("Find Map with id: " + JSON.stringify(req.params.id));
 
     const list = await Map.findById(req.params.id);
+    console.log(list);
 
     if (!list) {
       return res.status(404).json({
