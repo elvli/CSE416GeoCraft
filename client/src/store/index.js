@@ -69,7 +69,6 @@ function GlobalStoreContextProvider(props) {
     store.likeList = function (email, idNamePair, user) {
     async function asyncGetMap(id) {
         let response = await api.getMapById(id)
-        console.log(response)
         if (response.data.success) {
             let map = response.data.map;
             if (idNamePair.likes.indexOf(user.email) > -1) {

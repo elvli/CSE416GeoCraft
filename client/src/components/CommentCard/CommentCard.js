@@ -12,6 +12,7 @@ export default function CommentCard() {
   const { auth } = useContext(AuthContext);
   const [likeButton, setLikeButton] = useState(false)
   const [dislikeButton, setDislikeButton] = useState(false)
+  const { store } = useContext(GlobalStoreContext);
   return (
     // <div className="card comment-card">
     //   <div className="card-title">
