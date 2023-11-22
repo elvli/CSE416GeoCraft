@@ -12,6 +12,11 @@ require("dotenv").config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+app.use(cors({
+  origin: "https://geocraftmaps.azurewebsites.net",
+  credentials: true,
+}));
+
 // app.use(express.urlencoded({ extended: true }))
 // app.use(cors({
 //     origin: ["http://localhost:3000"],
