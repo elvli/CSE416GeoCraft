@@ -1,10 +1,12 @@
 import React from 'react'
 import { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom'
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill } from 'react-bootstrap-icons';
 import './MapCard.scss'
 import { Navigate } from 'react-router-dom';
 import AuthContext from '../../auth'
+import { GlobalStoreContext } from '../store'
 export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
