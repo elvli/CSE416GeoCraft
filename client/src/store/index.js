@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import jsTPS from '../common/jsTPS'
 import api from './store-request-api'
 import AuthContext from '../auth'
@@ -17,6 +18,10 @@ function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         idNamePairs: []
     });
+
+    const history = useHistory();
+    
+
 
     const storeReducer = (action) => {
         const { type, payload} = action
