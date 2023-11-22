@@ -99,7 +99,7 @@ getMapById = async (req, res) => {
         error: 'Map not found'
       });
     }
-    
+
     console.log("Found list: " + JSON.stringify(list));
     return res.status(200).json({
       success: true,
@@ -294,54 +294,62 @@ updateMap = async (req, res) => {
 
 
 updateUserFeedback = async (req, res) => {
-  if (auth.verifyUser(req) === null) {
-    return res.status(400).json({
-      errorMessage: 'UNAUTHORIZED'
-    })
-  }
-  const body = req.body
-  console.log("updateMap: " + JSON.stringify(body));
-  console.log("req.body.name: " + req.body.name);
+  try {
+    const user = auth.verifyUser(req);
 
-  if (!body) {
-    return res.status(400).json({
-      success: false,
-      error: 'You must provide a body to update',
-    })
-  }
-
-  Map.findOne({ _id: req.params.id }, (err, map) => {
-    console.log("Map found: " + JSON.stringify(map));
-    if (err) {
-      return res.status(404).json({
-        err,
-        message: 'Map not found!',
-      })
+    if (!user) {
+      return res.status(401).json({
+        errorMessage: 'UNAUTHORIZED'
+      });
     }
 
-    map.comments = body.map.comments;
-    map.likes = body.map.likes;
-    map.dislikes = body.map.dislikes;
-    map.listens = body.map.listens;
-    map
-      .save()
-      .then(() => {
-        console.log("SUCCESS!!!");
-        return res.status(200).json({
-          success: true,
-          id: map._id,
-          message: 'map updated!',
-        })
-      })
-      .catch(error => {
-        console.log("FAILURE: " + JSON.stringify(error));
-        return res.status(404).json({
-          error,
-          message: 'map not updated!',
-        })
-      })
-  })
-}
+    const body = req.body;
+    console.log("updateUserFeedback: " + JSON.stringify(body));
+    console.log("req.body.name: " + req.body.name);
+
+    if (!body) {
+      return res.status(400).json({
+        success: false,
+        error: 'You must provide a body to update',
+      });
+    }
+
+    // Use async/await with findOneAndUpdate
+    const updatedMap = await Map.findOneAndUpdate(
+      { _id: req.params.id },
+      {
+        $set: {
+          comments: body.comments,
+          likes: body.likes,
+          dislikes: body.dislikes,
+          listens: body.listens,
+        }
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedMap) {
+      return res.status(404).json({
+        success: false,
+        error: 'Map not found!',
+      });
+    }
+
+    console.log("Updated map: " + JSON.stringify(updatedMap));
+
+    return res.status(200).json({
+      success: true,
+      map: updatedMap,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error',
+    });
+  }
+};
+
 
 module.exports = {
   createMap,
