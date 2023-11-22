@@ -6,7 +6,7 @@ import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill } f
 import './MapCard.scss'
 import { Navigate } from 'react-router-dom';
 import AuthContext from '../../auth'
-import { GlobalStoreContext } from '../store'
+import { GlobalStoreContext } from '../../store'
 export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
