@@ -2,6 +2,7 @@
 
 .app-banner {
   justify-content: space-between;
+  height: 50px;
 }
 
 .name-input {
@@ -22,9 +23,9 @@
 
 .account-dropdown {
   right: 0;
-  max-height: '5vh';
+  max-height: 5vh;
   z-index: 1000;
-  margin-right: '4px';
+  margin-right: 4px;
 
   .dropdown-toggle::after {
     display: none;
@@ -41,4 +42,19 @@
 
 .profile-dropdown {
   margin-left: 8px;
+}
+
+.navbar {
+  min-height: 5vh;
+}
+
+.banner-logo {
+  max-Width: 2px;
+}
+
+.banner-button {
+  padding: 0;
+  margin-top: 2px;
+  border: none;
+  box-shadow: none;
 }

@@ -1,6 +1,6 @@
 import { React, useState, useContext, useEffect } from "react";
 import AuthContext from '../../auth'
-import { Form, Button, Card, Row, Col} from 'react-bootstrap';
+import { Form, Button, Card } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import "./LoginScreen.scss";
@@ -55,7 +55,7 @@ export default function LoginScreen() {
           <div className="login-screen text-center">
             <img src={GeoCraftLogoBlack} alt="Geocraft Logo" />
             <Form className="login-credentials" noValidate validated={validated} onSubmit={handleSubmit}>
-              <h1 className="heading">Sign In</h1>
+              <h1>Sign In</h1>
               <br />
               <Form.Group>
                 <Form.Control required className="form-items login-input" name="email" type="email" placeholder="Email" size="lg" />

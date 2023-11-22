@@ -1,33 +1,40 @@
 @use "../../styles/theme" as theme;
 
 .verify-screen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
-    .verify-item  {
-        width: 30vw;
-        background-color: theme.$superlightgray;
-    }
-    .verify-button {
-        width: 30vw;
-        background-color: theme.$slightlighterthanblack !important;
-        border-color: theme.$slightlighterthanblack;
-        height: 5vh;
-        transform: translate(1%,0);
-    }
-    .verify-button:hover {
-        width: 30vw;
-        background-color: gray !important;
-        border-color: gray;
-        height: 5vh;
-    }
-    h1 {
-        font-weight: bolder;
-    }
-    p {
-        font-size: 18px;
-    }
+  .verify-item {
+    width: 576px;
+    background-color: theme.$superlightgray;
+    margin: 0px;
+  }
+
+  .verify-button {
+    height: 54px;
+    width: 576px;
+    background-color: theme.$slightlighterthanblack !important;
+    border-color: theme.$slightlighterthanblack;
+    margin: 0px;
+    margin-top: -35px;
+  }
+
+  .verify-button:hover {
+    height: 54px;
+    width: 576px;
+    background-color: gray !important;
+    border-color: gray;
+  }
+}
+
+.verify-links {
+  display: flex;
+  flex-direction: row;
+  column-gap: 226px;
+
+  .verify-items {
+    margin-top: 15px;
+  }
 }

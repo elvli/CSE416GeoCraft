@@ -16,12 +16,11 @@ export default function SignUpScreen() {
   const [confirmPassCheck, setConfirmPassCheck] = useState("");
   const [passwordLengthError, setPasswordLengthError] = useState(false);
   const [passwordMatchError, setPasswordMatchError] = useState(false);
-
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false || usernameTakenError || emailTakenError || emailMatchError|| passwordLengthError || passwordMatchError) {
+    if (form.checkValidity() === false || usernameTakenError || emailTakenError || emailMatchError || passwordLengthError || passwordMatchError) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
@@ -138,7 +137,7 @@ export default function SignUpScreen() {
             <br />
             <Row>
               <Form.Group>
-                <Form.Control className="sign-up-item" name='confirmPassword' required type="password" placeholder="Confirm Password" size="lg" onChange={handleConfirmPasswordChange}/>
+                <Form.Control className="sign-up-item" name='confirmPassword' required type="password" placeholder="Confirm Password" size="lg" onChange={handleConfirmPasswordChange} />
                 {passwordMatchError && <div className="sign-up-error-message text-danger">Passwords do not match.</div>}
               </Form.Group>
             </Row>

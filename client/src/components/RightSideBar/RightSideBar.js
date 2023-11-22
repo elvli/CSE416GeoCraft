@@ -47,14 +47,6 @@ export default function RightSideBar() {
             <CommentCard />
             <CommentCard />
             <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
           </div>
 
           <div className="row">

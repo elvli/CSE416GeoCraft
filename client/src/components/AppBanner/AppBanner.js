@@ -1,5 +1,4 @@
 import { React, useContext } from 'react'
-import '../../App.css'
 import './AppBanner.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AuthContext from '../../auth'
@@ -46,7 +45,7 @@ export default function AppBanner() {
       </p>
       <Link to='/'>
         <Button
-          className="navbar-brand .banner-button btn btn-dark mx-auto home-button"
+          className="navbar-brand banner-button btn btn-dark mx-auto home-button"
         >
           <img src={GeoCraftLogo}
             alt="GeoCraft Logo"
