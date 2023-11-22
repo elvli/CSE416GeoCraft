@@ -9,6 +9,7 @@ export default function MapCard(props) {
   const { auth } = useContext(AuthContext);
   const { map, functions } = props
   const [toEdit, setToEdit] = useState(false);
+  const { idNamePair, selected } = props;
 
   function onClickfoo(event) {
     event.preventDefault();
