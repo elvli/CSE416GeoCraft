@@ -54,7 +54,7 @@ mongoose
 app.get('/loggedIn', AuthController.getLoggedIn)
 app.post('/login', AuthController.loginUser)
 app.get('/logout', AuthController.logoutUser)
-app.get('/register', AuthController.registerUser)
+app.post('/register', AuthController.registerUser)
 
 app.post('/map', auth.verify, MapController.createMap)
 app.delete('/map/:id', auth.verify, MapController.deleteMap)
