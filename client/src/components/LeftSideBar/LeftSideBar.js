@@ -39,6 +39,7 @@ export default function LeftSideBar(props) {
       )
     }
   </div>
+
   const handleUserMaps = () => {
     console.log('handleUserMaps');
   }
@@ -83,6 +84,7 @@ export default function LeftSideBar(props) {
       <PersonFill className='icon-btn' />
     </Button>
   </div>
+  
   if (!auth.loggedIn) {
     tools = <div className='column-tools'>
       <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>

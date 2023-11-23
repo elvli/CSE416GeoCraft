@@ -1,14 +1,14 @@
 import React from "react";
 import { useState, useContext } from "react";
-import "./MapCreateModal.scss";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import { Form, Button, Modal } from 'react-bootstrap'
 import GlobalStoreContext from "../../store";
+import "./MapCreateModal.scss";
+
 export default function MapCreateModal(props) {
-  const { show, handleClose } = props
+  const { show, handleClose } = props;
   const { store } = useContext(GlobalStoreContext);
-  const [validated, setValidated] = useState(false)
+  const [validated, setValidated] = useState(false);
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -27,8 +27,6 @@ export default function MapCreateModal(props) {
       )
       handleClose(event)
     }
-
-    
   };
   const handleClosing = (event) => {
     setValidated(false);
