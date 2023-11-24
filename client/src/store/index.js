@@ -135,7 +135,7 @@ store.dislikeList = function (email, idNamePair, user) {
 }
 
 store.addComment = function (comment, user) {
-    let newComment = { user: user.username, comment: comment }
+    let newComment = { user: user.username, comment: comment, likes: 0, dislikes: 0}
     store.currentList.comments.push(newComment)
     async function asyncAddComment() {
         const response = await api.updateUserFeedback(store.currentList._id, store.currentList);

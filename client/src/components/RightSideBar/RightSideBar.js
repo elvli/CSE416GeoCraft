@@ -21,8 +21,15 @@ export default function RightSideBar() {
     setTextInput(event.target.value);
   }
 
-  const handleSubmit = () => {
+  const handleComment = () => {
     console.log('Comment Entered:', textInput);
+    if (event.code === "Enter") {
+      if (event.target.value === '' || !store.currentList) {
+          return;
+      }
+      store.addComment(event.target.value, auth.user);
+      event.target.value = "";
+    }
   }
 
   const handleKeyDown = (event) => {
@@ -72,7 +79,7 @@ export default function RightSideBar() {
               />
             </div>
             <div className="col-md-4">
-              <Button className="btn-primary comment-btn" onClick={handleSubmit} disabled={!auth.loggedIn}>
+              <Button className="btn-primary comment-btn" onSubmit={handleComment} disabled={!auth.loggedIn}>
                 <Send />
               </Button>
             </div>
