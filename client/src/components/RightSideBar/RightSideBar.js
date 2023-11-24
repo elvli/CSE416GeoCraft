@@ -41,12 +41,6 @@ export default function RightSideBar() {
         <div className="list-group">
           <p className="list-group-item bg-light">Comments</p>
           <div className="list-group-item bg-light custom-scrollbar">
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
-            <CommentCard />
           </div>
 
           <div className="row">

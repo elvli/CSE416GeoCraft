@@ -134,6 +134,21 @@ store.dislikeList = function (email, idNamePair, user) {
     asyncGetMap(idNamePair._id)
 }
 
+store.addComment = function (comment, user) {
+    let newComment = { user: user.username, comment: comment }
+    store.currentList.comments.push(newComment)
+    async function asyncAddComment() {
+        const response = await api.updateUserFeedback(store.currentList._id, store.currentList);
+        if (response.data.success) {
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: store.currentList
+            });
+        }
+    }
+    asyncAddComment()
+}
+
 store.setCurrentList = function (id) {
     async function asyncSetCurrentList(id) {
         let response = await api.getMapById(id);
