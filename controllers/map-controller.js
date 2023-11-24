@@ -252,7 +252,7 @@ updateMap = async (req, res) => {
       });
     }
 
-    const body = req.body;
+    const body = req.body.map;
     console.log("updateMap: " + JSON.stringify(body));
     console.log("req.body.name: " + req.body.name);
 
