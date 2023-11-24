@@ -89,9 +89,9 @@ logoutUser = async (req, res) => {
 }
 
 registerUser = async (req, res) => {
-  console.log("auth-controller", req.body);
   try {
-    const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault } = req.body;
+    const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe } = req.body;
+    console.log("auth-controller: ", req.body);
     if (password.length < 8) {
       return res
         .status(400)
@@ -128,7 +128,7 @@ registerUser = async (req, res) => {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const passwordHash = await bcrypt.hash(password, salt);
-    const newUser = new User({ firstName, lastName, username, email, passwordHash, aboutMeDefault});
+    const newUser = new User({ firstName, lastName, username, email, passwordHash, aboutMe});
     const savedUser = await newUser.save();
 
     // LOGIN THE USER
@@ -145,7 +145,7 @@ registerUser = async (req, res) => {
         lastName: savedUser.lastName,
         username: savedUser.username,
         email: savedUser.email,
-        aboutMe: savedUser.aboutMeDefault,
+        aboutMe: savedUser.aboutMeD,
       }
     })
 
