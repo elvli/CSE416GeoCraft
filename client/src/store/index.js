@@ -139,14 +139,10 @@ store.setCurrentList = function (id) {
         let response = await api.getMapById(id);
         if (response.data.success) {
             let map = response.data.map;
-
-            response = await api.updateMapById(map._id, map);
-            if (response.data.success) {
-                storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_LIST,
-                    payload: map
-                });
-            }
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: map
+            });
         }
     }
     asyncSetCurrentList(id);
