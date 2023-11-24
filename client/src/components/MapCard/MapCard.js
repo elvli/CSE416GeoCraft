@@ -27,6 +27,15 @@ export default function MapCard(props) {
       event.stopPropagation();
       store.dislikeList(auth.user.email, map, auth.user)
   }
+  function handleToggleEdit(event) {
+    store.setCurrentList(idNamePair._id);
+    console.log( store.currentList.name)
+        // event.stopPropagation();
+        // if (event.detail === 2) {
+        //     store.setCurrentList(idNamePair._id);
+        //     toggleEdit();
+        // }
+    }
 
   if(toEdit) {
       return <Navigate to="/edit"/>
@@ -72,7 +81,7 @@ export default function MapCard(props) {
 
   return (
     <div>
-      <div className="card map-card">
+      <div className="card map-card" onClick={handleToggleEdit}>
         <div className="card-header">
           <p className="map-title">{map.name}</p>
           {dropdown}

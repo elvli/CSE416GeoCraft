@@ -8,6 +8,7 @@ export const GlobalStoreContext = createContext({});
 export const GlobalStoreActionType = {
     DISPLAY_MAP: "DISPLAY_MAP",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
+    SET_CURRENT_LIST: "SET_CURRENT_LIST",
 }
 
 const tps = new jsTPS();
@@ -15,7 +16,8 @@ const tps = new jsTPS();
 function GlobalStoreContextProvider(props) {
     const { auth } = useContext(AuthContext);
     const [store, setStore] = useState({
-        idNamePairs: []
+        idNamePairs: [],
+        currentList: null,
     });
 
     const storeReducer = (action) => {
@@ -24,6 +26,13 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
+                    currentList: null,
+                });
+            }
+            case GlobalStoreActionType.SET_CURRENT_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload.map,
                 });
             }
 
@@ -123,6 +132,24 @@ store.dislikeList = function (email, idNamePair, user) {
         }
     }
     asyncGetMap(idNamePair._id)
+}
+
+store.setCurrentList = function (id) {
+    async function asyncSetCurrentList(id) {
+        let response = await api.getMapById(id);
+        if (response.data.success) {
+            let map = response.data.map;
+
+            response = await api.updateMapById(map._id, map);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: map
+                });
+            }
+        }
+    }
+    asyncSetCurrentList(id);
 }
 
 return (

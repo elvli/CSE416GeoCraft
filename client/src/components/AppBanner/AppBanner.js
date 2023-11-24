@@ -6,16 +6,22 @@ import GeoCraftLogo from '.././Images/GeoCraftGlobeWhite.png';
 import { Button, Dropdown } from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
 import { Link } from "react-router-dom";
+import { GlobalStoreContext } from '../../store'
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
   const username = auth.getUsername() ?  auth.getUsername() : 'Guest';
+  const { store } = useContext(GlobalStoreContext);
   
   const handleLogout = () => {
     // Handle logout logic
     console.log('Log out button clicked');
     auth.logoutUser();
   };
+  let currentListName = "";
+  if (store.currentList) {
+    currentListName = store.currentList.name;
+  }
 
   var dropdown = <Dropdown.Menu>
     {/* <Dropdown.Item onClick={() => { setGoToProfile(true) }}>My Profile</Dropdown.Item>
@@ -41,7 +47,7 @@ export default function AppBanner() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top app-banner">
       <p className="navbar-brand banner-edit">
-        {"Map of Italy"}
+        {currentListName}
       </p>
       <Link to='/'>
         <Button
