@@ -77,7 +77,6 @@ function AuthContextProvider(props) {
     }
   }
 
-  const aboutMeDefault = "Click edit profile to add an about me.";
   auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault) {
     try {
       const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault);

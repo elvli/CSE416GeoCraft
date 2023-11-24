@@ -89,6 +89,7 @@ logoutUser = async (req, res) => {
 }
 
 registerUser = async (req, res) => {
+  console.log("auth-controller", req.body);
   try {
     const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault } = req.body;
     if (password.length < 8) {

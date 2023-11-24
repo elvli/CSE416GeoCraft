@@ -19,7 +19,8 @@ export const loginUser = (email, password) => {
 export const logoutUser = () => api.get(`/logout/`)
 
 export const registerUser = (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe) => {
-  console.log("Registering User (Front)")
+  console.log("Registering User (Front)");
+  console.log("auth-req-api", aboutMe);
   return api.post(`/register/`, {
     firstName: firstName,
     lastName: lastName,

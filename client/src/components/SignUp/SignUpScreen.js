@@ -29,6 +29,8 @@ export default function SignUpScreen() {
       event.preventDefault();
       event.stopPropagation();
       const formData = new FormData(event.currentTarget);
+      const aboutMeDefault = "Click edit profile to add an about me.";
+
       auth.registerUser(
         formData.get('firstName'),
         formData.get('lastName'),
@@ -37,6 +39,7 @@ export default function SignUpScreen() {
         formData.get('confirmEmail'),
         formData.get('password'),
         formData.get('confirmPassword'),
+        aboutMeDefault,
       );
     }
   };
