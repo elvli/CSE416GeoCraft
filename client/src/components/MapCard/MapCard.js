@@ -28,8 +28,10 @@ export default function MapCard(props) {
       store.dislikeList(auth.user.email, map, auth.user)
   }
   function handleToggleEdit(event) {
+    console.log(store.currentList)
     store.setCurrentList(map._id);
-    console.log( store.currentList.name)
+    console.log(store.currentList)
+    console.log(store.currentList.name)
         // event.stopPropagation();
         // if (event.detail === 2) {
         //     store.setCurrentList(idNamePair._id);

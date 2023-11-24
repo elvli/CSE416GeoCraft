@@ -254,7 +254,7 @@ updateMap = async (req, res) => {
 
     const body = req.body.map;
     console.log("updateMap: " + JSON.stringify(body));
-    console.log("req.body.name: " + req.body.name);
+    console.log("req.body.name: " + req.body.map.name);
 
     if (!body) {
       return res.status(400).json({
