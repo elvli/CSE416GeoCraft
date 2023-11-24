@@ -38,13 +38,13 @@ export default function EditProfileModal(props) {
           </Modal.Header>
 
           <Modal.Body>
-          <Form.Group>
+            <Form.Group>
               <Form.Label>New Username</Form.Label>
               <Form.Control
                 className="map-name"
                 name="newUsername"
                 type="text"
-                placeholder={currentUsername}
+                defaultValue={currentUsername}
               />
             </Form.Group>
             <br />
