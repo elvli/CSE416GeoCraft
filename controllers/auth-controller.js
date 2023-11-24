@@ -143,7 +143,8 @@ registerUser = async (req, res) => {
         firstName: savedUser.firstName,
         lastName: savedUser.lastName,
         username: savedUser.username,
-        email: savedUser.email
+        email: savedUser.email,
+        aboutMe: savedUser.aboutMeDefault,
       }
     })
 
