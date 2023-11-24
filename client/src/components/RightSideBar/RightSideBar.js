@@ -4,8 +4,10 @@ import { ChatRightText, Send } from 'react-bootstrap-icons';
 import CommentCard from '../CommentCard/CommentCard';
 import "./RightSideBar.scss";
 import AuthContext from '../../auth'
+import { GlobalStoreContext } from '../../store';
 
 export default function RightSideBar() {
+  const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const [isToggled, setIsToggled] = useState(false);
   const [textInput, setTextInput] = useState('');
@@ -29,6 +31,19 @@ export default function RightSideBar() {
     }
   }
 
+  let comments = ""
+  if (store.currentList && store.currentList.comments) {
+      comments =
+          store.currentList.comments.map((userComment) => (
+                  <CommentCard
+                      user={userComment.user}
+                      comment={userComment.comment}
+                      likes={userComment.likes}
+                      dislikes={userComment.dislikes}
+                  />
+          ))
+  }
+
   return (
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="right-wrapper">
       <nav className="navbar">
@@ -41,6 +56,7 @@ export default function RightSideBar() {
         <div className="list-group">
           <p className="list-group-item bg-light">Comments</p>
           <div className="list-group-item bg-light custom-scrollbar">
+          {comments}
           </div>
 
           <div className="row">

@@ -9,11 +9,12 @@ import Row from 'react-bootstrap/Row'
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUp, HandThumbsDown, ThreeDotsVertical, PenFill, HandThumbsUpFill, HandThumbsDownFill } from 'react-bootstrap-icons';
 import AuthContext from '../../auth'
-export default function CommentCard() {
+export default function CommentCard(props) {
   const { auth } = useContext(AuthContext);
   const [likeButton, setLikeButton] = useState(false)
   const [dislikeButton, setDislikeButton] = useState(false)
   const { store } = useContext(GlobalStoreContext);
+  const { user, comment, likes, dislikes } = props;
   return (
     // <div className="card comment-card">
     //   <div className="card-title">
@@ -38,11 +39,11 @@ export default function CommentCard() {
               </Col>
               <Col>
                 <Row>
-                  <p className="comment-username">Example User</p>
+                  <p className="comment-username">{user}</p>
                 </Row>
                 <Row>
                   <Card.Text className='comment-text'>
-                    Optimism is the theory that all failures—all evils—are due to insufficient knowledge. Problems are inevitable, because our knowledge will always be infinitely far from complete. Some problems are hard, but it is a mistake to confuse hard problems with problems unlikely to be solved. Problems are soluble, and each particular evil is a problem that can be solved. An optimistic civilization is open and not afraid to innovate, and is based on traditions of criticism. Its institutions keep improving, and the most important knowledge that they embody is knowledge of how to detect and eliminate errors.
+                    {comment}
                   </Card.Text>
                   
                 </Row>
@@ -51,7 +52,7 @@ export default function CommentCard() {
                     <Row xs="auto" className='like-comment-number'>
     
                       <Button onClick={()=>{setLikeButton(!likeButton)}} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{likeButton? <HandThumbsUpFill/>:<HandThumbsUp/>}</Button>
-                      {likeButton?1:0}
+                      {likes}
                     </Row>
 
                   </Col>
