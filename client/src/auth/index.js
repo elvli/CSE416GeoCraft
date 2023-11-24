@@ -211,6 +211,15 @@ function AuthContextProvider(props) {
     }
   }
 
+  auth.getAboutMe = function () {
+    let aboutMe = "";
+    if (auth.user) {
+      aboutMe += auth.user.aboutMe
+    }
+    console.log("aboutMe: " + aboutMe);
+    return aboutMe;
+  }
+
   return (
     <AuthContext.Provider value={{
       auth
