@@ -77,9 +77,10 @@ function AuthContextProvider(props) {
     }
   }
 
-  auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword) {
+  const aboutMeDefault = "Click edit profile to add an about me.";
+  auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault) {
     try {
-      const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword);
+      const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault);
       if (response.status === 200) {
         authReducer({
           type: AuthActionType.REGISTER_USER,
@@ -186,7 +187,7 @@ function AuthContextProvider(props) {
       }
     } catch (error) {
       try {
-        const response = await api.registerUser("Guest", "User", "Guest", "guest@gmail.com", "guest@gmail.com", "GuestPassword", "GuestPassword", "Click edit profile to add an about me.");
+        const response = await api.registerUser("Guest", "User", "Guest", "guest@gmail.com", "guest@gmail.com", "GuestPassword", "GuestPassword");
         if (response.status === 200) {
           authReducer({
             type: AuthActionType.REGISTER_USER,
