@@ -84,13 +84,13 @@ deleteMap = async (req, res) => {
 
 getMapById = async (req, res) => {
   try {
-    const user = auth.verifyUser(req);
+    // const user = auth.verifyUser(req);
 
-    if (!user) {
-      return res.status(401).json({
-        errorMessage: 'UNAUTHORIZED'
-      });
-    }
+    // if (!user) {
+    //   return res.status(401).json({
+    //     errorMessage: 'UNAUTHORIZED'
+    //   });
+    // }
     console.log("Find Map with id: " + JSON.stringify(req.params.id));
     const list = await Map.findById(req.params.id);
     if (!list) {
