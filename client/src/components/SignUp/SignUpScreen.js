@@ -69,7 +69,7 @@ export default function SignUpScreen() {
     setPasswordLengthError(password.length < 8);
 
     if (password.length < 8) {
-      event.target.setCustomValidity(`Password must be at least ${ 8} characters.`);
+      event.target.setCustomValidity(`Password must be at least 8 characters.`);
     } 
     else {
       event.target.setCustomValidity('');

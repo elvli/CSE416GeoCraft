@@ -77,9 +77,9 @@ function AuthContextProvider(props) {
     }
   }
 
-  auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault) {
+  auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe) {
     try {
-      const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMeDefault);
+      const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe);
       if (response.status === 200) {
         authReducer({
           type: AuthActionType.REGISTER_USER,
@@ -157,7 +157,6 @@ function AuthContextProvider(props) {
     if (auth.user) {
       username += auth.user.username
     }
-    console.log("username: " + username);
     return username;
   }
 
@@ -216,7 +215,7 @@ function AuthContextProvider(props) {
     if (auth.user) {
       aboutMe += auth.user.aboutMe
     }
-    console.log("aboutMe: " + aboutMe);
+    console.log("aboutMe (auth front): " + aboutMe);
     return aboutMe;
   }
 
