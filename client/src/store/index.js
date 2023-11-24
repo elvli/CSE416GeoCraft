@@ -144,9 +144,7 @@ store.setCurrentList = function (id) {
             if (response.data.success) {
                 storeReducer({
                     type: GlobalStoreActionType.SET_CURRENT_LIST,
-                    payload: {
-                        currentList: map
-                    }
+                    payload: map
                 });
             }
         }
