@@ -115,7 +115,7 @@ export default function ProfilePage() {
           <div class="card-body p-4 text-black">
             <div class="mb-5">
               <p class="lead fw-normal mb-1">About</p>
-              <div class="p-4" style={{ backgroundColor: "#f8f9fa" }}>
+              <div class="p-4 about-me-container" >
                 <p class="font-italic mb-1">Web Developer</p>
                 <p class="font-italic mb-1">Lives in New York</p>
                 <p class="font-italic mb-0">Photographer</p>

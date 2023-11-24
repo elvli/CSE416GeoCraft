@@ -10,6 +10,7 @@ const UserSchema = new Schema(
     email: { type: String, required: true },
     passwordHash: { type: String, required: true },
     maps: [{ type: ObjectId, ref: 'Maps' }],
+    aboutMe: {type: String },
   },
   { timestamps: true },
 )
