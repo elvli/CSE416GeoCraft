@@ -301,7 +301,6 @@ updateUserFeedback = async (req, res) => {
     }
     const body = req.body.map;
     console.log("updateMap: " + JSON.stringify(body));
-    console.log("req.body.name: " + req.body.map.name);
     if (!body) {
       return res.status(400).json({
         success: false,
@@ -309,18 +308,16 @@ updateUserFeedback = async (req, res) => {
       });
     }
     // Use async/await with findOneAndUpdate
-    const updatedMap = await Map.findOneAndUpdate(
-      { _id: req.params.id },
+    const updatedMap = await Map.findByIdAndUpdate(
+      req.params.id,
       {
-        $set: {
-          comments: body.comments,
-          likes: body.likes,
-          dislikes: body.dislikes,
-          listens: body.listens,
-        }
+        comments: body.comments,
+        likes: body.likes,
+        dislikes: body.dislikes,
+        listens: body.listens,
       },
       { new: true, runValidators: true }
-    );
+    );    
     if (!updatedMap) {
       return res.status(404).json({
         success: false,
