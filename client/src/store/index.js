@@ -56,29 +56,51 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.loadIdNamePairs = function (id = null) {
-        async function asyncGetMap(id) {
+        if (id != null) {
+          async function asyncGetMap(id) {
             let mapID = await api.getMapById(id);
             let map = mapID.data.map;
-        async function asyncLoadIdNamePairs() {
-            const response = await api.getMapPairs();
             if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                storeReducer({
+              async function asyncLoadIdNamePairs() {
+                const response = await api.getMapPairs();
+                if (response.data.success) {
+                  let pairsArray = response.data.idNamePairs;
+                  storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {
-                        idNamePairs: pairsArray,
-                        currentList: map
+                      idNamePairs: pairsArray,
+                      currentList: map
                     }
-                });
+                  });
+                } else {
+                  console.log("API FAILED TO GET THE LIST PAIRS");
+                }
+              }
+              asyncLoadIdNamePairs();
             }
-            else {
-                console.log("API FAILED TO GET THE LIST PAIRS");
-            }
+          }
+          asyncGetMap(id);
         }
-        asyncLoadIdNamePairs();
-    }
-    asyncGetMap(id)
-    }
+        else{
+            async function asyncLoadIdNamePairs() {
+                const response = await api.getMapPairs();
+                if (response.data.success) {
+                  let pairsArray = response.data.idNamePairs;
+                  storeReducer({
+                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                    payload: {
+                      idNamePairs: pairsArray,
+                      currentList: map
+                    }
+                  });
+                } else {
+                  console.log("API FAILED TO GET THE LIST PAIRS");
+                }
+              }
+              asyncLoadIdNamePairs();
+        }
+      };
+      
 
     store.likeList = function (email, idNamePair, user) {
     async function asyncGetMap(id) {
