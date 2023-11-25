@@ -23,11 +23,11 @@ export default function RightSideBar() {
 
   const handleSubmit = (event) => {
     console.log('Comment Entered:', textInput);
-      if (event.target.value === '' || !store.currentList) {
+      if (textInput === '' || !store.currentList) {
           return;
       }
       store.addComment(textInput, auth.user);
-      event.target.value = "";
+      textInput = "";
   }
 
   const handleKeyDown = (event) => {
