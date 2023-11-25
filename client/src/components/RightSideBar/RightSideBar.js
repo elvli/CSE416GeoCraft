@@ -22,6 +22,7 @@ export default function RightSideBar() {
   }
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     console.log('Comment Entered:', textInput);
     if (event.code === "Enter") {
       if (event.target.value === '' || !store.currentList) {
