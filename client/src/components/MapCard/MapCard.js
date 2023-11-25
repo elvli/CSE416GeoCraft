@@ -11,7 +11,6 @@ export default function MapCard(props) {
   const { auth } = useContext(AuthContext);
   const { map, functions, selected } = props
   const [toEdit, setToEdit] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(false);
   const email = auth.getEmail();
 
 
@@ -21,19 +20,13 @@ export default function MapCard(props) {
     setToEdit(true)
   }
 
-  useEffect(() => {
-    // This effect will run whenever forceUpdate changes
-  }, [forceUpdate]);
-
   function handleLike(event) {
     event.stopPropagation();
     store.likeList(auth.user.email, map, auth.user)
-    setForceUpdate(prevState => !prevState);
   }
   function handleDislike(event) {
       event.stopPropagation();
       store.dislikeList(auth.user.email, map, auth.user)
-      setForceUpdate(prevState => !prevState);
   }
   function handleToggleEdit(event) {
     event.stopPropagation();

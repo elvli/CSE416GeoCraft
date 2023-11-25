@@ -34,7 +34,6 @@ export default function RightSideBar() {
   }
 
   const handleReply = (argument) => (event) => {
-    console.log(argument)
     setTextInput("@" + argument)
 }
 
