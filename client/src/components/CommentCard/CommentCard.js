@@ -12,7 +12,7 @@ import AuthContext from '../../auth'
 export default function CommentCard(props) {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
-  const { user, comment, map, count } = props;
+  const { user, comment, map, count, handleReply } = props;
   const email = auth.getEmail();
   function handleLike(event) {
     event.stopPropagation();
@@ -89,7 +89,7 @@ export default function CommentCard(props) {
 
                   </Col>
                   <Col >
-                  <Button className='btn btn-light reply-link' disabled={!auth.loggedIn}>Reply</Button>
+                  <Button onClick={() => handleReply(map.comments[count].user)} className='btn btn-light reply-link' disabled={!auth.loggedIn}>Reply</Button>
                   </Col>
                 </Row>
               </Col>

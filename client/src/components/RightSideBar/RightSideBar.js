@@ -29,6 +29,10 @@ export default function RightSideBar() {
       setTextInput("")
   }
 
+  const handleReply = (argument) => (event) => {
+    setTextInput("@" + argument)
+}
+
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleSubmit();
@@ -44,6 +48,7 @@ export default function RightSideBar() {
                       comment={userComment.comment}
                       count={index}
                       map={store.currentList}
+                      handleReply={handleReply}
                   />
           ))
   }

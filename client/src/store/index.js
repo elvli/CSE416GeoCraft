@@ -26,7 +26,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: store.currentList
+                    currentList: null,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_LIST: {
