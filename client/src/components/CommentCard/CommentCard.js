@@ -14,7 +14,7 @@ export default function CommentCard(props) {
   const [likeButton, setLikeButton] = useState(false)
   const [dislikeButton, setDislikeButton] = useState(false)
   const { store } = useContext(GlobalStoreContext);
-  const { user, comment, likes, dislikes } = props;
+  const { user, comment, count} = props;
   return (
     // <div className="card comment-card">
     //   <div className="card-title">
@@ -52,7 +52,7 @@ export default function CommentCard(props) {
                     <Row xs="auto" className='like-comment-number'>
     
                       <Button onClick={()=>{setLikeButton(!likeButton)}} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{likeButton? <HandThumbsUpFill/>:<HandThumbsUp/>}</Button>
-                      {likes}
+                      {store.currentList.comments[count].likes}
                     </Row>
 
                   </Col>

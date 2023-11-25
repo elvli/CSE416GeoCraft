@@ -38,12 +38,11 @@ export default function RightSideBar() {
   let comments = ""
   if (store.currentList && store.currentList.comments) {
       comments =
-          store.currentList.comments.map((userComment) => (
+          store.currentList.comments.map((userComment, index) => (
                   <CommentCard
                       user={userComment.user}
                       comment={userComment.comment}
-                      likes={userComment.likes}
-                      dislikes={userComment.dislikes}
+                      count={index}
                   />
           ))
   }
