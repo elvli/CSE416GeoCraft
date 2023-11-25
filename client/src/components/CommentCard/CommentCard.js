@@ -17,11 +17,11 @@ export default function CommentCard(props) {
   const { user, comment, map, count } = props;
   function handleLike(event) {
     event.stopPropagation();
-    store.likeList(auth.user.email, map, auth.user)
+    store.likeComment(auth.user.email, map, auth.user, count)
   }
   function handleDislike(event) {
       event.stopPropagation();
-      store.dislikeList(auth.user.email, map, auth.user)
+      store.dislikeComment(auth.user.email, map, auth.user, count)
   }
   return (
     // <div className="card comment-card">
@@ -60,7 +60,7 @@ export default function CommentCard(props) {
                     <Row xs="auto" className='like-comment-number'>
     
                       <Button onClick={handleDislike} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{<HandThumbsUpFill/>}</Button>
-                      {map.comments.likes.length}
+                      {map.comments ? map.comments[count].likes.length : null}
                     </Row>
 
                   </Col>
