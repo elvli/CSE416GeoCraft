@@ -90,7 +90,6 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {
                       idNamePairs: pairsArray,
-                      currentList: map
                     }
                   });
                 } else {
