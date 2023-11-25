@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Button } from 'react-bootstrap';
 import { ChatRightText, Send } from 'react-bootstrap-icons';
 import CommentCard from '../CommentCard/CommentCard';
@@ -17,6 +17,10 @@ export default function RightSideBar() {
     setIsToggled(!isToggled);
   }
 
+  useEffect(() => {
+    store.loadIdNamePairs();
+  }, []);
+
   const handleInputChange = (event) => {
     setTextInput(event.target.value);
   }
@@ -30,6 +34,7 @@ export default function RightSideBar() {
   }
 
   const handleReply = (argument) => (event) => {
+    console.log(argument)
     setTextInput("@" + argument)
 }
 
