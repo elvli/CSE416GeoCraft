@@ -18,8 +18,8 @@ export default function RightSideBar() {
   }
 
   useEffect(() => {
-    store.loadIdNamePairs();
-  }, []);
+    // This effect will run every time store.idNamePairs changes
+  }, [store.idNamePairs]);
 
   const handleInputChange = (event) => {
     setTextInput(event.target.value);
@@ -46,7 +46,7 @@ export default function RightSideBar() {
   let comments = ""
   if (store.currentList && store.currentList.comments) {
       comments =
-          store.idNamePairs.currentList.comments.map((userComment, index) => (
+          store.currentList.comments.map((userComment, index) => (
                   <CommentCard
                       user={userComment.user}
                       comment={userComment.comment}
