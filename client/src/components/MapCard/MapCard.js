@@ -23,10 +23,11 @@ export default function MapCard(props) {
   function handleLike(event) {
     event.stopPropagation();
     let alreadyLiked = false;
+        let likeArr = map.likes
+        let dislikeArr = map.dislikes
         let likeCount = likeArr.length;
         let dislikeCount = dislikeArr.length;
-        let likeArr = map.likes
-      let dislikeArr = map.dislikes
+        
         if(likeCount == 0 && dislikeCount == 0) {
             likeArr.push(auth.user.email)
         }
