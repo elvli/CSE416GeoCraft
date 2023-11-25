@@ -109,7 +109,7 @@ function GlobalStoreContextProvider(props) {
                 map.liked = likeArr;
                 map.disliked = dislikeArr;
                 async function updateList(map) {
-                    response = await api.updateMapById(map._id, map);
+                    response = await api.updateMapById(id, map);
                     if (response.data.success) {
                         store.loadIdNamePairs();
                     }
