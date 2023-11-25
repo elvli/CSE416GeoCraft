@@ -14,7 +14,7 @@ export default function CommentCard(props) {
   const [likeButton, setLikeButton] = useState(false)
   const [dislikeButton, setDislikeButton] = useState(false)
   const { store } = useContext(GlobalStoreContext);
-  const { user, comment, likes, dislikes } = props;
+  const { user, comment, likes, dislikes, map, count } = props;
   function handleLike(event) {
     event.stopPropagation();
     store.likeList(auth.user.email, map, auth.user)

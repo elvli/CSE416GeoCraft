@@ -43,6 +43,7 @@ export default function RightSideBar() {
                       user={userComment.user}
                       comment={userComment.comment}
                       count={index}
+                      map={store.currentList}
                   />
           ))
   }
