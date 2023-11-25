@@ -133,15 +133,15 @@ store.dislikeList = function (email, idNamePair, user) {
     asyncGetMap(idNamePair._id)
 }
 
-store.likeComment = function (email, idNamePair, user) {
+store.likeComment = function (email, idNamePair, user, index) {
     async function asyncGetMap(id) {
         let response = await api.getMapById(id)
         if (response.data.success) {
-            let map = response.data.map;
-            if (idNamePair.likes.indexOf(user.email) > -1) {
+            let map = response.data.map.comments[index];
+            if (idNamePair.comments[index].likes.indexOf(user.email) > -1) {
                 map.likes.splice(map.likes.indexOf(email), 1)
             }
-            else if (idNamePair.dislikes.indexOf(user.email) > -1) {
+            else if (idNamePair.comments[index].dislikes.indexOf(user.email) > -1) {
                 map.dislikes.splice(map.dislikes.indexOf(email), 1)
                 map.likes.push(email);
             }
@@ -167,11 +167,11 @@ store.dislikeComment = function (email, idNamePair, user, index) {
     async function asyncGetMap(id) {
         let response = await api.getMapById(id)
         if (response.data.success) {
-            let map = response.data.map;
-            if (idNamePair.dislikes.indexOf(user.email) > -1) {
+            let map = response.data.map.comments[index];
+            if (idNamePair.comments[index].dislikes.indexOf(user.email) > -1) {
                 map.dislikes.splice(map.likes.indexOf(email), 1)
             }
-            else if (idNamePair.likes.indexOf(user.email) > -1) {
+            else if (idNamePair.comments[index].likes.indexOf(user.email) > -1) {
                 map.likes.splice(map.dislikes.indexOf(email), 1)
                 map.dislikes.push(email);
             }
