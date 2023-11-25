@@ -55,16 +55,18 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.loadIdNamePairs = function (index = null) {
+    store.loadIdNamePairs = function (id = null) {
         async function asyncLoadIdNamePairs() {
             const response = await api.getMapPairs();
+            let mapID = await api.getMapById(id);
+            let map = mapID.data.map;
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {
                         idNamePairs: pairsArray,
-                        currentList: pairsArray[index]
+                        currentList: map
                     }
                 });
             }
@@ -153,7 +155,7 @@ store.likeComment = function (email, idNamePair, user, index) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
-                    store.loadIdNamePairs(index)
+                    store.loadIdNamePairs(idNamePair._id)
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }
@@ -182,7 +184,7 @@ store.dislikeComment = function (email, idNamePair, user, index) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
-                    store.loadIdNamePairs(index)
+                    store.loadIdNamePairs(idNamePair._id)
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }
