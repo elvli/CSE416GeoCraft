@@ -64,7 +64,7 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {
                         idNamePairs: pairsArray,
-                        currentList: pairsArray[index],
+                        currentList: pairsArray[index]
                     }
                 });
             }
@@ -123,7 +123,7 @@ store.dislikeList = function (email, idNamePair, user) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
-                    store.loadIdNamePairs(index)
+                    store.loadIdNamePairs()
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }
@@ -182,7 +182,7 @@ store.dislikeComment = function (email, idNamePair, user, index) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
-                    store.loadIdNamePairs()
+                    store.loadIdNamePairs(index)
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }
