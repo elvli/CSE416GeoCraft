@@ -55,7 +55,7 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.loadIdNamePairs = function () {
+    store.loadIdNamePairs = function (index = null) {
         async function asyncLoadIdNamePairs() {
             const response = await api.getMapPairs();
             if (response.data.success) {
@@ -64,6 +64,7 @@ function GlobalStoreContextProvider(props) {
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {
                         idNamePairs: pairsArray,
+                        currentList: pairsArray[index],
                     }
                 });
             }
@@ -122,7 +123,7 @@ store.dislikeList = function (email, idNamePair, user) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
-                    store.loadIdNamePairs()
+                    store.loadIdNamePairs(index)
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }
@@ -152,7 +153,7 @@ store.likeComment = function (email, idNamePair, user, index) {
             async function updateMap(id, map) {
                 response = await api.updateUserFeedback(id, map);
                 if (response.data.success) {
-                    store.loadIdNamePairs()
+                    store.loadIdNamePairs(index)
                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
                     // else store.loadPublishedLists();
                 }
