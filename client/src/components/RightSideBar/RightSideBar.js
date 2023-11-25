@@ -17,21 +17,6 @@ export default function RightSideBar() {
     setIsToggled(!isToggled);
   }
 
-  useEffect(() => {
-    if (store.currentList && store.currentList.comments) {
-      comments =
-          store.currentList.comments.map((userComment, index) => (
-                  <CommentCard
-                      user={userComment.user}
-                      comment={userComment.comment}
-                      count={index}
-                      map={store.currentList}
-                      handleReply={handleReply}
-                  />
-          ))
-    }
-  }, [store.idNamePairs]);
-
   const handleInputChange = (event) => {
     setTextInput(event.target.value);
   }
