@@ -56,10 +56,12 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.loadIdNamePairs = function (id = null) {
+        async function asyncGetMap(id) {
+            let mapID = await api.getMapById(id);
+            if (mapID.data.success) {
+            let map = mapID.data.map;
         async function asyncLoadIdNamePairs() {
             const response = await api.getMapPairs();
-            let mapID = await api.getMapById(id);
-            let map = mapID.data.map;
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
                 storeReducer({
@@ -75,6 +77,9 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncLoadIdNamePairs();
+    }
+    }
+    asyncGetMap(id)
     }
 
     store.likeList = function (email, idNamePair, user) {
