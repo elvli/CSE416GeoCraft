@@ -59,8 +59,8 @@ function GlobalStoreContextProvider(props) {
         if (id != null) {
           async function asyncGetMap(id) {
             let mapID = await api.getMapById(id);
-            let map = mapID.data.map;
-            if (response.data.success) {
+            if (mapID.data.success) {
+                let map = mapID.data.map;
               async function asyncLoadIdNamePairs() {
                 const response = await api.getMapPairs();
                 if (response.data.success) {
