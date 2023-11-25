@@ -250,7 +250,7 @@ updateMap = async (req, res) => {
     }
 
     const body = req.body.map;
-    console.log("updateMap: " + JSON.stringify(body));
+
     console.log("req.body.name: " + req.body.map.name);
 
     if (!body) {
@@ -274,7 +274,8 @@ updateMap = async (req, res) => {
       });
     }
 
-    console.log("Updated map: " + JSON.stringify(updatedMap));
+    console.log("Updated map: " + JSON.stringify(updatedMap.likes));
+    console.log("Updated map: " + JSON.stringify(updatedMap.dislikes));
 
     return res.status(200).json({
       success: true,
