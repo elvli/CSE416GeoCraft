@@ -15,6 +15,7 @@ export default function CommentCard(props) {
   const [dislikeButton, setDislikeButton] = useState(false)
   const { store } = useContext(GlobalStoreContext);
   const { user, comment, map, count } = props;
+  const email = auth.getEmail();
   function handleLike(event) {
     event.stopPropagation();
     store.likeComment(auth.user.email, map, auth.user, count)
@@ -59,13 +60,35 @@ export default function CommentCard(props) {
                   <Col xs="auto">
                     <Row xs="auto" className='like-comment-number'>
     
-                      <Button onClick={handleDislike} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{<HandThumbsUpFill/>}</Button>
+                    <Button
+                    onClick={handleLike}
+                    className='btn btn-light like-dislike-button'
+                    disabled={!auth.loggedIn}
+                  >
+                    {map.comments && map.comments[count].likes.includes(email) ? (
+                      <HandThumbsUpFill />
+                    ) : (
+                      <HandThumbsUp />
+                    )}
+                  </Button>
+
                       {map.comments ? map.comments[count].likes.length : null}
                     </Row>
 
                   </Col>
                   <Col xs="auto">
-                    <Button onClick={handleLike} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{<HandThumbsDownFill/>}</Button>
+                  <Button
+                  onClick={handleDislike}
+                  className='btn btn-light like-dislike-button'
+                  disabled={!auth.loggedIn}
+                >
+                  {map.comments && map.comments[count].dislikes.includes(email) ? (
+                    <HandThumbsDownFill />
+                  ) : (
+                    <HandThumbsDown />
+                  )}
+                </Button>
+
                   </Col>
                   <Col >
                   <Button className='btn btn-light reply-link' disabled={!auth.loggedIn}>Reply</Button>

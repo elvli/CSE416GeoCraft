@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useContext } from 'react';
 import { Button, Dropdown } from "react-bootstrap";
-import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill } from 'react-bootstrap-icons';
+import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill, HandThumbsUp, HandThumbsDown, } from 'react-bootstrap-icons';
 import './MapCard.scss'
 import { Navigate } from 'react-router-dom';
 import AuthContext from '../../auth'
@@ -11,6 +11,7 @@ export default function MapCard(props) {
   const { auth } = useContext(AuthContext);
   const { map, functions, selected } = props
   const [toEdit, setToEdit] = useState(false);
+  const email = auth.getEmail();
 
 
   function onClickfoo(event) {
@@ -74,8 +75,8 @@ export default function MapCard(props) {
     </div>
 
     mapCardButtons = <div className='d-flex flex-row-reverse'>
-      <Button className='btn btn-light dislike-button' onClick={handleDislike} disabled={!auth.loggedIn}><HandThumbsDownFill /> {map.dislikes.length}</Button>
-      <Button className='btn btn-light like-button' onClick={handleLike} disabled={!auth.loggedIn}><HandThumbsUpFill /> {map.likes.length}</Button>
+      <Button className='btn btn-light dislike-button' onClick={handleDislike} disabled={!auth.loggedIn}>{map.likes.includes(email)? <HandThumbsDownFill/>:<HandThumbsDown/>} {map.dislikes.length}</Button>
+      <Button className='btn btn-light like-button' onClick={handleLike} disabled={!auth.loggedIn}>{map.dislikes.includes(email)? <HandThumbsUpFill/>:<HandThumbsUp/>} {map.likes.length}</Button>
     </div>
   }
 
