@@ -22,12 +22,11 @@ export default function RightSideBar() {
   }
 
   const handleSubmit = (event) => {
-    event.preventDefault();
     console.log('Comment Entered:', textInput);
       if (event.target.value === '' || !store.currentList) {
           return;
       }
-      store.addComment(event.target.value, auth.user);
+      store.addComment(textInput, auth.user);
       event.target.value = "";
   }
 
