@@ -6,13 +6,11 @@ import Card from 'react-bootstrap/Card';
 import GlobalStoreContext from "../../store";
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
-import { Button, Dropdown } from "react-bootstrap";
-import { HandThumbsUp, HandThumbsDown, ThreeDotsVertical, PenFill, HandThumbsUpFill, HandThumbsDownFill } from 'react-bootstrap-icons';
+import { Button} from "react-bootstrap";
+import { HandThumbsUp, HandThumbsDown, HandThumbsUpFill, HandThumbsDownFill } from 'react-bootstrap-icons';
 import AuthContext from '../../auth'
 export default function CommentCard(props) {
   const { auth } = useContext(AuthContext);
-  const [likeButton, setLikeButton] = useState(false)
-  const [dislikeButton, setDislikeButton] = useState(false)
   const { store } = useContext(GlobalStoreContext);
   const { user, comment, map, count } = props;
   const email = auth.getEmail();
