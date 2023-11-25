@@ -58,7 +58,6 @@ function GlobalStoreContextProvider(props) {
     store.loadIdNamePairs = function (id = null) {
         async function asyncGetMap(id) {
             let mapID = await api.getMapById(id);
-            if (mapID.data.success) {
             let map = mapID.data.map;
         async function asyncLoadIdNamePairs() {
             const response = await api.getMapPairs();
@@ -77,7 +76,6 @@ function GlobalStoreContextProvider(props) {
             }
         }
         asyncLoadIdNamePairs();
-    }
     }
     asyncGetMap(id)
     }
