@@ -91,7 +91,6 @@ getMapById = async (req, res) => {
         errorMessage: 'UNAUTHORIZED'
       });
     }
-    console.log("Find Map with id: " + JSON.stringify(req.params.id));
     const list = await Map.findById(req.params.id);
     if (!list) {
       return res.status(404).json({
@@ -99,8 +98,6 @@ getMapById = async (req, res) => {
         error: 'Map not found'
       });
     }
-
-    console.log("Found list: " + JSON.stringify(list));
     return res.status(200).json({
       success: true,
       map: list

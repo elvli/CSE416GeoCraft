@@ -22,7 +22,6 @@ export default function RightSideBar() {
   }
 
   const handleSubmit = (event) => {
-    console.log('Comment Entered:', textInput);
       if (textInput === '' || !store.currentList) {
           return;
       }
