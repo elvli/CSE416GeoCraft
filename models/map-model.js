@@ -17,7 +17,9 @@ const mapSchema = new Schema(
         }], required: false },
         comments: { type: [{
             user: String,
-            comment: String
+            comment: String,
+            likes: {type: Array, required: false},
+            dislikes: {type: Array, required: false},
         }], required: false},
         published: { type: Boolean, required: false },
         publishedDate: {type: Date},
