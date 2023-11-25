@@ -26,7 +26,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: store.currentList !== undefined ? store.currentList : null,
+                    currentList: null,
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_LIST: {
@@ -63,7 +63,8 @@ function GlobalStoreContextProvider(props) {
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {
-                        idNamePairs: pairsArray
+                        idNamePairs: pairsArray,
+                        currentList: store.currentList !== null ? store.currentList : null,
                     }
                 });
             }

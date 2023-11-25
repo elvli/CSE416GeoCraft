@@ -165,7 +165,6 @@ function AuthContextProvider(props) {
     if (auth.user) {
       email += auth.user.email
     }
-    console.log("email: " + email);
     return email;
   }
 
