@@ -22,11 +22,112 @@ export default function MapCard(props) {
 
   function handleLike(event) {
     event.stopPropagation();
-    store.likeList(auth.user.email, map, auth.user)
+    let alreadyLiked = false;
+        let likeCount = likeArr.length;
+        let dislikeCount = dislikeArr.length;
+        let likeArr = map.likes
+      let dislikeArr = map.dislikes
+        if(likeCount == 0 && dislikeCount == 0) {
+            likeArr.push(auth.user.email)
+        }
+        else if(likeCount == 0 && dislikeCount > 0) {
+            
+            for(let i = 0; i < dislikeCount; i++) {
+                if(dislikeArr[i] === auth.user.email) {
+                    dislikeArr.splice(i, 1); 
+                }
+            }
+            likeArr.push(auth.user.email)
+        }
+        else if(likeCount > 0 && dislikeCount == 0) {
+            let isLiked = false;
+            for(let i = 0; i < likeArr.length; i++) {
+                if(likeArr[i] === auth.user.email) {
+                    isLiked = true;
+                    likeArr.splice(i, 1); 
+                }
+            }
+            console.log("isLiked: " + isLiked)
+            if(!isLiked) {
+                likeArr.push(auth.user.email)
+            }
+        }
+        else {
+            let isLiked = false;
+            for(let i = 0; i < likeCount; i++) {
+                if(likeArr[i] === auth.user.email) {
+                    isLiked = true;
+                    likeArr.splice(i, 1); 
+                }
+            }
+            for(let i = 0; i < dislikeCount; i++) {
+                if(dislikeArr[i] === auth.user.email) {
+                    dislikeArr.splice(i, 1); 
+                }
+            }
+            if(!isLiked) {
+                likeArr.push(auth.user.email)
+            }
+          }
+        
+          store.updateLikeDislike(map._id, likeArr, dislikeArr);
+
+
+   // store.likeList(auth.user.email, map, auth.user)
   }
   function handleDislike(event) {
       event.stopPropagation();
-      store.dislikeList(auth.user.email, map, auth.user)
+      let likeArr = map.likes
+      let dislikeArr = map.dislikes
+      let alreadyLiked = false;
+      let likeCount = likeArr.length;
+      let dislikeCount = dislikeArr.length;
+      if(likeCount == 0 && dislikeCount == 0) {
+          dislikeArr.push(auth.user.email)
+      }
+      else if(dislikeCount == 0 && likeCount > 0) {
+          
+          for(let i = 0; i < likeCount; i++) {
+              if(likeArr[i] === auth.user.email) {
+                  likeArr.splice(i, 1); 
+              }
+          }
+          dislikeArr.push( auth.user.email)
+      }
+      else if(dislikeCount > 0 && likeCount == 0) {
+          let isLiked = false;
+          for(let i = 0; i < dislikeArr.length; i++) {
+              if(dislikeArr[i] === auth.user.email) {
+                  isLiked = true;
+                  dislikeArr.splice(i, 1); 
+              }
+          }
+          console.log("isLiked: " + isLiked)
+          if(!isLiked) {
+              dislikeArr.push(auth.user.email)
+          }
+      }
+      else {
+          let isLiked = false;
+          for(let i = 0; i < dislikeCount; i++) {
+              if(dislikeArr[i] === auth.user.email) {
+                  isLiked = true;
+                  dislikeArr.splice(i, 1); 
+              }
+          }
+          for(let i = 0; i < likeCount; i++) {
+              if(likeArr[i] === auth.user.email) {
+                  likeArr.splice(i, 1); 
+              }
+          }
+          if(!isLiked) {
+              dislikeArr.push(auth.user.email)
+          }
+        }
+        
+        store.updateLikeDislike(map._id, likeArr, dislikeArr);
+
+   //   store.dislikeList(auth.user.email, map, auth.user)
   }
   function handleToggleEdit(event) {
     event.stopPropagation();
