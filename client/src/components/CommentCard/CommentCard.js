@@ -14,7 +14,15 @@ export default function CommentCard(props) {
   const [likeButton, setLikeButton] = useState(false)
   const [dislikeButton, setDislikeButton] = useState(false)
   const { store } = useContext(GlobalStoreContext);
-  const { user, comment, count} = props;
+  const { user, comment, likes, dislikes } = props;
+  function handleLike(event) {
+    event.stopPropagation();
+    store.likeList(auth.user.email, map, auth.user)
+  }
+  function handleDislike(event) {
+      event.stopPropagation();
+      store.dislikeList(auth.user.email, map, auth.user)
+  }
   return (
     // <div className="card comment-card">
     //   <div className="card-title">
@@ -51,13 +59,13 @@ export default function CommentCard(props) {
                   <Col xs="auto">
                     <Row xs="auto" className='like-comment-number'>
     
-                      <Button onClick={()=>{setLikeButton(!likeButton)}} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{likeButton? <HandThumbsUpFill/>:<HandThumbsUp/>}</Button>
-                      {store.currentList.comments[count].likes}
+                      <Button onClick={handleDislike} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{<HandThumbsUpFill/>}</Button>
+                      {likes}
                     </Row>
 
                   </Col>
                   <Col xs="auto">
-                    <Button onClick={()=>{setDislikeButton(!dislikeButton)}} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{dislikeButton? <HandThumbsDownFill/>:<HandThumbsDown/>}</Button>
+                    <Button onClick={handleLike} className='btn btn-light like-dislike-button' disabled={!auth.loggedIn}>{<HandThumbsDownFill/>}</Button>
                   </Col>
                   <Col >
                   <Button className='btn btn-light reply-link' disabled={!auth.loggedIn}>Reply</Button>
