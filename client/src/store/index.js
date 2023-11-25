@@ -157,7 +157,7 @@ store.likeComment = function (email, idNamePair, user, index) {
                     // else store.loadPublishedLists();
                 }
             }
-            updateMap(id, map)
+            updateMap(id, response.data.map)
         }
     }
     asyncGetMap(idNamePair._id)
@@ -186,7 +186,7 @@ store.dislikeComment = function (email, idNamePair, user, index) {
                     // else store.loadPublishedLists();
                 }
             }
-            updateMap(id, map)
+            updateMap(id, response.data.map)
         }
     }
     asyncGetMap(idNamePair._id)
