@@ -60,7 +60,6 @@ function GlobalStoreContextProvider(props) {
             const response = await api.getMapPairs();
             if (response.data.success) {
                 let pairsArray = response.data.idNamePairs;
-                console.log(pairsArray);
                 storeReducer({
                     type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                     payload: {

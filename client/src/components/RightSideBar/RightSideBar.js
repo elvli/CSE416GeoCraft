@@ -27,7 +27,7 @@ export default function RightSideBar() {
           return;
       }
       store.addComment(textInput, auth.user);
-      textInput = "";
+      setTextInput("")
   }
 
   const handleKeyDown = (event) => {
