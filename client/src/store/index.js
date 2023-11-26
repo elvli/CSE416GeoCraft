@@ -19,6 +19,7 @@ function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         idNamePairs: [],
         currentList: null,
+        maps: {},
     });
 
     const storeReducer = (action) => {
