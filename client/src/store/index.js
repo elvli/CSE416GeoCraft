@@ -100,26 +100,15 @@ function GlobalStoreContextProvider(props) {
         }
       };
       
-      store.updateLikeDislike = function (id, likeArr, dislikeArr) {
-        async function asyncUpdateLikeDislike(id) {
-            let response = await api.getMapById(id);
+      store.updateLikeDislike = function (id, maps) {
+        async function updateList(map) {
+            response = await api.updateMapById(id, map);
             if (response.data.success) {
-                let maps = response.data.map;
-                
-                maps.likes = likeArr;
-                maps.dislikes = dislikeArr;
-                async function updateList(map) {
-                    response = await api.updateMapById(id, map);
-                    console.log(response.data.map.likes)
-                    console.log(response.data.map.dislikes)
-                    if (response.data.success) {
-                        store.loadIdNamePairs();
-                    }
-                }
-                updateList(maps);
+                store.loadIdNamePairs();
             }
         }
-        asyncUpdateLikeDislike(id);
+        updateList(maps);
+        
     }
 //     store.likeList = function (email, idNamePair, user) {
 //     async function asyncGetMap(id) {
