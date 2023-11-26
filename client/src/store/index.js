@@ -106,8 +106,8 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let maps = response.data.map;
                 
-                map.likes = likeArr;
-                map.dislikes = dislikeArr;
+                maps.likes = likeArr;
+                maps.dislikes = dislikeArr;
                 async function updateList(map) {
                     response = await api.updateMapById(id, map);
                     console.log(response.data.map.likes)
