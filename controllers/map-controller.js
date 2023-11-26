@@ -53,9 +53,9 @@ deleteMap = async (req, res) => {
   }
   console.log("delete Map with id: " + JSON.stringify(req.params.id));
   console.log("delete " + req.params.id);
-  Map.findById({ _id: req.params.id }, (err, map) => {
+  Map.findById({ _id: req.params.id }).then( (map) => {
     console.log("Map found: " + JSON.stringify(map));
-    if (err) {
+    if (!map) {
       return res.status(404).json({
         errorMessage: 'Map not found!',
       })
@@ -63,11 +63,15 @@ deleteMap = async (req, res) => {
 
     // DOES THIS LIST BELONG TO THIS USER?
     async function asyncFindUser(mapList) {
-      User.findOne({ email: mapList.ownerEmail }, (err, user) => {
-
+      User.findOne({ email: mapList.ownerEmail }).then( (user) => {
+        if (!user) {
+          return res.status(404).json({
+            errorMessage: 'Map not found!',
+          })
+        }
 
         console.log("correct user!");
-        Map.findOneAndDelete({ _id: req.params.id }, () => {
+        Map.findOneAndDelete({ _id: req.params.id }).then( () => {
           return res.status(200).json({});
         }).catch(err => console.log(err))
 
