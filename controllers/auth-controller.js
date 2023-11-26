@@ -145,7 +145,7 @@ registerUser = async (req, res) => {
         lastName: savedUser.lastName,
         username: savedUser.username,
         email: savedUser.email,
-        aboutMe: savedUser.aboutMeD,
+        aboutMe: savedUser.aboutMe,
       }
     })
 
