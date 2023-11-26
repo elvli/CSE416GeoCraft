@@ -127,8 +127,6 @@ export default function MapCard(props) {
           }
         }
         
-        map.likes = likeArr
-        map.dislikes = dislikeArr
         store.updateLikeDislike(map._id, map);
 
    //   store.dislikeList(auth.user.email, map, auth.user)
