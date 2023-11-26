@@ -126,7 +126,7 @@ export default function MapCard(props) {
           }
         }
         
-        store.updateLikeDislike(map._id, );
+        store.updateLikeDislike(map._id, map);
         /*
         {
           name: map.name,
