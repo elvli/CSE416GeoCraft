@@ -168,6 +168,16 @@ function AuthContextProvider(props) {
     return email;
   }
 
+  auth.getAboutMe = function () {
+    let aboutMe = "";
+    if (auth.user) {
+      aboutMe += auth.user.aboutMe
+    }
+    console.log("aboutMe (auth front): " + aboutMe);
+    console.log("auth.aboutMe: " + auth.user.aboutMe);
+    return aboutMe;
+  }
+
   auth.guestLogin = async function () {
     try {
       const response = await api.loginUser("guest@gmail.com", "GuestPassword");
@@ -207,16 +217,6 @@ function AuthContextProvider(props) {
         })
       }
     }
-  }
-
-  auth.getAboutMe = function () {
-    let aboutMe = "";
-    if (auth.user) {
-      aboutMe += auth.user.aboutMe
-    }
-    console.log("aboutMe (auth front): " + aboutMe);
-    console.log("auth.aboutMe: " + auth.user.aboutMe);
-    return aboutMe;
   }
 
   return (
