@@ -85,12 +85,12 @@ function AuthContextProvider(props) {
           type: AuthActionType.REGISTER_USER,
           payload: {
             user: response.data.user,
-            loggedIn: true,
+            loggedIn: false,
             errorMessage: null
           }
         })
         // auth.loginUser(email, password);
-        history("/");
+        history("/login");
       }
     } catch (error) {
       authReducer({
