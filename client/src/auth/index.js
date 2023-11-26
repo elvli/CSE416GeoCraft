@@ -90,7 +90,7 @@ function AuthContextProvider(props) {
           }
         })
         // auth.loginUser(email, password);
-        history('/');
+        history("/");
       }
     } catch (error) {
       authReducer({
@@ -125,7 +125,7 @@ function AuthContextProvider(props) {
         payload: {
           user: auth.user,
           loggedIn: false,
-          errorMessage: "REGISTER USER ERROR (BACK)"
+          errorMessage: "LOGIN USER ERROR (BACK)"
           // errorMessage: error.response.data.errorMessage
         }
       })
