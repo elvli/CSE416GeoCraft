@@ -131,6 +131,7 @@ function GlobalStoreContextProvider(props) {
     store.deleteMap = function () {
         async function deleteMap() {
             let response = api.deleteMapById(store.maps._id)
+            console.log(store.maps._id)
             if(response.data.success) {
                 store.loadIdNamePairs()
             }
