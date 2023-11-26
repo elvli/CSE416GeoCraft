@@ -129,7 +129,11 @@ registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(saltRounds);
     const passwordHash = await bcrypt.hash(password, salt);
     const newUser = new User({ firstName, lastName, username, email, passwordHash, aboutMe});
+    console.log("contrler 132: " + aboutMe);
     const savedUser = await newUser.save();
+    console.log("contrler savedUseremail : " + savedUser.email);
+    console.log("contrler savedUser: " + savedUser.aboutMe);
+
 
     // LOGIN THE USER
     const token = auth.signToken(savedUser._id);
