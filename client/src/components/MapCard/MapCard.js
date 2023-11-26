@@ -70,9 +70,8 @@ export default function MapCard(props) {
                 likeArr.push(auth.user.email)
             }
           }
-          map.likes = likeArr
-          map.dislikes = dislikeArr
-          store.updateLikeDislike(map._id, map);
+        
+          store.updateLikeDislike(map._id, likeArr, dislikeArr);
 
 
    // store.likeList(auth.user.email, map, auth.user)
@@ -127,7 +126,7 @@ export default function MapCard(props) {
           }
         }
         
-        store.updateLikeDislike(map._id, map);
+        store.updateLikeDislike(map._id, likeArr, dislikeArr);
 
    //   store.dislikeList(auth.user.email, map, auth.user)
   }
