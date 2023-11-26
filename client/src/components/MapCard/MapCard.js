@@ -71,7 +71,7 @@ export default function MapCard(props) {
             }
           }
         
-          store.updateLikeDislike(map._id, likeArr, dislikeArr);
+          store.updateLikeDislike(map._id, map);
 
 
    // store.likeList(auth.user.email, map, auth.user)
@@ -126,7 +126,20 @@ export default function MapCard(props) {
           }
         }
         
-        store.updateLikeDislike(map._id, likeArr, dislikeArr);
+        store.updateLikeDislike(map._id, );
+        /*
+        {
+          name: map.name,
+          ownerName: map.ownerName,
+          ownerEmail: map.ownerEmail,
+          mapType: map.mapType,
+          comments: map.comments,
+          published: map.published,
+          publishedDate: map.publishedDate,
+          likes: map.likes,
+          dislikes: map.dislikes,
+          views: map.views,
+      }*/
 
    //   store.dislikeList(auth.user.email, map, auth.user)
   }
