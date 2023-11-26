@@ -106,7 +106,7 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 store.loadIdNamePairs();
             }
-        }
+        }   
         updateList(maps);
         
     }
