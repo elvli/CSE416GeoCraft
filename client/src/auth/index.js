@@ -89,7 +89,8 @@ function AuthContextProvider(props) {
             errorMessage: null
           }
         })
-        auth.loginUser(email, password);
+        // auth.loginUser(email, password);
+        history('/');
       }
     } catch (error) {
       authReducer({
