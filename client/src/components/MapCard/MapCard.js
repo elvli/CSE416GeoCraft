@@ -155,7 +155,7 @@ export default function MapCard(props) {
   function handleDelete (event){
     event.stopPropagation()
     store.markMap(map)
-    functions.handleDeleteMap
+    functions.handleDeleteMap()
   }
 
   if(toEdit) {
