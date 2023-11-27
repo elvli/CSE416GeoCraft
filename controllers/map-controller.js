@@ -63,24 +63,32 @@ deleteMap = async (req, res) => {
 
     // DOES THIS LIST BELONG TO THIS USER?
     async function asyncFindUser(mapList) {
-      User.findOne({ email: mapList.ownerEmail }).then( (user) => {
-        if (!user) {
-          return res.status(404).json({
-            errorMessage: 'Map not found!',
-          })
-        }
-
-        console.log("correct user!");
-        Map.findOneAndDelete({ _id: req.params.id }).then( () => {
-          return res.status(200).json({});
-        }).catch(err => console.log(err))
-
-        console.log("incorrect user!");
-        return res.status(400).json({
-          errorMessage: "authentication error"
+      try {
+        User.findOne({ email: mapList.ownerEmail }).then( (user) => {
+          if (!user) {
+            return res.status(404).json({
+              errorMessage: 'User was not found',
+            })
+          }
+  
+          console.log("correct user!");
+          const theMap = Map.findOneAndDelete({ _id: req.params.id })
+          if(!theMap) {
+            return res.status(404).json({
+              errorMessage: 'Map not found'
+            });
+          }
+          else return res.status(200).json({success: true, data: theMap});
+  
         });
-
-      });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+          success: false,
+          error: 'Internal Server Error'
+        });
+      }
+      
     }
     asyncFindUser(map);
   })
