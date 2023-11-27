@@ -98,7 +98,7 @@ function AuthContextProvider(props) {
         payload: {
           user: auth.user,
           loggedIn: false,
-          errorMessage: "REGISTER USER ERROR (BACK)"
+          errorMessage: error.response.data.errorMessage
         }
       })
     }
