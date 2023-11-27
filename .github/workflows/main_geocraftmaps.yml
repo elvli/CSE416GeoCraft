@@ -28,7 +28,7 @@ jobs:
           cd client
           npm install
           npm run build --if-present
-          # npx cypress run
+          npx cypress run
           cd..
           npm install -g nodemon
 

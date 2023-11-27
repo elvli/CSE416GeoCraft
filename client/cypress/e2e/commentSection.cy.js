@@ -19,15 +19,26 @@ describe('Comment Section', () => {
       cy.get('.comment-btn').should('have.class', 'btn-primary')
       cy.get('#right-wrapper').should('have.class', 'd-flex')
       });
+
+      it('should check if the comment input is disabled', () => {
+        // Check if the comment input is disabled before attempting to type
+        cy.get('.form-control').eq(1).should('be.disabled');
+      });
   
     it('should type into the comment input', () => {
-      // const commentText = 'Testing Cypress';
-  
-      // // Find the comment input and type text
-      // cy.get('.form-control').eq(1).scrollIntoView().type(commentText).should('have.value', commentText);
-      
-      
-      cy.get('.comment-btn').should('have.class', 'btn-primary')
+      // Perform login operation
+      cy.visit('https://geocraftmaps.azurewebsites.net/login');
+      // Input valid login credentials
+      cy.get('[name="email"]').type('elvenli54@gmail.com');
+      cy.get('[name="password"]').type('123123123');
+      // Submit the form
+      cy.get('.form-button').click();
+      const commentText = 'Testing Cypress';
+      cy.wait(1000);
+
+      // Find the comment input, type text, and check the value
+      cy.get('.form-control').eq(1).type(commentText);    
+      cy.get('.form-control').eq(1).should('have.value', commentText);
     });
   });
   

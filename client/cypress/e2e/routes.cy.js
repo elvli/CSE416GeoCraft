@@ -5,18 +5,34 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 });
 
 describe('Application Routes', () => {
+  beforeEach(() => {
+    // Perform login operation
+    cy.visit('https://geocraftmaps.azurewebsites.net/login');
+  });
     it('should navigate to different routes', () => {
       // Visit the root URL
       cy.visit('https://geocraftmaps.azurewebsites.net');
+    });
 
-      // Navigate to the sign-up route
-      cy.visit('https://geocraftmaps.azurewebsites.net/sign-up');
+      it('should navigate to sign up', () => {
+        // Navigate to the profile route
+        cy.get('a[href=\'/sign-up\']').click(); 
+      });
   
-      // Navigate to the login route
-      cy.visit('https://geocraftmaps.azurewebsites.net/login');
-  
-      // Navigate to the password-reset route
-      cy.visit('https://geocraftmaps.azurewebsites.net/password-reset');
+      it('should navigate to password reset', () => {
+        // Navigate to the profile route
+        cy.get('a[href=\'/password-reset\']').click();  
+      });
+    it('should navigate to profile page', () => {
+          // Input valid login credentials
+      cy.get('[name="email"]').type('elvenli54@gmail.com');
+      cy.get('[name="password"]').type('123123123');
+
+      // Submit the form
+      cy.get('.form-button').click();
+      // Navigate to the profile route
+      cy.get('#dropdown-basic').click();
+      cy.get('.dropdown-btn').click();
 
     });
   });
