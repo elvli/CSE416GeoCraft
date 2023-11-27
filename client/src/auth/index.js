@@ -20,12 +20,12 @@ function AuthContextProvider(props) {
   const history = useNavigate();
 
   useEffect(() => {
-    try{
+    try {
       auth.getLoggedIn();
-    }catch(error){
-      
+    } catch (error) {
+
     }
-    
+
   }, []);
 
   const authReducer = (action) => {
@@ -151,6 +151,22 @@ function AuthContextProvider(props) {
       initials += auth.user.lastName.charAt(0);
     }
     return initials;
+  }
+
+  auth.getFirstName = function () {
+    let firstName = "";
+    if (auth.user) {
+      firstName += auth.user.firstName;
+    }
+    return firstName;
+  }
+
+  auth.getLastName = function () {
+    let lastName = "";
+    if (auth.user) {
+      lastName += auth.user.lastName;
+    }
+    return lastName;
   }
 
   auth.getUsername = function () {

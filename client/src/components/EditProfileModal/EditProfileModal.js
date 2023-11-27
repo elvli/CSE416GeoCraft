@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useContext } from "react";
-import { Form, Button, Modal } from "react-bootstrap";
-import GlobalStoreContext from "../../store";
+import { Form, Button, Modal, Row, Col } from "react-bootstrap";
 import AuthContext from '../../auth'
 import "./EditProfileModal.scss";
 
@@ -9,7 +8,11 @@ export default function EditProfileModal(props) {
   const { editProfileShow, handleEditProfileClose } = props;
   const { auth } = useContext(AuthContext);
   const [validated, setValidated] = useState(false);
+  const currentFirstName = auth.getFirstName();
+  const currentLastName = auth.getLastName();
+  const currentEmail = auth.getEmail();
   const currentUsername = auth.getUsername();
+  const currentAboutMe = auth.getAboutMe();
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -38,8 +41,38 @@ export default function EditProfileModal(props) {
           </Modal.Header>
 
           <Modal.Body>
+            <Row>
+              <Form.Group as={Col}>
+                <Form.Label>Change first name</Form.Label>
+                <Form.Control
+                  className="map-name"
+                  name="newFirstName"
+                  type="text"
+                  defaultValue={currentFirstName}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Control
+                  className="map-name"
+                  name="newLastName"
+                  type="text"
+                  defaultValue={currentLastName}
+                />
+              </Form.Group>
+            </Row>
+
             <Form.Group>
-              <Form.Label>New Username</Form.Label>
+              <Form.Label>Change email</Form.Label>
+              <Form.Control
+                className="map-name"
+                name="newUsername"
+                type="text"
+                defaultValue={currentEmail}
+              />
+            </Form.Group>
+
+            <Form.Group>
+              <Form.Label>Change username</Form.Label>
               <Form.Control
                 className="map-name"
                 name="newUsername"
@@ -49,7 +82,7 @@ export default function EditProfileModal(props) {
             </Form.Group>
             <br />
             <Form.Group>
-              <Form.Label>Profile Banner</Form.Label>
+              <Form.Label>Change profile banner</Form.Label>
               <Form.Select name="profileBanner">
                 <option value="">Choose a color for your profile banner</option>
                 <option value="Red">Red</option>
@@ -57,18 +90,19 @@ export default function EditProfileModal(props) {
                 <option value="Yellow">Yellow</option>
                 <option value="Green">Green</option>
                 <option value="Blue">Blue</option>
-                <option value="Purple">Indigo</option>
+                <option value="Indigo">Indigo</option>
                 <option value="Purple">Violet</option>
               </Form.Select>
             </Form.Group>
             <br />
             <Form.Group>
-              <Form.Label>About Me</Form.Label>
+              <Form.Label>Change about be</Form.Label>
               <Form.Control
+                as="textarea"
+                rows={4}  // You can adjust this value based on your preference
                 className="map-name"
                 name="aboutMe"
-                type="text"
-                placeholder="About me"
+                defaultValue={currentAboutMe}
               />
             </Form.Group>
             <br />
