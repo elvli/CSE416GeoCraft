@@ -72,12 +72,9 @@ deleteMap = async (req, res) => {
         }
   
         console.log("correct user!");
-        Map.findOneAndDelete({ _id: req.params.id })
-        
-        return res.status(200).json({
-            success: true, 
-            data: "string"
-          });
+        Map.findOneAndDelete( { _id: req.params.id } ).then( () => {
+          return res.status(200).json({success: true, data: {}});
+        }).catch(err => console.log(err))
           
       } catch (error) {
         console.error(error);
