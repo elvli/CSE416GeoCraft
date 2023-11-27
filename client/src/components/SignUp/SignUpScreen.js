@@ -94,6 +94,11 @@ export default function SignUpScreen() {
       navigate("/");
     }
   });
+
+  var authError = ''
+  if (auth.errorMessage){
+    authError = auth.errorMessage
+  }
   
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 background-container">
@@ -145,6 +150,7 @@ export default function SignUpScreen() {
               </Form.Group>
             </Row>
             <br />
+            <div>{authError}</div>
             <br />
             <Row>
               <Form.Group>
