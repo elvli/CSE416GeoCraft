@@ -17,9 +17,8 @@ export default function CommentCard(props) {
   function handleLike(event) {
     event.stopPropagation();
     let alreadyLiked = false;
-    let likeArr = map.comments.likes
-    let dislikeArr = map.comments.dislikes
-    console.log(likeArr)
+    let likeArr = map.comments[count].likes
+    let dislikeArr = map.comments[count].dislikes
     let likeCount = likeArr.length;
     let dislikeCount = dislikeArr.length;
     
@@ -70,8 +69,8 @@ export default function CommentCard(props) {
   }
   function handleDislike(event) {
     event.stopPropagation();
-    let likeArr = map.comments.likes
-    let dislikeArr = map.comments.dislikes
+    let likeArr = map.comments[count].likes
+    let dislikeArr = map.comments[count].dislikes
     let alreadyLiked = false;
     let likeCount = likeArr.length;
     let dislikeCount = dislikeArr.length;
