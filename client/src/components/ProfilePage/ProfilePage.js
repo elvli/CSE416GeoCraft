@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [editProfileShow, setEditProfileShow] = useState(false);
   const username = auth.getUsername();
   const email = auth.getEmail();
+  const aboutMeText = auth.getAboutMe();
 
   async function handleClose(event) {
     setNewMapShow(false)
@@ -119,7 +120,7 @@ export default function ProfilePage() {
                 {/* <p class="font-italic mb-1">Web Developer</p>
                 <p class="font-italic mb-1">Lives in New York</p>
                 <p class="font-italic mb-0">Photographer</p> */}
-                <p class="font-italic mb-1">{auth.getAboutMe()}</p>
+                <p class="font-italic mb-1">{aboutMeText}</p>
 
               </div>
             </div>
@@ -154,7 +155,7 @@ export default function ProfilePage() {
       <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
-      <EditProfileModal editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose}/>
+      <EditProfileModal editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose} />
     </div >
   );
 }

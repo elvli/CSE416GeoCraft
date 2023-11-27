@@ -3,16 +3,20 @@ import "./DeleteMapModal.scss";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-
+import GlobalStoreContext from "../../store";
+import { useContext } from "react";
 export default function DeleteMapModal(props) {
   const { deleteMapShow, handleDeleteMapClose } = props
-
+  const { store } = useContext(GlobalStoreContext);
   const handleSubmit = (event) => {
+    event.stopPropagation()
     handleDeleteMapClose(event)
+    store.deleteMap()
   };
 
   const handleClosing = (event) => {
     handleDeleteMapClose(event)
+    store.loadIdNamePairs()
   }
 
   return (

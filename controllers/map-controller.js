@@ -53,9 +53,9 @@ deleteMap = async (req, res) => {
   }
   console.log("delete Map with id: " + JSON.stringify(req.params.id));
   console.log("delete " + req.params.id);
-  Map.findById({ _id: req.params.id }, (err, map) => {
+  Map.findById({ _id: req.params.id }).then( (map) => {
     console.log("Map found: " + JSON.stringify(map));
-    if (err) {
+    if (!map) {
       return res.status(404).json({
         errorMessage: 'Map not found!',
       })
@@ -63,20 +63,27 @@ deleteMap = async (req, res) => {
 
     // DOES THIS LIST BELONG TO THIS USER?
     async function asyncFindUser(mapList) {
-      User.findOne({ email: mapList.ownerEmail }, (err, user) => {
-
-
+      try {
+        const user = User.findOne({ email: mapList.ownerEmail })
+        if (!user) {
+          return res.status(404).json({
+            errorMessage: 'User was not found',
+          })
+        }
+  
         console.log("correct user!");
-        Map.findOneAndDelete({ _id: req.params.id }, () => {
-          return res.status(200).json({});
+        Map.deleteOne( { _id: req.params.id } ).then( () => {
+          return res.status(200).json({success: true, data: {}});
         }).catch(err => console.log(err))
-
-        console.log("incorrect user!");
-        return res.status(400).json({
-          errorMessage: "authentication error"
+          
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+          success: false,
+          error: 'Internal Server Error'
         });
-
-      });
+      }
+      
     }
     asyncFindUser(map);
   })
@@ -250,8 +257,10 @@ updateMap = async (req, res) => {
     }
 
     const body = req.body.map;
-    console.log("updateMap: " + JSON.stringify(body));
+
     console.log("req.body.name: " + req.body.map.name);
+    console.log("Updated map: " + JSON.stringify(body.likes));
+    console.log("Updated map: " + JSON.stringify(body.dislikes));
 
     if (!body) {
       return res.status(400).json({
@@ -274,7 +283,8 @@ updateMap = async (req, res) => {
       });
     }
 
-    console.log("Updated map: " + JSON.stringify(updatedMap));
+    console.log("Updated map: " + JSON.stringify(updatedMap.likes));
+    console.log("Updated map: " + JSON.stringify(updatedMap.dislikes));
 
     return res.status(200).json({
       success: true,

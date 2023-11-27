@@ -20,7 +20,8 @@ getLoggedIn = async (req, res) => {
         firstName: loggedInUser.firstName,
         lastName: loggedInUser.lastName,
         email: loggedInUser.email,
-        username: loggedInUser.username
+        username: loggedInUser.username,
+        aboutMe: loggedInUser.aboutMe,
       }
     })
   } catch (err) {
@@ -70,7 +71,8 @@ loginUser = async (req, res) => {
         firstName: existingUser.firstName,
         lastName: existingUser.lastName,
         email: existingUser.email,
-        username: existingUser.username
+        username: existingUser.username,
+        aboutMe: existingUser.aboutMe,
       }
     })
 
@@ -133,6 +135,7 @@ registerUser = async (req, res) => {
 
     // LOGIN THE USER
     const token = auth.signToken(savedUser._id);
+    console.log("auth-controller: " + savedUser.aboutMe)
 
     await res.cookie("token", token, {
       httpOnly: true,
@@ -145,7 +148,7 @@ registerUser = async (req, res) => {
         lastName: savedUser.lastName,
         username: savedUser.username,
         email: savedUser.email,
-        aboutMe: savedUser.aboutMeD,
+        aboutMe: savedUser.aboutMe,
       }
     })
 

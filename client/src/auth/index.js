@@ -20,12 +20,12 @@ function AuthContextProvider(props) {
   const history = useNavigate();
 
   useEffect(() => {
-    try{
+    try {
       auth.getLoggedIn();
-    }catch(error){
-      
+    } catch (error) {
+
     }
-    
+
   }, []);
 
   const authReducer = (action) => {
@@ -85,11 +85,12 @@ function AuthContextProvider(props) {
           type: AuthActionType.REGISTER_USER,
           payload: {
             user: response.data.user,
-            loggedIn: true,
+            loggedIn: false,
             errorMessage: null
           }
         })
         auth.loginUser(email, password);
+        // history("/login");
       }
     } catch (error) {
       authReducer({
@@ -97,7 +98,7 @@ function AuthContextProvider(props) {
         payload: {
           user: auth.user,
           loggedIn: false,
-          errorMessage: "REGISTER USER ERROR (BACK)"
+          errorMessage: error.response.data.errorMessage
         }
       })
     }
@@ -124,7 +125,7 @@ function AuthContextProvider(props) {
         payload: {
           user: auth.user,
           loggedIn: false,
-          errorMessage: "REGISTER USER ERROR (BACK)"
+          errorMessage: "LOGIN USER ERROR (BACK)"
           // errorMessage: error.response.data.errorMessage
         }
       })
@@ -152,10 +153,26 @@ function AuthContextProvider(props) {
     return initials;
   }
 
+  auth.getFirstName = function () {
+    let firstName = "";
+    if (auth.user) {
+      firstName += auth.user.firstName;
+    }
+    return firstName;
+  }
+
+  auth.getLastName = function () {
+    let lastName = "";
+    if (auth.user) {
+      lastName += auth.user.lastName;
+    }
+    return lastName;
+  }
+
   auth.getUsername = function () {
     let username = "";
     if (auth.user) {
-      username += auth.user.username
+      username += auth.user.username;
     }
     return username;
   }
@@ -163,9 +180,19 @@ function AuthContextProvider(props) {
   auth.getEmail = function () {
     let email = "";
     if (auth.user) {
-      email += auth.user.email
+      email += auth.user.email;
     }
     return email;
+  }
+
+  auth.getAboutMe = function () {
+    let aboutMe = "";
+    if (auth.user) {
+      aboutMe += auth.user.aboutMe;
+    }
+    console.log("aboutMe (auth front): " + aboutMe);
+    console.log("auth.aboutMe: " + auth.user.aboutMe);
+    return aboutMe;
   }
 
   auth.guestLogin = async function () {
@@ -207,15 +234,6 @@ function AuthContextProvider(props) {
         })
       }
     }
-  }
-
-  auth.getAboutMe = function () {
-    let aboutMe = "";
-    if (auth.user) {
-      aboutMe += auth.user.aboutMe
-    }
-    console.log("aboutMe (auth front): " + aboutMe);
-    return aboutMe;
   }
 
   return (

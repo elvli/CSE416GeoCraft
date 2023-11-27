@@ -94,6 +94,22 @@ export default function SignUpScreen() {
       navigate("/");
     }
   });
+
+  var usernameError = ''
+  var emailError = ''
+  if (auth.errorMessage){
+    if (auth.errorMessage === 'An account with this username already exists.'){
+      usernameError = auth.errorMessage
+      emailError = ''
+    }
+    else {
+      emailError = auth.errorMessage
+      usernameError = ''
+    }
+
+  }
+
+
   
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 background-container">
@@ -113,14 +129,14 @@ export default function SignUpScreen() {
             <Row>
               <Form.Group>
                 <Form.Control className="sign-up-item" name='username' required type="text" placeholder="Username" size="lg" />
-                {usernameTakenError && <div className="sign-up-error-message text-danger">An account with this username already exists.</div>}
+                {usernameError != '' && <div className="sign-up-error-message text-danger">{usernameError}</div>}
               </Form.Group>
             </Row>
             <br />
             <Row>
               <Form.Group>
                 <Form.Control className="sign-up-item" name='email' required type="email" placeholder="Email" size="lg" onChange={handleEmailChange}/>
-                {emailTakenError && <div className="sign-up-error-message text-danger">An account with this email already exists.</div>}
+                {emailError != '' && <div className="sign-up-error-message text-danger">{emailError}</div>}
               </Form.Group>
             </Row>
             <br />
