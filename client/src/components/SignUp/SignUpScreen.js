@@ -108,6 +108,8 @@ export default function SignUpScreen() {
     }
 
   }
+
+
   
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 background-container">
@@ -127,14 +129,14 @@ export default function SignUpScreen() {
             <Row>
               <Form.Group>
                 <Form.Control className="sign-up-item" name='username' required type="text" placeholder="Username" size="lg" />
-                {<div className="sign-up-error-message text-danger">{usernameError}</div>}
+                {usernameError != '' && <div className="sign-up-error-message text-danger">{usernameError}</div>}
               </Form.Group>
             </Row>
             <br />
             <Row>
               <Form.Group>
                 <Form.Control className="sign-up-item" name='email' required type="email" placeholder="Email" size="lg" onChange={handleEmailChange}/>
-                {<div className="sign-up-error-message text-danger">{emailError}</div>}
+                {emailError != '' && <div className="sign-up-error-message text-danger">{emailError}</div>}
               </Form.Group>
             </Row>
             <br />
