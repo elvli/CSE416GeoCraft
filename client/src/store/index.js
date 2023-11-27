@@ -113,6 +113,15 @@ function GlobalStoreContextProvider(props) {
                 }
                 updateList(maps);
     }
+    store.updateCommentsLikeDislike = function (id, maps) {
+        async function updateList(map) {
+            let response = await api.updateMapById(id, map);
+            if (response.data.success) {
+                store.loadIdNamePairs(id);
+            }
+        }
+        updateList(maps);
+}
 
     store.deleteMap = function () {
         async function deleteMap() {
