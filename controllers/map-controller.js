@@ -78,8 +78,12 @@ deleteMap = async (req, res) => {
               errorMessage: 'Map not found'
             });
           }
-          else return res.status(200).json({success: true, data: theMap});
-  
+          else {
+            return res.status(200).json({
+                success: true, 
+                data: "string"
+              });
+          }
         });
       } catch (error) {
         console.error(error);
