@@ -22,16 +22,16 @@ export default function RightSideBar() {
   }
 
   const handleSubmit = (event) => {
-      if (textInput === '' || !store.currentList) {
-          return;
-      }
-      store.addComment(textInput, auth.user);
-      setTextInput("")
+    if (textInput === '' || !store.currentList) {
+      return;
+    }
+    store.addComment(textInput, auth.user);
+    setTextInput("")
   }
 
   const handleReply = (argument) => (event) => {
     setTextInput("@" + argument)
-}
+  }
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
@@ -41,16 +41,16 @@ export default function RightSideBar() {
 
   let comments = ""
   if (store.currentList && store.currentList.comments) {
-      comments =
-          store.currentList.comments.map((userComment, index) => (
-                  <CommentCard
-                      user={userComment.user}
-                      comment={userComment.comment}
-                      count={index}
-                      map={store.currentList}
-                      handleReply={handleReply}
-                  />
-          ))
+    comments =
+      store.currentList.comments.map((userComment, index) => (
+        <CommentCard
+          user={userComment.user}
+          comment={userComment.comment}
+          count={index}
+          map={store.currentList}
+          handleReply={handleReply}
+        />
+      ))
   }
 
   return (
@@ -64,8 +64,8 @@ export default function RightSideBar() {
       <div className="bg-light border-left" id="right-sidebar-wrapper">
         <div className="list-group">
           <p className="list-group-item bg-light">Comments</p>
-          <div className="list-group-item bg-light custom-scrollbar">
-          {comments}
+          <div className="list-group-item bg-light custom-scrollbar-right-sidebar">
+            {comments}
           </div>
 
           <div className="row">
