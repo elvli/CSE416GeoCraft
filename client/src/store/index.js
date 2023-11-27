@@ -9,7 +9,6 @@ export const GlobalStoreActionType = {
     DISPLAY_MAP: "DISPLAY_MAP",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
-    MARK_MAP: "MARK_MAP",
 }
 
 const tps = new jsTPS();
@@ -19,7 +18,7 @@ function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
         idNamePairs: [],
         currentList: null,
-        maps: {},
+
     });
 
     const storeReducer = (action) => {
@@ -29,23 +28,17 @@ function GlobalStoreContextProvider(props) {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
                     currentList: payload.currentList,
-                    maps: {},
+
                 });
             }
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
                     currentList: payload,
-                    maps: {},
+
                 });
             }
-            case GlobalStoreActionType.MARK_MAP: {
-                return setStore({
-                    idNamePairs: store.idNamePairs,
-                    currentList: store.currentList,
-                    maps: payload,
-                });
-            }
+
 
             default:
                 return store
@@ -120,19 +113,11 @@ function GlobalStoreContextProvider(props) {
                 }
                 updateList(maps);
     }
-    store.markMap = function (maps) {
-        async function markMap(map) {
-            storeReducer({
-                type: GlobalStoreActionType.MARK_MAP,
-                payload: map
-            });
-        }
-        markMap(maps)
-    }
+
     store.deleteMap = function () {
         async function deleteMap() {
-            let response = api.deleteMapById(store.maps._id)
-            console.log(store.maps._id)
+            let response = api.deleteMapById(store.currentList._id)
+            console.log(store.currentList._id)
             if(response.data.success) {
                 store.loadIdNamePairs()
             }

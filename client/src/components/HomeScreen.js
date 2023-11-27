@@ -24,7 +24,6 @@ export default function HomeScreen() {
     setDeleteMapShow(false)
   }
   async function handleDeleteMap(event) {
-    event.stopPropagation();
     setDeleteMapShow(true);
   }
   async function handleEditRegionClose(event) {
