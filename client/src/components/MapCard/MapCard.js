@@ -71,7 +71,7 @@ export default function MapCard(props) {
             }
           }
         
-          store.updateLikeDislike(map._id, map);
+          store.updateCommentsLikeDislike(map._id, map);
 
 
    // store.likeList(auth.user.email, map, auth.user)
@@ -126,7 +126,7 @@ export default function MapCard(props) {
           }
         }
         
-        store.updateLikeDislike(map._id, map);
+        store.updateCommentsLikeDislike(map._id, map);
         /*
         {
           name: map.name,
