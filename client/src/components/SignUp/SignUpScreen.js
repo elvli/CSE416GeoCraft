@@ -98,7 +98,7 @@ export default function SignUpScreen() {
   var usernameError = ''
   var emailError = ''
   if (auth.errorMessage){
-    if (auth.errorMessage == 'An account with this username already exists.'){
+    if (auth.errorMessage === 'An account with this username already exists.'){
       usernameError = auth.errorMessage
       emailError = ''
     }
@@ -127,14 +127,14 @@ export default function SignUpScreen() {
             <Row>
               <Form.Group>
                 <Form.Control className="sign-up-item" name='username' required type="text" placeholder="Username" size="lg" />
-                <div className="sign-up-error-message text-danger">{usernameError}</div>
+                {<div className="sign-up-error-message text-danger">{usernameError}</div>}
               </Form.Group>
             </Row>
             <br />
             <Row>
               <Form.Group>
                 <Form.Control className="sign-up-item" name='email' required type="email" placeholder="Email" size="lg" onChange={handleEmailChange}/>
-                <div className="sign-up-error-message text-danger">{emailError}</div>
+                {<div className="sign-up-error-message text-danger">{emailError}</div>}
               </Form.Group>
             </Row>
             <br />
