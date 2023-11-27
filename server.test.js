@@ -13,6 +13,34 @@ beforeAll(async () => {
       useUnifiedTopology: true,
     });
   });
+
+  describe('User Registration', () => {
+    it('should register a sample user', async () => {
+      const sampleUserData = {
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'john_doe',
+        email: 'john.doe@example.com',
+        password: 'securePassword',
+        confirmPassword: 'securePassword',
+      };
+    });
+  });
+
+  describe('User Login', () => {
+    // Assuming you have a test user with the following credentials
+    const existingUserCredentials = {
+      email: 'elvenli54@gmail.com',
+      password: '123123123',
+    };
+  
+    it('should login with existing user credentials', async () => {
+      // Perform the login request using the existing user's credentials
+      const response = await request(app)
+        .post('/login')
+        .send(existingUserCredentials);
+    });
+  });
   
   describe('Auth Controller', () => {
     describe('GET /loggedIn', () => {
@@ -89,10 +117,102 @@ beforeAll(async () => {
 
     });
   });
+
+  describe('Map Controller', () => {
+    const {
+      createMap,
+      deleteMap,
+      getMapById,
+      getMapPairs,
+      getMaps,
+      updateMap,
+      updateUserFeedback,
+      getPublishedMaps,
+    } = require('./controllers/map-controller');
+  
+    // Mock data for testing
+    const mockMap = {
+      // Add relevant map data
+      name: 'Sample Map',
+      ownerEmail: 'test@example.com',
+    };
+  
+    describe('POST /createMap', () => {
+      it('should create a new map', async () => {
+        const response = await request(app).post('/createMap').send(mockMap);
+      });
+    });
+  
+    describe('GET /getMapById/:id', () => {
+      it('should return a map by ID', async () => {
+        const response = await request(app).get(`/getMapById/`);
+      });
+  
+      it('should return a 404 status for a non-existent map', async () => {
+        const response = await request(app).get('/getMapById/nonexistentid');
+      });
+    });
+
+  });
+
+  describe('Map Interaction', () => {
+    let authToken; // Store the authentication token obtained during login
+  
+  
+    it('should like a map', async () => {
+      const mapId = 'your_map_id'; // Provide a valid map ID from your database
+  
+      const response = await request(app)
+        .post(`/maps/${mapId}/like`)
+        .set('Authorization', `Bearer ${authToken}`);
+  
+    });
+  
+    it('should dislike a map', async () => {
+      const mapId = 'your_map_id'; // Provide a valid map ID from your database
+  
+      const response = await request(app)
+        .post(`/maps/${mapId}/dislike`)
+        .set('Authorization', `Bearer ${authToken}`);
+    });
+  
+    it('should add a comment to a map', async () => {
+      const mapId = 'your_map_id'; // Provide a valid map ID from your database
+      const commentData = { text: 'This is a test comment' };
+  
+      const response = await request(app)
+        .post(`/maps/${mapId}/comments`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(commentData);
+  
+    });
+  
+    it('should update a comment on a map', async () => {
+      const mapId = 'your_map_id'; // Provide a valid map ID from your database
+      const commentId = 'your_comment_id'; // Provide a valid comment ID from your database
+      const updatedCommentData = { text: 'Updated test comment' };
+  
+      const response = await request(app)
+        .put(`/maps/${mapId}/comments/${commentId}`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send(updatedCommentData);
+    });
+  
+    it('should delete a comment from a map', async () => {
+      const mapId = 'your_map_id'; // Provide a valid map ID from your database
+      const commentId = 'your_comment_id'; // Provide a valid comment ID from your database
+  
+      const response = await request(app)
+        .delete(`/maps/${mapId}/comments/${commentId}`)
+        .set('Authorization', `Bearer ${authToken}`);
+    });
+  });
+  
   
 
   
   afterAll(async () => {
     // Close the database connection after all tests
     await mongoose.connection.close();
+    await mongoose.disconnect();
   });
