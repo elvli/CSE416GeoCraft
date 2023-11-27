@@ -41,9 +41,9 @@ export default function EditProfileModal(props) {
           </Modal.Header>
 
           <Modal.Body>
+            <Form.Label>Change first name</Form.Label>
             <Row>
               <Form.Group as={Col}>
-                <Form.Label>Change first name</Form.Label>
                 <Form.Control
                   className="map-name"
                   name="newFirstName"
@@ -80,7 +80,7 @@ export default function EditProfileModal(props) {
                 defaultValue={currentUsername}
               />
             </Form.Group>
-            <br />
+
             <Form.Group>
               <Form.Label>Change profile banner</Form.Label>
               <Form.Select name="profileBanner">
@@ -94,19 +94,22 @@ export default function EditProfileModal(props) {
                 <option value="Purple">Violet</option>
               </Form.Select>
             </Form.Group>
-            <br />
+
             <Form.Group>
-              <Form.Label>Change about be</Form.Label>
+              <Form.Label>Change about me</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={4}  // You can adjust this value based on your preference
+                rows="4"
                 className="map-name"
                 name="aboutMe"
                 defaultValue={currentAboutMe}
+                readOnly // Add the readOnly attribute
+                style={{ resize: "none" }} // Add the style to prevent resizing
               />
             </Form.Group>
-            <br />
+
           </Modal.Body>
+          
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClosing}>
               Close
