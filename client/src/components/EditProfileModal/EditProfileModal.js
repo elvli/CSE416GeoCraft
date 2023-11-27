@@ -98,8 +98,7 @@ export default function EditProfileModal(props) {
             <Form.Group>
               <Form.Label>Change about me</Form.Label>
               <textarea
-                class="form-control"
-                className="map-name"
+                className="map-name form-control"
                 name="changeAboutMe"
                 rows="4"
                 defaultValue={currentAboutMe}
