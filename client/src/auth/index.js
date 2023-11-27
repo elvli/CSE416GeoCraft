@@ -156,7 +156,7 @@ function AuthContextProvider(props) {
   auth.getUsername = function () {
     let username = "";
     if (auth.user) {
-      username += auth.user.username
+      username += auth.user.username;
     }
     return username;
   }
@@ -164,7 +164,7 @@ function AuthContextProvider(props) {
   auth.getEmail = function () {
     let email = "";
     if (auth.user) {
-      email += auth.user.email
+      email += auth.user.email;
     }
     return email;
   }
@@ -172,7 +172,7 @@ function AuthContextProvider(props) {
   auth.getAboutMe = function () {
     let aboutMe = "";
     if (auth.user) {
-      aboutMe += auth.user.aboutMe
+      aboutMe += auth.user.aboutMe;
     }
     console.log("aboutMe (auth front): " + aboutMe);
     console.log("auth.aboutMe: " + auth.user.aboutMe);

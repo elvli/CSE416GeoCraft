@@ -155,7 +155,7 @@ export default function ProfilePage() {
       <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
-      <EditProfileModal editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose}/>
+      <EditProfileModal editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose} />
     </div >
   );
 }

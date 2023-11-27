@@ -133,6 +133,7 @@ registerUser = async (req, res) => {
 
     // LOGIN THE USER
     const token = auth.signToken(savedUser._id);
+    console.log("auth-controller: " + savedUser.aboutMe)
 
     await res.cookie("token", token, {
       httpOnly: true,
