@@ -46,7 +46,7 @@ export default function EditProfileModal(props) {
               <Form.Group as={Col}>
                 <Form.Control
                   className="map-name"
-                  name="newFirstName"
+                  name="changeFirstName"
                   type="text"
                   defaultValue={currentFirstName}
                 />
@@ -54,7 +54,7 @@ export default function EditProfileModal(props) {
               <Form.Group as={Col}>
                 <Form.Control
                   className="map-name"
-                  name="newLastName"
+                  name="changeLastName"
                   type="text"
                   defaultValue={currentLastName}
                 />
@@ -65,7 +65,7 @@ export default function EditProfileModal(props) {
               <Form.Label>Change email</Form.Label>
               <Form.Control
                 className="map-name"
-                name="newUsername"
+                name="changeEmail"
                 type="text"
                 defaultValue={currentEmail}
               />
@@ -75,7 +75,7 @@ export default function EditProfileModal(props) {
               <Form.Label>Change username</Form.Label>
               <Form.Control
                 className="map-name"
-                name="newUsername"
+                name="changeUsername"
                 type="text"
                 defaultValue={currentUsername}
               />
@@ -97,19 +97,18 @@ export default function EditProfileModal(props) {
 
             <Form.Group>
               <Form.Label>Change about me</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows="4"
+              <textarea
+                class="form-control"
                 className="map-name"
-                name="aboutMe"
+                name="changeAboutMe"
+                rows="4"
                 defaultValue={currentAboutMe}
-                readOnly // Add the readOnly attribute
                 style={{ resize: "none" }} // Add the style to prevent resizing
               />
             </Form.Group>
 
           </Modal.Body>
-          
+
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClosing}>
               Close
