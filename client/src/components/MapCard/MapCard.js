@@ -152,6 +152,11 @@ export default function MapCard(props) {
         //     toggleEdit();
         // }
     }
+  function handleDelete (event){
+    event.stopPropagation()
+    store.markMap(map)
+    functions.handleDeleteMap
+  }
 
   if(toEdit) {
       return <Navigate to="/edit"/>
@@ -166,7 +171,7 @@ export default function MapCard(props) {
       </Dropdown.Toggle>
       <Dropdown.Menu className='dropdown-menu'>
         <Dropdown.Item onClick={functions.handleFork} className='options-button-options'>Fork</Dropdown.Item>
-        <Dropdown.Item onClick={functions.handleDeleteMap} className='options-button-options'>Delete</Dropdown.Item>
+        <Dropdown.Item onClick={handleDelete} className='options-button-options'>Delete</Dropdown.Item>
         <Dropdown.Item className='options-button-options'>Rename</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
@@ -183,7 +188,7 @@ export default function MapCard(props) {
         </Dropdown.Toggle>
         <Dropdown.Menu className='dropdown-menu'>
           <Dropdown.Item onClick={functions.handleFork} className='options-button-options'>Fork</Dropdown.Item>
-          <Dropdown.Item onClick={(event) => {event.stopPropagation();functions.handleDeleteMap();store.markMap(map);console.log(map._id) }} className='options-button-options'>Delete</Dropdown.Item>
+          <Dropdown.Item onClick={handleDelete} className='options-button-options'>Delete</Dropdown.Item>
           <Dropdown.Item onClick={functions.handleExport} className='options-button-options'>Export</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
