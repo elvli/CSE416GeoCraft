@@ -114,13 +114,13 @@ export default function LeftSideBar(props) {
     </Button>
   </div>
   
-  // if (!auth.loggedIn) {
-  //   tools = <div className='column-tools'>
-  //     <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
-  //       <PeopleFill className='icon-btn' />
-  //     </Button>
-  //   </div>
-  // }
+  if (!auth.loggedIn) {
+    tools = <div className='column-tools'>
+      <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
+        <PeopleFill className='icon-btn' />
+      </Button>
+    </div>
+  }
 
   return (
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="left-wrapper">
