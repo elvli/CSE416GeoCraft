@@ -1,5 +1,4 @@
 const baseUrl = "https://geocraftmapsbackend.onrender.com";
-// https://geocraftserver.azurewebsites.net
-//http://localhost:3001
-// https://geocraftmaps.azurewebsites.net
+// const baseUrl = "http://localhost:3001";
+
 export default baseUrl;

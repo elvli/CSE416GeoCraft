@@ -2,9 +2,7 @@ import axios from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
   baseURL: 'https://geocraftmapsbackend.onrender.com',
-  //https://geocraftserver.azurewebsites.net
-  //https://geocraftmaps.azurewebsites.net
-  // http://localhost:3001
+  // baseURL: 'http://localhost:3001'
 })
 
 export const getLoggedIn = () => api.get(`/loggedIn/`);
