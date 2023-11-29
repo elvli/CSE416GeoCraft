@@ -58,7 +58,7 @@ app.post('/register', AuthController.registerUser)
 
 app.post('/map', auth.verify, MapController.createMap)
 app.delete('/map/:id', auth.verify, MapController.deleteMap)
-app.get('/map/:id', auth.verify, MapController.getMapById)
+app.get('/map/:id', MapController.getMapById)
 app.get('/mapPairs', MapController.getMapPairs)
 app.post('/map', auth.verify, MapController.getMaps)
 app.put('/map/:id', auth.verify, MapController.updateMap)
