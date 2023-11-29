@@ -30,7 +30,7 @@ export default function LeftSideBar(props) {
   }
 
   var maps;
-  if(publishedMaps) {
+  if(publishedMaps || !auth.loggedIn) {
     maps = <div>
       {
         store.idNamePairs.map((pair) => {
@@ -50,7 +50,7 @@ export default function LeftSideBar(props) {
     maps = <div>
       {
         store.idNamePairs.map((pair) => {
-            if(pair.ownerEmail === auth.email) {
+            if(pair.ownerEmail === auth.getEmail()) {
               return <MapCard
                 key={pair._id}
                 map={pair}
@@ -116,7 +116,7 @@ export default function LeftSideBar(props) {
   
   if (!auth.loggedIn) {
     tools = <div className='column-tools'>
-      <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
+      <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps} active={true}>
         <PeopleFill className='icon-btn' />
       </Button>
     </div>
