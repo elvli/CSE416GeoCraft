@@ -75,6 +75,9 @@ export default function ProfilePage() {
 
     return <div>{rows}</div>;
   }
+  useEffect(() => {
+    store.setCurrentList(null);
+  }, []);
 
   return (
     <div class="profile-container">
