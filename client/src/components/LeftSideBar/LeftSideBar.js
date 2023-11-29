@@ -12,6 +12,7 @@ export default function LeftSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
   const { handleNewMap, handleDeleteMap, handleFork, handleExport } = props;
+  const [publishedMaps , setPublishedMaps] = useState(false);
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -28,24 +29,52 @@ export default function LeftSideBar(props) {
     handleExport: handleExport
   }
 
-  var maps = <div>
-    {
-      store.idNamePairs.map((pair) =>
-        <MapCard
-          key={pair._id}
-          map={pair}
-          functions={functions}
-        />
-      )
-    }
-  </div>
+  var maps;
+  if(publishedMaps) {
+    maps = <div>
+      {
+        store.idNamePairs.map((pair) => {
+            if(pair.published) {
+              return <MapCard
+                key={pair._id}
+                map={pair}
+                functions={functions}
+              />
+            }
+          }
+        )
+      }
+    </div>
+  }
+  else {
+    maps = <div>
+      {
+        store.idNamePairs.map((pair) => {
+            if(pair.ownerEmail === auth.email) {
+              return <MapCard
+                key={pair._id}
+                map={pair}
+                functions={functions}
+              />
+            }
+          }
+        )
+      }
+    </div>
+  }
 
   const handleUserMaps = () => {
-    console.log('handleUserMaps');
+    if(publishedMaps) {
+
+    }
+    else setPublishedMaps(!publishedMaps)
   }
 
   const handleMyMaps = () => {
-    console.log('handleMyMaps');
+    if(!publishedMaps) {
+
+    }
+    else setPublishedMaps(!publishedMaps)
   }
 
   const handleSortNewest = () => {
@@ -77,21 +106,21 @@ export default function LeftSideBar(props) {
     <Button className='btn btn-light new-map-btn' aria-label="Create New Map" onClick={handleNewMap}>
       <Plus className='icon-btn' />
     </Button>
-    <Button className='btn btn-light user-maps-btn' aria-label="View Community Maps" onClick={handleUserMaps}>
+    <Button className='btn btn-light user-maps-btn' aria-label="View Community Maps" onClick={handleUserMaps}  active={publishedMaps}>
       <PeopleFill className='icon-btn' />
     </Button>
-    <Button className='btn btn-light my-maps-btn' aria-label="View My Maps" onClick={handleMyMaps}>
+    <Button className='btn btn-light my-maps-btn' aria-label="View My Maps" onClick={handleMyMaps}  active={!publishedMaps}>
       <PersonFill className='icon-btn' />
     </Button>
   </div>
   
-  if (!auth.loggedIn) {
-    tools = <div className='column-tools'>
-      <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
-        <PeopleFill className='icon-btn' />
-      </Button>
-    </div>
-  }
+  // if (!auth.loggedIn) {
+  //   tools = <div className='column-tools'>
+  //     <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps}>
+  //       <PeopleFill className='icon-btn' />
+  //     </Button>
+  //   </div>
+  // }
 
   return (
     <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="left-wrapper">
