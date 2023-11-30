@@ -24,7 +24,7 @@
   }
 
   .options-button-options {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .card-body {
@@ -32,7 +32,6 @@
   }
 
   .comment-text {
-    z-index: 1;
     float: left;
     width: 140px;
     overflow: hidden;
@@ -59,10 +58,15 @@
 .options-button {
   transform: translate(20%, -6%);
   float: right;
-  font-size: 11px;
+  font-size: 10px;
+  background-color: transparent;  
+  z-index: 2;
 
   .dropdown-toggle::after {
     display: none;
+  }
+  .dropdown-menu {
+    min-width:20px;
   }
 }
 
