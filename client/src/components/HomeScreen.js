@@ -1,6 +1,6 @@
 import React from "react"
 import '../App.css';
-import { EditRegionModal, MapBackground } from ".";
+import { EditRegionModal, MapBackground, PublishMapModal } from ".";
 import { useState, useEffect, useContext } from "react";
 import { AppBanner, LeftSideBar, RightSideBar, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../components'
 import { GlobalStoreContext } from '../store' 
@@ -12,10 +12,17 @@ export default function HomeScreen() {
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
   const { store } = useContext(GlobalStoreContext);
+  const [publishMapShow, setPublishMapShow] = useState(false);
   
-  
+
   async function handleClose(event) {
     setNewMapShow(false)
+  }
+  async function handlePublish(event) {
+    setPublishMapShow(true)
+  }
+  async function handlePublishClose(event) {
+    setPublishMapShow(false)
   }
   async function handleNewMap(event) {
     setNewMapShow(true)
@@ -77,7 +84,7 @@ export default function HomeScreen() {
         </div>
 
         <div className="foreground">
-          <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion} handleFork={handleFork} handleExport={handleExport} />
+          <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion} handleFork={handleFork} handleExport={handleExport} handlePublish={handlePublish}/>
           {store.currentList?<RightSideBar />:<></>}
         </div>
 
@@ -87,6 +94,7 @@ export default function HomeScreen() {
       <EditRegionModal editRegionShow={editRegionShow} handleEditRegionClose={handleEditRegionClose} />
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose}/>
       {/* <button onClick={() => navigate("create")}>Create</button> */}
     </div>
   )

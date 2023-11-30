@@ -11,7 +11,7 @@ export default function LeftSideBar(props) {
   const { auth } = useContext(AuthContext);
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const { handleNewMap, handleDeleteMap, handleFork, handleExport } = props;
+  const { handleNewMap, handleDeleteMap, handleFork, handleExport, handlePublish } = props;
   const [publishedMaps , setPublishedMaps] = useState(false);
 
   function toggleSideBar(event) {
@@ -26,7 +26,8 @@ export default function LeftSideBar(props) {
   var functions = {
     handleDeleteMap: handleDeleteMap,
     handleFork: handleFork,
-    handleExport: handleExport
+    handleExport: handleExport,
+    handlePublish: handlePublish,
   }
 
   var maps;

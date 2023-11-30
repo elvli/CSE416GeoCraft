@@ -18,6 +18,7 @@ import ForkMapModal from './ForkMapModal/ForkMapModal.js'
 import ExportMapModal from './ExportMapModal/ExportMapModal.js'
 import ProfilePage from './ProfilePage/ProfilePage.js'
 import EditProfileModal from './EditProfileModal/EditProfileModal.js'
+import PublishMapModal from './PublishMapModal/PublishMapModal.js'
 
 export {
   AppBanner,
@@ -40,4 +41,5 @@ export {
   ExportMapModal,
   ProfilePage,
   EditProfileModal,
+  PublishMapModal
 }

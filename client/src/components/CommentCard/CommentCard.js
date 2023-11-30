@@ -65,7 +65,7 @@ export default function CommentCard(props) {
         }
       }
     
-      store.updateCommentsLikeDislike(map._id, map);
+      store.updateLikeDislike(map._id, map);
   }
   function handleDislike(event) {
     event.stopPropagation();
@@ -117,7 +117,7 @@ export default function CommentCard(props) {
         }
       }
       
-      store.updateCommentsLikeDislike(map._id, map);
+      store.updateLikeDislike(map._id, map);
   }
   return (
     // <div className="card comment-card">
