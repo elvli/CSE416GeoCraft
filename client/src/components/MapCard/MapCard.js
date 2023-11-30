@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill, HandThumbsUp, HandThumbsDown, } from 'react-bootstrap-icons';
 import './MapCard.scss'
@@ -143,9 +143,10 @@ export default function MapCard(props) {
 
    //   store.dislikeList(auth.user.email, map, auth.user)
   }
+  const mapbox = useRef(null);
   function handleToggleEdit(event) {
     event.stopPropagation();
-    store.setCurrentList(map._id);
+    store.setCurrentList(map._id, mapbox);
         // event.stopPropagation();
         // if (event.detail === 2) {
         //     store.setCurrentList(idNamePair._id);

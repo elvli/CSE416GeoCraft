@@ -1,6 +1,6 @@
 import './MapBackground.scss';
-import React, { useRef, useEffect, useState } from 'react';
-
+import React, { useRef, useEffect, useState, useContext } from 'react';
+import GlobalStoreContext from '../../store';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // import rewind from "@mapbox/geojson-rewind";
 import mapboxgl from 'mapbox-gl';
@@ -10,7 +10,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZ
 // const shp = require("shpjs");
 
 export default function MapBackground() {
-  const mapContainer = useRef(null);
+  const { store } = useContext(GlobalStoreContext);
+  const mapContainer = store.container
   const map = useRef(null);
   const [lng, setLng] = useState(12.7971);
   const [lat, setLat] = useState(41.8473);
@@ -32,7 +33,6 @@ export default function MapBackground() {
       setLat(map.current.getCenter().lat.toFixed(4));
       setZoom(map.current.getZoom().toFixed(2));
     });
-
     map.current.on('load', () => {
       map.current.addSource('map-source', {
         type: 'geojson',
