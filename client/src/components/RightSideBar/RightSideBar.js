@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Button } from 'react-bootstrap';
 import { ChatRightText, Send } from 'react-bootstrap-icons';
 import CommentCard from '../CommentCard/CommentCard';

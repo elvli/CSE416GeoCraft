@@ -54,7 +54,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     store.loadIdNamePairs();
-  }, [store]);
+  }, []);
 
   return (
     <div>

@@ -3,12 +3,13 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import GlobalStoreContext from "../../store";
 export default function PublishMapModal(props) {
   const { store } = useContext(GlobalStoreContext);
   const { publishMapShow, handlePublishMapClose } = props
-
   const handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();

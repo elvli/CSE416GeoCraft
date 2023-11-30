@@ -13,134 +13,38 @@ export default function MapCard(props) {
   const [toEdit, setToEdit] = useState(false);
   const email = auth.getEmail();
 
+
   function handleEditMap(event) {
     event.preventDefault();
     event.stopPropagation();
     setToEdit(true)
   }
 
-  function handleLike(event) {
+  function handleInteraction(arr, otherArr, event) {
     event.stopPropagation();
-    let alreadyLiked = false;
-    let likeArr = map.likes
-    let dislikeArr = map.dislikes
-    let likeCount = likeArr.length;
-    let dislikeCount = dislikeArr.length;
+    const index = arr.indexOf(auth.user.email);
 
-    if (likeCount == 0 && dislikeCount == 0) {
-      likeArr.push(auth.user.email)
-    }
-    else if (likeCount == 0 && dislikeCount > 0) {
-
-      for (let i = 0; i < dislikeCount; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          dislikeArr.splice(i, 1);
+    if (index !== -1) {
+      arr.splice(index, 1);
+    } else {
+      if (otherArr.length > 0) {
+        const otherIndex = otherArr.indexOf(auth.user.email);
+        if (otherIndex !== -1) {
+          otherArr.splice(otherIndex, 1);
         }
       }
-      likeArr.push(auth.user.email)
-    }
-    else if (likeCount > 0 && dislikeCount == 0) {
-      let isLiked = false;
-      for (let i = 0; i < likeArr.length; i++) {
-        if (likeArr[i] === auth.user.email) {
-          isLiked = true;
-          likeArr.splice(i, 1);
-        }
-      }
-      console.log("isLiked: " + isLiked)
-      if (!isLiked) {
-        likeArr.push(auth.user.email)
-      }
-    }
-    else {
-      let isLiked = false;
-      for (let i = 0; i < likeCount; i++) {
-        if (likeArr[i] === auth.user.email) {
-          isLiked = true;
-          likeArr.splice(i, 1);
-        }
-      }
-      for (let i = 0; i < dislikeCount; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          dislikeArr.splice(i, 1);
-        }
-      }
-      if (!isLiked) {
-        likeArr.push(auth.user.email)
-      }
+      arr.push(auth.user.email);
     }
 
     store.updateLikeDislike(map._id, map);
-
-
-    // store.likeList(auth.user.email, map, auth.user)
   }
+
+  function handleLike(event) {
+    handleInteraction(map.likes, map.dislikes, event);
+  }
+
   function handleDislike(event) {
-    event.stopPropagation();
-    let likeArr = map.likes
-    let dislikeArr = map.dislikes
-    let alreadyLiked = false;
-    let likeCount = likeArr.length;
-    let dislikeCount = dislikeArr.length;
-    if (likeCount == 0 && dislikeCount == 0) {
-      dislikeArr.push(auth.user.email)
-    }
-    else if (dislikeCount == 0 && likeCount > 0) {
-
-      for (let i = 0; i < likeCount; i++) {
-        if (likeArr[i] === auth.user.email) {
-          likeArr.splice(i, 1);
-        }
-      }
-      dislikeArr.push(auth.user.email)
-    }
-    else if (dislikeCount > 0 && likeCount == 0) {
-      let isLiked = false;
-      for (let i = 0; i < dislikeArr.length; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          isLiked = true;
-          dislikeArr.splice(i, 1);
-        }
-      }
-      console.log("isLiked: " + isLiked)
-      if (!isLiked) {
-        dislikeArr.push(auth.user.email)
-      }
-    }
-    else {
-      let isLiked = false;
-      for (let i = 0; i < dislikeCount; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          isLiked = true;
-          dislikeArr.splice(i, 1);
-        }
-      }
-      for (let i = 0; i < likeCount; i++) {
-        if (likeArr[i] === auth.user.email) {
-          likeArr.splice(i, 1);
-        }
-      }
-      if (!isLiked) {
-        dislikeArr.push(auth.user.email)
-      }
-    }
-
-    store.updateLikeDislike(map._id, map);
-    /*
-    {
-      name: map.name,
-      ownerName: map.ownerName,
-      ownerEmail: map.ownerEmail,
-      mapType: map.mapType,
-      comments: map.comments,
-      published: map.published,
-      publishedDate: map.publishedDate,
-      likes: map.likes,
-      dislikes: map.dislikes,
-      views: map.views,
-  }*/
-
-    //   store.dislikeList(auth.user.email, map, auth.user)
+    handleInteraction(map.dislikes, map.likes, event);
   }
 
   const mapbox = useRef(null);
