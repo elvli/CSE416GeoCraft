@@ -157,54 +157,9 @@ registerUser = async (req, res) => {
   }
 }
 
-updateUser = async (req, res) => {
-  try {
-    let userId = auth.verifyUser(req);
-    if (!userId) {
-      return res.status(200).json({
-        loggedIn: false,
-        user: null,
-        errorMessage: "?"
-      })
-    }
-    const body = req.body.user;
-    console.log("updateUser: " + JSON.stringify(body));
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        email: body.email,
-        username: body.username,
-        aboutMe: body.aboutMe,
-      },
-      { new: true, runValidators: true }
-    )
-    if (!updatedUser) {
-      return res.status(404).json({
-        success: false,
-        error: 'User not found!',
-      });
-    }
-    console.log("Updated User: " + JSON.stringify(updatedUser));
-    return res.status(200).json({
-      success: true,
-      user: updatedUser,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      error: 'Internal Server Error',
-    });
-  }
-}
-
-
 module.exports = {
   getLoggedIn,
   registerUser,
   loginUser,
-  logoutUser,
-  updateUser
+  logoutUser
 }

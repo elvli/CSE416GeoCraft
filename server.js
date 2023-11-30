@@ -37,7 +37,6 @@ app.get('/loggedIn', AuthController.getLoggedIn)
 app.post('/login', AuthController.loginUser)
 app.get('/logout', AuthController.logoutUser)
 app.post('/register', AuthController.registerUser)
-app.put('/user/:id', AuthController.updateUser)
 
 app.post('/map', auth.verify, MapController.createMap)
 app.delete('/map/:id', auth.verify, MapController.deleteMap)
