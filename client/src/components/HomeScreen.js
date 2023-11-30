@@ -73,11 +73,12 @@ export default function HomeScreen() {
 
         <div className="background">
           <MapBackground />
+          
         </div>
 
         <div className="foreground">
           <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion} handleFork={handleFork} handleExport={handleExport} />
-          <RightSideBar />
+          {store.currentList?<RightSideBar />:<></>}
         </div>
 
       </div>

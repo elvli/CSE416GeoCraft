@@ -198,7 +198,7 @@ export default function MapCard(props) {
 
   return (
     <div>
-      <div className="card map-card" onClick={handleToggleEdit}>
+      <div className={`card map-card ${(store.currentList != null)&&(store.currentList._id == map._id)? 'selected' : ''}`} onClick={handleToggleEdit}>
         <div className="card-header">
           <p className="map-title">{map.name}</p>
           {dropdown}

@@ -17,7 +17,7 @@ export default function MapBackground() {
   const [zoom, setZoom] = useState(5.43);
   //   const [count, setCount] = useState(1);
 
-  async function generateMap() {
+  async function generateMap(geojson = null) {
     if (map.current || typeof window === 'undefined') return; // Check for the browser environment
     const mapboxgl = require('mapbox-gl'); // or import mapboxgl from 'mapbox-gl';
 
