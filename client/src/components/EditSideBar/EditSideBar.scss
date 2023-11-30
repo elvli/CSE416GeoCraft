@@ -46,15 +46,30 @@
 
 .edit-tools-list {
   margin-top: 5px;
+}
 
+.editingDropdown {
+  min-height: 68vh;
+  position: relative;
+}
 
+.JSONButton {
+  justify-content: flex-end;
+  position: absolute;
+  bottom: 10px;
+  left: 100px
+}
+
+.addRowButton {
+  background-color: white;
+  outline: none;
 }
 
 // .table-responsive {
 //   max-height:300px;
 // }
 .table-responsive { 
-  max-height: 400px; 
+  max-height: 450px; 
 }
 .table-responsive thead th { position: sticky; top: 0; z-index: 1; }
 .table-responsive tbody th { position: sticky; left: 0; }

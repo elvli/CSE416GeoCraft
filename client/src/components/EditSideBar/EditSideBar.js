@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Button, Table } from 'react-bootstrap';
-import { Gear, ViewStacked, PencilSquare, Wrench } from 'react-bootstrap-icons';
+import { Gear, ViewStacked, PencilSquare, Wrench, Circle } from 'react-bootstrap-icons';
 import './EditSideBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { XLg } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 export default function EditSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
@@ -17,17 +17,7 @@ export default function EditSideBar(props) {
     { id: 2, Latitude: 0.3, Longitude: 0.2 },
     { id: 3, Latitude: 0.8, Longitude: 0.4 },
     { id: 4, Latitude: 0.2, Longitude: 0.9 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 },
-    { id: 7, Latitude: 0.6, Longitude: 0.1 },
-
+    { id: 5, Latitude: 0.6, Longitude: 0.1 }
   ]);
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude'
@@ -38,6 +28,17 @@ export default function EditSideBar(props) {
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
+  }
+
+  const handleAddRow = () => {
+    var newTable = []
+    for (let i = 0; i < tableData.length; i++) {
+      newTable.push(tableData[i])
+    } 
+    newTable.push({id: newTable.length + 1, Latitude: null, Longitude: null,})
+    console.log(newTable)
+    setTableData(newTable)
+    
   }
   const handleHeaderDoubleClick = (index) => {
     setIsEditingHeader(index);
@@ -143,7 +144,7 @@ export default function EditSideBar(props) {
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Heat Map Data</Accordion.Header>
-                  <Accordion.Body >
+                  <Accordion.Body className='editingDropdown'>
                   <div className="table-responsive">
                     <Table striped bordered hover>
                       <thead>
@@ -199,11 +200,17 @@ export default function EditSideBar(props) {
                         ))}
                       </tbody>
                     </Table>
+                    <Button className='addRowButton btn btn-light' onClick={handleAddRow}>
+                      <PlusCircleFill/>
+                    </Button>
                   </div>
-                    <Button variant="primary" onClick={() => { downloadJson(); }}>
+                  <div className='JSONButton'>
+                    <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
                       Download JSON
                     </Button>
                     <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
+                  </div>
+                    
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
