@@ -13,14 +13,24 @@ export default function EditSideBar(props) {
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null)
   const [tableData, setTableData] = useState([
-    { id: 1, xCoordinate: 0.5, yCoordinate: 0.7 },
-    { id: 2, xCoordinate: 0.3, yCoordinate: 0.2 },
-    { id: 3, xCoordinate: 0.8, yCoordinate: 0.4 },
-    { id: 4, xCoordinate: 0.2, yCoordinate: 0.9 },
-    { id: 5, xCoordinate: 0.6, yCoordinate: 0.1 },
+    { id: 1, Latitude: 0.5, Longitude: 0.7 },
+    { id: 2, Latitude: 0.3, Longitude: 0.2 },
+    { id: 3, Latitude: 0.8, Longitude: 0.4 },
+    { id: 4, Latitude: 0.2, Longitude: 0.9 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 5, Latitude: 0.6, Longitude: 0.1 },
+    { id: 7, Latitude: 0.6, Longitude: 0.1 },
+
   ]);
   const [tableHeaders, setTableHeaders] = useState([
-    'ID', 'X Coordinate', 'Y Coordinate'
+    'ID', 'Latitude', 'Longitude'
   ]);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
@@ -134,7 +144,8 @@ export default function EditSideBar(props) {
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Heat Map Data</Accordion.Header>
                   <Accordion.Body >
-                  <Table striped bordered hover>
+                  <div className="table-responsive">
+                    <Table striped bordered hover>
                       <thead>
                         <tr>
                           {tableHeaders.map((header, index) => (
@@ -157,6 +168,9 @@ export default function EditSideBar(props) {
                           ))}
                         </tr>
                       </thead>
+                      <div className="table-responsive">
+                        
+                      </div>
                       <tbody>
                         {tableData.map((row, rowIndex) => (
                           <tr key={row.id}>
@@ -185,6 +199,7 @@ export default function EditSideBar(props) {
                         ))}
                       </tbody>
                     </Table>
+                  </div>
                     <Button variant="primary" onClick={() => { downloadJson(); }}>
                       Download JSON
                     </Button>
