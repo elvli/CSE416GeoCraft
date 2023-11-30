@@ -190,8 +190,6 @@ function AuthContextProvider(props) {
     if (auth.user) {
       aboutMe += auth.user.aboutMe;
     }
-    console.log("aboutMe (auth front): " + aboutMe);
-    console.log("auth.aboutMe: " + auth.user.aboutMe);
     return aboutMe;
   }
 

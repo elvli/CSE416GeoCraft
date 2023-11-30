@@ -54,6 +54,9 @@ export default function ProfilePage() {
     handleFork: handleFork,
     handleExport: handleExport
   }
+  useEffect(() => {
+    store.loadIdNamePairs();
+  }, []);
 
   function createRows(mapCards) {
     const rows = [];
