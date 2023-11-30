@@ -50,6 +50,14 @@
 
 }
 
+// .table-responsive {
+//   max-height:300px;
+// }
+.table-responsive { 
+  max-height: 400px; 
+}
+.table-responsive thead th { position: sticky; top: 0; z-index: 1; }
+.table-responsive tbody th { position: sticky; left: 0; }
 
 
 .editing-tools {
@@ -73,12 +81,12 @@
 
  .edit-left-bar {
     background-color: theme.$dark;
-    min-width: 3vw;
-    min-height: 95vh;
+    min-width: 57.6px;
+    min-height: 880.65px;
 }
 .edit-button {
-    max-width: 2.5vw;
-    height: 5vh;
+    max-width: 48px;
+    height: 46.35px;
     transform: translate(35%, 0%)
 }
 #edit-close-button {
