@@ -7,11 +7,12 @@ import GlobalStoreContext from '../../store'
 import './MapCard.scss'
 
 export default function MapCard(props) {
-  const store = useContext(GlobalStoreContext);
-  const auth = useContext(AuthContext);
+  const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
   const { map, functions, selected } = props
   const [toEdit, setToEdit] = useState(false);
   const email = auth.getEmail();
+
 
   function handleEditMap(event) {
     event.preventDefault();
