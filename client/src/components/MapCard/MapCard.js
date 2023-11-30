@@ -1,162 +1,65 @@
-import React from 'react'
-import { useState, useContext, useEffect, useRef } from 'react';
+import { React, useState, useContext, useRef } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill, HandThumbsUp, HandThumbsDown, } from 'react-bootstrap-icons';
-import './MapCard.scss'
-import { Navigate } from 'react-router-dom';
 import AuthContext from '../../auth'
-import { GlobalStoreContext } from '../../store'
+import GlobalStoreContext from '../../store'
+import './MapCard.scss'
+
 export default function MapCard(props) {
-  const { store } = useContext(GlobalStoreContext);
-  const { auth } = useContext(AuthContext);
+  const store = useContext(GlobalStoreContext);
+  const auth = useContext(AuthContext);
   const { map, functions, selected } = props
   const [toEdit, setToEdit] = useState(false);
   const email = auth.getEmail();
 
-
-  function onClickfoo(event) {
+  function handleEditMap(event) {
     event.preventDefault();
     event.stopPropagation();
     setToEdit(true)
   }
 
-  function handleLike(event) {
+  function handleInteraction(arr, otherArr, event) {
     event.stopPropagation();
-    let alreadyLiked = false;
-        let likeArr = map.likes
-        let dislikeArr = map.dislikes
-        let likeCount = likeArr.length;
-        let dislikeCount = dislikeArr.length;
-        
-        if(likeCount == 0 && dislikeCount == 0) {
-            likeArr.push(auth.user.email)
-        }
-        else if(likeCount == 0 && dislikeCount > 0) {
-            
-            for(let i = 0; i < dislikeCount; i++) {
-                if(dislikeArr[i] === auth.user.email) {
-                    dislikeArr.splice(i, 1); 
-                }
-            }
-            likeArr.push(auth.user.email)
-        }
-        else if(likeCount > 0 && dislikeCount == 0) {
-            let isLiked = false;
-            for(let i = 0; i < likeArr.length; i++) {
-                if(likeArr[i] === auth.user.email) {
-                    isLiked = true;
-                    likeArr.splice(i, 1); 
-                }
-            }
-            console.log("isLiked: " + isLiked)
-            if(!isLiked) {
-                likeArr.push(auth.user.email)
-            }
-        }
-        else {
-            let isLiked = false;
-            for(let i = 0; i < likeCount; i++) {
-                if(likeArr[i] === auth.user.email) {
-                    isLiked = true;
-                    likeArr.splice(i, 1); 
-                }
-            }
-            for(let i = 0; i < dislikeCount; i++) {
-                if(dislikeArr[i] === auth.user.email) {
-                    dislikeArr.splice(i, 1); 
-                }
-            }
-            if(!isLiked) {
-                likeArr.push(auth.user.email)
-            }
-          }
-        
-          store.updateLikeDislike(map._id, map);
+    const index = arr.indexOf(auth.user.email);
 
+    if (index !== -1) {
+      arr.splice(index, 1);
+    } else {
+      if (otherArr.length > 0) {
+        const otherIndex = otherArr.indexOf(auth.user.email);
+        if (otherIndex !== -1) {
+          otherArr.splice(otherIndex, 1);
+        }
+      }
+      arr.push(auth.user.email);
+    }
 
-   // store.likeList(auth.user.email, map, auth.user)
+    store.updateLikeDislike(map._id, map);
   }
+
+  function handleLike(event) {
+    handleInteraction(map.likes, map.dislikes, event);
+  }
+
   function handleDislike(event) {
-      event.stopPropagation();
-      let likeArr = map.likes
-      let dislikeArr = map.dislikes
-      let alreadyLiked = false;
-      let likeCount = likeArr.length;
-      let dislikeCount = dislikeArr.length;
-      if(likeCount == 0 && dislikeCount == 0) {
-          dislikeArr.push(auth.user.email)
-      }
-      else if(dislikeCount == 0 && likeCount > 0) {
-          
-          for(let i = 0; i < likeCount; i++) {
-              if(likeArr[i] === auth.user.email) {
-                  likeArr.splice(i, 1); 
-              }
-          }
-          dislikeArr.push( auth.user.email)
-      }
-      else if(dislikeCount > 0 && likeCount == 0) {
-          let isLiked = false;
-          for(let i = 0; i < dislikeArr.length; i++) {
-              if(dislikeArr[i] === auth.user.email) {
-                  isLiked = true;
-                  dislikeArr.splice(i, 1); 
-              }
-          }
-          console.log("isLiked: " + isLiked)
-          if(!isLiked) {
-              dislikeArr.push(auth.user.email)
-          }
-      }
-      else {
-          let isLiked = false;
-          for(let i = 0; i < dislikeCount; i++) {
-              if(dislikeArr[i] === auth.user.email) {
-                  isLiked = true;
-                  dislikeArr.splice(i, 1); 
-              }
-          }
-          for(let i = 0; i < likeCount; i++) {
-              if(likeArr[i] === auth.user.email) {
-                  likeArr.splice(i, 1); 
-              }
-          }
-          if(!isLiked) {
-              dislikeArr.push(auth.user.email)
-          }
-        }
-        
-        store.updateLikeDislike(map._id, map);
-        /*
-        {
-          name: map.name,
-          ownerName: map.ownerName,
-          ownerEmail: map.ownerEmail,
-          mapType: map.mapType,
-          comments: map.comments,
-          published: map.published,
-          publishedDate: map.publishedDate,
-          likes: map.likes,
-          dislikes: map.dislikes,
-          views: map.views,
-      }*/
-
-   //   store.dislikeList(auth.user.email, map, auth.user)
+    handleInteraction(map.dislikes, map.likes, event);
   }
+
   const mapbox = useRef(null);
   function handleToggleEdit(event) {
     event.stopPropagation();
     store.setCurrentList(map._id, mapbox);
-        // event.stopPropagation();
-        // if (event.detail === 2) {
-        //     store.setCurrentList(idNamePair._id);
-        //     toggleEdit();
-        // }
-    }
+    // event.stopPropagation();
+    // if (event.detail === 2) {
+    //     store.setCurrentList(idNamePair._id);
+    //     toggleEdit();
+    // }
+  }
 
 
-  if(toEdit) {
-      return <Navigate to="/edit"/>
+  if (toEdit) {
+    return <Navigate to="/edit" />
   }
   // async function handleDelete(event) {
   //   document.getElementById("map-create-modal").classList.add("is-visible")
@@ -175,7 +78,7 @@ export default function MapCard(props) {
   </div>
 
   let mapCardButtons = <div className='d-flex flex-row-reverse'>
-    <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><PencilFill onClick={onClickfoo}/></Button>
+    <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><PencilFill onClick={handleEditMap} /></Button>
   </div>
   if (map.published) {
     dropdown = <div className='options-button'>
@@ -192,14 +95,14 @@ export default function MapCard(props) {
     </div>
 
     mapCardButtons = <div className='d-flex flex-row-reverse'>
-      <Button className='btn btn-light dislike-button' onClick={handleDislike} disabled={!auth.loggedIn}>{map.dislikes.includes(email)? <HandThumbsDownFill/>:<HandThumbsDown/>} {map.dislikes.length}</Button>
-      <Button className='btn btn-light like-button' onClick={handleLike} disabled={!auth.loggedIn}>{map.likes.includes(email)? <HandThumbsUpFill/>:<HandThumbsUp/>} {map.likes.length}</Button>
+      <Button className='btn btn-light dislike-button' onClick={handleDislike} disabled={!auth.loggedIn}>{map.dislikes.includes(email) ? <HandThumbsDownFill /> : <HandThumbsDown />} {map.dislikes.length}</Button>
+      <Button className='btn btn-light like-button' onClick={handleLike} disabled={!auth.loggedIn}>{map.likes.includes(email) ? <HandThumbsUpFill /> : <HandThumbsUp />} {map.likes.length}</Button>
     </div>
   }
 
   return (
     <div>
-      <div className={`card map-card ${(store.currentList != null)&&(store.currentList._id == map._id)? 'selected' : ''}`} onClick={handleToggleEdit}>
+      <div className={`card map-card ${(store.currentList != null) && (store.currentList._id === map._id) ? { selected } : ''}`} onClick={handleToggleEdit}>
         <div className="card-header">
           <p className="map-title">{map.name}</p>
           {dropdown}
