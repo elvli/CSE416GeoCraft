@@ -17,9 +17,8 @@ export default function MapBackground() {
   const [zoom, setZoom] = useState(5.43);
   //   const [count, setCount] = useState(1);
 
-  async function generateMap(geojson = null) {
-    if (map.current || typeof window === 'undefined') return; // Check for the browser environment
-    const mapboxgl = require('mapbox-gl'); // or import mapboxgl from 'mapbox-gl';
+  useEffect(() => {
+    if (map.current || typeof window === 'undefined') return;
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -34,32 +33,69 @@ export default function MapBackground() {
       setZoom(map.current.getZoom().toFixed(2));
     });
 
-    // Hard Code for GEOJSON ########################
     map.current.on('load', () => {
-      map.current.addSource('usa-border', {
+      map.current.addSource('map-source', {
         type: 'geojson',
-        data: 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json'
+        data: 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json',
       });
 
+      // This renders the border of the GeoJSON
       map.current.addLayer({
-        id: "usa",
-        type: "line",
-        source: "usa-border",
+        id: 'italy-border',
+        type: 'line',
+        source: 'map-source',
         paint: {
-          "line-opacity": 1,
-          "line-color": "#FFFFFF",
-          "line-width": 7
+          'line-opacity': 1,
+          'line-color': '#FFFFFF',
+          'line-width': 1,
         },
-      })
-    })
-  }
-  useEffect(() => {
-    generateMap()
-  }, []);
+      });
+
+      // This fills in the regions of the GeoJSON
+      map.current.addLayer({
+        id: 'italy-border-fill',
+        type: 'fill',
+        source: 'map-source',
+        paint: {
+          'fill-opacity': 0.5,
+          'fill-color': '#FFFFFF'
+        }
+      });
+
+      // This layer fills in the region
+      map.current.addLayer({
+        id: 'italy-fill',
+        type: 'fill',
+        source: 'map-source',
+        paint: {
+          'fill-opacity': 0,
+          'fill-color': '#FF0000'
+        },
+        filter: ['==', 'ID_1', ''], // Initially, no region is highlighted
+      });
+
+      // Mousemove event to highlight the region under the cursor
+      map.current.on('mousemove', 'italy-border-fill', (e) => {
+        const hoveredRegion = e.features[0];
+
+        if (hoveredRegion) {
+          const regionId = hoveredRegion.properties.ID_1;
+
+          map.current.setFilter('italy-fill', ['==', 'ID_1', regionId]);
+          map.current.setPaintProperty('italy-fill', 'fill-opacity', 1);
+        }
+      });
+
+      // Reset the filter and opacity when the mouse leaves the layer
+      map.current.on('mouseleave', 'italy-border-fill', () => {
+        map.current.setFilter('italy-fill', ['==', 'ID_1', '']);
+        map.current.setPaintProperty('italy-fill', 'fill-opacity', 0);
+      });
+    });
+  }, [lng, lat, zoom]);
 
   return (
     <div>
-      {/* <input type="file" style={{ height: '2.3vh', width: '100%' }} onChange={handleFile}/> */}
       <div className="long-lat-bar">
         Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
       </div>
