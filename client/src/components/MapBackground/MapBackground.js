@@ -98,6 +98,8 @@ export default function MapBackground() {
       map.current.on('mouseleave', 'italy-border-fill', () => {
         map.current.setFilter('italy-fill', ['==', 'ID_1', '']);
         map.current.setPaintProperty('italy-fill', 'fill-opacity', 0);
+
+        popup.remove(); 
       });
     });
   }, [lng, lat, zoom]);
