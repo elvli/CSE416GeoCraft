@@ -174,8 +174,8 @@ updateUser = async (req, res) => {
       {
         firstName: body.firstName,
         lastName: body.lastName,
-        email: body.email,
         username: body.username,
+        email: body.email,
         aboutMe: body.aboutMe,
       },
       { new: true, runValidators: true }

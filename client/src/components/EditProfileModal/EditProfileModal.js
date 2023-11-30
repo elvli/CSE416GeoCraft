@@ -27,6 +27,10 @@ export default function EditProfileModal(props) {
       event.stopPropagation();
       const formData = new FormData(event.currentTarget);
       const user = {
+        firstName: formData.get("changeFirstName"),
+        lastName: formData.get("changeLastName"),
+        username: formData.get("changeUsername"),
+        email: formData.get("changeEmail"),
         aboutMe: formData.get("changeAboutMe")
       }
       auth.updateUser(user);

@@ -19,6 +19,10 @@ function AuthContextProvider(props) {
     user: null,
     loggedIn: false,
     errorMessage: null,
+    firstName: null,
+    LasttName: null,
+    username: null,
+    email: null,
     aboutMe: "Click edit profile to add an about me.",
   });
   const history = useNavigate();
@@ -68,6 +72,10 @@ function AuthContextProvider(props) {
           user: payload.user,
           loggedIn: payload.loggedIn,
           errorMessage: payload.errorMessage,
+          firstName: payload.firstName,
+          LasttName: payload.LastName,
+          username: payload.username,
+          email: payload.email,
           aboutMe: payload.aboutMe
         })
       }
@@ -164,6 +172,10 @@ function AuthContextProvider(props) {
       payload: {
         user: auth.user,
         loggedIn: false,
+        firstName: response.data.user.firstName,
+        LasttName: response.data.user.LastName,
+        username: response.data.user.username,
+        email: response.data.user.email,
         aboutMe: response.data.user.aboutMe,
       }
     })
