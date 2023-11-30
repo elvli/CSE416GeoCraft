@@ -36,7 +36,6 @@ export default function EditSideBar(props) {
       newTable.push(tableData[i])
     } 
     newTable.push({id: newTable.length + 1, Latitude: null, Longitude: null,})
-    console.log(newTable)
     setTableData(newTable)
     
   }
@@ -152,7 +151,6 @@ export default function EditSideBar(props) {
                           {tableHeaders.map((header, index) => (
                             <th
                               key={index + 1}
-                              onDoubleClick={() => handleHeaderDoubleClick(index + 1)}
                               onBlur={handleHeaderBlur}
                             >
                               {isEditingHeader === index + 1 ? (
@@ -181,15 +179,13 @@ export default function EditSideBar(props) {
                                 onDoubleClick={() => handleDoubleClick(rowIndex, colName)}
                                 onBlur={handleEditBlur}
                               >
-                                {isEditing &&
-                                isEditing.rowIndex === rowIndex &&
-                                isEditing.colName === colName ? (
-                                  <input
+                                {
+                                colIndex != 0 ? (
+                                  <input className='cells'
                                     type="text"
                                     value={row[colName]}
                                     onChange={(event) => handleEditChange(event, rowIndex, colName)}
                                     onBlur={handleEditBlur}
-                                    onKeyPress={handleKeyPress}
                                   />
                                 ) : (
                                   row[colName]

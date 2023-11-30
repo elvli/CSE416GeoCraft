@@ -63,7 +63,8 @@
 .addRowButton {
   background-color: white;
   outline: none;
-}
+  margin-top: -18px;
+} 
 
 // .table-responsive {
 //   max-height:300px;
@@ -93,6 +94,10 @@
         color: none
     }
  }
+  
+.cells {
+  width: 100%;
+}
 
  .edit-left-bar {
     background-color: theme.$dark;
