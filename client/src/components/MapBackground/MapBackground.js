@@ -17,7 +17,7 @@ export default function MapBackground() {
   const [zoom, setZoom] = useState(5.43);
   //   const [count, setCount] = useState(1);
 
-  useEffect(() => {
+  async function generateMap() {
     if (map.current || typeof window === 'undefined') return; // Check for the browser environment
     const mapboxgl = require('mapbox-gl'); // or import mapboxgl from 'mapbox-gl';
 
@@ -52,7 +52,10 @@ export default function MapBackground() {
         },
       })
     })
-  });
+  }
+  useEffect(() => {
+    generateMap()
+  }, []);
 
   return (
     <div>
