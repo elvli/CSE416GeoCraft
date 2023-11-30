@@ -17,12 +17,6 @@ export default function MapBackground() {
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
 
-  const popup = new mapboxgl.Popup({
-    closeButton: false,
-    closeOnClick: false,
-    className: 'region-name-popup',
-  });
-
   useEffect(() => {
     if (map.current || typeof window === 'undefined') return;
 
@@ -79,7 +73,14 @@ export default function MapBackground() {
         filter: ['==', 'ID_1', ''], // Initially, no region is highlighted
       });
 
-      // Mousemove event to highlight the region under the cursor
+      // This is the popup that appear when you hover a region
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        className: 'region-name-popup',
+      });
+
+      // Mousemove event to highlight the region under the cursor and display popup with region name
       map.current.on('mousemove', 'italy-border-fill', (e) => {
         const hoveredRegion = e.features[0];
 
@@ -94,15 +95,15 @@ export default function MapBackground() {
         }
       });
 
-      // Reset the filter and opacity when the mouse leaves the layer
+      // Reset the filter, opacity, and popup when the mouse leaves the layer
       map.current.on('mouseleave', 'italy-border-fill', () => {
         map.current.setFilter('italy-fill', ['==', 'ID_1', '']);
         map.current.setPaintProperty('italy-fill', 'fill-opacity', 0);
 
-        popup.remove(); 
+        popup.remove();
       });
     });
-  }, [lng, lat, zoom]);
+  }, [mapContainer, lng, lat, zoom]);
 
   return (
     <div>
