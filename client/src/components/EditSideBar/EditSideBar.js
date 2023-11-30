@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { Button, Table } from 'react-bootstrap';
-import { Gear, ViewStacked, PencilSquare, Wrench, Circle } from 'react-bootstrap-icons';
+import { ViewStacked} from 'react-bootstrap-icons';
 import './EditSideBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
@@ -180,7 +180,7 @@ export default function EditSideBar(props) {
                                 onBlur={handleEditBlur}
                               >
                                 {
-                                colIndex != 0 ? (
+                                colIndex !== 0 ? (
                                   <input className='cells'
                                     type="text"
                                     value={row[colName]}

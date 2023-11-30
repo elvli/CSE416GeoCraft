@@ -3,7 +3,6 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 export default function SaveAndExitModal(props) {
   const { saveAndExitShow, handlesaveAndExitShowClose } = props
@@ -11,14 +10,14 @@ export default function SaveAndExitModal(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    navigate("/")
+    navigate("/");
 
-    
+
   };
   const handleClosing = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    navigate("/")
+    navigate("/");
   }
 
   return (

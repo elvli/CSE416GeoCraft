@@ -3,12 +3,10 @@ import { useState, useContext } from "react";
 import { Form, Button, Modal, Row, Col } from "react-bootstrap";
 import AuthContext from '../../auth'
 import "./EditProfileModal.scss";
-import GlobalStoreContext from "../../store";
 
 export default function EditProfileModal(props) {
   const { editProfileShow, handleEditProfileClose } = props;
   const { auth } = useContext(AuthContext);
-  const { store } = useContext(GlobalStoreContext);
   const [validated, setValidated] = useState(false);
   const currentFirstName = auth.getFirstName();
   const currentLastName = auth.getLastName();
