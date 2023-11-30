@@ -30,11 +30,19 @@ export const registerUser = (firstName, lastName, username, email, confirmEmail,
   })
 }
 
+export const updateUser = (id, user) => {
+  return api.put(`/user/${id}`, {
+      // SPECIFY THE PAYLOAD
+      user : user
+  })
+}
+
 const apis = {
   getLoggedIn,
   loginUser,
   logoutUser,
-  registerUser
+  registerUser,
+  updateUser
 }
 
 export default apis

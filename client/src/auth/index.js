@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import { useNavigate } from 'react-router-dom'
 import api from './auth-request-api/index'
+import GlobalStoreContext from "../store";
 
 const AuthContext = createContext();
 
@@ -8,14 +9,17 @@ export const AuthActionType = {
   GET_LOGGED_IN: "GET_LOGGED_IN",
   LOGIN_USER: "LOGIN_USER",
   LOGOUT_USER: "LOGOUT_USER",
-  REGISTER_USER: "REGISTER_USER"
+  REGISTER_USER: "REGISTER_USER",
+  UPDATE_USER: "UPDATE_USER",
 }
 
 function AuthContextProvider(props) {
+  const { store } = useContext(GlobalStoreContext);
   const [auth, setAuth] = useState({
     user: null,
     loggedIn: false,
-    errorMessage: null
+    errorMessage: null,
+    aboutMe: "Click edit profile to add an about me.",
   });
   const history = useNavigate();
 
@@ -57,6 +61,14 @@ function AuthContextProvider(props) {
           user: payload.user,
           loggedIn: payload.loggedIn,
           errorMessage: payload.errorMessage
+        })
+      }
+      case AuthActionType.UPDATE_USER: {
+        return setAuth({
+          user: payload.user,
+          loggedIn: payload.loggedIn,
+          errorMessage: payload.errorMessage,
+          aboutMe: payload.aboutMe
         })
       }
       default:
@@ -142,6 +154,21 @@ function AuthContextProvider(props) {
       })
       history("/login");
     }
+  }
+
+  auth.updateUser = async function (user) {
+    const response = await api.updateUser(auth.user._id, user);
+    if (response.status === 200) {
+    authReducer({
+      type: AuthActionType.UPDATE_USER,
+      payload: {
+        user: auth.user,
+        loggedIn: false,
+        aboutMe: response.data.user.aboutMe,
+      }
+    })
+    auth.getLoggedIn();
+  }
   }
 
   auth.getUserInitials = function () {
