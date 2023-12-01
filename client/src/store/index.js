@@ -19,6 +19,11 @@ function GlobalStoreContextProvider(props) {
     const [lat, setLat] = useState(41.8473);
     const [zoom, setZoom] = useState(5.43)
     const { auth } = useContext(AuthContext);
+    const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false,
+        className: 'region-name-popup',
+      });
     const [store, setStore] = useState({
         idNamePairs: [],
         currentList: null,
@@ -284,7 +289,7 @@ store.setCurrentList = function (id, mapbox) {
         }
         
         if (mapbox.current || typeof window === 'undefined') return;
-
+        
         mapbox.current = new mapboxgl.Map({
         container: store.container.current,
         style: 'mapbox://styles/mapbox/dark-v11',
@@ -338,23 +343,28 @@ store.setCurrentList = function (id, mapbox) {
             filter: ['==', 'ID_1', ''], // Initially, no region is highlighted
         });
 
-        // Mousemove event to highlight the region under the cursor
-        mapbox.current.on('mousemove', 'italy-border-fill', (e) => {
+         // Mousemove event to highlight the region under the cursor
+            mapbox.current.on('mousemove', 'italy-border-fill', (e) => {
             const hoveredRegion = e.features[0];
 
             if (hoveredRegion) {
-            const regionId = hoveredRegion.properties.ID_1;
+                const regionId = hoveredRegion.properties.ID_1;
+                const regionName = hoveredRegion.properties.NAME_1;
 
-            mapbox.current.setFilter('italy-fill', ['==', 'ID_1', regionId]);
-            mapbox.current.setPaintProperty('italy-fill', 'fill-opacity', 1);
+                mapbox.current.setFilter('italy-fill', ['==', 'ID_1', regionId]);
+                mapbox.current.setPaintProperty('italy-fill', 'fill-opacity', 1);
+
+                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(mapbox.current);
             }
-        });
+            });
 
-        // Reset the filter and opacity when the mouse leaves the layer
-        mapbox.current.on('mouseleave', 'italy-border-fill', () => {
+            // Reset the filter and opacity when the mouse leaves the layer
+            mapbox.current.on('mouseleave', 'italy-border-fill', () => {
             mapbox.current.setFilter('italy-fill', ['==', 'ID_1', '']);
             mapbox.current.setPaintProperty('italy-fill', 'fill-opacity', 0);
-        });
+
+            popup.remove(); 
+            });
         });
     }
     asyncSetCurrentList(id);
