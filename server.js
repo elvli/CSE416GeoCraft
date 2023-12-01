@@ -46,6 +46,7 @@ app.get('/mapPairs', MapController.getMapPairs);
 app.post('/map', auth.verify, MapController.getMaps);
 app.put('/map/:id', auth.verify, MapController.updateMap);
 app.put('/maps/:id', auth.verify, MapController.updateUserFeedback);
+app.put('/maps', auth.verify, MapController.updateMultipleMaps);
 app.get('/maps', auth.verify, MapController.getPublishedMaps);
 
 app.listen(PORT, () => {
