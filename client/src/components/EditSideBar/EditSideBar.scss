@@ -4,115 +4,124 @@
   overflow-x: hidden;
   position: fixed;
   left: 0;
+}
 
-  &-sidebar-wrapper {
-    min-height: 95vh;
-    transition: margin .25s ease-out;
+#edit-left-sidebar-wrapper {
+  min-height: 95vh;
+  transition: margin .25s ease-out;
 
-    .sidebar-heading {
-      padding: 0.875rem 1.25rem;
-      font-size: 1.2rem;
-    }
-
-    .list-group {
-      width: 24rem;
-    }
-
-    .edit-tools-list {
-      margin-top: 5px;
-    }
+  .sidebar-heading {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
   }
 
-  .table-responsive {
-    max-height: 450px;
+  .list-group {
+    width: 24rem;
+  }
+}
 
-    thead th {
-      position: static;
-    }
+.edit-tools-list {
+  margin-top: 5px;
+}
 
-    tbody th {
-      position: sticky;
+.editing-dropdown {
+  // min-height: 68vh;
+  position: relative;
+}
 
-      .cells {
-        width: 100%;
-      }
-    }
+.table-responsive {
+  max-height: 450px;
+
+  thead th {
+    position: static;
   }
 
-  .add-row-button {
-    background-color: white;
-    outline: none;
-    margin-top: -12px;
+  tbody th {
+    position: sticky;
+  }
+}
 
-    .add-row-icon {
-      margin-top: -4px;
-    }
+.add-row-button {
+  background-color: white;
+  outline: none;
+  margin-top: -12px;
+
+  .add-row-icon {
+    margin-top: -4px;
+  }
+}
+
+.JSONButton {
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: -6px;
+}
+
+.editing-tools {
+  margin-top: 4px;
+}
+
+.accordion {
+  width: 96%;
+  margin-top: 4px;
+  margin-left: 8px;
+}
+
+.accordion-button {
+  background-color: white !important;
+
+  &:focus {
+    box-shadow: none;
+    border-color: rgba(0, 0, 0, .125);
   }
 
-  .JSONButton {
-    justify-content: center;
-    margin-top: 10px;
-    margin-bottom: -6px;
+  &:not(.collapsed) {
+    box-shadow: none;
+    color: none;
+  }
+}
+
+.cells {
+  width: 100%;
+}
+
+.edit-left-bar {
+  background-color: theme.$dark;
+  min-width: 57.6px;
+  min-height: 880.65px;
+
+  .edit-button {
+    max-width: 48px;
+    height: 46.35px;
+    transform: translate(35%, 0%);
   }
 
-  .accordion {
-    width: 96%;
-    margin-top: 4px;
-    margin-left: 8px;
-
-    .accordion-button {
-      background-color: white !important;
-
-      &:focus {
-        box-shadow: none;
-        border-color: rgba(0, 0, 0, .125);
-      }
-
-      &:not(.collapsed) {
-        box-shadow: none;
-        color: none;
-      }
-    }
+  #edit-close-button {
+    transform: translate(35%, 83vh);
   }
 
-  .edit-left-bar {
-    background-color: theme.$dark;
-    min-width: 57.6px;
-    min-height: 880.65px;
+  #edit-left-tool {
+    transform: translate(0, 10%);
+  }
+}
 
-    .edit-button {
-      max-width: 48px;
-      height: 46.35px;
-      transform: translate(35%, 0%);
-    }
+.table-custom-scrollbar {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: darkgray transparent;
+  overflow: auto;
+  max-height: 400px;
 
-    #edit-close-button {
-      transform: translate(35%, 83vh);
-    }
-
-    #edit-left-tool {
-      transform: translate(0, 10%);
-    }
+  &::-webkit-scrollbar {
+    width: 10px;
   }
 
-  .table-custom-scrollbar {
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: darkgray transparent;
-    overflow: auto;
-    max-height: 400px;
+  &::-webkit-scrollbar-thumb {
+    background-color: darkgray;
+    border-radius: 6px;
+  }
 
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: darkgray;
-      border-radius: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background-color: transparent;
-    }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
   }
 }
