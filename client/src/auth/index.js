@@ -31,8 +31,7 @@ function AuthContextProvider(props) {
     } catch (error) {
 
     }
-
-  }, [auth]);
+  }, []);
 
   const authReducer = (action) => {
     const { type, payload } = action;
