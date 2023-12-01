@@ -85,7 +85,7 @@ export default function HomeScreen() {
 
         <div className="foreground">
           <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion} handleFork={handleFork} handleExport={handleExport} handlePublish={handlePublish}/>
-          {store.currentList?<RightSideBar />:<></>}
+          {!store.currentList? <></> : !store.currentList.published?<></>:<RightSideBar />}
         </div>
 
       </div>
