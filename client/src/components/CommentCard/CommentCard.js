@@ -1,6 +1,7 @@
 import React from 'react'
 import './CommentCard.scss'
 import { useState, useContext } from 'react';
+import {Link} from 'react-router-dom';
 import { PersonCircle } from 'react-bootstrap-icons';
 import Card from 'react-bootstrap/Card';
 import GlobalStoreContext from "../../store";
@@ -143,7 +144,11 @@ export default function CommentCard(props) {
               </Col>
               <Col>
                 <Row>
-                  <p className="comment-username">{user}</p>
+                  <p>
+                <Link to={`/profile/${user}`} className="comment-username" onClick={(e) => e.stopPropagation()}>
+              {user}
+              </Link>
+              </p>
                 </Row>
                 <Row>
                   <Card.Text className='comment-text'>
