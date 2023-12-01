@@ -157,7 +157,7 @@ export default function LeftSideBar(props) {
             </div>
           </div>
           <div className="list-group">
-            <div className="map-list  bg-light left-custom-scrollbar">
+            <div className="map-list bg-light left-custom-scrollbar">
               {maps}
             </div>
           </div>
