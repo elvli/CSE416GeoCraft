@@ -287,8 +287,14 @@ store.setCurrentList = function (id, mapbox) {
                 payload: map
             });
         }
+        generateMap(mapbox)
         
-        if (mapbox.current || typeof window === 'undefined') return;
+    }
+    asyncSetCurrentList(id);
+}
+
+function generateMap(mapbox) {
+    if (mapbox.current || typeof window === 'undefined') return;
         
         mapbox.current = new mapboxgl.Map({
         container: store.container.current,
@@ -366,9 +372,8 @@ store.setCurrentList = function (id, mapbox) {
             popup.remove(); 
             });
         });
-    }
-    asyncSetCurrentList(id);
 }
+
 
 return (
     <GlobalStoreContext.Provider value={{
