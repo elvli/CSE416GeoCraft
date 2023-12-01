@@ -44,7 +44,7 @@ function App() {
               <Route path="verify/" element={<VerifyScreen />} />
               <Route path="confirm/" element={<ConfirmScreen />} />
               <Route path="edit/" element={<EditScreen />} />
-              <Route path="profile/" element={<ProfilePage />} />
+              <Route path="profile/:username" element={<ProfilePage />} />
             </Routes>
         </GlobalStoreContextProvider>
       </AuthContextProvider>

@@ -3,10 +3,12 @@
   margin-bottom: 10px !important;
   margin-left: 10px !important;
   margin-right: 10px !important;
+
   &.selected {
     background-color: #ffffff;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   }
+
   .card-header {
     max-height: 6vh;
     z-index: 2;
@@ -59,14 +61,15 @@
   transform: translate(20%, -6%);
   float: right;
   font-size: 10px;
-  background-color: transparent;  
+  background-color: transparent;
   z-index: 2;
 
   .dropdown-toggle::after {
     display: none;
   }
+
   .dropdown-menu {
-    min-width:20px;
+    min-width: 20px;
   }
 }
 

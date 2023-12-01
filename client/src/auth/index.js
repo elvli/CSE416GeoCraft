@@ -1,7 +1,6 @@
-import React, { createContext, useEffect, useState, useContext } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import api from './auth-request-api/index'
-import GlobalStoreContext from "../store";
 
 const AuthContext = createContext();
 
@@ -14,7 +13,6 @@ export const AuthActionType = {
 }
 
 function AuthContextProvider(props) {
-  const { store } = useContext(GlobalStoreContext);
   const [auth, setAuth] = useState({
     user: null,
     loggedIn: false,
@@ -34,7 +32,7 @@ function AuthContextProvider(props) {
 
     }
 
-  }, []);
+  }, [auth]);
 
   const authReducer = (action) => {
     const { type, payload } = action;
@@ -167,20 +165,20 @@ function AuthContextProvider(props) {
   auth.updateUser = async function (user) {
     const response = await api.updateUser(auth.user._id, user);
     if (response.status === 200) {
-    authReducer({
-      type: AuthActionType.UPDATE_USER,
-      payload: {
-        user: auth.user,
-        loggedIn: false,
-        firstName: response.data.user.firstName,
-        LasttName: response.data.user.LastName,
-        username: response.data.user.username,
-        email: response.data.user.email,
-        aboutMe: response.data.user.aboutMe,
-      }
-    })
-    auth.getLoggedIn();
-  }
+      authReducer({
+        type: AuthActionType.UPDATE_USER,
+        payload: {
+          user: auth.user,
+          loggedIn: false,
+          firstName: response.data.user.firstName,
+          LasttName: response.data.user.LastName,
+          username: response.data.user.username,
+          email: response.data.user.email,
+          aboutMe: response.data.user.aboutMe,
+        }
+      })
+      auth.getLoggedIn();
+    }
   }
 
   auth.getUserInitials = function () {

@@ -2,7 +2,7 @@ import axios from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
   baseURL: 'https://geocraftmapsbackend.onrender.com',
-  //  baseURL: 'http://localhost:3001'
+  // baseURL: 'http://localhost:3001'
 })
 
 export const getLoggedIn = () => api.get(`/loggedIn/`);
@@ -32,17 +32,20 @@ export const registerUser = (firstName, lastName, username, email, confirmEmail,
 
 export const updateUser = (id, user) => {
   return api.put(`/user/${id}`, {
-      // SPECIFY THE PAYLOAD
-      user : user
+    // SPECIFY THE PAYLOAD
+    user: user
   })
 }
+
+export const getUserByUsername = (username) => api.get(`/user/${username}`);
 
 const apis = {
   getLoggedIn,
   loginUser,
   logoutUser,
   registerUser,
-  updateUser
+  updateUser,
+  getUserByUsername
 }
 
 export default apis
