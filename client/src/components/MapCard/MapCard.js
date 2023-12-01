@@ -1,5 +1,5 @@
-import { React, useState, useContext, useRef } from 'react';
-import { Navigate, Link, useLocation } from 'react-router-dom';
+import { React, useContext, useRef } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill, HandThumbsUp, HandThumbsDown, } from 'react-bootstrap-icons';
 import AuthContext from '../../auth'
@@ -10,15 +10,13 @@ export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const { map, functions, selected } = props
-  const [toEdit, setToEdit] = useState(false);
-  // const email = auth.getEmail();
   const username = auth.getUsername();
   const location = useLocation();
+  const navigate = useNavigate();
 
   function handleEditMap(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    setToEdit(true)
+
+    navigate(`/edit/${map._id}`);
   }
 
   function handleInteraction(arr, otherArr, event) {
@@ -61,20 +59,8 @@ export default function MapCard(props) {
       console.log("Calling store.setCurrentList with map._id:", map._id);
       store.setCurrentList(map._id, mapbox);
     }
-    // event.stopPropagation();
-    // if (event.detail === 2) {
-    //     store.setCurrentList(idNamePair._id);
-    //     toggleEdit();
-    // }
   }
 
-
-  if (toEdit) {
-    return <Navigate to="/edit" />
-  }
-  // async function handleDelete(event) {
-  //   document.getElementById("map-create-modal").classList.add("is-visible")
-  // }D
   let dropdown = <div className='options-button'>
     <Dropdown>
       <Dropdown.Toggle variant="light" id="dropdown-basic" disabled={!auth.loggedIn}>

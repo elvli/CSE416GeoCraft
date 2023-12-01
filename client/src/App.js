@@ -9,29 +9,6 @@ import { LoginScreen, SignUpScreen, HomeScreen, PasswordReset, VerifyScreen, Con
 
 function App() {
 
-
-  // const router = createBrowserRouter([
-  //   {
-  //     path: "/",
-  //     element: <HomeScreen />,
-  //   },
-  //   {
-  //     path: "/sign-up",
-  //     element: <SignUpScreen />,
-  //   },
-  //   {
-  //     path: "/login",
-  //     element: <LoginScreen />,
-  //   },
-  //   {
-  //     path: "/password-reset",
-  //     element: <PasswordReset />,
-  //   },
-  //   {
-  //     path: "/profile",
-  //     element: <ProfilePage />,
-  //   },
-  // ]);
   return (
     <div className="App">
       <AuthContextProvider>
@@ -43,7 +20,7 @@ function App() {
               <Route path="password-reset/" element={<PasswordReset />} />
               <Route path="verify/" element={<VerifyScreen />} />
               <Route path="confirm/" element={<ConfirmScreen />} />
-              <Route path="edit/" element={<EditScreen />} />
+              <Route path="edit/:mapId" element={<EditScreen />} />
               <Route path="profile/:username" element={<ProfilePage />} />
             </Routes>
         </GlobalStoreContextProvider>
