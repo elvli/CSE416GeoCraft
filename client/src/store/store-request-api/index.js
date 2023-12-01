@@ -1,8 +1,8 @@
 import axios from 'axios'
 axios.defaults.withCredentials = true;
 const api = axios.create({
-   //baseURL: 'https://geocraftmapsbackend.onrender.com',
-   baseURL: 'http://localhost:3001',
+   baseURL: 'https://geocraftmapsbackend.onrender.com',
+  // baseURL: 'http://localhost:3001',
 })
 
 export const createMap = (newMapName, ownerUsername, userEmail, mapType) => {
@@ -36,12 +36,6 @@ export const updateUserFeedback = (id, map) => {
   })
 }
 export const getPublishedMaps = () => api.get('/maps/')
-export const updateMultipleMaps = (data) => {
-  return api.put(`/maps/`, {
-    // SPECIFY THE PAYLOAD
-    data: data
-  })
-}
 
 const apis = {
   createMap,
@@ -51,7 +45,6 @@ const apis = {
   updateMapById,
   updateUserFeedback,
   getPublishedMaps,
-  updateMultipleMaps
 }
 
 export default apis
