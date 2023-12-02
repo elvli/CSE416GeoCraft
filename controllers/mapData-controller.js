@@ -24,38 +24,38 @@ createMapData = (req, res) => {
   }
 
   User.findOne({ _id: req.userId }).then((user) => {
-        mapData
-          .save()
-          .then(() => {
-            return res.status(201).json({
-                mapData: mapData
-            })
-          })
-          .catch(error => {
-            return res.status(400).json({
-              errorMessage: 'Map Data Not Created!'
-            })
-          })
-      });
-  }
-
-deleteMapData = (req,res) => {
-    try {
-        console.log(req.params)
-        MapData.deleteOne( { mapID: req.params.id } ).then( () => {
-        return res.status(200).json({success: true, data: {}});
-      }).catch(err => console.log(err))
-    }
-    catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        success: false,
-        error: 'Internal Server Error'
-      });
-    }
+    mapData
+      .save()
+      .then(() => {
+        return res.status(201).json({
+          mapData: mapData
+        })
+      })
+      .catch(error => {
+        return res.status(400).json({
+          errorMessage: 'Map Data Not Created!'
+        })
+      })
+  });
 }
 
-updateMapData = async (req, res) => {
+deleteMapData = (req, res) => {
+  try {
+    console.log(req.params)
+    MapData.deleteOne({ mapID: req.params.id }).then(() => {
+      return res.status(200).json({ success: true, data: {} });
+    }).catch(err => console.log(err))
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error'
+    });
+  }
+}
+
+updateMapDataById = async (req, res) => {
   try {
     const user = auth.verifyUser(req);
 
@@ -65,9 +65,10 @@ updateMapData = async (req, res) => {
       });
     }
 
-    const body = req.body.map;
+    const body = req.body.mapData;
     //req.body.mapData
-    console.log(req.params.id)
+    console.log('body: ' + JSON.stringify(req.body.mapData))
+    console.log('param id: ' + req.params.id)
 
     if (!body) {
       return res.status(400).json({
@@ -75,9 +76,8 @@ updateMapData = async (req, res) => {
         error: 'You must provide a body to update',
       });
     }
-
-    // Use async/await with findOneAndUpdate
-    const updatedMap = await Map.findOneAndUpdate(
+    
+    const updatedMap = await MapData.findOneAndUpdate(
       { mapID: req.params.id },
       body,
       { new: true, runValidators: true }
@@ -105,9 +105,10 @@ updateMapData = async (req, res) => {
 
 getMapDataById = async (req, res) => {
   try {
-    MapData.findOne( { mapID: req.params.id } ).then( (mapData) => {
-    return res.status(200).json({success: true, mapData: mapData});
-  }).catch(err => console.log(err))
+    MapData.findOne({ mapID: req.params.id }).then((mapData) => {
+      return res.status(200).json({ success: true, mapData: mapData });
+    }).catch(err => console.log(err))
+
   }
   catch (error) {
     console.error(error);
@@ -118,9 +119,9 @@ getMapDataById = async (req, res) => {
   }
 };
 
-  module.exports = {
-    createMapData,
-    deleteMapData,
-    updateMapData,
-    getMapDataById,
-  }
+module.exports = {
+  createMapData,
+  deleteMapData,
+  updateMapDataById,
+  getMapDataById,
+}

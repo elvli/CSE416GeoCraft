@@ -53,7 +53,7 @@ deleteMap = async (req, res) => {
   }
   console.log("delete Map with id: " + JSON.stringify(req.params.id));
   console.log("delete " + req.params.id);
-  Map.findById({ _id: req.params.id }).then( (map) => {
+  Map.findById({ _id: req.params.id }).then((map) => {
     console.log("Map found: " + JSON.stringify(map));
     if (!map) {
       return res.status(404).json({
@@ -70,12 +70,12 @@ deleteMap = async (req, res) => {
             errorMessage: 'User was not found',
           })
         }
-  
+
         console.log("correct user!");
-        Map.deleteOne( { _id: req.params.id } ).then( () => {
-          return res.status(200).json({success: true, data: {}});
+        Map.deleteOne({ _id: req.params.id }).then(() => {
+          return res.status(200).json({ success: true, data: {} });
         }).catch(err => console.log(err))
-          
+
       } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -83,7 +83,7 @@ deleteMap = async (req, res) => {
           error: 'Internal Server Error'
         });
       }
-      
+
     }
     asyncFindUser(map);
   })
@@ -91,8 +91,8 @@ deleteMap = async (req, res) => {
 
 getMapById = async (req, res) => {
   try {
-    const list = await Map.findById(req.params.id);
-    if (!list) {
+    const map = await Map.findById(req.params.id);
+    if (!map) {
       return res.status(404).json({
         success: false,
         error: 'Map not found'
@@ -100,7 +100,7 @@ getMapById = async (req, res) => {
     }
     return res.status(200).json({
       success: true,
-      map: list
+      map: map
     });
   } catch (error) {
     console.error(error);
@@ -112,62 +112,9 @@ getMapById = async (req, res) => {
 };
 
 getMapPairs = async (req, res) => {
-  // if (auth.verifyUser(req) === null) {
-  //   return res.status(400).json({
-  //     errorMessage: 'UNAUTHORIZED'
-  //   })
-  // }
-  // console.log("getMapPairs called");
-  // const email = await User.findOne({ _id: req.userId }).then((data) => {
-  //   if(!data) {
-  //     return res
-  //                       .status(404)
-  //                       .json({ success: false, error: 'User not found not found' })
-  //   }
-  //   return data.email
-  //   // async function asyncFindList(email) {
-  //   //   console.log("find all Maps owned by: " + email);
-      
-  //   // }
-  //   // asyncFindList(data.email)
-  // }).catch((err) => console.log(err))
-  // console.log(email)
-  Map.find({  }).then( (data) => {
-    // console.log((data));
-  //   if (err) {
-  //     return res.status(400).json({ success: false, error: err })
-  //   }
-  //   if (!mapdata) {
-  //     console.log("!)maps.length");
-  //     return res
-  //       .status(404)
-  //       .json({ success: false, error: 'Maps not found' })
-  //   }
-  //   else {
-  //     console.log("Send the Maps pairs");
-  //     // PUT ALL THE LISTS INTO ID, NAME PAIRS
-  //     let pairs = [];
-  //     for (let key in mapdata) {
-  //       let list = mapdata[key];
-  //       let pair = {
-  //         _id: list._id,
-  //         name: list.name,
-  //         ownerEmail: list.ownerEmail,
-  //         ownerName: list.ownerName,
-  //         data: list.data,
-  //         published: list.published,
-  //         publishedDate: list.publishedDate,
-  //         likes: list.likes,
-  //         dislikes: list.dislikes,
-  //         views: list.views,
-  //         createdAt: list.createdAt,
-  //         updatedAt: list.updatedAt,
-  //       };
-  //       pairs.push(pair);
-  //     }
-       return res.status(200).json({ success: true, idNamePairs: data })
-  //   }
-   }).catch(err => console.log(err))
+  Map.find({}).then((data) => {
+    return res.status(200).json({ success: true, idNamePairs: data })
+  }).catch(err => console.log(err))
 }
 
 updateMultipleMaps = async (req, res) => {
@@ -179,14 +126,13 @@ updateMultipleMaps = async (req, res) => {
   try {
     const body = req.body.data;
 
-
     if (!body) {
       return res.status(400).json({
         success: false,
         error: 'You must provide a body to update',
       });
     }
-    const result = await Map.updateMany({ownerName: body.current}, {$set: {ownerName: body.username, ownerEmail: body.email}})
+    const result = await Map.updateMany({ ownerName: body.current }, { $set: { ownerName: body.username, ownerEmail: body.email } })
     console.log(`Updated ${result.modifiedCount} documents`);
     return res.status(200).json({ success: true, data: result.modifiedCount })
   } catch {
@@ -194,9 +140,6 @@ updateMultipleMaps = async (req, res) => {
   }
 
 }
-
-
-
 
 getMaps = async (req, res) => {
   if (auth.verifyUser(req) === null) {
@@ -267,7 +210,7 @@ getPublishedMaps = async (req, res) => {
   }).catch(err => console.log(err))
 }
 
-updateMap = async (req, res) => {
+updateMapById = async (req, res) => {
   try {
     const user = auth.verifyUser(req);
 
@@ -348,7 +291,7 @@ updateUserFeedback = async (req, res) => {
         listens: body.listens,
       },
       { new: true, runValidators: true }
-    );    
+    );
     if (!updatedMap) {
       return res.status(404).json({
         success: false,
@@ -376,7 +319,7 @@ module.exports = {
   getMapById,
   getMapPairs,
   getMaps,
-  updateMap,
+  updateMapById,
   updateUserFeedback,
   getPublishedMaps,
   updateMultipleMaps,

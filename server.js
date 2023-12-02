@@ -9,14 +9,12 @@ const auth = require('./auth');
 const baseUrl = "https://geocraftmaps.azurewebsites.net";
 // const baseUrl = "http://localhost:3000";
 
-
 require("dotenv").config();
 const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(cors({
   origin: baseUrl,
-  // origin: "http://localhost:3000",
   credentials: true,
 }));
 
@@ -25,7 +23,6 @@ app.use(cookieParser())
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', baseUrl);
-  // res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
@@ -48,13 +45,13 @@ app.delete('/map/:id', auth.verify, MapController.deleteMap);
 app.get('/map/:id', MapController.getMapById);
 app.get('/mapPairs', MapController.getMapPairs);
 app.post('/map', auth.verify, MapController.getMaps);
-app.put('/map/:id', auth.verify, MapController.updateMap);
+app.put('/map/:id', auth.verify, MapController.updateMapById);
 app.put('/maps/:id', auth.verify, MapController.updateUserFeedback);
 app.get('/maps', auth.verify, MapController.getPublishedMaps);
 
 app.post('/mapData', auth.verify, MapDataController.createMapData);
 app.delete('/mapData/:id', auth.verify, MapDataController.deleteMapData);
-app.put('/mapData/:id', auth.verify, MapDataController.updateMapData);
+app.put('/mapData/:id', auth.verify, MapDataController.updateMapDataById);
 app.get('/mapData/:id', MapDataController.getMapDataById);
 
 app.listen(PORT, () => {

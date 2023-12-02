@@ -1,13 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import { Button, Table } from 'react-bootstrap';
 import { Gear, ViewStacked, PencilSquare, Wrench, Circle } from 'react-bootstrap-icons';
 import './EditSideBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
+
 export default function EditSideBar(props) {
+  const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
@@ -24,11 +27,33 @@ export default function EditSideBar(props) {
   ]);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
+  const { mapId } = props;
 
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
+
+  const handleFileChange = (event) => {
+    handleFileSelection(event.target.files);
+  };
+
+  const handleFileSelection = async (files) => {
+    const file = files[0];
+
+    if (file) {
+      try {
+        let mapData = await store.getMapDataById(mapId);
+        mapData.GeoJson = file;
+        store.updateMapDataById(mapId, mapData);
+
+      } catch (error) {
+        console.error('Error handling file selection:', error);
+      }
+    }
+  };
+
+  // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
 
   const handleAddRow = () => {
     var newTable = []
@@ -39,9 +64,10 @@ export default function EditSideBar(props) {
     setTableData(newTable)
 
   }
-  const handleHeaderDoubleClick = (index) => {
-    setIsEditingHeader(index);
-  };
+
+  // const handleHeaderDoubleClick = (index) => {
+  //   setIsEditingHeader(index);
+  // };
 
   const handleHeaderChange = (event, index) => {
     const updatedHeaders = [...tableHeaders];
@@ -77,22 +103,18 @@ export default function EditSideBar(props) {
       handleHeaderBlur();
     }
   };
+
   const downloadJson = () => {
-    // Generate JSON data here before triggering download
     const json = JSON.stringify({ headers: tableHeaders, data: tableData });
     setJsonData(json);
 
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
-    // Set the href and download attributes using the ref
     downloadLinkRef.current.href = url;
     downloadLinkRef.current.download = 'table_data.json';
-
-    // Trigger a click on the anchor to start the download
     downloadLinkRef.current.click();
 
-    // Revoke the URL to free up resources
     URL.revokeObjectURL(url);
   };
 
@@ -135,12 +157,20 @@ export default function EditSideBar(props) {
               <Accordion defaultActiveKey={['0']} alwaysOpen>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
-                  <Accordion.Body className="d-flex justify-content-between">
-                    <input type="file" id="my_file_input" />
+                  <Accordion.Body
+                    className="d-flex flex-column" >
+                    <div className="drop-zone">
+                      <div className="drop-zone-text">
+                        Drag & Drop or Click Browse to select a file
+                      </div>
+                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
+                      {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
+                      {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
+                    </div>
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
-                
+
                   <Accordion.Header>Heat Map Data</Accordion.Header>
                   <Accordion.Body>
                     <div className="table-responsive table-custom-scrollbar">
@@ -194,7 +224,7 @@ export default function EditSideBar(props) {
                         </tbody>
                       </Table>
                       <Button className='add-row-button btn btn-light' onClick={handleAddRow}>
-                        <PlusCircleFill className='add-row-icon'/>
+                        <PlusCircleFill className='add-row-icon' />
                       </Button>
                     </div>
 

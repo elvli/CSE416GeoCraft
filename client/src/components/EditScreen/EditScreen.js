@@ -16,6 +16,7 @@ export default function EditScreen() {
 
     }
   }, []);
+
   return (
     <div>
       <div style={{ height: '5vh' }} />
@@ -26,7 +27,7 @@ export default function EditScreen() {
         </div>
 
         <div className="foreground">
-          <EditSideBar />
+          <EditSideBar mapId={mapId}/>
         </div>
       </div>
     </div>

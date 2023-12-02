@@ -9,7 +9,6 @@ const mapSchema = new Schema(
         name: { type: String, required: false },
         ownerName: { type: String, required: false },
         ownerEmail: { type: String, required: false },
-        data: { type: [{}], required: false },
         comments: { type: [{
             user: String,
             comment: String,

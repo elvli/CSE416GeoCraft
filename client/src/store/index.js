@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useRef } from 'react'
-import jsTPS from '../common/jsTPS'
+// import jsTPS from '../common/jsTPS'
 import api from './store-request-api'
 import AuthContext from '../auth'
 import mapboxgl from 'mapbox-gl';
@@ -13,7 +13,7 @@ export const GlobalStoreActionType = {
   SET_CURRENT_LIST: "SET_CURRENT_LIST",
 }
 
-const tps = new jsTPS();
+// const tps = new jsTPS();
 
 function GlobalStoreContextProvider(props) {
   const mapContainer = useRef(null);
@@ -58,66 +58,66 @@ function GlobalStoreContextProvider(props) {
     }
   }
 
-  function sortArray (sortType, mapArr) {
+  function sortArray(sortType, mapArr) {
     //A-Z
     if (sortType == 3) {
-        mapArr = mapArr.sort((a, b) => {
-            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-            if (nameA < nameB) return -1;
-            if (nameA > nameB) return 1;
-            // names must be equal
-            return 0;
-            });
-        
+      mapArr = mapArr.sort((a, b) => {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        // names must be equal
+        return 0;
+      });
+
     }
     //Z-A
     else if (sortType == 4) {
-        mapArr = mapArr.sort((b, a) => {
-            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-            if (nameA < nameB) return -1;
-            if (nameA > nameB) return 1;
-            // names must be equal
-            return 0;
-            });
-            
-        
+      mapArr = mapArr.sort((b, a) => {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        // names must be equal
+        return 0;
+      });
+
+
     }
     //NEW
     else if (sortType == 1) {
-        mapArr = mapArr.sort(function(a,b){
-            return new Date(b.createdAt) - new Date(a.createdAt);
-        })
-        
+      mapArr = mapArr.sort(function (a, b) {
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      })
+
     }
     //OLD
     else if (sortType == 2) {
-        mapArr = mapArr.sort(function(a,b){
-            return new Date(a.createdAt) - new Date(b.createdAt);
-        })
-        
+      mapArr = mapArr.sort(function (a, b) {
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      })
+
     }
     //POPULAR
     else if (sortType == 5) {
-        mapArr = mapArr.sort((a, b) => {
-            if(a.published && b.published) {
-                const numA = a.likes.length; // ignore upper and lowercase
-                const numB = b.likes.length; // ignore upper and lowercase
-                if (numA < numB) return 1;
-                if (numA > numB) return -1;
-                // names must be equal
-                return 0;
-            }
-            else {
-                if(a.published) return -1
-                if(b.published) return 1
-                return 0
-            }
-            });  
+      mapArr = mapArr.sort((a, b) => {
+        if (a.published && b.published) {
+          const numA = a.likes.length; // ignore upper and lowercase
+          const numB = b.likes.length; // ignore upper and lowercase
+          if (numA < numB) return 1;
+          if (numA > numB) return -1;
+          // names must be equal
+          return 0;
+        }
+        else {
+          if (a.published) return -1
+          if (b.published) return 1
+          return 0
+        }
+      });
     }
 
-}
+  }
 
   store.createNewMap = async function (title, mapType) {
     let newMapName = title
@@ -166,30 +166,30 @@ function GlobalStoreContextProvider(props) {
       }
       asyncGetMap(id);
     }
-    else if(type != null) {
-            
+    else if (type != null) {
+
       async function asyncLoadIdNamePairs() {
-          const response = await api.getMapPairs();
-          if (response.data.success) {
-              let pairsArray = response.data.idNamePairs;
-              let arr = [];
-              for(let key in pairsArray) {
-                   arr.push(pairsArray[key]);
-                  
-              }   
-              sortArray(type, arr)
-              storeReducer({
-                  type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                  payload: {
-                  idNamePairs: arr,
-                  }
-              });
-          } else {
-            console.log("API FAILED TO GET THE LIST PAIRS");
+        const response = await api.getMapPairs();
+        if (response.data.success) {
+          let pairsArray = response.data.idNamePairs;
+          let arr = [];
+          for (let key in pairsArray) {
+            arr.push(pairsArray[key]);
+
           }
+          sortArray(type, arr)
+          storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: {
+              idNamePairs: arr,
+            }
+          });
+        } else {
+          console.log("API FAILED TO GET THE LIST PAIRS");
         }
-        asyncLoadIdNamePairs();
-      
+      }
+      asyncLoadIdNamePairs();
+
     }
     else {
       async function asyncLoadIdNamePairs() {
@@ -220,24 +220,13 @@ function GlobalStoreContextProvider(props) {
     updateList(maps);
   }
 
-  store.updateMapData = function (id, map) {
-    async function updateMapData(map) {
-      let response = await api.updateMapById(id, map);
-      if (response.data.success) {
-        console.log('Successfully updated mapdata')
-      }
+  store.updateMapDataById = async function (id, mapData) {
+    console.log('store: ' + mapData)
+    const response = await api.updateMapDataById(id, mapData);
+    if (response.data.success) {
+      console.log('Successfully updated mapdata')
     }
-    updateMapData(map);
   }
-  //     store.updateCommentsLikeDislike = function (id, maps) {
-  //         async function updateList(map) {
-  //             let response = await api.updateMapById(id, map);
-  //             if (response.data.success) {
-  //                 store.loadIdNamePairs(id);
-  //             }
-  //         }
-  //         updateList(maps);
-  // }
 
   store.deleteMap = function () {
     async function deleteMap() {
@@ -294,27 +283,49 @@ function GlobalStoreContextProvider(props) {
       }
       if (!location.pathname.includes('/profile')) {
         // generateMap if not on a /profile URL
-        generateMap(mapbox)
+        generateMap(id, mapbox)
       }
     }
     asyncSetCurrentList(id);
   }
 
-  store.getMapDataById = function (id) {
+  store.getMapDataById = async function (id) {
     async function getMapDataById(id) {
-      let response = await api.getMapDataById(id);
-      if (response.data.success) {
-
-        //do something
-      }
-      else {
-        console.log('get mapbyid has thrown an error')
+      try {
+        let response = await api.getMapDataById(id);
+        if (response.data.success) {
+          console.log('STORE: ' + JSON.stringify(response.data.mapData));
+          return response.data.mapData;
+        } else {
+          console.log('getMapDataById has thrown an error');
+        }
+      } catch (error) {
+        console.error('Error fetching map data:', error);
       }
     }
-    getMapDataById(id);
-  }
 
-  function generateMap(mapbox) {
+    return getMapDataById(id);
+  };
+
+  store.getGeoJSONById = async function (id) {
+    async function getGeoJSONById(id) {
+      try {
+        let response = await api.getGeoJSONById(id);
+        if (response.data.success) {
+          console.log('STORE: ' + JSON.stringify(response.data.mapData));
+          return response.data.mapData;
+        } else {
+          console.log('getGeoJSONById has thrown an error');
+        }
+      } catch (error) {
+        console.error('Error fetching map data:', error);
+      }
+    }
+
+    return getGeoJSONById(id);
+  };
+
+  function generateMap(id, mapbox) {
     if (mapbox.current || typeof window === 'undefined') return;
 
     mapbox.current = new mapboxgl.Map({
@@ -329,6 +340,7 @@ function GlobalStoreContextProvider(props) {
       setLat(mapbox.current.getCenter().lat.toFixed(4));
       setZoom(mapbox.current.getZoom().toFixed(2));
     });
+
     mapbox.current.on('load', () => {
       mapbox.current.addSource('map-source', {
         type: 'geojson',
