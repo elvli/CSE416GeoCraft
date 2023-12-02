@@ -5,9 +5,10 @@ const AuthController = require('./controllers/auth-controller');
 const MapController = require('./controllers/map-controller');
 const MapDataController = require('./controllers/mapData-controller')
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const auth = require('./auth');
-const baseUrl = "https://geocraftmaps.azurewebsites.net";
-// const baseUrl = "http://localhost:3000";
+//const baseUrl = "https://geocraftmaps.azurewebsites.net";
+ const baseUrl = "http://localhost:3000";
 
 require("dotenv").config();
 const PORT = process.env.PORT || 3001;
@@ -18,8 +19,11 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(express.json());
 app.use(cookieParser())
+
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', baseUrl);
