@@ -52,6 +52,12 @@ export const createMapData = (id) => {
     })
   }
 export const deleteMapDataById = (id) => api.delete(`/mapData/${id}`)
+export const updateMapDataById = (id, mapData) => {
+  return api.put(`/mapData/${id}`, {
+    // SPECIFY THE PAYLOAD
+    mapData: mapData
+  })
+}
 
 const apis = {
   createMap,
@@ -64,6 +70,7 @@ const apis = {
   createMapData,
   deleteMapDataById,
   updateMultipleMaps,
+  updateMapDataById,
 }
 
 export default apis

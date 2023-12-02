@@ -219,6 +219,16 @@ function GlobalStoreContextProvider(props) {
     }
     updateList(maps);
   }
+
+  store.updateMapData = function (id, map) {
+    async function updateMapData(map) {
+      let response = await api.updateMapById(id, map);
+      if (response.data.success) {
+        console.log('Successfully updated mapdata')
+      }
+    }
+    updateMapData(map);
+  }
   //     store.updateCommentsLikeDislike = function (id, maps) {
   //         async function updateList(map) {
   //             let response = await api.updateMapById(id, map);

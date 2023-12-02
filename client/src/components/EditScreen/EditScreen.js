@@ -1,8 +1,21 @@
-import {React} from "react"
+import { React, useEffect, useContext, useRef } from "react"
 import { AppBanner, EditSideBar } from "../../components";
 import { MapBackground } from "..";
+import GlobalStoreContext from "../../store";
+import { useParams } from "react-router-dom";
 
 export default function EditScreen() {
+  const { store } = useContext(GlobalStoreContext);
+  const { mapId } = useParams();
+  const mapbox = useRef(null)
+
+  useEffect(() => {
+    try {
+      store.setCurrentList(mapId , mapbox);
+    } catch (error) {
+
+    }
+  }, []);
   return (
     <div>
       <div style={{ height: '5vh' }} />

@@ -14,7 +14,7 @@ export default function MapCard(props) {
   const navigate = useNavigate();
 
   function handleEditMap(event) {
-
+    event.stopPropagation();
     navigate(`/edit/${map._id}`);
   }
 
@@ -74,7 +74,7 @@ export default function MapCard(props) {
   </div>
 
   let mapCardButtons = <div className='d-flex flex-row-reverse'>
-    <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn}><PencilFill onClick={handleEditMap} /></Button>
+    <Button className='btn btn-light dislike-button' disabled={!auth.loggedIn} onClick={handleEditMap}><PencilFill /></Button>
   </div>
   if (map.published) {
     dropdown = <div className='options-button'>
