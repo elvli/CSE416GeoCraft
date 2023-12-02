@@ -300,6 +300,20 @@ function GlobalStoreContextProvider(props) {
     asyncSetCurrentList(id);
   }
 
+  store.getMapDataById = function (id) {
+    async function getMapDataById(id) {
+      let response = await api.getMapDataById(id);
+      if (response.data.success) {
+
+        //do something
+      }
+      else {
+        console.log('get mapbyid has thrown an error')
+      }
+    }
+    getMapDataById(id);
+  }
+
   function generateMap(mapbox) {
     if (mapbox.current || typeof window === 'undefined') return;
 

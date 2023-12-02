@@ -7,7 +7,7 @@ const MapDataController = require('./controllers/mapData-controller')
 const cookieParser = require('cookie-parser');
 const auth = require('./auth');
 const baseUrl = "https://geocraftmaps.azurewebsites.net";
-//const baseUrl = "http://localhost:3000";
+// const baseUrl = "http://localhost:3000";
 
 
 require("dotenv").config();
@@ -55,6 +55,7 @@ app.get('/maps', auth.verify, MapController.getPublishedMaps);
 app.post('/mapData', auth.verify, MapDataController.createMapData);
 app.delete('/mapData/:id', auth.verify, MapDataController.deleteMapData);
 app.put('/mapData/:id', auth.verify, MapDataController.updateMapData);
+app.get('/mapData/:id', MapDataController.getMapDataById);
 
 app.listen(PORT, () => {
   console.log(`Server is running on post ${PORT}`);

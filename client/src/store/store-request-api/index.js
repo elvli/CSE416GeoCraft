@@ -58,6 +58,7 @@ export const updateMapDataById = (id, mapData) => {
     mapData: mapData
   })
 }
+export const getMapDataById = (id) => api.get(`/mapData/${id}`)
 
 const apis = {
   createMap,
@@ -71,6 +72,7 @@ const apis = {
   deleteMapDataById,
   updateMultipleMaps,
   updateMapDataById,
+  getMapDataById,
 }
 
 export default apis

@@ -103,8 +103,24 @@ updateMapData = async (req, res) => {
   }
 };
 
+getMapDataById = async (req, res) => {
+  try {
+    MapData.findOne( { mapID: req.params.id } ).then( (mapData) => {
+    return res.status(200).json({success: true, mapData: mapData});
+  }).catch(err => console.log(err))
+  }
+  catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error'
+    });
+  }
+};
+
   module.exports = {
     createMapData,
     deleteMapData,
     updateMapData,
+    getMapDataById,
   }
