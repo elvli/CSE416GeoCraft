@@ -140,7 +140,7 @@ export default function EditSideBar(props) {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
-
+                
                   <Accordion.Header>Heat Map Data</Accordion.Header>
                   <Accordion.Body>
                     <div className="table-responsive table-custom-scrollbar">
@@ -194,7 +194,7 @@ export default function EditSideBar(props) {
                         </tbody>
                       </Table>
                       <Button className='add-row-button btn btn-light' onClick={handleAddRow}>
-                        <PlusCircleFill className='add-row-icon' />
+                        <PlusCircleFill className='add-row-icon'/>
                       </Button>
                     </div>
 
