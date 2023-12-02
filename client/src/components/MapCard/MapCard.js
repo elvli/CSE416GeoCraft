@@ -10,7 +10,7 @@ export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const { map, functions, selected } = props
-  const username = auth.user._id;
+  const username = auth.loggedIn?auth.user._id:0;
   const location = useLocation();
   const navigate = useNavigate();
 
