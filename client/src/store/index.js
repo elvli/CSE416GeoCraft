@@ -31,9 +31,11 @@ function GlobalStoreContextProvider(props) {
   const [store, setStore] = useState({
     idNamePairs: [],
     currentList: null,
-    container: mapContainer
+    container: mapContainer,
+    sort: [0]
 
   });
+
 
   const storeReducer = (action) => {
     const { type, payload } = action
@@ -42,7 +44,8 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           idNamePairs: payload.idNamePairs,
           currentList: payload.currentList,
-          container: store.container
+          container: store.container,
+          sort: store.sort
         });
       }
       case GlobalStoreActionType.SET_CURRENT_LIST: {
@@ -50,6 +53,7 @@ function GlobalStoreContextProvider(props) {
           idNamePairs: store.idNamePairs,
           currentList: payload,
           container: store.container,
+          sort: store.sort
 
         });
       }
@@ -139,8 +143,13 @@ function GlobalStoreContextProvider(props) {
       console.log("API FAILED TO CREATE A NEW LIST");
     }
   }
+  store.setSort = function (type) {
+    
+    store.sort[0] = type;
+    store.loadIdNamePairs()
+  }
 
-  store.loadIdNamePairs = function (id = null, type = null) {
+  store.loadIdNamePairs = function (id = null) {
     if (id != null) {
       async function asyncGetMap(id) {
         let mapID = await api.getMapById(id);
@@ -150,10 +159,16 @@ function GlobalStoreContextProvider(props) {
             const response = await api.getMapPairs();
             if (response.data.success) {
               let pairsArray = response.data.idNamePairs;
+              let arr = [];
+              for (let key in pairsArray) {
+                arr.push(pairsArray[key]);
+
+              }
+              sortArray(store.sort[0], arr)
               storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: {
-                  idNamePairs: pairsArray,
+                  idNamePairs: arr,
                   currentList: map
                 }
               });
@@ -166,8 +181,7 @@ function GlobalStoreContextProvider(props) {
       }
       asyncGetMap(id);
     }
-    else if (type != null) {
-
+    else {
       async function asyncLoadIdNamePairs() {
         const response = await api.getMapPairs();
         if (response.data.success) {
@@ -177,29 +191,11 @@ function GlobalStoreContextProvider(props) {
             arr.push(pairsArray[key]);
 
           }
-          sortArray(type, arr)
+          sortArray(store.sort[0], arr)
           storeReducer({
             type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
             payload: {
               idNamePairs: arr,
-            }
-          });
-        } else {
-          console.log("API FAILED TO GET THE LIST PAIRS");
-        }
-      }
-      asyncLoadIdNamePairs();
-
-    }
-    else {
-      async function asyncLoadIdNamePairs() {
-        const response = await api.getMapPairs();
-        if (response.data.success) {
-          let pairsArray = response.data.idNamePairs;
-          storeReducer({
-            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-            payload: {
-              idNamePairs: pairsArray,
             }
           });
         } else {

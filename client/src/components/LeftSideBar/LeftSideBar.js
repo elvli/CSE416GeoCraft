@@ -84,23 +84,23 @@ export default function LeftSideBar(props) {
     else setPublishedMaps(!publishedMaps)
   }
   const handleSortNewest = () => {
-    store.loadIdNamePairs(null, 1)
+    store.setSort(1)
   }
 
   const handleSortOldest = () => {
-    store.loadIdNamePairs(null, 2)
+    store.setSort(2)
   }
 
   const handleSortAtoZ = () => {
-    store.loadIdNamePairs(null, 3)
+    store.setSort(3)
   }
 
   const handleSortZtoA = () => {
-    store.loadIdNamePairs(null, 4)
+    store.setSort(4)
   }
 
   const handleSortPopular = () => {
-    store.loadIdNamePairs(null, 5)
+    store.setSort(5)
   }
 
   const handleQueryChange = (event) => {
