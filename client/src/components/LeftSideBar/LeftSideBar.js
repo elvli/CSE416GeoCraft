@@ -13,7 +13,13 @@ export default function LeftSideBar(props) {
   const [queryInput, setQueryInput] = useState('');
   const { handleNewMap, handleDeleteMap, handleFork, handleExport, handlePublish } = props;
   const [publishedMaps , setPublishedMaps] = useState(false);
-
+  const SortMenu = {
+    A_Z: "A-Z",
+    POPULAR: "LIKES",
+    OLD: "OLD",
+    NEW: "NEW",
+    Z_A: "Z-A"
+}
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -157,7 +163,7 @@ export default function LeftSideBar(props) {
             </div>
           </div>
           <div className="list-group">
-            <div className="map-list  bg-light left-custom-scrollbar">
+            <div className="map-list bg-light left-custom-scrollbar">
               {maps}
             </div>
           </div>

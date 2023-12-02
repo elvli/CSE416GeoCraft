@@ -24,7 +24,7 @@ export default function EditSideBar(props) {
   ]);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
-  
+
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -34,10 +34,10 @@ export default function EditSideBar(props) {
     var newTable = []
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
-    } 
-    newTable.push({id: newTable.length + 1, Latitude: null, Longitude: null,})
+    }
+    newTable.push({ id: newTable.length + 1, Latitude: null, Longitude: null, })
     setTableData(newTable)
-    
+
   }
   const handleHeaderDoubleClick = (index) => {
     setIsEditingHeader(index);
@@ -52,7 +52,7 @@ export default function EditSideBar(props) {
   const handleHeaderBlur = () => {
     setIsEditingHeader(null);
   };
-  
+
   const handleDoubleClick = (rowIndex, colName) => {
     setIsEditing({ rowIndex, colName });
   };
@@ -96,10 +96,8 @@ export default function EditSideBar(props) {
     URL.revokeObjectURL(url);
   };
 
-
   return (
     <div>
-
       <div className={`d-flex flex-row`} id="edit-left-wrapper">
         <div className="edit-left-bar">
           <Col id="edit-left-tool">
@@ -124,8 +122,8 @@ export default function EditSideBar(props) {
               </Button>
             </Row> */}
             <Row>
-                <Button className="edit-button" id="edit-close-button" variant="dark" onClick={()=>setShow(true)}>
-                <XLg/>
+              <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
+                <XLg />
               </Button>
             </Row>
           </Col>
@@ -142,71 +140,70 @@ export default function EditSideBar(props) {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
+
                   <Accordion.Header>Heat Map Data</Accordion.Header>
-                  <Accordion.Body className='editingDropdown'>
-                  <div className="table-responsive">
-                    <Table striped bordered hover>
-                      <thead>
-                        <tr>
-                          {tableHeaders.map((header, index) => (
-                            <th
-                              key={index + 1}
-                              onBlur={handleHeaderBlur}
-                            >
-                              {isEditingHeader === index + 1 ? (
-                                <input
-                                  type="text"
-                                  value={header}
-                                  onChange={(event) => handleHeaderChange(event, index + 1)}
-                                  onKeyPress={handleKeyPress}
-                                />
-                              ) : (
-                                header
-                              )}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <div className="table-responsive">
-                        
-                      </div>
-                      <tbody>
-                        {tableData.map((row, rowIndex) => (
-                          <tr key={row.id}>
-                            {Object.keys(row).map((colName, colIndex) => (
-                              <td
-                                key={colIndex}
-                                onDoubleClick={() => handleDoubleClick(rowIndex, colName)}
-                                onBlur={handleEditBlur}
+                  <Accordion.Body>
+                    <div className="table-responsive table-custom-scrollbar">
+                      <Table striped bordered hover>
+                        <thead>
+                          <tr>
+                            {tableHeaders.map((header, index) => (
+                              <th
+                                key={index + 1}
+                                onBlur={handleHeaderBlur}
                               >
-                                {
-                                colIndex != 0 ? (
-                                  <input className='cells'
+                                {isEditingHeader === index + 1 ? (
+                                  <input
                                     type="text"
-                                    value={row[colName]}
-                                    onChange={(event) => handleEditChange(event, rowIndex, colName)}
-                                    onBlur={handleEditBlur}
+                                    value={header}
+                                    onChange={(event) => handleHeaderChange(event, index + 1)}
+                                    onKeyPress={handleKeyPress}
                                   />
                                 ) : (
-                                  row[colName]
+                                  header
                                 )}
-                              </td>
+                              </th>
                             ))}
                           </tr>
-                        ))}
-                      </tbody>
-                    </Table>
-                    <Button className='addRowButton btn btn-light' onClick={handleAddRow}>
-                      <PlusCircleFill/>
-                    </Button>
-                  </div>
-                  <div className='JSONButton'>
-                    <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
-                      Download JSON
-                    </Button>
-                    <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
-                  </div>
-                    
+                        </thead>
+
+                        <tbody>
+                          {tableData.map((row, rowIndex) => (
+                            <tr key={row.id}>
+                              {Object.keys(row).map((colName, colIndex) => (
+                                <td
+                                  key={colIndex}
+                                  onDoubleClick={() => handleDoubleClick(rowIndex, colName)}
+                                  onBlur={handleEditBlur}
+                                >
+                                  {
+                                    colIndex !== 0 ? (
+                                      <input className='cells'
+                                        type="text"
+                                        value={row[colName]}
+                                        onChange={(event) => handleEditChange(event, rowIndex, colName)}
+                                        onBlur={handleEditBlur}
+                                      />
+                                    ) : (
+                                      row[colName]
+                                    )}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                      <Button className='add-row-button btn btn-light' onClick={handleAddRow}>
+                        <PlusCircleFill className='add-row-icon' />
+                      </Button>
+                    </div>
+
+                    <div className='JSONButton'>
+                      <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
+                        Download JSON
+                      </Button>
+                      <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
+                    </div>
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
@@ -214,7 +211,7 @@ export default function EditSideBar(props) {
           </div>
         </div>
       </div>
-      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event)=>{setShow(false)}}/>
+      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
     </div>
   )
 }

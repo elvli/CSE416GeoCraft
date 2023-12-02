@@ -1,37 +1,41 @@
-.username-text {
-  margin-top: 150px;
-}
+@use "../../styles/theme" as theme;
 
-.tab-content {
-  margin-top: 20px;
-}
+.profile-container {
+  .profile-banner {
+    background-color: #000;
+    height: 200px;
 
-.profile-banner {
-  background-color: #000;
-  height: 200px;
-}
+    .profile-pic {
+      width: 150px;
+      z-index: 1;
+    }
 
-.profile-pic {
-  width: 150px;
-  z-index: 1;
-}
+    .edit-profile-btn {
+      z-index: 1;
+    }
+  }
 
-.edit-profile-btn {
-  z-index: 1;
-}
+  .username-text {
+    margin-top: 150px;
+  }
 
-.about-me-container {
-  background-color: #f8f9fa;
-  border-radius: 5px;
-}
+  .tab-content {
+    margin-top: 20px;
+  }
 
-.add-map {
-  transform: translate(10px, -8px);
-  width: 23.5vw;
-  height: 132px;
-  margin-right: 18px;
+  .about-me-container {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+  }
 
-  .add-map-btn {
-    font-size: 16pt;
+  .add-map {
+    transform: translate(10px, -8px);
+    width: 23.5vw;
+    height: 132px;
+    margin-right: 18px;
+
+    .add-map-btn {
+      font-size: 16pt;
+    }
   }
 }

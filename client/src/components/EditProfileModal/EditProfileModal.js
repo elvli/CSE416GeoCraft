@@ -4,6 +4,7 @@ import { Form, Button, Modal, Row, Col } from "react-bootstrap";
 import AuthContext from '../../auth'
 import "./EditProfileModal.scss";
 import GlobalStoreContext from "../../store";
+import { useNavigate } from "react-router-dom";
 
 export default function EditProfileModal(props) {
   const { editProfileShow, handleEditProfileClose } = props;
@@ -15,6 +16,7 @@ export default function EditProfileModal(props) {
   const currentEmail = auth.getEmail();
   const currentUsername = auth.getUsername();
   const currentAboutMe = auth.getAboutMe();
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -34,12 +36,21 @@ export default function EditProfileModal(props) {
         aboutMe: formData.get("changeAboutMe")
       }
       auth.updateUser(user);
+      store.updateMultipleMaps({
+        current: currentUsername,
+        username: formData.get("changeUsername"),
+        email: formData.get("changeEmail"),
+      })
+      
       handleEditProfileClose(event);
+      let username = formData.get("changeUsername")
+      navigate(`/profile/${username}`)
     }
   };
   const handleClosing = (event) => {
     setValidated(false);
     handleEditProfileClose(event);
+    
   };
 
   return (

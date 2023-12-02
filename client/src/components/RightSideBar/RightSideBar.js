@@ -73,6 +73,7 @@ export default function RightSideBar() {
               <input
                 type="text"
                 className="form-control"
+                id="comment-form-control"
                 placeholder="Comment"
                 value={textInput}
                 onChange={handleInputChange}

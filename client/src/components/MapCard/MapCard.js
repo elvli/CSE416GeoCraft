@@ -10,7 +10,7 @@ export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const { map, functions, selected } = props
-  const username = auth.getUsername();
+  const username = auth.loggedIn?auth.user._id:0;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,18 +21,18 @@ export default function MapCard(props) {
 
   function handleInteraction(arr, otherArr, event) {
     event.stopPropagation();
-    const index = arr.indexOf(auth.user.username);
+    const index = arr.indexOf(auth.user._id);
 
     if (index !== -1) {
       arr.splice(index, 1);
     } else {
       if (otherArr.length > 0) {
-        const otherIndex = otherArr.indexOf(auth.user.username);
+        const otherIndex = otherArr.indexOf(auth.user._id);
         if (otherIndex !== -1) {
           otherArr.splice(otherIndex, 1);
         }
       }
-      arr.push(auth.user.username);
+      arr.push(auth.user._id);
     }
 
     store.updateLikeDislike(map._id, map);

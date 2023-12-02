@@ -19,6 +19,13 @@ function GlobalStoreContextProvider(props) {
     const [lat, setLat] = useState(41.8473);
     const [zoom, setZoom] = useState(5.43)
     const { auth } = useContext(AuthContext);
+    const SortMenu = {
+        A_Z: "A-Z",
+        POPULAR: "LIKES",
+        OLD: "OLD",
+        NEW: "NEW",
+        Z_A: "Z-A"
+    }
     const popup = new mapboxgl.Popup({
         closeButton: false,
         closeOnClick: false,
@@ -287,6 +294,16 @@ store.addComment = function (comment, user) {
         }
     }
     asyncAddComment()
+}
+
+store.updateMultipleMaps = function (data) {
+    async function asyncUpdateMultipleMaps(datas) {
+        let response = await api.updateMultipleMaps(datas)
+        if(response.data.success) {
+            store.loadIdNamePairs()
+        }
+    }
+    asyncUpdateMultipleMaps(data)
 }
 
 store.setCurrentList = function (id, mapbox) {

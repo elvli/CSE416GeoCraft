@@ -36,6 +36,12 @@ export const updateUserFeedback = (id, map) => {
   })
 }
 export const getPublishedMaps = () => api.get('/maps/')
+export const updateMultipleMaps = (data) => {
+  return api.put(`/maps/`, {
+    // SPECIFY THE PAYLOAD
+    data: data
+  })
+}
 
 export const createMapData = (id) => {
     return api.post(`/mapData/`, {
@@ -56,6 +62,7 @@ const apis = {
   getPublishedMaps,
   createMapData,
   deleteMapDataById,
+  updateMultipleMaps,
 }
 
 export default apis

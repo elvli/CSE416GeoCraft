@@ -170,6 +170,34 @@ getMapPairs = async (req, res) => {
    }).catch(err => console.log(err))
 }
 
+updateMultipleMaps = async (req, res) => {
+  if (auth.verifyUser(req) === null) {
+    return res.status(400).json({
+      errorMessage: 'UNAUTHORIZED'
+    })
+  }
+  try {
+    const body = req.body.data;
+
+
+    if (!body) {
+      return res.status(400).json({
+        success: false,
+        error: 'You must provide a body to update',
+      });
+    }
+    const result = await Map.updateMany({ownerName: body.current}, {$set: {ownerName: body.username, ownerEmail: body.email}})
+    console.log(`Updated ${result.modifiedCount} documents`);
+    return res.status(200).json({ success: true, data: result.modifiedCount })
+  } catch {
+    console.dir
+  }
+
+}
+
+
+
+
 getMaps = async (req, res) => {
   if (auth.verifyUser(req) === null) {
     return res.status(400).json({
@@ -351,4 +379,5 @@ module.exports = {
   updateMap,
   updateUserFeedback,
   getPublishedMaps,
+  updateMultipleMaps,
 }

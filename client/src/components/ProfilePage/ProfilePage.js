@@ -154,7 +154,7 @@ export default function ProfilePage() {
               {/* {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
               {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)} */}
               {activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))}
-              {activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(username)))}
+              {activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))}
             </div>
           </div>
         </div>
