@@ -6,12 +6,12 @@ const Schema = mongoose.Schema
 */
 const mapDataSchema = new Schema(
     {
-        GeoJson: { type: mixed, required: false},
-        data: { type: [{
+        GeoJson: { type: Schema.Types.Mixed, required: false},
+        points: { type: [{
             longitude: Number, 
             latitude: Number,
-            required: false
-        }]}
+        }], required: false},
+        mapID:{ type: Object, required: true },
     },
     { timestamps: true },
 )

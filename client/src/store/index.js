@@ -56,8 +56,6 @@ function GlobalStoreContextProvider(props) {
 
                 });
             }
-
-
             default:
                 return store
         }
@@ -69,8 +67,15 @@ function GlobalStoreContextProvider(props) {
         const response = await api.createMap(newMapName, auth.user.username, auth.user.email, mapType);
         console.log("createNewList response: " + response);
         if (response.status === 201) {
-            tps.clearAllTransactions();
-            store.loadIdNamePairs()
+            console.log(response)
+            const nextResponse = await api.createMapData(response.data.map._id)
+            if (nextResponse.status === 201){
+                store.loadIdNamePairs()
+            }
+            else {
+                console.log("mapData failed");
+            }
+            
         }
         else {
             console.log("API FAILED TO CREATE A NEW LIST");
@@ -146,7 +151,14 @@ function GlobalStoreContextProvider(props) {
             let response = await api.deleteMapById(store.currentList._id)
             console.log(store.currentList._id)
             if(response.data.success) {
-                store.loadIdNamePairs()
+                const newResponse = await api.deleteMapDataById(store.currentList._id)
+                if(newResponse.data.success) {
+                    store.loadIdNamePairs()
+                }
+                else {
+                    console.log('delete mapdata failed')
+                }
+                
             }
         }
         deleteMap()
