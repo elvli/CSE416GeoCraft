@@ -17,6 +17,7 @@ getLoggedIn = async (req, res) => {
     return res.status(200).json({
       loggedIn: true,
       user: {
+        _id: loggedInUser._id,
         firstName: loggedInUser.firstName,
         lastName: loggedInUser.lastName,
         email: loggedInUser.email,
@@ -68,6 +69,7 @@ loginUser = async (req, res) => {
     }).status(200).json({
       success: true,
       user: {
+        _id: existingUser._id,
         firstName: existingUser.firstName,
         lastName: existingUser.lastName,
         email: existingUser.email,
@@ -144,6 +146,7 @@ registerUser = async (req, res) => {
     }).status(200).json({
       success: true,
       user: {
+        _id: savedUser._id,
         firstName: savedUser.firstName,
         lastName: savedUser.lastName,
         username: savedUser.username,
@@ -172,6 +175,7 @@ updateUser = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
+        _id: body._id,
         firstName: body.firstName,
         lastName: body.lastName,
         username: body.username,
