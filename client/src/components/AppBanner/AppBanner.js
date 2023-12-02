@@ -5,13 +5,14 @@ import AuthContext from '../../auth'
 import GeoCraftLogo from '.././Images/GeoCraftGlobeWhite.png';
 import { Button, Dropdown } from 'react-bootstrap';
 import { Person } from 'react-bootstrap-icons';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { GlobalStoreContext } from '../../store'
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
-  const username = auth.getUsername() ? auth.getUsername() : 'Guest';
   const { store } = useContext(GlobalStoreContext);
+  const username = auth.getUsername() ? auth.getUsername() : 'Guest';
+  const location = useLocation();
 
   const handleLogout = () => {
     // Handle logout logic
@@ -20,7 +21,7 @@ export default function AppBanner() {
   };
 
   let currentListName = "";
-  if (store.currentList) {
+  if (store.currentList && !location.pathname.includes('/profile')) {
     currentListName = store.currentList.name;
   }
 

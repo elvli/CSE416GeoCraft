@@ -2,7 +2,7 @@ import { React, useState, useContext, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from '../../auth'
 import GlobalStoreContext from "../../store";
-import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal } from '../../components'
+import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal, PublishMapModal } from '../../components'
 // import { Card } from 'react-bootstrap'
 import "./ProfilePage.scss";
 
@@ -15,9 +15,8 @@ export default function ProfilePage() {
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
   const [editProfileShow, setEditProfileShow] = useState(false);
-  // const username = auth.getUsername();
+  const [publishMapShow, setPublishMapShow] = useState(false);
   const { username } = useParams();
-  const email = auth.getEmail();
   const aboutMeText = auth.getAboutMe();
 
 
@@ -51,15 +50,23 @@ export default function ProfilePage() {
   async function handleEditProfile(event) {
     setEditProfileShow(true)
   }
+  async function handlePublish(event) {
+    setPublishMapShow(true)
+  }
+  async function handlePublishClose(event) {
+    setPublishMapShow(false)
+  }
 
   var functions = {
     handleDeleteMap: handleDeleteMap,
     handleFork: handleFork,
-    handleExport: handleExport
+    handleExport: handleExport,
+    handlePublish: handlePublish,
   }
+
   useEffect(() => {
     store.loadIdNamePairs();
-  }, [store]);
+  }, []);
 
   function createRows(mapCards) {
     const rows = [];
@@ -125,9 +132,6 @@ export default function ProfilePage() {
             <div className="mb-5">
               <p className="lead fw-normal mb-1">About Me</p>
               <div className="p-4 about-me-container" >
-                {/* <p className="font-italic mb-1">Web Developer</p>
-                <p className="font-italic mb-1">Lives in New York</p>
-                <p className="font-italic mb-0">Photographer</p> */}
                 <p className="font-italic mb-1">{aboutMeText}</p>
 
               </div>
@@ -151,8 +155,6 @@ export default function ProfilePage() {
               </div>
             </nav>
             <div className="tab-content" >
-              {/* {activeTab === 'myMaps' && createRows(unpubArray, functions, true)}
-              {activeTab === 'likedMaps' && createRows(publishedArray, functions, false)} */}
               {activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))}
               {activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))}
             </div>
@@ -164,6 +166,7 @@ export default function ProfilePage() {
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
       <EditProfileModal editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose} />
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
     </div >
   );
 }

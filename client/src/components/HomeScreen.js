@@ -11,8 +11,8 @@ export default function HomeScreen() {
   const [editRegionShow, setEditRegionShow] = useState(false);
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
-  const { store } = useContext(GlobalStoreContext);
   const [publishMapShow, setPublishMapShow] = useState(false);
+  const { store } = useContext(GlobalStoreContext);
   
 
   async function handleClose(event) {

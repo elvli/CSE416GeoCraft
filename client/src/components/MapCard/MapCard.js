@@ -1,5 +1,5 @@
 import { React, useContext, useRef } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill, HandThumbsUp, HandThumbsDown, } from 'react-bootstrap-icons';
 import AuthContext from '../../auth'
@@ -10,8 +10,7 @@ export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const { map, functions, selected } = props
-  const username = auth.loggedIn?auth.user._id:0;
-  const location = useLocation();
+  const username = auth.loggedIn ? auth.user._id : 0;
   const navigate = useNavigate();
 
   function handleEditMap(event) {
@@ -51,14 +50,14 @@ export default function MapCard(props) {
   function handleSelectMap(event) {
     event.stopPropagation();
 
-    if (location.pathname.includes('/profile')) {
-      // Do nothing if on a /profile URL
-      return;
-    }
-    else {
-      console.log("Calling store.setCurrentList with map._id:", map._id);
-      store.setCurrentList(map._id, mapbox);
-    }
+    // if (location.pathname.includes('/profile')) {
+    //   // Do nothing if on a /profile URL
+    //   return;
+    // }
+    // else {
+    console.log("Calling store.setCurrentList with map._id:", map._id);
+    store.setCurrentList(map._id, mapbox);
+    // }
   }
 
   let dropdown = <div className='options-button'>
@@ -99,7 +98,7 @@ export default function MapCard(props) {
 
   return (
     <div>
-      <div className={`card map-card ${(store.currentList != null) && (store.currentList._id === map._id) ? (selected ? 'selected' : '') : ''}`} onClick={handleSelectMap}>
+      <div className={`card map-card ${(store.currentList != null) && (store.currentList._id === map._id) ? { selected } : ''}`} onClick={handleSelectMap}>
         <div className="card-header">
           <p className="map-title">{map.name}</p>
           {dropdown}
