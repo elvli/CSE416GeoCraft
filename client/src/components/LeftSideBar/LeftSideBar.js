@@ -83,25 +83,24 @@ export default function LeftSideBar(props) {
     }
     else setPublishedMaps(!publishedMaps)
   }
-
   const handleSortNewest = () => {
-    console.log('handleSortNewest');
+    store.loadIdNamePairs(null, 1)
   }
 
   const handleSortOldest = () => {
-    console.log('handleSortOldest');
+    store.loadIdNamePairs(null, 2)
   }
 
   const handleSortAtoZ = () => {
-    console.log('handleSortAtoZ');
+    store.loadIdNamePairs(null, 3)
   }
 
   const handleSortZtoA = () => {
-    console.log('handleSortAtoZ');
+    store.loadIdNamePairs(null, 4)
   }
 
   const handleSortPopular = () => {
-    console.log('handleSortPopular');
+    store.loadIdNamePairs(null, 5)
   }
 
   const handleQueryChange = (event) => {

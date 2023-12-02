@@ -22,13 +22,7 @@ function GlobalStoreContextProvider(props) {
   const [zoom, setZoom] = useState(5.43)
   const { auth } = useContext(AuthContext);
   const location = useLocation();
-  const SortMenu = {
-    A_Z: "A-Z",
-    POPULAR: "LIKES",
-    OLD: "OLD",
-    NEW: "NEW",
-    Z_A: "Z-A"
-  }
+
   const popup = new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: false,
@@ -64,6 +58,67 @@ function GlobalStoreContextProvider(props) {
     }
   }
 
+  function sortArray (sortType, mapArr) {
+    //A-Z
+    if (sortType == 3) {
+        mapArr = mapArr.sort((a, b) => {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+            // names must be equal
+            return 0;
+            });
+        
+    }
+    //Z-A
+    else if (sortType == 4) {
+        mapArr = mapArr.sort((b, a) => {
+            const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+            const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+            if (nameA < nameB) return -1;
+            if (nameA > nameB) return 1;
+            // names must be equal
+            return 0;
+            });
+            
+        
+    }
+    //NEW
+    else if (sortType == 1) {
+        mapArr = mapArr.sort(function(a,b){
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        })
+        
+    }
+    //OLD
+    else if (sortType == 2) {
+        mapArr = mapArr.sort(function(a,b){
+            return new Date(a.createdAt) - new Date(b.createdAt);
+        })
+        
+    }
+    //POPULAR
+    else if (sortType == 5) {
+        mapArr = mapArr.sort((a, b) => {
+            if(a.published && b.published) {
+                const numA = a.likes.length; // ignore upper and lowercase
+                const numB = b.likes.length; // ignore upper and lowercase
+                if (numA < numB) return 1;
+                if (numA > numB) return -1;
+                // names must be equal
+                return 0;
+            }
+            else {
+                if(a.published) return -1
+                if(b.published) return 1
+                return 0
+            }
+            });  
+    }
+
+}
+
   store.createNewMap = async function (title, mapType) {
     let newMapName = title
     console.log(auth.user)
@@ -85,7 +140,7 @@ function GlobalStoreContextProvider(props) {
     }
   }
 
-  store.loadIdNamePairs = function (id = null) {
+  store.loadIdNamePairs = function (id = null, type = null) {
     if (id != null) {
       async function asyncGetMap(id) {
         let mapID = await api.getMapById(id);
@@ -110,6 +165,31 @@ function GlobalStoreContextProvider(props) {
         }
       }
       asyncGetMap(id);
+    }
+    else if(type != null) {
+            
+      async function asyncLoadIdNamePairs() {
+          const response = await api.getMapPairs();
+          if (response.data.success) {
+              let pairsArray = response.data.idNamePairs;
+              let arr = [];
+              for(let key in pairsArray) {
+                   arr.push(pairsArray[key]);
+                  
+              }   
+              sortArray(type, arr)
+              storeReducer({
+                  type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                  payload: {
+                  idNamePairs: arr,
+                  }
+              });
+          } else {
+            console.log("API FAILED TO GET THE LIST PAIRS");
+          }
+        }
+        asyncLoadIdNamePairs();
+      
     }
     else {
       async function asyncLoadIdNamePairs() {
@@ -166,123 +246,6 @@ function GlobalStoreContextProvider(props) {
     }
     deleteMap()
   }
-  //     store.likeList = function (email, idNamePair, user) {
-  //     async function asyncGetMap(id) {
-  //         let response = await api.getMapById(id)
-  //         if (response.data.success) {
-  //             let map = response.data.map;
-  //             if (idNamePair.likes.indexOf(user.email) > -1) {
-  //                 map.likes.splice(map.likes.indexOf(email), 1)
-  //             }
-  //             else if (idNamePair.dislikes.indexOf(user.email) > -1) {
-  //                 map.dislikes.splice(map.dislikes.indexOf(email), 1)
-  //                 map.likes.push(email);
-  //             }
-  //             else {
-  //                 map.likes.push(email);
-  //             }
-
-  //             async function updateMap(id, map) {
-  //                 response = await api.updateUserFeedback(id, map);
-  //                 if (response.data.success) {
-  //                     store.loadIdNamePairs()
-  //                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
-  //                     // else store.loadPublishedLists();
-  //                 }
-  //             }
-  //             updateMap(id, map)
-  //         }
-  //     }
-  //     asyncGetMap(idNamePair._id)
-  // }
-
-  // store.dislikeList = function (email, idNamePair, user) {
-  //     async function asyncGetMap(id) {
-  //         let response = await api.getMapById(id)
-  //         if (response.data.success) {
-  //             let map = response.data.map;
-  //             if (idNamePair.dislikes.indexOf(user.email) > -1) {
-  //                 map.dislikes.splice(map.likes.indexOf(email), 1)
-  //             }
-  //             else if (idNamePair.likes.indexOf(user.email) > -1) {
-  //                 map.likes.splice(map.dislikes.indexOf(email), 1)
-  //                 map.dislikes.push(email);
-  //             }
-  //             else {
-  //                 map.dislikes.push(email);
-  //             }
-  //             async function updateMap(id, map) {
-  //                 response = await api.updateUserFeedback(id, map);
-  //                 if (response.data.success) {
-  //                     store.loadIdNamePairs()
-  //                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
-  //                     // else store.loadPublishedLists();
-  //                 }
-  //             }
-  //             updateMap(id, map)
-  //         }
-  //     }
-  //     asyncGetMap(idNamePair._id)
-  // }
-
-  // store.likeComment = function (email, idNamePair, user, index) {
-  //     async function asyncGetMap(id) {
-  //         let response = await api.getMapById(id)
-  //         if (response.data.success) {
-  //             let map = response.data.map.comments[index];
-  //             if (idNamePair.comments[index].likes.indexOf(user.email) > -1) {
-  //                 map.likes.splice(map.likes.indexOf(email), 1)
-  //             }
-  //             else if (idNamePair.comments[index].dislikes.indexOf(user.email) > -1) {
-  //                 map.dislikes.splice(map.dislikes.indexOf(email), 1)
-  //                 map.likes.push(email);
-  //             }
-  //             else {
-  //                 map.likes.push(email);
-  //             }
-
-  //             async function updateMap(id, map) {
-  //                 response = await api.updateUserFeedback(id, map);
-  //                 if (response.data.success) {
-  //                     store.loadIdNamePairs(idNamePair._id)
-  //                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
-  //                     // else store.loadPublishedLists();
-  //                 }
-  //             }
-  //             updateMap(id, response.data.map)
-  //         }
-  //     }
-  //     asyncGetMap(idNamePair._id)
-  // }
-
-  // store.dislikeComment = function (email, idNamePair, user, index) {
-  //     async function asyncGetMap(id) {
-  //         let response = await api.getMapById(id)
-  //         if (response.data.success) {
-  //             let map = response.data.map.comments[index];
-  //             if (idNamePair.comments[index].dislikes.indexOf(user.email) > -1) {
-  //                 map.dislikes.splice(map.likes.indexOf(email), 1)
-  //             }
-  //             else if (idNamePair.comments[index].likes.indexOf(user.email) > -1) {
-  //                 map.likes.splice(map.dislikes.indexOf(email), 1)
-  //                 map.dislikes.push(email);
-  //             }
-  //             else {
-  //                 map.dislikes.push(email);
-  //             }
-  //             async function updateMap(id, map) {
-  //                 response = await api.updateUserFeedback(id, map);
-  //                 if (response.data.success) {
-  //                     store.loadIdNamePairs(idNamePair._id)
-  //                     // if (store.currentPageSort[0] === 0) store.loadIdNamePairs();
-  //                     // else store.loadPublishedLists();
-  //                 }
-  //             }
-  //             updateMap(id, response.data.map)
-  //         }
-  //     }
-  //     asyncGetMap(idNamePair._id)
-  // }
 
   store.addComment = function (comment, user) {
     let newComment = { user: user.username, comment: comment, likes: [], dislikes: [] }
