@@ -48,6 +48,7 @@ app.post('/map', auth.verify, MapController.getMaps);
 app.put('/map/:id', auth.verify, MapController.updateMapById);
 app.put('/maps/:id', auth.verify, MapController.updateUserFeedback);
 app.get('/maps', auth.verify, MapController.getPublishedMaps);
+app.put('/maps', auth.verify, MapController.updateMultipleMaps);
 
 app.post('/mapData', auth.verify, MapDataController.createMapData);
 app.delete('/mapData/:id', auth.verify, MapDataController.deleteMapData);
