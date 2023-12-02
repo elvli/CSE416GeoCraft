@@ -67,7 +67,6 @@ updateMapDataById = async (req, res) => {
 
     const body = req.body.mapData;
     //req.body.mapData
-    console.log('body: ' + JSON.stringify(req.body.mapData))
     console.log('param id: ' + req.params.id)
 
     if (!body) {

@@ -9,6 +9,9 @@ import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import rewind from "@mapbox/geojson-rewind";
+import geobuf from 'geobuf';
+import Pbf from 'pbf';
+
 export default function EditSideBar(props) {
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
@@ -40,25 +43,32 @@ export default function EditSideBar(props) {
 
   const handleFileSelection = async (files) => {
     const file = files[0];
-    var reader = new FileReader()
+    var reader = new FileReader();
     let mapData = await store.getMapDataById(mapId);
+
     reader.onloadend = (event) => {
       var text = event.target.result;
+
       try {
         var json = JSON.parse(text);
-        rewind(json, false);;
+        console.log('Original file size:', text.length, 'bytes');
+
+        // var compressedJSON = geobuf.encode(json, new Pbf());
+        // console.log('Compressed file size:', compressedJSON.length, 'bytes');
+
+        // console.log('mapData before update:', JSON.stringify(mapData).length, 'bytes');
+        // mapData.GeoJson = compressedJSON;
+        // console.log('mapData after update:', JSON.stringify(mapData).length, 'bytes');
+        // console.log('mapData Geojson: ', JSON.stringify(mapData.GeoJson))
+
         mapData.GeoJson = json;
         store.updateMapDataById(mapId, mapData);
-
       } catch (error) {
         console.error('Error handling file selection:', error);
       }
-    }
+    };
     reader.readAsText(file);
-   // if (file) {
-      
-    //}
-  };
+  }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
 
