@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
-
+import rewind from "@mapbox/geojson-rewind";
 export default function EditSideBar(props) {
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
@@ -40,17 +40,24 @@ export default function EditSideBar(props) {
 
   const handleFileSelection = async (files) => {
     const file = files[0];
-
-    if (file) {
+    var reader = new FileReader()
+    let mapData = await store.getMapDataById(mapId);
+    reader.onloadend = (event) => {
+      var text = event.target.result;
       try {
-        let mapData = await store.getMapDataById(mapId);
-        mapData.GeoJson = file;
+        var json = JSON.parse(text);
+        rewind(json, false);;
+        mapData.GeoJson = json;
         store.updateMapDataById(mapId, mapData);
 
       } catch (error) {
         console.error('Error handling file selection:', error);
       }
     }
+    reader.readAsText(file);
+   // if (file) {
+      
+    //}
   };
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
