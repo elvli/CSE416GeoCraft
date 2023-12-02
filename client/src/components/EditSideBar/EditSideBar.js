@@ -166,9 +166,7 @@ export default function EditSideBar(props) {
                             ))}
                           </tr>
                         </thead>
-                        <div className="table-responsive">
 
-                        </div>
                         <tbody>
                           {tableData.map((row, rowIndex) => (
                             <tr key={row.id}>
