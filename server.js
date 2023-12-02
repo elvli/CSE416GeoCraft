@@ -54,6 +54,7 @@ app.get('/maps', auth.verify, MapController.getPublishedMaps);
 
 app.post('/mapData', auth.verify, MapDataController.createMapData);
 app.delete('/mapData/:id', auth.verify, MapDataController.deleteMapData);
+app.put('/mapData/:id', auth.verify, MapDataController.updateMapData);
 
 app.listen(PORT, () => {
   console.log(`Server is running on post ${PORT}`);
