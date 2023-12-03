@@ -3,7 +3,8 @@ import React, { useRef, useEffect, useState, useContext } from 'react';
 import GlobalStoreContext from '../../store';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
-
+import geobuf from 'geobuf';
+import Pbf from 'pbf';
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA';
 
 export default function MapBackground() {
@@ -110,7 +111,7 @@ export default function MapBackground() {
       try {
         if (store.currentList) {
           const mapData = await store.getMapDataById(store.currentList._id);
-          const geoJSON = mapData ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
+          const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
           map.current.getSource('map-source').setData(geoJSON);
         }
       } catch (error) {
