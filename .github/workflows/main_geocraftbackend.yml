@@ -26,11 +26,17 @@ jobs:
           npm install
           # npx nodemon server.js
 
+      - name: Zip artifact for deployment
+        uses: TheDoctor0/zip-release@0.7.6
+        with:
+          filename: release.zip
+          path: .*
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: GeoCraftBackend  # Adjust the artifact name
-          path: .  # Adjust to the actual path
+          name: GeoCraftBackend
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -45,6 +51,9 @@ jobs:
         with:
           name: GeoCraftBackend  # Adjust the artifact name
 
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
@@ -57,3 +66,6 @@ jobs:
       - name: "Run nodemon after deployment"
         run: |
           npx nodemon server.js
+
+      - name: "Delete Zip"
+        run: rm release.zip
