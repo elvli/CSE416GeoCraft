@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          npx nodemon server.js
+          # npx nodemon server.js
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -53,3 +53,7 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D43508BE26664E8DA22E9E5CF3AAB396 }}
           package: .
+
+      - name: "Run nodemon after deployment"
+        run: |
+          npx nodemon server.js
