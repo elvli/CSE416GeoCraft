@@ -1,36 +1,29 @@
 import React, { useState, useRef, useContext } from 'react'
 import { Button, Table } from 'react-bootstrap';
-import { Gear, ViewStacked, PencilSquare, Wrench, Circle } from 'react-bootstrap-icons';
 import './EditSideBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { GlobalStoreContext } from '../../store'
-import { XLg, PlusCircleFill } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import rewind from "@mapbox/geojson-rewind";
 import geobuf from 'geobuf';
 import Pbf from 'pbf';
 
 export default function EditSideBar(props) {
+  const { mapId, points, settings } = props;
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null)
-  const [tableData, setTableData] = useState([
-    { id: 1, Latitude: 0.5, Longitude: 0.7 },
-    { id: 2, Latitude: 0.3, Longitude: 0.2 },
-    { id: 3, Latitude: 0.8, Longitude: 0.4 },
-    { id: 4, Latitude: 0.2, Longitude: 0.9 },
-    { id: 5, Latitude: 0.6, Longitude: 0.1 }
-  ]);
+  const [tableData, setTableData] = useState(points);
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude'
   ]);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
-  const { mapId } = props;
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -77,7 +70,7 @@ export default function EditSideBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, Latitude: null, Longitude: null, })
+    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', })
     setTableData(newTable)
 
   }
@@ -96,9 +89,6 @@ export default function EditSideBar(props) {
     setIsEditingHeader(null);
   };
 
-  const handleDoubleClick = (rowIndex, colName) => {
-    setIsEditing({ rowIndex, colName });
-  };
 
   const handleEditChange = (event, rowIndex, colName) => {
     const updatedData = tableData.map((row, index) => {
@@ -120,6 +110,12 @@ export default function EditSideBar(props) {
       handleHeaderBlur();
     }
   };
+
+  const handleSave = () => {
+    var mapData = store.getMapDataById(mapId)
+    mapData.points = tableData
+    store.updateMapDataById(mapId, mapData)
+  }
 
   const downloadJson = () => {
     const json = JSON.stringify({ headers: tableHeaders, data: tableData });
@@ -143,6 +139,9 @@ export default function EditSideBar(props) {
             <Row>
               <Button className="edit-button" variant="dark" onClick={toggleSideBar}>
                 <ViewStacked />
+              </Button>
+              <Button className="edit-button" variant="dark" onClick={handleSave}>
+                <i class="bi bi-floppy"></i>
               </Button>
             </Row>
             {/* <Row>
@@ -202,7 +201,7 @@ export default function EditSideBar(props) {
                                 {isEditingHeader === index + 1 ? (
                                   <input
                                     type="text"
-                                    value={header}
+                                    value={header ?? ''}
                                     onChange={(event) => handleHeaderChange(event, index + 1)}
                                     onKeyPress={handleKeyPress}
                                   />
@@ -220,8 +219,6 @@ export default function EditSideBar(props) {
                               {Object.keys(row).map((colName, colIndex) => (
                                 <td
                                   key={colIndex}
-                                  onDoubleClick={() => handleDoubleClick(rowIndex, colName)}
-                                  onBlur={handleEditBlur}
                                 >
                                   {
                                     colIndex !== 0 ? (

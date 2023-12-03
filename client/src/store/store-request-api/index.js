@@ -47,8 +47,13 @@ export const updateMultipleMaps = (data) => {
 export const createMapData = (id) => {
     return api.post(`/mapData/`, {
       // SPECIFY THE PAYLOAD
-      points: [{longitude: null, latitude: null}],
-      mapID: id
+      points: [{id: 1,longitude: '0', latitude: '0'}],
+      mapID: id,
+      settings: {
+        longitude: -73.1217,
+        latitude: 40.9083,
+        zoom: 13.91
+      }
     })
   }
 export const deleteMapDataById = (id) => api.delete(`/mapData/${id}`)

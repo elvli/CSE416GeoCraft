@@ -6,11 +6,17 @@ const mapDataSchema = new Schema(
     GeoJson: { type: Schema.Types.Mixed, required: false },
     points: {
       type: [{
-        longitude: Number,
-        latitude: Number,
+        id: Number,
+        longitude: String,
+        latitude: String,
       }], required: false
     },
     mapID: { type: Object, required: true },
+    settings: { type: {
+      longitude: String,
+      latitude: String,
+      zoom: String
+    }, required: true}
   },
   { timestamps: true },
 )
