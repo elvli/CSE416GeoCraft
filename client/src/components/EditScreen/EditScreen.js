@@ -20,14 +20,10 @@ export default function EditScreen() {
   useEffect(() => {
     try {
       store.setCurrentList(mapId , mapbox);
-      console.log(store.currentList)
     } catch (error) {
     }
   }, []);
 
-  async function getData (mapId){
-    return await store.getMapDataById(mapId)
-  }
 
   return (
     <div>

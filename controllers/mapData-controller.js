@@ -69,15 +69,18 @@ updateMapDataById = async (req, res) => {
     const body = req.body.mapData;
     var geobuf = require('geobuf')
     var Pbf = require('pbf');
-    var compressedJSON = geobuf.encode(body.GeoJson, new Pbf());
-    
-    console.log('Compressed file size:', compressedJSON.length, 'bytes');
-    compressedJSON = Buffer.from(compressedJSON).toString('base64')
-    console.log('mapData before update:', JSON.stringify(body).length, 'bytes');
-    body.GeoJson = compressedJSON;
-    console.log('mapData after update:', JSON.stringify(body).length, 'bytes');
+    if (body.GeoJson){
+      var compressedJSON = geobuf.encode(body.GeoJson, new Pbf());
+      
+      console.log('Compressed file size:', compressedJSON.length, 'bytes');
+      compressedJSON = Buffer.from(compressedJSON).toString('base64')
+      console.log('mapData before update:', JSON.stringify(body).length, 'bytes');
+      body.GeoJson = compressedJSON;
+      console.log('mapData after update:', JSON.stringify(body).length, 'bytes');
 
-    console.log('param id: ' + req.params.id)
+      console.log('param id: ' + req.params.id)
+    }
+    
 
     if (!body) {
       return res.status(400).json({

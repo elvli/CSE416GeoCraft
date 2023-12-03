@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import { Button, Table } from 'react-bootstrap';
 import './EditSideBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
@@ -20,7 +20,7 @@ export default function EditSideBar(props) {
   const [isEditingHeader, setIsEditingHeader] = useState(null)
   const [tableData, setTableData] = useState(points);
   const [tableHeaders, setTableHeaders] = useState([
-    'ID', 'Latitude', 'Longitude'
+    'ID', 'Longitude', 'Latitude'
   ]);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
@@ -39,7 +39,7 @@ export default function EditSideBar(props) {
     var reader = new FileReader();
     let mapData = await store.getMapDataById(mapId);
 
-    reader.onloadend = (event) => {
+    reader.onloadend = async (event) => {
       var text = event.target.result;
 
       try {
@@ -55,7 +55,8 @@ export default function EditSideBar(props) {
         // console.log('mapData Geojson: ', JSON.stringify(mapData.GeoJson))
 
         mapData.GeoJson = json;
-        store.updateMapDataById(mapId, mapData);
+        await store.updateMapDataById(mapId, mapData);
+        await store.setCurrentList(mapId, 0)
       } catch (error) {
         console.error('Error handling file selection:', error);
       }
@@ -70,7 +71,7 @@ export default function EditSideBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', })
+    newTable.push({ id: newTable.length + 1, longitude: '', latitude: '', })
     setTableData(newTable)
 
   }
@@ -111,8 +112,8 @@ export default function EditSideBar(props) {
     }
   };
 
-  const handleSave = () => {
-    var mapData = store.getMapDataById(mapId)
+  const handleSave = async () => {
+    var mapData = await store.getMapDataById(mapId)
     mapData.points = tableData
     store.updateMapDataById(mapId, mapData)
   }
@@ -130,6 +131,27 @@ export default function EditSideBar(props) {
 
     URL.revokeObjectURL(url);
   };
+  
+  const updateTable = async () =>{
+    try{
+      const points = await store.getMapDataById(mapId)
+      var newPoints = []
+      for (let i in points.points){
+        newPoints.push({'id': points.points[i]['id'], 'longitude': points.points[i]['longitude'], 'latitude': points.points[i]['latitude'] })
+      }
+      setTableData(newPoints)
+    }
+    catch{
+      console.log('cannot load mapdata')
+    }
+  }
+
+  useEffect(() => {
+    try {
+      updateTable()
+    } catch (error) {
+    }
+  }, []);
 
   return (
     <div>
@@ -203,7 +225,6 @@ export default function EditSideBar(props) {
                                     type="text"
                                     value={header ?? ''}
                                     onChange={(event) => handleHeaderChange(event, index + 1)}
-                                    onKeyPress={handleKeyPress}
                                   />
                                 ) : (
                                   header
@@ -221,16 +242,16 @@ export default function EditSideBar(props) {
                                   key={colIndex}
                                 >
                                   {
-                                    colIndex !== 0 ? (
+                                    colIndex !== 0 && colIndex !== 3  ? (
                                       <input className='cells'
                                         type="text"
                                         value={row[colName]}
                                         onChange={(event) => handleEditChange(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                       />
-                                    ) : (
+                                    ) : colIndex !== 3 ? (
                                       row[colName]
-                                    )}
+                                    ): <></>}
                                 </td>
                               ))}
                             </tr>
