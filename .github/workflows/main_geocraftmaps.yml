@@ -49,7 +49,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: GeoCraft
+          name: node-app
           path: release.zip
 
   deploy:
@@ -63,7 +63,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: GeoCraft
+          name: node-app
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
@@ -76,6 +76,11 @@ jobs:
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8941A85804FF42A1A7E4C071AF6D95B8 }}
           package: release.zip
+
+      # - name: "Run nodemon after deployment"
+      #   run: |
+      #     cd ..
+      #     npx nodemon server.js
 
       - name: "Delete Zip"
         run: rm release.zip

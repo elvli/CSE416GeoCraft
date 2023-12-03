@@ -7,9 +7,9 @@ const MapDataController = require('./controllers/mapData-controller')
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const auth = require('./auth');
-// const baseUrl = "https://geocraftmaps.azurewebsites.net";
+const baseUrl = "https://geocraftmaps.azurewebsites.net";
 // const baseUrl = "http://localhost:3000";
-const baseUrl = "https://geocraftbackend.azurewebsites.net";
+// const baseUrl = "https://geocraftbackend.azurewebsites.net";
 
 require("dotenv").config();
 const PORT = process.env.PORT || 3001;
