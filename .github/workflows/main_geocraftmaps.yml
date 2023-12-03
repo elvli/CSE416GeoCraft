@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy MERN app to Azure
+name: Build and deploy Node.js app to Azure Web App - GeoCraftMaps
 
 on:
   push:
@@ -11,79 +11,76 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: "14.x"
+          node-version: "18.x"
 
-      - name: Install dependencies and build front end
+      - name: client - npm install, build, and test
         run: |
           npm install
+          # npx jest --forceExit
           cd client
           npm install
-          npm run build
-          cd ..
+          npm run build --if-present
+          # npx cypress run
+          # cd..
+          # npm install -g nodemon
 
-      - name: Install back end dependencies
-        run: npm install
+      # - name: Install nodemon
+      #   run: |
+      #     cd..
+      #     npm install -g nodemon
 
-      - name: Copy web.config to front end deployment directory
+      - name: Copy web.config to deployment directory
         run: cp web.config ./client/build/
 
-      - name: Zip front end artifact for deployment
-        uses: actions/upload-artifact@v2
+      - name: Zip artifact for deployment
+        uses: TheDoctor0/zip-release@0.7.6
         with:
-          name: front-end
+          filename: release.zip
           path: ./client/build/*
 
-      - name: Zip back end artifact for deployment
-        uses: actions/upload-artifact@v2
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
         with:
-          name: back-end
-          path: ./*
-          
+          name: GeoCraft
+          path: release.zip
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: "Production"
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download front end artifact from build job
-        uses: actions/download-artifact@v2
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
         with:
-          name: front-end
+          name: GeoCraft
 
-      - name: Unzip front end artifact for deployment
-        run: unzip front-end.zip -d ./client/build/
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
 
-      - name: Deploy front end to Azure Web App
+      - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
         with:
           app-name: "GeoCraftMaps"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8941A85804FF42A1A7E4C071AF6D95B8 }}
+          package: release.zip
 
-      - name: Download back end artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: back-end
+      # - name: "Run nodemon after deployment"
+      #   run: |
+      #     cd ..
+      #     npx nodemon server.js
 
-      - name: Unzip back end artifact for deployment
-        run: unzip back-end.zip
-
-      - name: Deploy back end to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: "GeoCraftBackend"
-          slot-name: "Production"
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D43508BE26664E8DA22E9E5CF3AAB396 }}
-
-      - name: Start back end server
-        run: npm run start
+      - name: "Delete Zip"
+        run: rm release.zip
