@@ -47,7 +47,7 @@ export const updateMultipleMaps = (data) => {
 export const createMapData = (id) => {
     return api.post(`/mapData/`, {
       // SPECIFY THE PAYLOAD
-      points: [{id: 1,longitude: '0', latitude: '0', color: 0}],
+      points: [{id: 1,longitude: '0', latitude: '0', color: 'white'}],
       mapID: id,
       settings: {
         latitude: 40.9083,
