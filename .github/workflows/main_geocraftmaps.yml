@@ -21,16 +21,23 @@ jobs:
         with:
           node-version: "18.x"
 
-      - name: client - npm install, build, and test
-        run: |
-          npm install
-          # npx jest --forceExit
-          cd client
-          npm install
-          npm run build --if-present
-          # npx cypress run
-          cd..
-          npm install -g nodemon
+      - name: Install dependencies
+        run: npm install
+
+      - name: Set up client
+        run: cd client && npm install
+
+      - name: Build client
+        run: cd client && npm run build --if-present
+
+      - name: Run Jest tests
+        run: cd .. && npx jest --forceExit
+
+      - name: Run Cypress tests
+        run: cd client && npx cypress run
+
+      - name: Install nodemon globally
+        run: npm install -g nodemon
 
       # - name: Install nodemon
       #   run: |
