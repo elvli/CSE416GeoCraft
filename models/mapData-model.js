@@ -11,6 +11,7 @@ const mapDataSchema = new Schema(
         latitude: String,
       }], required: false
     },
+    heatmap: { type: Schema.Types.Mixed, required: false },
     mapID: { type: Object, required: true },
     settings: { type: {
       longitude: String,
