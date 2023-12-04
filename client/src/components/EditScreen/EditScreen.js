@@ -1,14 +1,39 @@
-import { React, useEffect, useContext, useRef } from "react"
-import { AppBanner, PropSymbEditBar, HeatEditBar, ArrowEditBar, PointEditBar, ChoroEditBar, MapBackground } from "../../components";
-import GlobalStoreContext from "../../store";
+import React, { useEffect, useContext, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import GlobalStoreContext from "../../store";
+// import {
+//   AppBanner,
+//   PropSymbEditBar,
+//   ArrowEditBar,
+//   PointEditBar,
+//   ChoroEditBar,
+//   MapBackground
+// } from "../../components";
+
+import AppBanner from "../AppBanner/AppBanner.js"
+import PropSymbEditBar from "../PropSymbEditBar/PropSymbEditBar.js"
+import ArrowEditBar from "../ArrowEditBar/ArrowEditBar.js"
+import PointEditBar from "../PointEditBar/PointEditBar.js"
+import ChoroEditBar from "../ChoroEditBar/ChoroEditBar.js"
+import MapBackground from "../MapBackground/MapBackground.js"
+import HeatEditBar from "../HeatEditBar/HeatEditBar.js"
+
+
+const componentMapping = {
+  heat: HeatEditBar,
+  arrow: ArrowEditBar,
+  point: PointEditBar,
+  choro: ChoroEditBar,
+  propSymb: PropSymbEditBar,
+};
 
 export default function EditScreen() {
   const { store } = useContext(GlobalStoreContext);
   const { mapId } = useParams();
   const mapbox = useRef(null);
+  const [mapType, setMapType] = useState('');
 
-  var mapData = {
+  var defaultMapData = {
     points: [{ id: 1, longitude: 0, latitude: 0 }],
     settings: {
       longitude: -73.1217,
@@ -20,12 +45,22 @@ export default function EditScreen() {
   useEffect(() => {
     try {
       store.setCurrentList(mapId, mapbox);
-    } 
+    }
     catch (error) {
       console.log('setCurrentList error', error);
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      setMapType(store.currentList.mapType);
+    }
+    catch (error) {
+      console.log('setMapType error', error);
+    }
+  }, [store.currentList]);
+
+  const DynamicComponent = componentMapping[mapType] || null;
 
   return (
     <div>
@@ -37,7 +72,9 @@ export default function EditScreen() {
         </div>
 
         <div className="foreground">
-          <PropSymbEditBar mapId={mapId} points={mapData.points} settings={mapData.settings} map={mapbox} />
+          {DynamicComponent && (
+            <DynamicComponent mapId={mapId} points={defaultMapData.points} settings={defaultMapData.settings} map={mapbox} />
+          )}
         </div>
       </div>
     </div>

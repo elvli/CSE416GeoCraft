@@ -271,7 +271,7 @@ export default function HeatEditBar(props) {
                 </Accordion.Item>
                 <Accordion.Item eventKey="2">
 
-                  <Accordion.Header>Heat Map</Accordion.Header>
+                  <Accordion.Header>Heat Map Settings</Accordion.Header>
                   <Accordion.Body>
                     {heatmap}
                   </Accordion.Body>

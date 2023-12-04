@@ -1,24 +1,21 @@
-import React, { useState, useRef, useContext, useEffect } from 'react'
-import { Button, Table } from 'react-bootstrap';
-import './PointEditBar.scss'
-import Accordion from 'react-bootstrap/Accordion';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { GlobalStoreContext } from '../../store'
+import React, { useState, useRef, useContext, useEffect } from 'react';
+import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
+import { GlobalStoreContext } from '../../store';
 import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
-import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
+import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
+import './PointEditBar.scss'
 
 export default function PointEditBar(props) {
   const { mapId, points, settings } = props;
   const { store } = useContext(GlobalStoreContext);
+
+  // State variables
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
-  const [isEditingHeader, setIsEditingHeader] = useState(null)
+  const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
-  const [tableHeaders, setTableHeaders] = useState([
-    'ID', 'Latitude', 'Longitude'
-  ]);
+  const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
 
@@ -207,7 +204,7 @@ export default function PointEditBar(props) {
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
 
-                  <Accordion.Header>Heat Map Data</Accordion.Header>
+                  <Accordion.Header>Point Map Data</Accordion.Header>
                   <Accordion.Body>
                     <div className="table-responsive table-custom-scrollbar">
                       <Table striped bordered hover>
@@ -271,7 +268,7 @@ export default function PointEditBar(props) {
                 </Accordion.Item>
                 <Accordion.Item eventKey="2">
 
-                  <Accordion.Header>Heat Map</Accordion.Header>
+                  <Accordion.Header>Point Map Settings</Accordion.Header>
                   <Accordion.Body>
                     {heatmap}
                   </Accordion.Body>

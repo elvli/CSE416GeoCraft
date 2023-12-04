@@ -50,6 +50,6 @@ export {
   VerifyScreen,
   HeatEditBar,
   ChoroEditBar,
-PointEditBar,
-ArrowEditBar
+  PointEditBar,
+  ArrowEditBar
 };

@@ -2,7 +2,6 @@ import { createContext, useContext, useState, useRef } from 'react'
 // import jsTPS from '../common/jsTPS'
 import api from './store-request-api'
 import AuthContext from '../auth'
-import { useLocation } from "react-router-dom";
 
 export const GlobalStoreContext = createContext({});
 
@@ -18,14 +17,12 @@ function GlobalStoreContextProvider(props) {
   const mapContainer = useRef(null);
 
   const { auth } = useContext(AuthContext);
-  const location = useLocation();
 
   const [store, setStore] = useState({
     idNamePairs: [],
     currentList: null,
     container: mapContainer,
     sort: [0]
-
   });
 
   const storeReducer = (action) => {
@@ -113,12 +110,9 @@ function GlobalStoreContextProvider(props) {
 
   store.createNewMap = async function (title, mapType) {
     let newMapName = title
-    console.log(auth.user)
     const response = await api.createMap(newMapName, auth.user.username, auth.user.email, mapType);
-    console.log("createNewList response: " + response);
 
     if (response.status === 201) {
-      console.log(response)
       const nextResponse = await api.createMapData(response.data.map._id)
       if (nextResponse.status === 201) {
         store.loadIdNamePairs()
@@ -159,7 +153,8 @@ function GlobalStoreContextProvider(props) {
                   currentList: map
                 }
               });
-            } else {
+            } 
+            else {
               console.log("API FAILED TO GET THE LIST PAIRS");
             }
           }
@@ -214,7 +209,6 @@ function GlobalStoreContextProvider(props) {
   store.deleteMap = function () {
     async function deleteMap() {
       let response = await api.deleteMapById(store.currentList._id)
-      console.log(store.currentList._id)
       if (response.data.success) {
         const newResponse = await api.deleteMapDataById(store.currentList._id)
         if (newResponse.data.success) {
@@ -273,13 +267,13 @@ function GlobalStoreContextProvider(props) {
       try {
         let response = await api.getMapDataById(id);
         if (response.data.success) {
-          console.log('STORE: ' + JSON.stringify(response.data.mapData));
           return response.data.mapData;
-        } 
+        }
         else {
           console.log('getMapDataById has thrown an error');
         }
-      } catch (error) {
+      } 
+      catch (error) {
         console.error('Error fetching map data:', error);
       }
     }
