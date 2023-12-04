@@ -7,6 +7,8 @@ import Col from 'react-bootstrap/Col';
 import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
 export default function HeatEditBar(props) {
   const { mapId, points, settings } = props;
@@ -19,6 +21,23 @@ export default function HeatEditBar(props) {
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude'
   ]);
+  const [currentColor, setCurrentColor] = useState([
+    'interpolate',
+    ['linear'],
+    ['heatmap-density'],
+    0,
+    'rgba(33,102,172,0)',
+    0.2,
+    'rgb(103,169,207)',
+    0.4,
+    'rgb(209,229,240)',
+    0.6,
+    'rgb(253,219,199)',
+    0.8,
+    'rgb(239,138,98)',
+    1,
+    'rgb(178,24,43)'
+  ])
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
 
@@ -145,38 +164,175 @@ export default function HeatEditBar(props) {
 
   }
   
-const [heatMapData, setHeatMapData] = useState(null);
+  const [heatMapData, setHeatMapData] = useState(null);
 
-const handleHeatMap = async (event) => {
-  event.preventDefault();
-  var file = event.target.files[0]
-  var reader = new FileReader();
-  reader.onloadend = async (event) => {
-    var text = event.target.result;
-    try {
-      var json = JSON.parse(text);
-      setHeatMapData(json) 
-      store.updateMapData({
-        type: 'heat',
-        import: true,
-        data: json
-      })
-    } catch (error) {
-      console.error('Error handling file selection:', error);
+  const handleHeatMap = async (event) => {
+    event.preventDefault();
+    var file = event.target.files[0]
+    var reader = new FileReader();
+    reader.onloadend = async (event) => {
+      var text = event.target.result;
+      try {
+        var json = JSON.parse(text);
+        setHeatMapData(json) 
+        store.updateMapData({
+          type: 'heat',
+          import: true,
+          data: json
+        })
+      } catch (error) {
+        console.error('Error handling file selection:', error);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  let fileUploader = <div className="drop-zone">
+  <div className="drop-zone-text">
+    Drag & Drop or Click Browse to select a file
+  </div>
+    <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
+    {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
+    {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
+  </div>
+
+  function onColorClick(event, val) {
+    console.log('hello')
+    if(val == 1) {
+      //Red
+      setCurrentColor([
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(33,102,172,0)',
+        0.2,
+        'rgb(103,169,207)',
+        0.4,
+        'rgb(209,229,240)',
+        0.6,
+        'rgb(253,219,199)',
+        0.8,
+        'rgb(239,138,98)',
+        1,
+        'rgb(178,24,43)'
+      ])
+      
     }
-  };
-  reader.readAsText(file);
-}
+    else if (val == 2) {
+      //Orange
+      setCurrentColor([
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(33,102,172,0)',
+        0.2,
+        'rgb(249,219,173)',
+        0.4,
+        'rgb(255,187,101)',
+        0.6,
+        'rgb(255,177,24)',
+        0.8,
+        'rgb(255,156,0)',
+        1,
+        'rgb(255,130,0)'
+      ])
+      
+    }
+    else if (val == 3) {
+      //Yellow
+      setCurrentColor([
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(255,238,160,0)',
+        0.2,
+        'rgb(255,228,142)',
+        0.4,
+        'rgb(255,212,98)',
+        0.6,
+        'rgb(253,185,84)',
+        0.8,
+        'rgb(255,158,57)',
+        1,
+        'rgb(255,139,52)'
+      ])
+      
+    }
+    else if (val == 4) {
+      //Green
+      setCurrentColor([
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(255,255,255,0)',
+        0.2,
+        'rgb(234,255,240)',
+        0.4,
+        'rgb(211,255,224)',
+        0.6,
+        'rgb(188,255,208)',
+        0.8,
+        'rgb(174,255,139)',
+        1,
+        'rgb(76,255,0)'
+      ])
+      
+    }
+    else {
+      //Blue
+      setCurrentColor([
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(255,255,255,0)',
+        0.2,
+        'rgb(228,242,250)',
+        0.4,
+        'rgb(201,233,246)',
+        0.6,
+        'rgb(135,206,235)',
+        0.8,
+        'rgb(69,179,224)',
+        1,
+        'rgb(31,141,186)'
+      ])
+      store.updateMapData({
+        type:'heat',
+        import:false,
+        data: {
+          type: 'color',
+          data: currentColor
+        }
+      })
+    }
+    
+  }
 
-let fileUploader = <div className="drop-zone">
-<div className="drop-zone-text">
-  Drag & Drop or Click Browse to select a file
-</div>
-  <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
-  {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
-  {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
-</div>
-
+  let options = <div>
+    <p>Select a color</p>
+    <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
+        <ToggleButton id="tbg-radio-1" value={1} onClick={(event)=> onColorClick(event, 1)}>
+          Red
+        </ToggleButton>
+        <ToggleButton id="tbg-radio-2" value={2} onClick={(event)=> onColorClick(event, 2)}>
+          Orange
+        </ToggleButton>
+        <ToggleButton id="tbg-radio-3" value={3} onClick={(event)=> onColorClick(event, 3)}>
+          Yellow
+        </ToggleButton>
+        <ToggleButton id="tbg-radio-4" value={4} onClick={(event)=> onColorClick(event, 4)}>
+          Green
+        </ToggleButton>
+        <ToggleButton id="tbg-radio-5" value={5} onClick={(event)=> onColorClick(event, 5)}>
+          Blue
+        </ToggleButton>
+    </ToggleButtonGroup>
+  </div>
 
 
   return (
@@ -301,7 +457,7 @@ let fileUploader = <div className="drop-zone">
 
                   <Accordion.Header>Heat Map Settings</Accordion.Header>
                   <Accordion.Body>
-                    {fileUploader}
+                    {!heatMapData?fileUploader:options}
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

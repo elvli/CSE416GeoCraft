@@ -323,7 +323,10 @@ export default function MapBackground(props) {
           store.emptyMapData()
         }
         else {
-
+          if(store.mapdata.data.type === 'color') {
+            map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', store.mapdata.data.data)
+            store.emptyMapData()
+          }
         }
       }
     }
