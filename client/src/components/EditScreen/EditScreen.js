@@ -31,7 +31,7 @@ export default function EditScreen() {
       <AppBanner />
       <div className="row1">
         <div className="background">
-          <MapBackground/>
+          <MapBackground map={mapbox}/>
         </div>
 
         <div className="foreground">

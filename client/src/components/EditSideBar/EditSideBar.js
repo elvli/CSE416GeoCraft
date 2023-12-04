@@ -138,7 +138,6 @@ export default function EditSideBar(props) {
     catch (error) {
       console.log('cannot update table');
     }
-    console.log('START PAGE')
   }, []);
 
   const generateHeatMap = async (event) => {

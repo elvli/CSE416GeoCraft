@@ -12,6 +12,7 @@ export default function MapBackground(props) {
   const [lng, setLng] = useState(12.7971);
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
+  const [update, setUpdate] = useState(false)
 
   var points = <></>
 
@@ -85,7 +86,7 @@ export default function MapBackground(props) {
         });
 
         mapbox.current.addLayer({
-          id: 'italy-fill',
+          id: 'highlight-region',
           type: 'fill',
           source: 'map-source',
           paint: {
@@ -108,20 +109,23 @@ export default function MapBackground(props) {
             const regionId = hoveredRegion.properties.ID_1;
             const regionName = hoveredRegion.properties.NAME_1;
 
-            mapbox.current.setFilter('italy-fill', ['==', 'ID_1', regionId]);
-            mapbox.current.setPaintProperty('italy-fill', 'fill-opacity', 1);
+            mapbox.current.setFilter('highlight-region', ['==', 'ID_1', regionId]);
+            mapbox.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
 
             popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(mapbox.current);
           }
         });
 
         mapbox.current.on('mouseleave', 'geojson-border-fill', () => {
-          mapbox.current.setFilter('italy-fill', ['==', 'ID_1', '']);
-          mapbox.current.setPaintProperty('italy-fill', 'fill-opacity', 0);
+          mapbox.current.setFilter('highlight-region', ['==', 'ID_1', '']);
+          mapbox.current.setPaintProperty('highlight-region', 'fill-opacity', 0);
 
           popup.remove();
         }
         );
+
+        setUpdate(true)
+        
       });
 
     } catch (error) {
@@ -131,9 +135,10 @@ export default function MapBackground(props) {
 
   useEffect(() => {
     generateMap(store.currentList ? store.currentList._id : null, map);
-  }, [store.currentList]);
+  }, []);
 
   useEffect(() => {
+    setUpdate(false)
     const updateMapData = async () => {
       try {
         if (store.currentList) {
@@ -153,19 +158,23 @@ export default function MapBackground(props) {
           var myGeoJSON = {};
           myGeoJSON.type = "FeatureCollection";
           myGeoJSON.features = [];
-          pointsCollection.map((x) =>
+          pointsCollection.map((point) =>
             myGeoJSON.features.push({
               'type': 'Feature',
               'geometry': {
                 'type': 'Point',
-                'coordinates': [parseFloat(x[1]), parseFloat(x[0])]
+                'coordinates': [parseFloat(point[1]), parseFloat(point[0])]
               },
               'properties': {
-                'id': x[2]
+                'id': point[2]
               }
             })
           )
           map.current.getSource('point-map').setData(myGeoJSON);
+        }
+        else{
+          map.current.getSource('map-source').setData({});
+          map.current.getSource('point-map').setData({});
         }
       } catch (error) {
         console.error('Error updating map data:', error);
@@ -173,7 +182,7 @@ export default function MapBackground(props) {
     };
 
     updateMapData();
-  }, [store.currentList]);
+  }, [update || store.currentList]);
 
   return (
     <div>
