@@ -7,11 +7,6 @@ import Col from 'react-bootstrap/Col';
 import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
-import rewind from "@mapbox/geojson-rewind";
-import geobuf from 'geobuf';
-import Pbf from 'pbf';
-import mapboxgl from 'mapbox-gl'
-
 
 export default function EditSideBar(props) {
   const { mapId, points, settings } = props;
@@ -22,16 +17,17 @@ export default function EditSideBar(props) {
   const [isEditingHeader, setIsEditingHeader] = useState(null)
   const [tableData, setTableData] = useState(points);
   const [tableHeaders, setTableHeaders] = useState([
-    'ID', 'Longitude', 'Latitude'
+    'ID', 'Latitude', 'Longitude'
   ]);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
-  
+
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
 
+  // THESE FUNCTIONS HANDLE FILE LOADING
   const handleFileChange = (event) => {
     handleFileSelection(event.target.files);
   };
@@ -58,15 +54,13 @@ export default function EditSideBar(props) {
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
-
   const handleAddRow = () => {
     var newTable = []
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, longitude: '', latitude: '', })
+    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '' })
     setTableData(newTable)
-
   }
 
   // const handleHeaderDoubleClick = (index) => {
@@ -105,6 +99,24 @@ export default function EditSideBar(props) {
     await store.setCurrentList(mapId, 0)
   }
 
+  const updateTable = async () => {
+    try {
+      const points = await store.getMapDataById(mapId)
+      var newPoints = []
+      for (let i in points.points) {
+        newPoints.push({
+          'id': points.points[i]['id'],
+          'latitude': points.points[i]['latitude'],
+          'longitude': points.points[i]['longitude']
+        });
+      }
+      setTableData(newPoints);
+    }
+    catch {
+      console.log('cannot load mapdata');
+    }
+  }
+
   const downloadJson = () => {
     const json = JSON.stringify({ headers: tableHeaders, data: tableData });
     setJsonData(json);
@@ -118,32 +130,22 @@ export default function EditSideBar(props) {
 
     URL.revokeObjectURL(url);
   };
-  
-  const updateTable = async () =>{
-    try{
-      const points = await store.getMapDataById(mapId)
-      var newPoints = []
-      for (let i in points.points){
-        newPoints.push({'id': points.points[i]['id'], 'longitude': points.points[i]['longitude'], 'latitude': points.points[i]['latitude'] })
-      }
-      setTableData(newPoints)
-    }
-    catch{
-      console.log('cannot load mapdata')
-    }
-  }
 
   useEffect(() => {
     try {
-      updateTable()
-    } catch (error) {
+      updateTable();
     }
+    catch (error) {
+      console.log('cannot update table');
+    }
+    console.log('START PAGE')
   }, []);
 
   const generateHeatMap = async (event) => {
     event.preventDefault();
-    
+
   }
+
   const [heatmap, setHeatMap] = useState(<div>
     <Button variant="btn btn-dark" onClick={generateHeatMap}>
       Generate HeatMap
@@ -196,7 +198,7 @@ export default function EditSideBar(props) {
                     className="d-flex flex-column" >
                     <div className="drop-zone">
                       <div className="drop-zone-text">
-                        Drag & Drop or Click Browse to select a file
+                        Attach a .json, .kml, or .shp file.
                       </div>
                       <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
@@ -239,7 +241,7 @@ export default function EditSideBar(props) {
                                   key={colIndex}
                                 >
                                   {
-                                    colIndex !== 0 && colIndex !== 3  ? (
+                                    colIndex !== 0 && colIndex !== 3 ? (
                                       <input className='cells'
                                         type="text"
                                         value={row[colName]}
@@ -248,7 +250,7 @@ export default function EditSideBar(props) {
                                       />
                                     ) : colIndex !== 3 ? (
                                       row[colName]
-                                    ): <></>}
+                                    ) : <></>}
                                 </td>
                               ))}
                             </tr>
@@ -271,9 +273,9 @@ export default function EditSideBar(props) {
                 <Accordion.Item eventKey="2">
 
                   <Accordion.Header>Heat Map</Accordion.Header>
-                    <Accordion.Body>
-                        {heatmap}
-                    </Accordion.Body>
+                  <Accordion.Body>
+                    {heatmap}
+                  </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
             </div>

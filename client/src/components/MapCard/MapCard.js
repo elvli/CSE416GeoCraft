@@ -45,19 +45,11 @@ export default function MapCard(props) {
     handleInteraction(map.dislikes, map.likes, event);
   }
 
-  const mapbox = useRef(null);
+  // const mapbox = useRef(null);
 
   function handleSelectMap(event) {
     event.stopPropagation();
-
-    // if (location.pathname.includes('/profile')) {
-    //   // Do nothing if on a /profile URL
-    //   return;
-    // }
-    // else {
-    console.log("Calling store.setCurrentList with map._id:", map._id);
-    store.setCurrentList(map._id, mapbox);
-    // }
+    store.setCurrentList(map._id, null);
   }
 
   let dropdown = <div className='options-button'>

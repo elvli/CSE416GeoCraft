@@ -3,14 +3,12 @@ import React, { useRef, useEffect, useState, useContext } from 'react';
 import GlobalStoreContext from '../../store';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl, { Marker } from 'mapbox-gl';
-import geobuf from 'geobuf';
-import Pbf from 'pbf';
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA';
 
 export default function MapBackground(props) {
   const { store } = useContext(GlobalStoreContext);
   const mapContainer = store.container;
-  const  map  = useRef(null);
+  const map = useRef(null);
   const [lng, setLng] = useState(12.7971);
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
@@ -54,15 +52,15 @@ export default function MapBackground(props) {
             'circle-stroke-color': 'white',
             'circle-stroke-width': 1,
             'circle-opacity': [
-            'interpolate',
-            ['linear'],
-            ['zoom'],
-            1,
-            0,
-            2,
-            1
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              1,
+              0,
+              2,
+              1
             ]
-            }
+          }
         })
 
         mapbox.current.addLayer({
@@ -96,7 +94,7 @@ export default function MapBackground(props) {
           },
           filter: ['==', 'ID_1', ''],
         });
-        
+
         const popup = new mapboxgl.Popup({
           closeButton: false,
           closeOnClick: false,
@@ -116,6 +114,7 @@ export default function MapBackground(props) {
             popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(mapbox.current);
           }
         });
+
         mapbox.current.on('mouseleave', 'geojson-border-fill', () => {
           mapbox.current.setFilter('italy-fill', ['==', 'ID_1', '']);
           mapbox.current.setPaintProperty('italy-fill', 'fill-opacity', 0);
@@ -142,10 +141,10 @@ export default function MapBackground(props) {
           const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
           map.current.getSource('map-source').setData(geoJSON);
           var pointsCollection = []
-          if (mapData.points){
-            for (let i in mapData.points){
-              if (mapData.points[i]['longitude'] && mapData.points[i]['latitude'] && !isNaN(mapData.points[i]['longitude']) && !isNaN(mapData.points[i]['latitude'])){
-                pointsCollection.push( [mapData.points[i]['latitude'], mapData.points[i]['longitude'], mapData.points[i]['id']])
+          if (mapData.points) {
+            for (let i in mapData.points) {
+              if (mapData.points[i]['longitude'] && mapData.points[i]['latitude'] && !isNaN(mapData.points[i]['longitude']) && !isNaN(mapData.points[i]['latitude'])) {
+                pointsCollection.push([mapData.points[i]['latitude'], mapData.points[i]['longitude'], mapData.points[i]['id']])
                 console.log(pointsCollection)
               }
             }
@@ -154,17 +153,17 @@ export default function MapBackground(props) {
           var myGeoJSON = {};
           myGeoJSON.type = "FeatureCollection";
           myGeoJSON.features = [];
-          pointsCollection.map((x) => 
-          myGeoJSON.features.push({
-            'type': 'Feature',
-            'geometry': {
-              'type': 'Point',
-              'coordinates': [parseFloat(x[1]), parseFloat(x[0])]
-            },
-            'properties': {
-              'id': x[2]
-            }
-          })
+          pointsCollection.map((x) =>
+            myGeoJSON.features.push({
+              'type': 'Feature',
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [parseFloat(x[1]), parseFloat(x[0])]
+              },
+              'properties': {
+                'id': x[2]
+              }
+            })
           )
           map.current.getSource('point-map').setData(myGeoJSON);
         }
@@ -179,7 +178,7 @@ export default function MapBackground(props) {
   return (
     <div>
       <div className="long-lat-bar">
-        Longitude: {lng} | Latitude: {lat} | Zoom: {zoom}
+       Latitude: {lat} | Longitude: {lng} | Zoom: {zoom}
       </div>
       <div ref={mapContainer} className="map-container">
       </div>
