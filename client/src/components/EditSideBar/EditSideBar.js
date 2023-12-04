@@ -5,7 +5,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { GlobalStoreContext } from '../../store'
-import { XLg, PlusCircleFill, ViewStacked } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import rewind from "@mapbox/geojson-rewind";
 import geobuf from 'geobuf';
@@ -96,13 +96,6 @@ export default function EditSideBar(props) {
 
   const handleEditBlur = () => {
     setIsEditing(null);
-  };
-
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleEditBlur();
-      handleHeaderBlur();
-    }
   };
 
   const handleSave = async () => {
@@ -328,7 +321,7 @@ export default function EditSideBar(props) {
                 <ViewStacked />
               </Button>
               <Button className="edit-button" variant="dark" onClick={handleSave}>
-                <i class="bi bi-floppy"></i>
+                <Save></Save>
               </Button>
             </Row>
             {/* <Row>
