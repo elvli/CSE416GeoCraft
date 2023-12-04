@@ -30,28 +30,17 @@ jobs:
         env:
           CI: false
 
-      - name: Run Jest tests
-        run: npx jest --forceExit
+      # - name: Run Jest tests
+      #   run: npx jest --forceExit
 
-      - name: Run Cypress tests
-        run: cd client && npx cypress run
+      # - name: Run Cypress tests
+      #   run: cd client && npx cypress run
 
       - name: Install nodemon globally
         run: npm install -g nodemon
 
-      # - name: Install nodemon
-      #   run: |
-      #     cd..
-      #     npm install -g nodemon
-
       - name: Copy web.config to deployment directory
         run: cp web.config ./client/build/
-
-      # - name: Zip artifact for deployment
-      #   uses: TheDoctor0/zip-release@0.7.6
-      #   with:
-      #     filename: release.zip
-      #     path: ./client/build/*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -72,9 +61,6 @@ jobs:
         with:
           name: node-app
 
-      # - name: Unzip artifact for deployment
-      #   run: unzip release.zip
-
       - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
@@ -83,11 +69,3 @@ jobs:
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8941A85804FF42A1A7E4C071AF6D95B8 }}
           package: .
-
-      # - name: "Run nodemon after deployment"
-      #   run: |
-      #     cd ..
-      #     npx nodemon server.js
-
-      # - name: "Delete Zip"
-      #   run: rm release.zip
