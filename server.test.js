@@ -40,6 +40,55 @@ beforeAll(async () => {
         .post('/login')
         .send(existingUserCredentials);
     });
+
+    it('should not register a user with missing required fields', async () => {
+      const incompleteUserData = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+        password: 'securePassword',
+        confirmPassword: 'securePassword',
+      };
+      const response = await request(app)
+        .post('/register')
+        .send(incompleteUserData);
+    });
+
+    it('should not register a user with mismatched passwords', async () => {
+      const mismatchedPasswordData = {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane.doe@example.com',
+        password: 'securePassword',
+        confirmPassword: 'differentPassword',
+      };
+      const response = await request(app)
+        .post('/register')
+        .send(mismatchedPasswordData);
+
+    });
+
+    it('should return a 401 status for an invalid login attempt', async () => {
+      const invalidCredentials = {
+        email: 'nonexistentuser@example.com',
+        password: 'invalidpassword',
+      };
+      const response = await request(app)
+        .post('/login')
+        .send(invalidCredentials);
+    });
+    it('should return a token on successful login', async () => {
+      const validCredentials = {
+        email: 'test@example.com',
+        password: '123123123',
+      };
+      const response = await request(app)
+        .post('/login')
+        .send(validCredentials);
+    });
+    
+    
+    
   });
   
   describe('Auth Controller', () => {
@@ -50,6 +99,43 @@ beforeAll(async () => {
         expect(response.body.loggedIn).toBe(false);
         expect(response.body.user).toBe(null);
       });
+
+      it('should return a 401 status for an unauthorized request to /logout', async () => {
+        const response = await request(app).get('/logout');
+      });
+      it('should return a 403 status for an unauthorized request to /loggedIn', async () => {
+        const response = await request(app).get('/loggedIn');
+      });
+
+      it('should return a 400 status for a registration attempt with an existing username', async () => {
+        const existingUsernameData = {
+          firstName: 'Duplicate',
+          lastName: 'User',
+          username: 'john_doe', // Use an existing username
+          email: 'newuser@example.com',
+          password: 'duplicatepassword',
+          confirmPassword: 'duplicatepassword',
+        };
+        const response = await request(app)
+          .post('/register')
+          .send(existingUsernameData);
+      });
+      it('should return a 400 status for a registration attempt with an existing email', async () => {
+        const existingEmailData = {
+          firstName: 'Duplicate',
+          lastName: 'User',
+          username: 'newuser',
+          email: 'john.doe@example.com', // Use an existing email
+          password: 'duplicatepassword',
+          confirmPassword: 'duplicatepassword',
+        };
+        const response = await request(app)
+          .post('/register')
+          .send(existingEmailData);
+      });
+      
+      
+      
   
       // Add more tests for authenticated users, different scenarios, etc.
     });
@@ -142,6 +228,75 @@ beforeAll(async () => {
         const response = await request(app).post('/createMap').send(mockMap);
       });
     });
+
+    it('should not create a map with missing required fields', async () => {
+      const incompleteMapData = {
+        name: 'Incomplete Map',
+      };
+      const response = await request(app)
+        .post('/createMap')
+        .send(incompleteMapData);
+    });
+
+    it('should return a 404 status for a non-existent map ID in /getMapById/:id', async () => {
+      const response = await request(app).get('/getMapById/nonexistentid');
+    });
+
+    it('should return a 401 status for an unauthorized like request', async () => {
+      const mapId = 'valid_map_id';
+      const response = await request(app)
+        .post(`/maps/${mapId}/like`);
+    });
+
+    it('should update a map with valid data', async () => {
+      const mapId = 'valid_map_id';
+      const updatedMapData = {
+        name: 'Updated Map Name',
+      };
+      const response = await request(app)
+        .put(`/updateMap/${mapId}`)
+        .send(updatedMapData);
+    });
+
+    it('should return a 404 status for updating a non-existent map', async () => {
+      const nonExistentMapId = 'nonexistent_map_id';
+      const response = await request(app)
+        .put(`/updateMap/${nonExistentMapId}`)
+        .send({ name: 'Updated Map Name' });
+    });
+
+    it('should return a 404 status for liking a non-existent map', async () => {
+      const nonExistentMapId = 'nonexistent_map_id';
+      const response = await request(app)
+        .post(`/maps/${nonExistentMapId}/like`)
+    });
+    it('should return a 404 status for disliking a non-existent map', async () => {
+      const nonExistentMapId = 'nonexistent_map_id';
+      const response = await request(app)
+        .post(`/maps/${nonExistentMapId}/dislike`)
+    });
+    
+    
+    
+
+    it('should return a 401 status for an unauthorized dislike request', async () => {
+      const mapId = 'valid_map_id';
+      const response = await request(app)
+        .post(`/maps/${mapId}/dislike`);
+    });
+
+    it('should return a 401 status for an unauthorized comment request', async () => {
+      const mapId = 'valid_map_id';
+      const commentData = { text: 'Unauthorized comment' };
+      const response = await request(app)
+        .post(`/maps/${mapId}/comments`)
+        .send(commentData);
+    });
+    
+    
+    
+    
+    
   
     describe('GET /getMapById/:id', () => {
       it('should return a map by ID', async () => {

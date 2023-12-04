@@ -11,6 +11,7 @@ describe('Profile Page', () => {
         // Navigate to the profile route
         cy.get('#dropdown-basic').click();
         cy.get('.dropdown-btn').click();
+        cy.wait(1000);
       });
       it('should navigate to profile page', () => {
   

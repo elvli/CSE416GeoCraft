@@ -11,6 +11,7 @@ describe('LeftSideBar Component', () => {
 
     // Submit the form
     cy.get('.form-button').click();
+    cy.wait(1000);
   });
 
   it('should allow you to look at only your owned maps', () => {
