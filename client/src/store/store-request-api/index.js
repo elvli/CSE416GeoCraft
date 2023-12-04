@@ -50,8 +50,8 @@ export const createMapData = (id) => {
       points: [{id: 1,longitude: '0', latitude: '0'}],
       mapID: id,
       settings: {
-        longitude: -73.1217,
         latitude: 40.9083,
+        longitude: -73.1217,
         zoom: 13.91
       }
     })

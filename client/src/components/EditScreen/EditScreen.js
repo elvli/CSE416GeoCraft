@@ -20,7 +20,6 @@ export default function EditScreen() {
   useEffect(() => {
     try {
       store.setCurrentList(mapId , mapbox);
-      console.log(mapId)
     } catch (error) {
     }
   }, []);

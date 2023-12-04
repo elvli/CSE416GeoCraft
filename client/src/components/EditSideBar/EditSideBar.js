@@ -108,7 +108,8 @@ export default function EditSideBar(props) {
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
     mapData.points = tableData
-    store.updateMapDataById(mapId, mapData)
+    await store.updateMapDataById(mapId, mapData)
+    await store.setCurrentList(mapId, 0)
   }
 
   const downloadJson = () => {
