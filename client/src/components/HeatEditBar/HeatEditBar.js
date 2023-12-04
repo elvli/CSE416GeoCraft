@@ -144,12 +144,40 @@ export default function HeatEditBar(props) {
     event.preventDefault();
 
   }
+  
+const [heatMapData, setHeatMapData] = useState(null);
 
-  const [heatmap, setHeatMap] = useState(<div>
-    <Button variant="btn btn-dark" onClick={generateHeatMap}>
-      Generate HeatMap
-    </Button>
-  </div>)
+const handleHeatMap = async (event) => {
+  event.preventDefault();
+  var file = event.target.files[0]
+  var reader = new FileReader();
+  reader.onloadend = async (event) => {
+    var text = event.target.result;
+    try {
+      var json = JSON.parse(text);
+      setHeatMapData(json) 
+      store.updateMapData({
+        type: 'heat',
+        import: true,
+        data: json
+      })
+    } catch (error) {
+      console.error('Error handling file selection:', error);
+    }
+  };
+  reader.readAsText(file);
+}
+
+let fileUploader = <div className="drop-zone">
+<div className="drop-zone-text">
+  Drag & Drop or Click Browse to select a file
+</div>
+  <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
+  {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
+  {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
+</div>
+
+
 
   return (
     <div>
@@ -273,7 +301,7 @@ export default function HeatEditBar(props) {
 
                   <Accordion.Header>Heat Map Settings</Accordion.Header>
                   <Accordion.Body>
-                    {heatmap}
+                    {fileUploader}
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

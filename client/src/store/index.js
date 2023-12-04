@@ -9,6 +9,8 @@ export const GlobalStoreActionType = {
   DISPLAY_MAP: "DISPLAY_MAP",
   LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
   SET_CURRENT_LIST: "SET_CURRENT_LIST",
+  UPDATE_MAP_DATA: "UPDATE_MAP_DATA",
+  EMPTY_MAP_DATA: "EMPTY_MAP_DATA"
 }
 
 // const tps = new jsTPS();
@@ -22,7 +24,8 @@ function GlobalStoreContextProvider(props) {
     idNamePairs: [],
     currentList: null,
     container: mapContainer,
-    sort: [0]
+    sort: [0],
+    mapdata: null,
   });
 
   const storeReducer = (action) => {
@@ -33,7 +36,8 @@ function GlobalStoreContextProvider(props) {
           idNamePairs: payload.idNamePairs,
           currentList: payload.currentList,
           container: store.container,
-          sort: store.sort
+          sort: store.sort,
+          mapdata: null,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_LIST: {
@@ -41,9 +45,30 @@ function GlobalStoreContextProvider(props) {
           idNamePairs: store.idNamePairs,
           currentList: payload,
           container: store.container,
-          sort: store.sort
+          sort: store.sort,
+          mapdata: null,
         });
       }
+      case GlobalStoreActionType.UPDATE_MAP_DATA: {
+        return setStore({
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          container: store.container,
+          sort: store.sort,
+          mapdata: payload
+        });
+      }
+      case GlobalStoreActionType.EMPTY_MAP_DATA: {
+        return setStore({
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          container: store.container,
+          sort: store.sort,
+          mapdata: null
+        });
+      }
+  
+
       default:
         return store
     }
@@ -260,6 +285,26 @@ function GlobalStoreContextProvider(props) {
       }
     }
     asyncSetCurrentList(id);
+  }
+  store.updateMapData = function (data) {
+    async function asyncUpdateMapData(mapdata) {
+        storeReducer({
+          type: GlobalStoreActionType.UPDATE_MAP_DATA,
+          payload: mapdata
+        });
+      
+    }
+    asyncUpdateMapData(data);
+  }
+  store.emptyMapData = function () {
+    async function asyncEmptyMapData() {
+        storeReducer({
+          type: GlobalStoreActionType.EMPTY_MAP_DATA,
+          payload: null
+        });
+      
+    }
+    asyncEmptyMapData();
   }
 
   store.getMapDataById = async function (id) {
