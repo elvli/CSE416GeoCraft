@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
 import { Button, Table } from 'react-bootstrap';
-import './EditSideBar.scss'
+import './PointEditBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,7 +8,7 @@ import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 
-export default function EditSideBar(props) {
+export default function PointEditBar(props) {
   const { mapId, points, settings } = props;
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);

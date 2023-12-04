@@ -5,7 +5,7 @@ import DeleteMapModal from './DeleteMapModal/DeleteMapModal.js';
 import EditProfileModal from './EditProfileModal/EditProfileModal.js';
 import EditRegionModal from './EditRegionModal/EditRegionModal.js';
 import EditScreen from './EditScreen/EditScreen.js';
-import EditSideBar from './EditSideBar/EditSideBar.js';
+import PropSymbEditBar from './PropSymbEditBar/PropSymbEditBar.js';
 import ExportMapModal from './ExportMapModal/ExportMapModal.js';
 import ForkMapModal from './ForkMapModal/ForkMapModal.js';
 import HomeScreen from './HomeScreen.js';
@@ -20,6 +20,10 @@ import PublishMapModal from './PublishMapModal/PublishMapModal.js';
 import RightSideBar from './RightSideBar/RightSideBar.js';
 import SignUpScreen from './SignUp/SignUpScreen.js';
 import VerifyScreen from './VerifyScreen/VerifyScreen.js';
+import HeatEditBar from './HeatEditBar/HeatEditBar.js'
+import ChoroEditBar from './ChoroEditBar/ChoroEditBar.js'
+import PointEditBar from './PointEditBar/PointEditBar.js'
+import ArrowEditBar from './ArrowEditBar/ArrowEditBar.js'
 
 export {
   AppBanner,
@@ -29,7 +33,7 @@ export {
   EditProfileModal,
   EditRegionModal,
   EditScreen,
-  EditSideBar,
+  PropSymbEditBar,
   ExportMapModal,
   ForkMapModal,
   HomeScreen,
@@ -44,4 +48,8 @@ export {
   RightSideBar,
   SignUpScreen,
   VerifyScreen,
+  HeatEditBar,
+  ChoroEditBar,
+PointEditBar,
+ArrowEditBar
 };

@@ -1,15 +1,15 @@
 import { React, useEffect, useContext, useRef } from "react"
-import { AppBanner, EditSideBar } from "../../components";
-import { MapBackground } from "..";
+import { AppBanner, PropSymbEditBar, HeatEditBar, ArrowEditBar, PointEditBar, ChoroEditBar, MapBackground } from "../../components";
 import GlobalStoreContext from "../../store";
 import { useParams } from "react-router-dom";
 
 export default function EditScreen() {
   const { store } = useContext(GlobalStoreContext);
   const { mapId } = useParams();
-  const mapbox = useRef(null)
+  const mapbox = useRef(null);
+
   var mapData = {
-    points: [{id: 1,longitude: 0, latitude: 0}],
+    points: [{ id: 1, longitude: 0, latitude: 0 }],
     settings: {
       longitude: -73.1217,
       latitude: 40.9083,
@@ -19,8 +19,10 @@ export default function EditScreen() {
 
   useEffect(() => {
     try {
-      store.setCurrentList(mapId , mapbox);
-    } catch (error) {
+      store.setCurrentList(mapId, mapbox);
+    } 
+    catch (error) {
+      console.log('setCurrentList error', error);
     }
   }, []);
 
@@ -31,11 +33,11 @@ export default function EditScreen() {
       <AppBanner />
       <div className="row1">
         <div className="background">
-          <MapBackground map={mapbox}/>
+          <MapBackground map={mapbox} />
         </div>
 
         <div className="foreground">
-          <EditSideBar mapId={mapId} points={mapData.points} settings={mapData.settings} map={mapbox}/>
+          <PropSymbEditBar mapId={mapId} points={mapData.points} settings={mapData.settings} map={mapbox} />
         </div>
       </div>
     </div>
