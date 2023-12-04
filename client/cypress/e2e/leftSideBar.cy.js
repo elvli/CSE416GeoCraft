@@ -13,6 +13,51 @@ describe('LeftSideBar Component', () => {
     cy.get('.form-button').click();
   });
 
+  it('should allow you to look at only your owned maps', () => {
+    cy.get('.btn.btn-light.my-maps-btn.btn.btn-primary').click();
+
+  });
+
+  it('should allow you to browse another user profile', () => {
+    cy.get('.owner-link').eq(0).click();
+
+  });
+
+  it('should filter the maps', () => {
+    cy.get('.dropdown-toggle.btn.btn-light').click();
+
+  });
+
+  it('should filter the maps newest to oldest', () => {
+    cy.get('.dropdown-toggle.btn.btn-light').click();
+    cy.get('.dropdown-item').eq(0).click();
+
+  });
+
+  it('should filter the maps oldest to newest', () => {
+    cy.get('.dropdown-toggle.btn.btn-light').click();
+    cy.get('.dropdown-item').eq(1).click();
+
+  });
+
+  it('should filter the maps a - z', () => {
+    cy.get('.dropdown-toggle.btn.btn-light').click();
+    cy.get('.dropdown-item').eq(2).click();
+
+  });
+
+  it('should filter the maps z - a', () => {
+    cy.get('.dropdown-toggle.btn.btn-light').click();
+    cy.get('.dropdown-item').eq(3).click();
+
+  });
+
+  it('should filter the maps by most popular', () => {
+    cy.get('.dropdown-toggle.btn.btn-light').click();
+    cy.get('.dropdown-item').eq(4).click();
+
+  });
+
   it('should collapse when the button is clicked', () => {
     // Ensure that the sidebar is initially not collapsed
     cy.get('#left-wrapper').should('not.have.class', 'toggled');
