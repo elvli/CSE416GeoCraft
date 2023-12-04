@@ -6,19 +6,20 @@ const Schema = mongoose.Schema
 */
 const mapSchema = new Schema(
     {
-        name: { type: String, required: false },
-        ownerName: { type: String, required: false },
-        ownerEmail: { type: String, required: false },
+        name: { type: String, required: true },
+        ownerName: { type: String, required: true },
+        ownerEmail: { type: String, required: true },
+        mapType: { type: String, required: true},
         comments: { type: [{
             user: String,
             comment: String,
-            likes: {type: Array, required: false},
-            dislikes: {type: Array, required: false},
+            likes: {type: Array},
+            dislikes: {type: Array},
         }], required: false},
-        published: { type: Boolean, required: false },
+        published: { type: Boolean, required: true },
         publishedDate: {type: Date},
-        likes: {type: Array, required: false},
-        dislikes: {type: Array, required: false},
+        likes: {type: Array},
+        dislikes: {type: Array},
         views: {type: Number, required: false},
     },
     { timestamps: true },
