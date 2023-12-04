@@ -12,7 +12,6 @@ export default function HomeScreen() {
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
-  const map = useRef(null);
   const { store } = useContext(GlobalStoreContext);
   
 
@@ -80,7 +79,7 @@ export default function HomeScreen() {
                 </div> */}
 
         <div className="background">
-          <MapBackground map={map}/>
+          <MapBackground/>
           
         </div>
 

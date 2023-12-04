@@ -10,7 +10,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZ
 export default function MapBackground(props) {
   const { store } = useContext(GlobalStoreContext);
   const mapContainer = store.container;
-  const { map } = props;
+  const  map  = useRef(null);
   const [lng, setLng] = useState(12.7971);
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
