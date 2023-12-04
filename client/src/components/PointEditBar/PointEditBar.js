@@ -15,9 +15,10 @@ export default function PointEditBar(props) {
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
-  const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude']);
+  const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude', 'Color']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
+  const color = ['white','black', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -56,7 +57,7 @@ export default function PointEditBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '' })
+    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '' , color: 'white'})
     setTableData(newTable)
   }
 
@@ -85,6 +86,8 @@ export default function PointEditBar(props) {
     setTableData(updatedData);
   };
 
+
+
   const handleEditBlur = () => {
     setIsEditing(null);
   };
@@ -104,7 +107,8 @@ export default function PointEditBar(props) {
         newPoints.push({
           'id': points.points[i]['id'],
           'latitude': points.points[i]['latitude'],
-          'longitude': points.points[i]['longitude']
+          'longitude': points.points[i]['longitude'],
+          'color': points.points[i]['color']
         });
       }
       setTableData(newPoints);
@@ -137,27 +141,17 @@ export default function PointEditBar(props) {
     }
   }, []);
 
-  const generateHeatMap = async (event) => {
-    event.preventDefault();
-
-  }
-
-  const [heatmap, setHeatMap] = useState(<div>
-    <Button variant="btn btn-dark" onClick={generateHeatMap}>
-      Generate HeatMap
-    </Button>
-  </div>)
 
   return (
     <div>
-      <div className={`d-flex flex-row`} id="edit-left-wrapper">
-        <div className="edit-left-bar">
-          <Col id="edit-left-tool">
+      <div className={`d-flex flex-row`} id="point-map-edit-left-wrapper">
+        <div className="point-map-edit-left-bar">
+          <Col id="point-map-edit-left-tool">
             <Row>
-              <Button className="edit-button" variant="dark" onClick={toggleSideBar}>
+              <Button className="point-map-edit-button" variant="dark" onClick={toggleSideBar}>
                 <ViewStacked />
               </Button>
-              <Button className="edit-button" variant="dark" onClick={handleSave}>
+              <Button className="point-map-edit-button" variant="dark" onClick={handleSave}>
                 <Save></Save>
               </Button>
             </Row>
@@ -177,17 +171,17 @@ export default function PointEditBar(props) {
               </Button>
             </Row> */}
             <Row>
-              <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
+              <Button className="point-map-edit-button" id="point-map-edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
             </Row>
           </Col>
 
         </div>
-        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="edit-left-sidebar-wrapper">
-          <div className="list-group list-group-flush edit-tools-list">
+        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="point-map-edit-left-sidebar-wrapper">
+          <div className="list-group list-group-flush point-map-edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen>
+              <Accordion defaultActiveKey={['0']} alwaysOpen className='point-map-edit-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body
@@ -212,6 +206,7 @@ export default function PointEditBar(props) {
                           <tr>
                             {tableHeaders.map((header, index) => (
                               <th
+                                className={'point-map-edit-header-' + header}
                                 key={index + 1}
                                 onBlur={handleHeaderBlur}
                               >
@@ -246,7 +241,18 @@ export default function PointEditBar(props) {
                                       />
                                     ) : colIndex !== 3 ? (
                                       row[colName]
-                                    ) : <></>}
+                                    ) : <select name="variables" onChange={(event) => handleEditChange(event, rowIndex, colName)}>
+                                            <option> {row[colName]} </option>
+                                            <option value={'white'} >white</option>
+                                            <option value={'black'} >black</option>
+                                            <option value={'red'} >red</option>
+                                            <option value={'orange'} >orange</option>
+                                            <option value={'yellow'} >yellow</option>
+                                            <option value={'green'} >green</option>
+                                            <option value={'blue'} >blue</option>
+                                            <option value={'purple'} >purple</option>
+                                        </select>
+                                }
                                 </td>
                               ))}
                             </tr>
@@ -270,7 +276,6 @@ export default function PointEditBar(props) {
 
                   <Accordion.Header>Point Map Settings</Accordion.Header>
                   <Accordion.Body>
-                    {heatmap}
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

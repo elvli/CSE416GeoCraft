@@ -9,6 +9,7 @@ const mapDataSchema = new Schema(
         id: Number,
         longitude: String,
         latitude: String,
+        color: String,
       }], required: false
     },
     heatmap: { type: Schema.Types.Mixed, required: false },

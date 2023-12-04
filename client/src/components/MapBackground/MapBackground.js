@@ -49,7 +49,19 @@ export default function MapBackground(props) {
           'source': 'point-map',
           'minzoom': 1,
           'paint': {
-            'circle-color': 'white',
+            'circle-color': [
+              'match',
+              ['get', 'mag'],
+              'white','white',
+              'black','black',
+              'red','red',
+              'orange','orange',
+              'yellow','yellow',
+              'green','green',
+              'blue','blue',
+              'purple','purple',
+              'white'
+              ],
             'circle-stroke-color': 'white',
             'circle-stroke-width': 1,
             'circle-opacity': [
@@ -149,7 +161,7 @@ export default function MapBackground(props) {
           if (mapData.points) {
             for (let i in mapData.points) {
               if (mapData.points[i]['longitude'] && mapData.points[i]['latitude'] && !isNaN(mapData.points[i]['longitude']) && !isNaN(mapData.points[i]['latitude'])) {
-                pointsCollection.push([mapData.points[i]['latitude'], mapData.points[i]['longitude'], mapData.points[i]['id']])
+                pointsCollection.push([mapData.points[i]['latitude'], mapData.points[i]['longitude'], mapData.points[i]['id'], mapData.points[i]['color']])
                 console.log(pointsCollection)
               }
             }
@@ -166,6 +178,7 @@ export default function MapBackground(props) {
                 'coordinates': [parseFloat(point[1]), parseFloat(point[0])]
               },
               'properties': {
+                'mag': point[3],
                 'id': point[2]
               }
             })

@@ -1,13 +1,14 @@
 @use "../../styles/theme" as theme;
 
-#edit-left-wrapper {
+#point-map-edit-left-wrapper {
   overflow-x: hidden;
   position: fixed;
   left: 0;
 }
 
-#edit-left-sidebar-wrapper {
+#point-map-edit-left-sidebar-wrapper {
   min-height: 95vh;
+  min-width: 60vh;
   transition: margin .25s ease-out;
 
   .sidebar-heading {
@@ -18,9 +19,16 @@
   .list-group {
     width: 24rem;
   }
+
+  .point-map-edit-accordian {
+    width: 100%;
+    margin-top: 4px;
+    margin-left: 8px;
+    min-width: 61vh;
+  }
 }
 
-.edit-tools-list {
+.point-map-edit-tools-list {
   margin-top: 5px;
 }
 
@@ -61,12 +69,6 @@
   margin-top: 4px;
 }
 
-.accordion {
-  width: 96%;
-  margin-top: 4px;
-  margin-left: 8px;
-}
-
 .accordion-button {
   background-color: white !important;
 
@@ -82,25 +84,32 @@
 }
 
 .cells {
-  width: 100%;
+  width: 80%;
 }
 
-.edit-left-bar {
+.point-map-edit-header-Latitude{
+  width: 30%;
+}
+.point-map-edit-header-Longitude{
+  width: 30%;
+}
+
+.point-map-edit-left-bar {
   background-color: theme.$dark;
   min-width: 57.6px;
   min-height: 880.65px;
 
-  .edit-button {
+  .point-map-edit-button {
     max-width: 48px;
     height: 46.35px;
     transform: translate(35%, 0%);
   }
 
-  #edit-close-button {
+  #point-map-edit-close-button {
     transform: translate(35%, 76vh);
   }
 
-  #edit-left-tool {
+  #point-map-edit-left-tool {
     transform: translate(0, 10%);
   }
 }
