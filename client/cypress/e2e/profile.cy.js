@@ -23,4 +23,9 @@ describe('Profile Page', () => {
         cy.get('button.nav-link').eq(1).click();
   
       });
+      it('should allow you to edit a profile', () => {
+        cy.get('.btn.btn-outline-dark.edit-profile-btn').click();
+        cy.get('.btn.btn-primary').eq(8).click();
+  
+      });
 })
