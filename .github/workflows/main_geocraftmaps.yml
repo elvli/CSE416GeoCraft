@@ -23,6 +23,7 @@ jobs:
 
       - name: client - npm install, build, and test
         run: |
+          export CI=false  # Set CI to false
           npm install
           # npx jest --forceExit
           cd client
