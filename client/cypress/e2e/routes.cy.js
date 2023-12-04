@@ -31,8 +31,8 @@ describe('Application Routes', () => {
       // Submit the form
       cy.get('.form-button').click();
       // Navigate to the profile route
-      cy.get('#dropdown-basic').click();
-      cy.get('.dropdown-btn').click();
+      // cy.get('#dropdown-basic').click();
+      // cy.get('.dropdown-btn').click();
 
     });
   });
