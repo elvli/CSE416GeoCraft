@@ -30,11 +30,11 @@ jobs:
         env:
           CI: false
 
-      # - name: Run Jest tests
-      #   run: npx jest --forceExit
+      - name: Run Jest tests
+        run: npx jest --forceExit
 
-      # - name: Run Cypress tests
-      #   run: cd client && npx cypress run
+      - name: Run Cypress tests
+        run: cd client && npx cypress run
 
       - name: Install nodemon globally
         run: npm install -g nodemon
