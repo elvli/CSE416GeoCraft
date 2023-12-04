@@ -7,10 +7,10 @@ import geobuf from 'geobuf';
 import Pbf from 'pbf';
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA';
 
-export default function MapBackground() {
+export default function MapBackground(props) {
   const { store } = useContext(GlobalStoreContext);
   const mapContainer = store.container;
-  const map = useRef(null);
+  const { map } = props;
   const [lng, setLng] = useState(12.7971);
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
@@ -69,7 +69,7 @@ export default function MapBackground() {
           },
           filter: ['==', 'ID_1', ''],
         });
-
+        
         const popup = new mapboxgl.Popup({
           closeButton: false,
           closeOnClick: false,

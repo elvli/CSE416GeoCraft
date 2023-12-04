@@ -20,6 +20,7 @@ export default function EditScreen() {
   useEffect(() => {
     try {
       store.setCurrentList(mapId , mapbox);
+      console.log(mapId)
     } catch (error) {
     }
   }, []);
@@ -31,11 +32,11 @@ export default function EditScreen() {
       <AppBanner />
       <div className="row1">
         <div className="background">
-          <MapBackground />
+          <MapBackground map={mapbox}/>
         </div>
 
         <div className="foreground">
-          <EditSideBar mapId={mapId} points={mapData.points} settings={mapData.settings}/>
+          <EditSideBar mapId={mapId} points={mapData.points} settings={mapData.settings} map={mapbox}/>
         </div>
       </div>
     </div>

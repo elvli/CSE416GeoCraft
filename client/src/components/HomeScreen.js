@@ -1,7 +1,7 @@
 import React from "react"
 import '../App.css';
 import { EditRegionModal, MapBackground, PublishMapModal } from ".";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { AppBanner, LeftSideBar, RightSideBar, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../components'
 import { GlobalStoreContext } from '../store' 
 
@@ -12,6 +12,7 @@ export default function HomeScreen() {
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
+  const map = useRef(null);
   const { store } = useContext(GlobalStoreContext);
   
 
@@ -79,7 +80,7 @@ export default function HomeScreen() {
                 </div> */}
 
         <div className="background">
-          <MapBackground />
+          <MapBackground map={map}/>
           
         </div>
 
