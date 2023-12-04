@@ -31,7 +31,7 @@ jobs:
           CI: false
 
       - name: Run Jest tests
-        run: cd .. && npx jest --forceExit
+        run: npx jest --forceExit
 
       - name: Run Cypress tests
         run: cd client && npx cypress run
