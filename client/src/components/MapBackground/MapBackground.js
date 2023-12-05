@@ -51,7 +51,7 @@ export default function MapBackground(props) {
           'paint': {
             'circle-color': [
               'match',
-              ['get', 'mag'],
+              ['get', 'color'],
               'white','white',
               'black','black',
               'red','red',
@@ -178,7 +178,7 @@ export default function MapBackground(props) {
                 'coordinates': [parseFloat(point[1]), parseFloat(point[0])]
               },
               'properties': {
-                'mag': point[3],
+                'color': point[3],
                 'id': point[2]
               }
             })
