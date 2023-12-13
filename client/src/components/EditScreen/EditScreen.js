@@ -1,15 +1,6 @@
 import React, { useEffect, useContext, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import GlobalStoreContext from "../../store";
-// import {
-//   AppBanner,
-//   PropSymbEditBar,
-//   ArrowEditBar,
-//   PointEditBar,
-//   ChoroEditBar,
-//   MapBackground
-// } from "../../components";
-
 import AppBanner from "../AppBanner/AppBanner.js"
 import PropSymbEditBar from "../PropSymbEditBar/PropSymbEditBar.js"
 import ArrowEditBar from "../ArrowEditBar/ArrowEditBar.js"
@@ -68,7 +59,7 @@ export default function EditScreen() {
       <AppBanner />
       <div className="row1">
         <div className="background">
-          <MapBackground map={mapbox} />
+          <MapBackground map={mapbox}/>
         </div>
 
         <div className="foreground">

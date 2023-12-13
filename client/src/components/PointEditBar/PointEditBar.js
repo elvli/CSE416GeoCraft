@@ -181,7 +181,7 @@ export default function PointEditBar(props) {
         <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="point-map-edit-left-sidebar-wrapper">
           <div className="list-group list-group-flush point-map-edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen className='point-map-edit-accordian'>
+              <Accordion defaultActiveKey={['0']} alwaysOpen className='point-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body

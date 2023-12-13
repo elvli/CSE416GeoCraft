@@ -1,14 +1,14 @@
 @use "../../styles/theme" as theme;
 
-#edit-left-wrapper {
+#prop-map-sidebar {
   overflow-x: hidden;
   position: fixed;
   left: 0;
 }
 
-#edit-left-sidebar-wrapper {
+#prop-map-menu {
   min-height: 95vh;
-  transition: margin .25s ease-out;
+  min-width: 60vh;
 
   .sidebar-heading {
     padding: 0.875rem 1.25rem;
@@ -18,116 +18,15 @@
   .list-group {
     width: 24rem;
   }
-}
 
-.edit-tools-list {
-  margin-top: 5px;
-}
-
-.editing-dropdown {
-  // min-height: 68vh;
-  position: relative;
-}
-
-.table-responsive {
-  max-height: 450px;
-
-  thead th {
-    position: static;
+  .prop-map-accordian {
+    width: 100%;
+    margin-top: 4px;
+    margin-left: 8px;
+    min-width: 61vh;
   }
 
-  tbody th {
-    position: sticky;
-  }
-}
-
-.add-row-button {
-  background-color: white;
-  outline: none;
-  margin-top: -12px;
-
-  .add-row-icon {
-    margin-top: -4px;
-  }
-}
-
-.JSONButton {
-  justify-content: center;
-  margin-top: 10px;
-  margin-bottom: -6px;
-}
-
-.editing-tools {
-  margin-top: 4px;
-}
-
-.accordion {
-  width: 96%;
-  margin-top: 4px;
-  margin-left: 8px;
-}
-
-.accordion-button {
-  background-color: white !important;
-
-  &:focus {
-    box-shadow: none;
-    border-color: rgba(0, 0, 0, .125);
-  }
-
-  &:not(.collapsed) {
-    box-shadow: none;
-    color: none;
-  }
-}
-
-.cells {
-  width: 100%;
-}
-
-.edit-left-bar {
-  background-color: theme.$dark;
-  min-width: 57.6px;
-  min-height: 880.65px;
-
-  .edit-button {
-    max-width: 48px;
-    height: 46.35px;
-    transform: translate(35%, 0%);
-  }
-
-  #edit-close-button {
-    transform: translate(35%, 76vh);
-  }
-
-  #edit-left-tool {
-    transform: translate(0, 10%);
-  }
-}
-
-.table-custom-scrollbar {
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: darkgray transparent;
-  overflow: auto;
-  max-height: 400px;
-
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: darkgray;
-    border-radius: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-}
-
-.drop-zone {
-  .drop-zone-text {
-    margin-bottom: 24px;
+  &.invisible {
+    margin-left: -60vh; // Make sure its the negative min-width of prop-map-menu
   }
 }

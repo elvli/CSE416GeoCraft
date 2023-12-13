@@ -337,7 +337,7 @@ export default function HeatEditBar(props) {
 
   return (
     <div>
-      <div className={`d-flex flex-row`} id="edit-left-wrapper">
+      <div className={`d-flex flex-row`} id="heat-map-sidebar">
         <div className="edit-left-bar">
           <Col id="edit-left-tool">
             <Row>
@@ -371,10 +371,10 @@ export default function HeatEditBar(props) {
           </Col>
 
         </div>
-        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="edit-left-sidebar-wrapper">
+        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="heat-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen>
+              <Accordion defaultActiveKey={['0']} alwaysOpen className='heat-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body

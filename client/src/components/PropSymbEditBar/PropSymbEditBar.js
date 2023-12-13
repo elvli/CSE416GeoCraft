@@ -150,7 +150,7 @@ export default function PropSymbEditBar(props) {
 
   return (
     <div>
-      <div className={`d-flex flex-row`} id="edit-left-wrapper">
+      <div className={`d-flex flex-row`} id="prop-map-sidebar">
         <div className="edit-left-bar">
           <Col id="edit-left-tool">
             <Row>
@@ -184,10 +184,10 @@ export default function PropSymbEditBar(props) {
           </Col>
 
         </div>
-        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="edit-left-sidebar-wrapper">
+        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="prop-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen>
+              <Accordion defaultActiveKey={['0']} alwaysOpen className='prop-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body

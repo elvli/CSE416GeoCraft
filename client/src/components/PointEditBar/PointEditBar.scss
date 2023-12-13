@@ -9,7 +9,6 @@
 #point-map-edit-left-sidebar-wrapper {
   min-height: 95vh;
   min-width: 60vh;
-  transition: margin .25s ease-out;
 
   .sidebar-heading {
     padding: 0.875rem 1.25rem;
@@ -20,11 +19,15 @@
     width: 24rem;
   }
 
-  .point-map-edit-accordian {
+  .point-map-accordian {
     width: 100%;
     margin-top: 4px;
     margin-left: 8px;
     min-width: 61vh;
+  }
+
+  &.invisible {
+    margin-left: -60vh; // Make sure its the negative min-width of point-map-edit-left-sidebar-wrapper
   }
 }
 
@@ -32,65 +35,11 @@
   margin-top: 5px;
 }
 
-.editing-dropdown {
-  // min-height: 68vh;
-  position: relative;
-}
-
-.table-responsive {
-  max-height: 450px;
-
-  thead th {
-    position: static;
-  }
-
-  tbody th {
-    position: sticky;
-  }
-}
-
-.add-row-button {
-  background-color: white;
-  outline: none;
-  margin-top: -12px;
-
-  .add-row-icon {
-    margin-top: -4px;
-  }
-}
-
-.JSONButton {
-  justify-content: center;
-  margin-top: 10px;
-  margin-bottom: -6px;
-}
-
-.editing-tools {
-  margin-top: 4px;
-}
-
-.accordion-button {
-  background-color: white !important;
-
-  &:focus {
-    box-shadow: none;
-    border-color: rgba(0, 0, 0, .125);
-  }
-
-  &:not(.collapsed) {
-    box-shadow: none;
-    color: none;
-  }
-}
-
-.cells {
-  width: 80%;
-}
-
-.point-map-edit-header-Latitude{
+.point-map-edit-header-Latitude {
   width: 30%;
 }
-.point-map-edit-header-Longitude{
+
+.point-map-edit-header-Longitude {
   width: 30%;
 }
 
@@ -111,32 +60,5 @@
 
   #point-map-edit-left-tool {
     transform: translate(0, 10%);
-  }
-}
-
-.table-custom-scrollbar {
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: darkgray transparent;
-  overflow: auto;
-  max-height: 400px;
-
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: darkgray;
-    border-radius: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-}
-
-.drop-zone {
-  .drop-zone-text {
-    margin-bottom: 24px;
   }
 }
