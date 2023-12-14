@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useRef } from 'react'
-// import jsTPS from '../common/jsTPS'
+import jsTPS from '../common/jsTPS'
 import api from './store-request-api'
 import AuthContext from '../auth'
 
@@ -13,7 +13,7 @@ export const GlobalStoreActionType = {
   EMPTY_MAP_DATA: "EMPTY_MAP_DATA"
 }
 
-// const tps = new jsTPS();
+const tps = new jsTPS();
 
 function GlobalStoreContextProvider(props) {
   const mapContainer = useRef(null);
@@ -67,8 +67,6 @@ function GlobalStoreContextProvider(props) {
           mapdata: null
         });
       }
-  
-
       default:
         return store
     }
@@ -178,7 +176,7 @@ function GlobalStoreContextProvider(props) {
                   currentList: map
                 }
               });
-            } 
+            }
             else {
               console.log("API FAILED TO GET THE LIST PAIRS");
             }
@@ -286,23 +284,25 @@ function GlobalStoreContextProvider(props) {
     }
     asyncSetCurrentList(id);
   }
+
   store.updateMapData = function (data) {
     async function asyncUpdateMapData(mapdata) {
-        storeReducer({
-          type: GlobalStoreActionType.UPDATE_MAP_DATA,
-          payload: mapdata
-        });
-      
+      storeReducer({
+        type: GlobalStoreActionType.UPDATE_MAP_DATA,
+        payload: mapdata
+      });
+
     }
     asyncUpdateMapData(data);
   }
+
   store.emptyMapData = function () {
     async function asyncEmptyMapData() {
-        storeReducer({
-          type: GlobalStoreActionType.EMPTY_MAP_DATA,
-          payload: null
-        });
-      
+      storeReducer({
+        type: GlobalStoreActionType.EMPTY_MAP_DATA,
+        payload: null
+      });
+
     }
     asyncEmptyMapData();
   }
@@ -317,13 +317,45 @@ function GlobalStoreContextProvider(props) {
         else {
           console.log('getMapDataById has thrown an error');
         }
-      } 
+      }
       catch (error) {
         console.error('Error fetching map data:', error);
       }
     }
     return getMapDataById(id);
   };
+
+  store.undo = function () {
+    tps.undoTransaction();
+  }
+  store.redo = function () {
+    tps.doTransaction();
+  }
+
+  function KeyPress(event) {
+    if (!store.modalOpen && event.ctrlKey) {
+      if (event.key === 'z') {
+        if (tps.hasTransactionToUndo()) {
+          console.log('undo attempted')
+          store.undo();
+        }
+        else {
+          console.log('no action to undo')
+        }
+      }
+      if (event.key === 'y') {
+        if (tps.hasTransactionToRedo()) {
+          console.log('redo attempted')
+          store.redo();
+        }
+        else {
+          console.log('no action to redo')
+        }
+      }
+    }
+  }
+
+  document.onkeydown = (event) => KeyPress(event);
 
   return (
     <GlobalStoreContext.Provider value={{
