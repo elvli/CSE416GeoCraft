@@ -24,7 +24,7 @@ function App() {
             <Route path="sign-up/" element={<SignUpScreen />} />
             <Route path="login/" element={<LoginScreen />} />
             <Route path="password-reset/" element={<PasswordReset />} />
-            <Route path="verify/" element={<VerifyScreen />} />
+            <Route path="verify/:id/:token" element={<VerifyScreen />} />
             <Route path="confirm/" element={<ConfirmScreen />} />
             <Route path="edit/:mapId" element={<EditScreen />} />
             <Route path="profile/:username" element={<ProfilePage />} />

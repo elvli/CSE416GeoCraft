@@ -40,14 +40,15 @@ export const updateUser = (id, user) => {
 }
 
 export const getUserByUsername = (username) => api.get(`/user/${username}`);
-
+export const createEmailLink = (emails) => api.post('/password-reset', {email: emails})
 const apis = {
   getLoggedIn,
   loginUser,
   logoutUser,
   registerUser,
   updateUser,
-  getUserByUsername
+  getUserByUsername,
+  createEmailLink
 }
 
 export default apis

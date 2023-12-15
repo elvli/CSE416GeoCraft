@@ -26,7 +26,8 @@ export default function PasswordReset() {
     else {
       event.preventDefault();
       event.stopPropagation();
-      navigate("/verify")
+      const formData = new FormData(event.currentTarget);
+      auth.createEmailLink(formData.get('email'))
     }
   }
   
@@ -43,7 +44,8 @@ export default function PasswordReset() {
             <br />
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Form.Group>
-                <Form.Control className="password-reset-item" required type="email" placeholder="Email" size="lg" />
+                <Form.Control className="password-reset-item" name="email" required type="email" placeholder="Email" size="lg" />
+                
               </Form.Group>
               <br /> <br />
               <Form.Group>
