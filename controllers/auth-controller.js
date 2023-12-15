@@ -1,6 +1,8 @@
 const auth = require('../auth')
 const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
+const jwt = require("jsonwebtoken")
+const nodemailer = require('nodemailer');
 
 getLoggedIn = async (req, res) => {
   try {
@@ -204,10 +206,60 @@ updateUser = async (req, res) => {
   }
 }
 
+createEmailLink = async (req, res) => {
+  const email = req.body.email
+  try {
+    const user = await User.findOne({email: email})
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found!',
+      });
+    }
+    const secret = process.env.JWT_SECRET + user.passwordHash
+    const token = jwt.sign({email: user.email, id: user._id}, secret, {expiresIn: "15m"})
+    const link = `http://localhost:3000/verify/${user._id}/${token}`
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL,
+        pass: process.env.GMAIL_PASSWORD
+      }
+    });
+    
+    var mailOptions = {
+      from: process.env.GMAIL,
+      to: email,
+      subject: 'Verification Link',
+      text: `Here's the link: ${link}`
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+
+    return res.status(200).json({
+      success: true,
+    });
+    return res
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal Server Error',
+    });
+  }
+}
+
 module.exports = {
   getLoggedIn,
   registerUser,
   loginUser,
   logoutUser,
-  updateUser
+  updateUser,
+  createEmailLink
 }

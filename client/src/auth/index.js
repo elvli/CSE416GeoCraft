@@ -228,6 +228,9 @@ function AuthContextProvider(props) {
     }
     return aboutMe;
   }
+  auth.createEmailLink = async function (email) {
+    const response = await api.createEmailLink(email);
+  }
 
   auth.guestLogin = async function () {
     try {
