@@ -12,13 +12,29 @@ const mapDataSchema = new Schema(
         color: String,
       }], required: false
     },
+    choroData: {
+      type: {
+        regionData: [{
+          id: Number,
+          region: String,
+          data: Number,
+        }],
+        choroSettings: {
+          theme: String,
+          headerValue: String
+        }
+      },
+      required: false
+    },
     heatmap: { type: Schema.Types.Mixed, required: false },
     mapID: { type: Object, required: true },
-    settings: { type: {
-      longitude: String,
-      latitude: String,
-      zoom: String
-    }, required: true}
+    settings: {
+      type: {
+        longitude: String,
+        latitude: String,
+        zoom: String
+      }, required: true
+    }
   },
   { timestamps: true },
 )

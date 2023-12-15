@@ -2,7 +2,7 @@ import axios from 'axios'
 import baseUrl from '../../baseUrl';
 axios.defaults.withCredentials = true;
 const api = axios.create({
-   baseURL: baseUrl,
+  baseURL: baseUrl,
   //  baseURL: 'http://localhost:3001',
 })
 
@@ -45,17 +45,19 @@ export const updateMultipleMaps = (data) => {
 }
 
 export const createMapData = (id) => {
-    return api.post(`/mapData/`, {
-      // SPECIFY THE PAYLOAD
-      points: [{id: 1,longitude: '0', latitude: '0', color: 'white'}],
-      mapID: id,
-      settings: {
-        latitude: 40.9083,
-        longitude: -73.1217,
-        zoom: 13.91
-      }
-    })
-  }
+  return api.post(`/mapData/`, {
+    // SPECIFY THE PAYLOAD
+    points: [{ id: 1, longitude: '0', latitude: '0', color: 'white' }],
+    choroData: {},
+    mapID: id,
+    settings: {
+      latitude: 40.9083,
+      longitude: -73.1217,
+      zoom: 13.91
+    }
+  })
+}
+
 export const deleteMapDataById = (id) => api.delete(`/mapData/${id}`)
 export const updateMapDataById = (id, mapData) => {
   return api.put(`/mapData/${id}`, {

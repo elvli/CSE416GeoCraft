@@ -3,7 +3,7 @@ import '../App.css';
 import { EditRegionModal, MapBackground, PublishMapModal } from ".";
 import { useState, useEffect, useContext, useRef } from "react";
 import { AppBanner, LeftSideBar, RightSideBar, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../components'
-import { GlobalStoreContext } from '../store' 
+import { GlobalStoreContext } from '../store'
 
 export default function HomeScreen() {
   const [newMapShow, setNewMapShow] = useState(false);
@@ -13,7 +13,8 @@ export default function HomeScreen() {
   const [exportMapShow, setExportMapShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
   const { store } = useContext(GlobalStoreContext);
-  
+  const mapbox = useRef(null);
+
 
   async function handleClose(event) {
     setNewMapShow(false)
@@ -63,13 +64,12 @@ export default function HomeScreen() {
       <div className="row1">
 
         <div className="background">
-          <MapBackground/>
-          
+          <MapBackground map={mapbox}/>
         </div>
 
         <div className="foreground">
-          <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion} handleFork={handleFork} handleExport={handleExport} handlePublish={handlePublish}/>
-          {!store.currentList? <></> : !store.currentList.published?<></>:<RightSideBar />}
+          <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion} handleFork={handleFork} handleExport={handleExport} handlePublish={handlePublish} />
+          {!store.currentList ? <></> : !store.currentList.published ? <></> : <RightSideBar />}
         </div>
 
       </div>
@@ -78,7 +78,7 @@ export default function HomeScreen() {
       <EditRegionModal editRegionShow={editRegionShow} handleEditRegionClose={handleEditRegionClose} />
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
-      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose}/>
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       {/* <button onClick={() => navigate("create")}>Create</button> */}
     </div>
   )

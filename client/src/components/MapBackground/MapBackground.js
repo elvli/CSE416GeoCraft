@@ -6,9 +6,10 @@ import mapboxgl, { Marker } from 'mapbox-gl';
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA';
 
 export default function MapBackground(props) {
+  const { map } = props;
   const { store } = useContext(GlobalStoreContext);
   const mapContainer = store.container;
-  const map = useRef(null);
+  // const map = useRef(null);
   const [lng, setLng] = useState(12.7971);
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
@@ -52,16 +53,16 @@ export default function MapBackground(props) {
             'circle-color': [
               'match',
               ['get', 'color'],
-              'white','white',
-              'black','black',
-              'red','red',
-              'orange','orange',
-              'yellow','yellow',
-              'green','green',
-              'blue','blue',
-              'purple','purple',
+              'white', 'white',
+              'black', 'black',
+              'red', 'red',
+              'orange', 'orange',
+              'yellow', 'yellow',
+              'green', 'green',
+              'blue', 'blue',
+              'purple', 'purple',
               'white'
-              ],
+            ],
             'circle-stroke-color': 'white',
             'circle-stroke-width': 1,
             'circle-opacity': [
@@ -114,6 +115,7 @@ export default function MapBackground(props) {
           className: 'region-name-popup',
         });
 
+        // This highlights a region and creates a popup with the region when you hover over it
         mapbox.current.on('mousemove', 'geojson-border-fill', (e) => {
           const hoveredRegion = e.features[0];
 
@@ -128,6 +130,7 @@ export default function MapBackground(props) {
           }
         });
 
+        // This unhighlights a region and removes the popup when no longer hovering over it
         mapbox.current.on('mouseleave', 'geojson-border-fill', () => {
           mapbox.current.setFilter('highlight-region', ['==', 'ID_1', '']);
           mapbox.current.setPaintProperty('highlight-region', 'fill-opacity', 0);
@@ -137,7 +140,6 @@ export default function MapBackground(props) {
         );
 
         setUpdate(true)
-        
       });
 
     } catch (error) {
@@ -185,7 +187,7 @@ export default function MapBackground(props) {
           )
           map.current.getSource('point-map').setData(myGeoJSON);
         }
-        else{
+        else {
           map.current.getSource('map-source').setData({});
           map.current.getSource('point-map').setData({});
         }
@@ -201,142 +203,142 @@ export default function MapBackground(props) {
       'type': 'geojson',
       'data': mapData
     });
-     
+
     map.current.addLayer(
-    {
-      'id': 'earthquakes-heat',
-      'type': 'heatmap',
-      'source': 'earthquakes',
-      'maxzoom': 9,
-      'paint': {
-    // Increase the heatmap weight based on frequency and property magnitude
-        'heatmap-weight': [
-          'interpolate',
-          ['linear'],
-          ['get', 'mag'],
-          0,
-          0,
-          6,
-          1
-        ],
-      // Increase the heatmap color weight weight by zoom level
-      // heatmap-intensity is a multiplier on top of heatmap-weight
-        'heatmap-intensity': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          0,
-          1,
-          9,
-          3
-        ],
-      // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-      // Begin color ramp at 0-stop with a 0-transparancy color
-      // to create a blur-like effect.
-        'heatmap-color': [
-          'interpolate',
-          ['linear'],
-          ['heatmap-density'],
-          0,
-          'rgba(33,102,172,0)',
-          0.2,
-          'rgb(103,169,207)',
-          0.4,
-          'rgb(209,229,240)',
-          0.6,
-          'rgb(253,219,199)',
-          0.8,
-          'rgb(239,138,98)',
-          1,
-          'rgb(178,24,43)'
-        ],
-      // Adjust the heatmap radius by zoom level
-        'heatmap-radius': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          0,
-          2,
-          9,
-          20
-        ],
-      // Transition from heatmap to circle layer by zoom level
-        'heatmap-opacity': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          7,
-          1,
-          9,
-          0
-        ]
-      }
-    },
+      {
+        'id': 'earthquakes-heat',
+        'type': 'heatmap',
+        'source': 'earthquakes',
+        'maxzoom': 9,
+        'paint': {
+          // Increase the heatmap weight based on frequency and property magnitude
+          'heatmap-weight': [
+            'interpolate',
+            ['linear'],
+            ['get', 'mag'],
+            0,
+            0,
+            6,
+            1
+          ],
+          // Increase the heatmap color weight weight by zoom level
+          // heatmap-intensity is a multiplier on top of heatmap-weight
+          'heatmap-intensity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            0,
+            1,
+            9,
+            3
+          ],
+          // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+          // Begin color ramp at 0-stop with a 0-transparancy color
+          // to create a blur-like effect.
+          'heatmap-color': [
+            'interpolate',
+            ['linear'],
+            ['heatmap-density'],
+            0,
+            'rgba(33,102,172,0)',
+            0.2,
+            'rgb(103,169,207)',
+            0.4,
+            'rgb(209,229,240)',
+            0.6,
+            'rgb(253,219,199)',
+            0.8,
+            'rgb(239,138,98)',
+            1,
+            'rgb(178,24,43)'
+          ],
+          // Adjust the heatmap radius by zoom level
+          'heatmap-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            0,
+            2,
+            9,
+            20
+          ],
+          // Transition from heatmap to circle layer by zoom level
+          'heatmap-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7,
+            1,
+            9,
+            0
+          ]
+        }
+      },
       'waterway-label'
     );
-      
+
     map.current.addLayer(
-    {
-      'id': 'earthquakes-point',
-      'type': 'circle',
-      'source': 'earthquakes',
-      'minzoom': 7,
-      'paint': {
-    // Size circle radius by earthquake magnitude and zoom level
-        'circle-radius': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          7,
-          ['interpolate', ['linear'], ['get', 'mag'], 1, 1, 6, 4],
-          16,
-          ['interpolate', ['linear'], ['get', 'mag'], 1, 5, 6, 50]
-        ],
-    // Color circle by earthquake magnitude
-        'circle-color': [
-          'interpolate',
-          ['linear'],
-          ['get', 'mag'],
-          1,
-          'rgba(33,102,172,0)',
-          2,
-          'rgb(103,169,207)',
-          3,
-          'rgb(209,229,240)',
-          4,
-          'rgb(253,219,199)',
-          5,
-          'rgb(239,138,98)',
-          6,
-          'rgb(178,24,43)'
-        ],
-        'circle-stroke-color': 'white',
-        'circle-stroke-width': 1,
-      // Transition from heatmap to circle layer by zoom level
-        'circle-opacity': [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          7,
-          0,
-          8,
-          1
-        ]
-      }
-    },
+      {
+        'id': 'earthquakes-point',
+        'type': 'circle',
+        'source': 'earthquakes',
+        'minzoom': 7,
+        'paint': {
+          // Size circle radius by earthquake magnitude and zoom level
+          'circle-radius': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7,
+            ['interpolate', ['linear'], ['get', 'mag'], 1, 1, 6, 4],
+            16,
+            ['interpolate', ['linear'], ['get', 'mag'], 1, 5, 6, 50]
+          ],
+          // Color circle by earthquake magnitude
+          'circle-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'mag'],
+            1,
+            'rgba(33,102,172,0)',
+            2,
+            'rgb(103,169,207)',
+            3,
+            'rgb(209,229,240)',
+            4,
+            'rgb(253,219,199)',
+            5,
+            'rgb(239,138,98)',
+            6,
+            'rgb(178,24,43)'
+          ],
+          'circle-stroke-color': 'white',
+          'circle-stroke-width': 1,
+          // Transition from heatmap to circle layer by zoom level
+          'circle-opacity': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            7,
+            0,
+            8,
+            1
+          ]
+        }
+      },
       'waterway-label'
     );
     console.log("Heat Source: ", JSON.stringify(map.current.getLayer('earthquakes-heat').paint));
   }
   useEffect(() => {
-    if(store.mapdata) {
-      if(store.mapdata.type === 'heat') {
-        if(store.mapdata.import) {
+    if (store.mapdata) {
+      if (store.mapdata.type === 'heat') {
+        if (store.mapdata.import) {
           generateHeatMap(store.mapdata.data)
           store.emptyMapData()
         }
         else {
-          if(store.mapdata.data.type === 'color') {
+          if (store.mapdata.data.type === 'color') {
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', store.mapdata.data.data)
             store.emptyMapData()
           }
@@ -348,7 +350,7 @@ export default function MapBackground(props) {
   return (
     <div>
       <div className="long-lat-bar">
-       Latitude: {lat} | Longitude: {lng} | Zoom: {zoom}
+        Latitude: {lat} | Longitude: {lng} | Zoom: {zoom}
       </div>
       <div ref={mapContainer} className="map-container">
       </div>

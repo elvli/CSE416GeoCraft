@@ -9,7 +9,6 @@ import ChoroEditBar from "../ChoroEditBar/ChoroEditBar.js"
 import MapBackground from "../MapBackground/MapBackground.js"
 import HeatEditBar from "../HeatEditBar/HeatEditBar.js"
 
-
 const componentMapping = {
   heat: HeatEditBar,
   arrow: ArrowEditBar,
@@ -51,7 +50,7 @@ export default function EditScreen() {
     }
   }, [store.currentList]);
 
-  const DynamicComponent = componentMapping[mapType] || null;
+  const MapTypeEditTools = componentMapping[mapType] || null;
 
   return (
     <div>
@@ -59,12 +58,12 @@ export default function EditScreen() {
       <AppBanner />
       <div className="row1">
         <div className="background">
-          <MapBackground map={mapbox}/>
+          <MapBackground map={mapbox} />
         </div>
 
         <div className="foreground">
-          {DynamicComponent && (
-            <DynamicComponent mapId={mapId} points={defaultMapData.points} settings={defaultMapData.settings} map={mapbox} />
+          {MapTypeEditTools && (
+            <MapTypeEditTools mapId={mapId} points={defaultMapData.points} settings={defaultMapData.settings} map={mapbox} />
           )}
         </div>
       </div>

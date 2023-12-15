@@ -1,23 +1,27 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
-import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
+import { XLg, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import mapboxgl from 'mapbox-gl';
 import './ChoroEditBar.scss';
+mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA'
 
 export default function ChoroEditBar(props) {
-  const { mapId, points, settings } = props;
+  const { mapId, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
 
-  // State variables
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
-  const [isEditingHeader, setIsEditingHeader] = useState(null);
-  const [tableData, setTableData] = useState(points);
-  const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude']);
+  const [tableData, setTableData] = useState([]);
+  const [tableHeaders, setTableHeaders] = useState(['ID', 'Region', 'Value']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
+  const [choroTheme, setChoroTheme] = useState('');
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -51,29 +55,17 @@ export default function ChoroEditBar(props) {
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
-  const handleAddRow = () => {
-    var newTable = []
-    for (let i = 0; i < tableData.length; i++) {
-      newTable.push(tableData[i])
+  const handleAddRow = (regionInfo) => {
+    if (tableData == []) {
+      setTableData([{ id: 1, region: regionInfo, data: '' }])
     }
-    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '' })
-    setTableData(newTable)
-  }
-
-  // const handleHeaderDoubleClick = (index) => {
-  //   setIsEditingHeader(index);
-  // };
-
-  const handleHeaderChange = (event, index) => {
-    const updatedHeaders = [...tableHeaders];
-    updatedHeaders[index] = event.target.value;
-    setTableHeaders(updatedHeaders);
+    else {
+      setTableData((prevTableData) => [
+        ...prevTableData,
+        { id: prevTableData.length + 1, region: regionInfo, data: '' },
+      ]);
+    }
   };
-
-  const handleHeaderBlur = () => {
-    setIsEditingHeader(null);
-  };
-
 
   const handleEditChange = (event, rowIndex, colName) => {
     const updatedData = tableData.map((row, index) => {
@@ -89,30 +81,41 @@ export default function ChoroEditBar(props) {
     setIsEditing(null);
   };
 
+
   const handleSave = async () => {
-    var mapData = await store.getMapDataById(mapId)
-    mapData.points = tableData
-    await store.updateMapDataById(mapId, mapData)
-    await store.setCurrentList(mapId, 0)
-  }
+    var mapData = await store.getMapDataById(mapId);
+    mapData.choroData.regionData = tableData;
+    mapData.choroData.choroSettings = { theme: "red", headerValue: tableHeaders[2] };
+    await store.updateMapDataById(mapId, mapData);
+    await store.setCurrentList(mapId, 0);
+    console.log('DADTATA', tableData)
+  };
 
   const updateTable = async () => {
     try {
-      const points = await store.getMapDataById(mapId)
-      var newPoints = []
-      for (let i in points.points) {
-        newPoints.push({
-          'id': points.points[i]['id'],
-          'latitude': points.points[i]['latitude'],
-          'longitude': points.points[i]['longitude']
+      var mapData = await store.getMapDataById(mapId)
+      var newRegionData = []
+      for (let i in mapData.choroData.regionData) {
+        newRegionData.push({
+          'id': mapData.choroData.regionData[i]['id'],
+          'region': mapData.choroData.regionData[i]['region'],
+          'data': mapData.choroData.regionData[i]['data']
         });
       }
-      setTableData(newPoints);
+      setTableData(newRegionData);
+      setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue])
+      setChoroTheme(mapData.choroData.choroSettings.theme);
     }
     catch {
       console.log('cannot load mapdata');
     }
-  }
+  };
+
+  const changeDataHeader = (event) => {
+    const newHeaders = [...tableHeaders];
+    newHeaders[2] = event.target.value;
+    setTableHeaders(newHeaders);
+  };
 
   const downloadJson = () => {
     const json = JSON.stringify({ headers: tableHeaders, data: tableData });
@@ -128,25 +131,51 @@ export default function ChoroEditBar(props) {
     URL.revokeObjectURL(url);
   };
 
+  const doesRegionExist = (array, region) => {
+    for (const item of array) {
+      if (item.region === region) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   useEffect(() => {
     try {
       updateTable();
-    }
-    catch (error) {
-      console.log('cannot update table');
+    } catch (error) {
+      console.log('Cannot update table');
     }
   }, []);
 
-  const generateHeatMap = async (event) => {
-    event.preventDefault();
+  useEffect(() => {
+    const clickHandler = (e) => {
+      const clickedRegion = e.features[0];
 
-  }
+      if (clickedRegion) {
+        const regionName = clickedRegion.properties.NAME_1;
 
-  const [heatmap, setHeatMap] = useState(<div>
-    <Button variant="btn btn-dark" onClick={generateHeatMap}>
-      Generate HeatMap
-    </Button>
-  </div>)
+        setSelectedRegion(regionName);
+        if (doesRegionExist(tableData, regionName)) {
+          console.log('Region selected once already!!!!!');
+        }
+        else {
+          handleAddRow(regionName);
+          setPrevSelectedRegions((prevRegions) => [...prevRegions, regionName]);
+          console.log('PrevSelected REGIONS', [...prevSelectedRegions, regionName]);
+        }
+
+        console.log('Clicked region:', regionName);
+      }
+    };
+
+    map.current.on('click', 'geojson-border-fill', clickHandler);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      map.current.off('click', 'geojson-border-fill', clickHandler);
+    };
+  }, [prevSelectedRegions]);
 
   return (
     <div>
@@ -158,24 +187,20 @@ export default function ChoroEditBar(props) {
                 <ViewStacked />
               </Button>
               <Button className="edit-button" variant="dark" onClick={handleSave}>
-                <Save></Save>
-              </Button>
-            </Row>
-            {/* <Row>
-              <Button className="button" variant="dark">
-                <PencilSquare />
+                <Save />
               </Button>
             </Row>
             <Row>
-              <Button className="button" variant="dark">
-                <Wrench />
+              <Button className="edit-button" variant="dark" onClick={store.undo()}>
+                <ArrowCounterclockwise />
               </Button>
             </Row>
             <Row>
-              <Button className="button" variant="dark">
-                <Gear />
+              <Button className="edit-button" variant="dark" onClick={store.redo()}>
+                <ArrowClockwise />
               </Button>
-            </Row> */}
+            </Row>
+
             <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
@@ -197,65 +222,70 @@ export default function ChoroEditBar(props) {
                         Attach a .json, .kml, or .shp file.
                       </div>
                       <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
-                      {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
-                      {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey="1">
 
+                <Accordion.Item eventKey="1">
                   <Accordion.Header>Choropleth Map Data</Accordion.Header>
                   <Accordion.Body>
                     <div className="table-responsive table-custom-scrollbar">
                       <Table striped bordered hover>
                         <thead>
                           <tr>
-                            {tableHeaders.map((header, index) => (
-                              <th
-                                key={index + 1}
-                                onBlur={handleHeaderBlur}
-                              >
-                                {isEditingHeader === index + 1 ? (
-                                  <input
-                                    type="text"
-                                    value={header ?? ''}
-                                    onChange={(event) => handleHeaderChange(event, index + 1)}
-                                  />
-                                ) : (
-                                  header
-                                )}
-                              </th>
-                            ))}
+                            <th>ID</th>
+                            <th>Region</th>
+                            <th
+                              className={`th-editable ${isEditing === 2 ? 'editing' : ''}`}
+                              onDoubleClick={() => setIsEditing(2)}
+                            >
+                              {isEditing === 2 ? (
+                                <input
+                                  type="text"
+                                  value={tableHeaders[2]}
+                                  onChange={changeDataHeader}
+                                  onKeyDown={(event) => {
+                                    if (event.key === 'Enter') {
+                                      handleEditBlur();
+                                    }
+                                  }}
+                                  onBlur={handleEditBlur}
+                                />
+                              ) : (
+                                tableHeaders[2]
+                              )}
+                            </th>
                           </tr>
                         </thead>
-
                         <tbody>
                           {tableData.map((row, rowIndex) => (
                             <tr key={row.id}>
-                              {Object.keys(row).map((colName, colIndex) => (
-                                <td
-                                  key={colIndex}
-                                >
-                                  {
-                                    colIndex !== 0 && colIndex !== 3 ? (
-                                      <input className='cells'
-                                        type="text"
-                                        value={row[colName]}
-                                        onChange={(event) => handleEditChange(event, rowIndex, colName)}
-                                        onBlur={handleEditBlur}
-                                      />
-                                    ) : colIndex !== 3 ? (
-                                      row[colName]
-                                    ) : <></>}
-                                </td>
-                              ))}
+                              <td>{row.id}</td>
+                              <td>
+                                <input
+                                  className="cells"
+                                  type="text"
+                                  value={row.region}
+                                  onChange={(event) => handleEditChange(event, rowIndex, 'region')}
+                                  onBlur={handleEditBlur}
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  className="cells"
+                                  type="text"
+                                  value={row.data || ''}
+                                  onChange={(event) => handleEditChange(event, rowIndex, 'data')}
+                                  onBlur={handleEditBlur}
+                                />
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </Table>
-                      <Button className='add-row-button btn btn-light' onClick={handleAddRow}>
+                      {/* <Button className='add-row-button btn btn-light' onClick={handleAddRow('')}>
                         <PlusCircleFill className='add-row-icon' />
-                      </Button>
+                      </Button> */}
                     </div>
 
                     <div className='JSONButton'>
@@ -266,11 +296,10 @@ export default function ChoroEditBar(props) {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey="2">
 
+                <Accordion.Item eventKey="2">
                   <Accordion.Header>Choropleth Map Settings</Accordion.Header>
                   <Accordion.Body>
-                    {heatmap}
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

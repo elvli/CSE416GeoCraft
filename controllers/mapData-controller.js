@@ -2,7 +2,6 @@ const MapData = require('../models/mapData-model')
 const User = require('../models/user-model');
 const auth = require('../auth')
 
-
 createMapData = (req, res) => {
   if (auth.verifyUser(req) === null) {
     return res.status(400).json({
@@ -69,9 +68,9 @@ updateMapDataById = async (req, res) => {
     const body = req.body.mapData;
     var geobuf = require('geobuf')
     var Pbf = require('pbf');
-    if (body.GeoJson){
+    if (body.GeoJson) {
       var compressedJSON = geobuf.encode(body.GeoJson, new Pbf());
-      
+
       console.log('Compressed file size:', compressedJSON.length, 'bytes');
       compressedJSON = Buffer.from(compressedJSON).toString('base64')
       console.log('mapData before update:', JSON.stringify(body).length, 'bytes');
@@ -80,7 +79,7 @@ updateMapDataById = async (req, res) => {
 
       console.log('param id: ' + req.params.id)
     }
-    
+
 
     if (!body) {
       return res.status(400).json({
@@ -88,7 +87,7 @@ updateMapDataById = async (req, res) => {
         error: 'You must provide a body to update',
       });
     }
-    
+
     const updatedMap = await MapData.findOneAndUpdate(
       { mapID: req.params.id },
       body,
@@ -118,28 +117,28 @@ updateMapDataById = async (req, res) => {
 getMapDataById = async (req, res) => {
   try {
     MapData.findOne({ mapID: req.params.id }).then((mapData) => {
-      if(mapData.GeoJson) {
+      if (mapData.GeoJson) {
         var geobuf = require('geobuf')
         var Pbf = require('pbf');
         var utf8 = Buffer.from(mapData.GeoJson, 'base64')
         var geojson = geobuf.decode(new Pbf(utf8));
 
 
-    
 
 
 
 
-            mapData.GeoJson = geojson;
-            //console.log('mapData Geojson: ', mapData.GeoJson)
 
-        
+        mapData.GeoJson = geojson;
+        //console.log('mapData Geojson: ', mapData.GeoJson)
+
+
       }
-      
-    
-      
 
-  
+
+
+
+
       return res.status(200).json({ success: true, mapData: mapData });
     }).catch(err => console.log(err))
 

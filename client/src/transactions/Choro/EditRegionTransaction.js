@@ -7,7 +7,7 @@ export default class EditRegionTransaction extends jsTPS_Transaction {
   }
 
   doTransaction() {
-
+    // this.store;
   }
 
   undoTransaction() {
