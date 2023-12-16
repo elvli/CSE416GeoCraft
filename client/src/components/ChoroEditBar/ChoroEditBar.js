@@ -65,7 +65,7 @@ export default function ChoroEditBar(props) {
 
   // This sets up the editbar and its states
 
-    useEffect(() => {
+  useEffect(() => {
     try {
       const updateTable = async () => {
         try {

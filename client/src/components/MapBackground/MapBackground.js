@@ -167,42 +167,24 @@ export default function MapBackground(props) {
       try {
         if (store.currentList) {
           const mapData = await store.getMapDataById(store.currentList._id);
-          if (mapData && mapData.settings.latitude && mapData.settings.longitude && !isNaN(mapData.settings.latitude) && !isNaN(mapData.settings.longitude) ){
-            var latitude = 0
-            var longitude = 0
-            if (parseFloat(mapData.settings.latitude) > 90){
-              latitude = 90
-            }
-            else if (parseFloat(mapData.settings.latitude) < -90){
-              latitude = -90
-            }
-            else{
-              latitude = parseFloat(mapData.settings.latitude)
-            }
+          if (mapData && mapData.settings.latitude && mapData.settings.longitude && !isNaN(mapData.settings.latitude) && !isNaN(mapData.settings.longitude)) {
 
-            if (parseFloat(mapData.settings.longitude) > 180){
-              longitude = 180
-            }
-            else if (parseFloat(mapData.settings.longitude) < -180){
-              longitude = -180
-            }
-            else{
-              longitude = parseFloat(mapData.settings.longitude)
-            }
+            var latitude = Math.min(90, Math.max(-90, parseFloat(mapData.settings.latitude)));
+            var longitude = Math.min(180, Math.max(-180, parseFloat(mapData.settings.longitude)));
 
             setLng(longitude)
             setLat(latitude)
             map.current.setCenter([longitude, latitude])
           }
-          if (mapData && mapData.settings.zoom && !isNaN(mapData.settings.zoom) ){
-            var zoomVal = 0 
-            if (parseFloat(mapData.settings.zoom) > 22){
+          if (mapData && mapData.settings.zoom && !isNaN(mapData.settings.zoom)) {
+            var zoomVal = 0
+            if (parseFloat(mapData.settings.zoom) > 22) {
               zoomVal = 22
             }
-            else if (parseFloat(mapData.settings.zoom) < 1){
+            else if (parseFloat(mapData.settings.zoom) < 1) {
               zoomVal = 1
             }
-            else{
+            else {
               zoomVal = parseFloat(mapData.settings.zoom)
             }
             setZoom(parseFloat(zoomVal))
@@ -380,6 +362,7 @@ export default function MapBackground(props) {
     );
     console.log("Heat Source: ", JSON.stringify(map.current.getLayer('earthquakes-heat').paint));
   }
+
   useEffect(() => {
     if (store.mapdata) {
       if (store.mapdata.type === 'heat') {
