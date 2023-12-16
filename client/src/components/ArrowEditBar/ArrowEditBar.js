@@ -1,12 +1,12 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
-import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './ArrowEditBar.scss';
 
 export default function ArrowEditSideBar(props) {
-  const { mapId, points, settings } = props;
+  const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
 
   // State variables
@@ -18,11 +18,46 @@ export default function ArrowEditSideBar(props) {
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
+  const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
 
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
+
+  function handleUndo(event) {
+    event.preventDefault();
+    store.undo();
+  }
+
+  function handleRedo(event) {
+    event.preventDefault();
+    store.redo();
+  }
+
+  const handleSettingChange = (event, setting) => {
+    var newSettings = ['', '', '']
+    newSettings[0] = settingsValues[0]
+    newSettings[1] = settingsValues[1]
+    newSettings[2] = settingsValues[2]
+    switch (setting) {
+      case 0:
+        newSettings[0] = event.target.value
+        break;
+      case 1:
+        newSettings[1] = event.target.value
+        break;
+      case 2:
+        newSettings[2] = event.target.value
+        break;
+      default:
+        newSettings = settingsValues;
+    }
+    setSettingsValues(newSettings)
+  }
+
+
+
 
   // THESE FUNCTIONS HANDLE FILE LOADING
   const handleFileChange = (event) => {
@@ -91,7 +126,17 @@ export default function ArrowEditSideBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
-    mapData.points = tableData
+    mapData.points = tableData;
+
+    var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
+    var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
+    var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
+    setSettingsValues([latitude, longitude, zoom])
+
+    mapData.settings.longitude = settingsValues[1]
+    mapData.settings.latitude = settingsValues[0]
+    mapData.settings.zoom = settingsValues[2]
+
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
@@ -108,6 +153,7 @@ export default function ArrowEditSideBar(props) {
         });
       }
       setTableData(newPoints);
+      setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
     }
     catch {
       console.log('cannot load mapdata');
@@ -137,16 +183,14 @@ export default function ArrowEditSideBar(props) {
     }
   }, []);
 
-  const generateHeatMap = async (event) => {
-    event.preventDefault();
 
+  const handleSetDefaults = () => {
+    var latitude = map.current.getCenter().lat.toFixed(4);
+    var longitude = map.current.getCenter().lng.toFixed(4);
+    var zoom = map.current.getZoom().toFixed(2);
+    setSettingsValues([latitude, longitude, zoom]);
   }
 
-  const [heatmap, setHeatMap] = useState(<div>
-    <Button variant="btn btn-dark" onClick={generateHeatMap}>
-      Generate HeatMap
-    </Button>
-  </div>)
 
   return (
     <div>
@@ -157,25 +201,26 @@ export default function ArrowEditSideBar(props) {
               <Button className="edit-button" variant="dark" onClick={toggleSideBar}>
                 <ViewStacked />
               </Button>
+            </Row>
+
+            <Row>
               <Button className="edit-button" variant="dark" onClick={handleSave}>
                 <Save></Save>
               </Button>
             </Row>
-            {/* <Row>
-              <Button className="button" variant="dark">
-                <PencilSquare />
+
+            <Row>
+              <Button className="edit-button" variant="dark" onClick={handleUndo}>
+                <ArrowCounterclockwise />
               </Button>
             </Row>
+
             <Row>
-              <Button className="button" variant="dark">
-                <Wrench />
+              <Button className="edit-button" variant="dark" onClick={handleRedo}>
+                <ArrowClockwise />
               </Button>
             </Row>
-            <Row>
-              <Button className="button" variant="dark">
-                <Gear />
-              </Button>
-            </Row> */}
+
             <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
@@ -270,7 +315,24 @@ export default function ArrowEditSideBar(props) {
 
                   <Accordion.Header>Arrow Map Settings</Accordion.Header>
                   <Accordion.Body>
-                    {heatmap}
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text" id="">Default Center</span>
+                      </div>
+                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} />
+                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} />
+                    </div>
+
+                    <div className="input-group setting-zoom">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text default-zoom" id="">Default Zoom</span>
+                      </div>
+                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
+                    </div>
+
+                    <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
+                      Set Defaults Here
+                    </Button>
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

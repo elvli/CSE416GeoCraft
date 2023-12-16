@@ -63,6 +63,9 @@ export default function ChoroEditBar(props) {
     setSettingsValues(newSettings)
   }
 
+
+
+
   // This sets up the editbar and its states
 
   useEffect(() => {
@@ -82,11 +85,13 @@ export default function ChoroEditBar(props) {
           setTableData((prevTableData) => {
             return newRegionData;
           });
-          setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue])
-          setChoroTheme(mapData.choroData.choroSettings.theme);
 
           const regionArray = tableData.map((dict) => dict.region);
           setPrevSelectedRegions(regionArray);
+          setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue]);
+          setChoroTheme(mapData.choroData.choroSettings.theme);
+
+          setSettingsValues([mapData.settings.latitude, mapData.settings.longitude, mapData.settings.zoom])
         }
         catch {
           console.log('cannot load mapdata');
@@ -159,9 +164,16 @@ export default function ChoroEditBar(props) {
     setGeoJsonData(mapData.GeoJson);
     mapData.choroData.regionData = tableData;
     mapData.choroData.choroSettings = { theme: choroTheme, headerValue: tableHeaders[2] };
-    mapData.settings.longitude = settingsValues[1]
-    mapData.settings.latitude = settingsValues[0]
-    mapData.settings.zoom = settingsValues[2]
+
+    var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
+    var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
+    var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
+    setSettingsValues([latitude, longitude, zoom])
+
+    mapData.settings.longitude = settingsValues[1];
+    mapData.settings.latitude = settingsValues[0];
+    mapData.settings.zoom = settingsValues[2];
+
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
   };
@@ -344,8 +356,8 @@ export default function ChoroEditBar(props) {
     URL.revokeObjectURL(url);
   };
 
-  const downloadJSONButon = (
-    < div className='choro-JSONButton' >
+  const downloadJSONButton = (
+    < div className='choro-json-button' >
       <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
         Download JSON
       </Button>
@@ -359,7 +371,6 @@ export default function ChoroEditBar(props) {
   // This portion handles seletecting map themes.
 
   const handleGradientSelect = (selectedOption) => {
-    console.log(selectedOption.name);
     setChoroTheme(selectedOption.name);
   };
 
@@ -391,39 +402,53 @@ export default function ChoroEditBar(props) {
   ) : 'Select Color';
 
   const gradientDropDown = (
-    <Dropdown>
-      <Dropdown.Toggle
-        variant="white"
-        style={{ border: '1px solid #ced4da', display: 'flex', alignItems: 'center', width: '216px', marginBottom: '16px', borderTopLeftRadius: '0px', borderBottomLeftRadius: '0px' }}
-      >
-        {dropdownToggleContent}
-      </Dropdown.Toggle>
 
-      <Dropdown.Menu>
-        {colorGradients.map((option, index) => (
-          <Dropdown.Item
-            key={index}
-            onClick={() => handleGradientSelect(option)}
-          >
-            <div className="d-flex align-items-center">
-              <div
-                style={{
-                  width: '100px',
-                  height: '20px',
-                  marginRight: '10px',
-                  background: option.gradient,
-                }}
-              />
-              {option.name}
-            </div>
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
+    <div className="input-group">
+      <div className="input-group-prepend">
+        <span className="input-group-text" id="">Map Theme</span>
+      </div>
+
+      <Dropdown>
+        <Dropdown.Toggle
+          variant="white"
+          style={{ border: '1px solid #ced4da', display: 'flex', alignItems: 'center', width: '216px', marginBottom: '16px', borderTopLeftRadius: '0px', borderBottomLeftRadius: '0px' }}
+        >
+          {dropdownToggleContent}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          {colorGradients.map((option, index) => (
+            <Dropdown.Item
+              key={index}
+              onClick={() => handleGradientSelect(option)}
+            >
+              <div className="d-flex align-items-center">
+                <div
+                  style={{
+                    width: '100px',
+                    height: '20px',
+                    marginRight: '10px',
+                    background: option.gradient,
+                  }}
+                />
+                {option.name}
+              </div>
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
   );
 
 
 
+
+  const handleSetDefaults = () => {
+    var latitude = map.current.getCenter().lat.toFixed(4);
+    var longitude = map.current.getCenter().lng.toFixed(4);
+    var zoom = map.current.getZoom().toFixed(2);
+    setSettingsValues([latitude, longitude, zoom]);
+  }
 
   return (
     <div>
@@ -489,20 +514,14 @@ export default function ChoroEditBar(props) {
                   <Accordion.Header>Choropleth Map Data</Accordion.Header>
                   <Accordion.Body>
                     {tableContent}
-                    {downloadJSONButon}
+                    {gradientDropDown}
+                    {downloadJSONButton}
                   </Accordion.Body>
                 </Accordion.Item>
 
                 <Accordion.Item eventKey="2">
                   <Accordion.Header>Choropleth Map Settings</Accordion.Header>
                   <Accordion.Body>
-                    <div className="input-group">
-                      <div className="input-group-prepend">
-                        <span className="input-group-text" id="">Map Theme</span>
-                      </div>
-                      {gradientDropDown}
-                    </div>
-
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
@@ -517,6 +536,10 @@ export default function ChoroEditBar(props) {
                       </div>
                       <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
                     </div>
+
+                    <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
+                      Set Defaults Here
+                    </Button>
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

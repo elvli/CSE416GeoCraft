@@ -129,7 +129,6 @@
 
   &::-webkit-scrollbar-thumb {
     background-color: darkgray;
-    border-radius: 6px;
   }
 
   &::-webkit-scrollbar-track {
@@ -145,11 +144,17 @@
 
 .input-group {
   .input-group-text {
-    border-top-right-radius: 0px;  
-    border-bottom-right-radius: 0px;  
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
   }
 
   .default-zoom {
     padding-right: 17px;
   }
+}
+
+.set-default-button {
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: -6px;
 }

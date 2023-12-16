@@ -1,12 +1,12 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
+import { Button, Table, Accordion, Row, Col, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
-import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './PropSymbEditBar.scss'
 
 export default function PropSymbEditBar(props) {
-  const { mapId, points, settings } = props;
+  const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
 
   // State variables
@@ -18,12 +18,46 @@ export default function PropSymbEditBar(props) {
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude', 'Color', 'Size']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
-  const [settingsValues, setsettingsValues] = useState([41.8473 ,12.7971, 5.43])
+  const [settingsValues, setSettingsValues] = useState([41.8473, 12.7971, 5.43])
 
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
+
+  function handleUndo(event) {
+    event.preventDefault();
+    store.undo();
+  }
+
+  function handleRedo(event) {
+    event.preventDefault();
+    store.redo();
+  }
+
+  const handleSettingChange = (event, setting) => {
+    var newSettings = ['', '', '']
+    newSettings[0] = settingsValues[0]
+    newSettings[1] = settingsValues[1]
+    newSettings[2] = settingsValues[2]
+    switch (setting) {
+      case 0:
+        newSettings[0] = event.target.value
+        break;
+      case 1:
+        newSettings[1] = event.target.value
+        break;
+      case 2:
+        newSettings[2] = event.target.value
+        break;
+      default:
+        newSettings = settingsValues;
+    }
+    setSettingsValues(newSettings)
+  }
+
+
+
 
   // THESE FUNCTIONS HANDLE FILE LOADING
   const handleFileChange = (event) => {
@@ -91,13 +125,20 @@ export default function PropSymbEditBar(props) {
   };
 
   const handleSave = async () => {
-    var mapData = await store.getMapDataById(mapId)
-    mapData.propPoints = tableData
-    mapData.settings.longitude = settingsValues[1]
-    mapData.settings.latitude = settingsValues[0]
-    mapData.settings.zoom = settingsValues[2]
-    await store.updateMapDataById(mapId, mapData)
-    await store.setCurrentList(mapId, 0)
+    var mapData = await store.getMapDataById(mapId);
+    mapData.propPoints = tableData;
+
+    var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
+    var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
+    var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
+    setSettingsValues([latitude, longitude, zoom]);
+
+    mapData.settings.longitude = settingsValues[1];
+    mapData.settings.latitude = settingsValues[0];
+    mapData.settings.zoom = settingsValues[2];
+
+    await store.updateMapDataById(mapId, mapData);
+    await store.setCurrentList(mapId, 0);
   }
 
   const updateTable = async () => {
@@ -118,25 +159,6 @@ export default function PropSymbEditBar(props) {
     catch {
       console.log('cannot load mapdata');
     }
-  } 
-
-  const handleSettingChange  = (event, setting) =>  {
-    var newSettings = ['','','']
-    newSettings[0] = settingsValues[0]
-    newSettings[1] = settingsValues[1]
-    newSettings[2] = settingsValues[2]
-    switch(setting) {
-      case 0:
-        newSettings[0] = event.target.value
-        break
-      case 1:
-        newSettings[1] = event.target.value
-        break
-      case 2:
-        newSettings[2] = event.target.value
-        break
-    }
-    setsettingsValues(newSettings)
   }
 
   const downloadJson = () => {
@@ -162,16 +184,12 @@ export default function PropSymbEditBar(props) {
     }
   }, []);
 
-  const generateHeatMap = async (event) => {
-    event.preventDefault();
-
+  const handleSetDefaults = () => {
+    var latitude = map.current.getCenter().lat.toFixed(4);
+    var longitude = map.current.getCenter().lng.toFixed(4);
+    var zoom = map.current.getZoom().toFixed(2);
+    setSettingsValues([latitude, longitude, zoom]);
   }
-
-  const [heatmap, setHeatMap] = useState(<div>
-    <Button variant="btn btn-dark" onClick={generateHeatMap}>
-      Generate HeatMap
-    </Button>
-  </div>)
 
   return (
     <div>
@@ -182,25 +200,26 @@ export default function PropSymbEditBar(props) {
               <Button className="edit-button" variant="dark" onClick={toggleSideBar}>
                 <ViewStacked />
               </Button>
+            </Row>
+
+            <Row>
               <Button className="edit-button" variant="dark" onClick={handleSave}>
-                <Save></Save>
+                <Save />
               </Button>
             </Row>
-            {/* <Row>
-              <Button className="button" variant="dark">
-                <PencilSquare />
-              </Button>
-            </Row>
+
             <Row>
-              <Button className="button" variant="dark">
-                <Wrench />
+              <Button className="edit-button" variant="dark" onClick={handleUndo}>
+                <ArrowCounterclockwise />
               </Button>
             </Row>
+
             <Row>
-              <Button className="button" variant="dark">
-                <Gear />
+              <Button className="edit-button" variant="dark" onClick={handleRedo}>
+                <ArrowClockwise />
               </Button>
-            </Row> */}
+            </Row>
+
             <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
@@ -273,17 +292,17 @@ export default function PropSymbEditBar(props) {
                                     ) : colIndex !== 3 ? (
                                       row[colName]
                                     ) : <select name="variables" onChange={(event) => handleEditChange(event, rowIndex, colName)}>
-                                            <option> {row[colName]} </option>
-                                            <option value={'white'} >white</option>
-                                            <option value={'black'} >black</option>
-                                            <option value={'red'} >red</option>
-                                            <option value={'orange'} >orange</option>
-                                            <option value={'yellow'} >yellow</option>
-                                            <option value={'green'} >green</option>
-                                            <option value={'blue'} >blue</option>
-                                            <option value={'purple'} >purple</option>
-                                        </select>
-                                }
+                                      <option> {row[colName]} </option>
+                                      <option value={'white'} >white</option>
+                                      <option value={'black'} >black</option>
+                                      <option value={'red'} >red</option>
+                                      <option value={'orange'} >orange</option>
+                                      <option value={'yellow'} >yellow</option>
+                                      <option value={'green'} >green</option>
+                                      <option value={'blue'} >blue</option>
+                                      <option value={'purple'} >purple</option>
+                                    </select>
+                                  }
                                 </td>
                               ))}
                             </tr>
@@ -307,19 +326,24 @@ export default function PropSymbEditBar(props) {
 
                   <Accordion.Header>Propotional Symbol Map Settings</Accordion.Header>
                   <Accordion.Body>
-                  <div className="input-group">
-                    <div className="input-group-prepend">
-                      <span className="input-group-text" id="">Default Center</span>
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text" id="">Default Center</span>
+                      </div>
+                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} />
+                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} />
                     </div>
-                    <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)}/>
-                    <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)}/>
-                  </div>
+
                     <div className="input-group setting-zoom">
-                    <div className="input-group-prepend">
-                      <span className="input-group-text" id="">Default Zoom</span>
+                      <div className="input-group-prepend">
+                        <span className="input-group-text default-zoom" id="">Default Zoom</span>
+                      </div>
+                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
                     </div>
-                    <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)}/>
-                  </div>
+
+                    <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
+                      Set Defaults Here
+                    </Button>
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
