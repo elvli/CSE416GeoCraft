@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
-import { Button, Table } from 'react-bootstrap';
+import { Button, Table, ButtonGroup, Card } from 'react-bootstrap';
 import './HeatEditBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
@@ -9,6 +9,8 @@ import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import { ChromePicker } from 'react-color'
+import { HexColorPicker } from "react-colorful";
 
 export default function HeatEditBar(props) {
   const { mapId, points, settings } = props;
@@ -21,22 +23,33 @@ export default function HeatEditBar(props) {
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude'
   ]);
+
+  const [picker1, setPicker1] = useState(false);
+  const [picker2, setPicker2] = useState(false);
+  const [picker3, setPicker3] = useState(false);
+  const [picker4, setPicker4] = useState(false);
+  const [picker5, setPicker5] = useState(false);
+  const [color1, setColor1] = useState("#67A9CF");
+  const [color2, setColor2] = useState("#D1E5F0");
+  const [color3, setColor3] = useState("#FDDBC7");
+  const [color4, setColor4] = useState("#EF8A62");
+  const [color5, setColor5] = useState("#B2182B");
   const [currentColor, setCurrentColor] = useState([
     'interpolate',
     ['linear'],
     ['heatmap-density'],
     0,
-    'rgba(33,102,172,0)',
+      'rgba(33,102,172,0)',
     0.2,
-    'rgb(103,169,207)',
+    color1,
     0.4,
-    'rgb(209,229,240)',
+    color2,
     0.6,
-    'rgb(253,219,199)',
+    color3,
     0.8,
-    'rgb(239,138,98)',
+    color4,
     1,
-    'rgb(178,24,43)'
+    color5,
   ])
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
@@ -195,143 +208,83 @@ export default function HeatEditBar(props) {
     {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
     {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
   </div>
+  useEffect(() => {
+    store.updateMapData({
+      type:'heat',
+      import:false,
+      data: {
+        type: 'color',
+        data: currentColor
+      }
+    })
+  }, [currentColor])
+  useEffect(() => {
+    setCurrentColor([
+      'interpolate',
+      ['linear'],
+      ['heatmap-density'],
+      0,
+      'rgba(33,102,172,0)',
+      0.2,
+      color1,
+      0.4,
+      color2,
+      0.6,
+      color3,
+      0.8,
+      color4,
+      1,
+      color5
+    ])
+  }, [color1,color2,color3,color4,color5])
 
-  function onColorClick(event, val) {
-    console.log('hello')
-    if(val == 1) {
-      //Red
-      setCurrentColor([
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0,
-        'rgba(33,102,172,0)',
-        0.2,
-        'rgb(103,169,207)',
-        0.4,
-        'rgb(209,229,240)',
-        0.6,
-        'rgb(253,219,199)',
-        0.8,
-        'rgb(239,138,98)',
-        1,
-        'rgb(178,24,43)'
-      ])
-      
-    }
-    else if (val == 2) {
-      //Orange
-      setCurrentColor([
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0,
-        'rgba(33,102,172,0)',
-        0.2,
-        'rgb(249,219,173)',
-        0.4,
-        'rgb(255,187,101)',
-        0.6,
-        'rgb(255,177,24)',
-        0.8,
-        'rgb(255,156,0)',
-        1,
-        'rgb(255,130,0)'
-      ])
-      
-    }
-    else if (val == 3) {
-      //Yellow
-      setCurrentColor([
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0,
-        'rgba(255,238,160,0)',
-        0.2,
-        'rgb(255,228,142)',
-        0.4,
-        'rgb(255,212,98)',
-        0.6,
-        'rgb(253,185,84)',
-        0.8,
-        'rgb(255,158,57)',
-        1,
-        'rgb(255,139,52)'
-      ])
-      
-    }
-    else if (val == 4) {
-      //Green
-      setCurrentColor([
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0,
-        'rgba(255,255,255,0)',
-        0.2,
-        'rgb(234,255,240)',
-        0.4,
-        'rgb(211,255,224)',
-        0.6,
-        'rgb(188,255,208)',
-        0.8,
-        'rgb(174,255,139)',
-        1,
-        'rgb(76,255,0)'
-      ])
-      
-    }
-    else {
-      //Blue
-      setCurrentColor([
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0,
-        'rgba(255,255,255,0)',
-        0.2,
-        'rgb(228,242,250)',
-        0.4,
-        'rgb(201,233,246)',
-        0.6,
-        'rgb(135,206,235)',
-        0.8,
-        'rgb(69,179,224)',
-        1,
-        'rgb(31,141,186)'
-      ])
-      store.updateMapData({
-        type:'heat',
-        import:false,
-        data: {
-          type: 'color',
-          data: currentColor
-        }
-      })
-    }
-    
+
+  const cover = {
+    position: 'fixed',
+    top: '0px',
+    right: '0px',
+    bottom: '0px',
+    left: '0px',
   }
 
-  let options = <div>
+  let options = <div >
     <p>Select a color</p>
-    <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-        <ToggleButton id="tbg-radio-1" value={1} onClick={(event)=> onColorClick(event, 1)}>
+        <Button className='heat-button' onClick={()=>{setPicker1(!picker1)}}>
           Red
-        </ToggleButton>
-        <ToggleButton id="tbg-radio-2" value={2} onClick={(event)=> onColorClick(event, 2)}>
+        </Button>
+        <Button className='heat-button' onClick={()=>{setPicker2(!picker2)}}>
           Orange
-        </ToggleButton>
-        <ToggleButton id="tbg-radio-3" value={3} onClick={(event)=> onColorClick(event, 3)}>
+        </Button>
+        <Button className='heat-button' onClick={()=>{setPicker3(!picker3)}}>
           Yellow
-        </ToggleButton>
-        <ToggleButton id="tbg-radio-4" value={4} onClick={(event)=> onColorClick(event, 4)}>
+        </Button>
+        <Button className='heat-button' onClick={()=>{setPicker4(!picker4)}}>
           Green
-        </ToggleButton>
-        <ToggleButton id="tbg-radio-5" value={5} onClick={(event)=> onColorClick(event, 5)}>
+        </Button>
+        <Button  className='heat-button' onClick={()=>{setPicker5(!picker5)}}>
           Blue
-        </ToggleButton>
-    </ToggleButtonGroup>
+        </Button>
+        { picker1 ? <div className='heat-popover'>
+          <div style={ cover } onClick={ (event)=>{setPicker1(false)} }/>
+          <HexColorPicker color={color1} onChange={setColor1}/>
+        </div> : null }
+        { picker2 ? <div className='heat-popover'>
+          <div style={ cover } onClick={ (event)=>{setPicker2(false) } }/>
+          <HexColorPicker color={color2} onChange={setColor2}/>
+        </div> : null }
+        { picker3 ? <div className='heat-popover'>
+          <div style={ cover } onClick={ (event)=>{setPicker3(false) } }/>
+          <HexColorPicker color={color3} onChange={setColor3}/>
+        </div> : null }
+        { picker4 ? <div className='heat-popover'>
+          <div style={ cover } onClick={ (event)=>{setPicker4(false)} }/>
+          <HexColorPicker color={color4} onChange={setColor4}/>
+        </div> : null }
+        { picker5 ? <div className='heat-popover'>
+          <div style={ cover } onClick={ (event)=>{setPicker5(false)} }/>
+          <HexColorPicker color={color5} onChange={setColor5}/>
+        </div> : null }
+
   </div>
 
 
@@ -453,14 +406,9 @@ export default function HeatEditBar(props) {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey="2">
-
-                  <Accordion.Header>Heat Map Settings</Accordion.Header>
-                  <Accordion.Body>
-                    {!heatMapData?fileUploader:options}
-                  </Accordion.Body>
-                </Accordion.Item>
+                
               </Accordion>
+                {!heatMapData?fileUploader:options}
             </div>
           </div>
         </div>

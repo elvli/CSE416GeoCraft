@@ -30,3 +30,12 @@
     margin-left: -60vh; // Make sure its the negative min-width of heat-map-menu
   }
 }
+
+.heat-popover {
+  position: absolute;
+  z-index: 2;
+}
+
+.heat-button {
+ // position: 'absolute';
+}
