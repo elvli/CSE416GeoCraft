@@ -232,6 +232,11 @@ function AuthContextProvider(props) {
     const response = await api.createEmailLink(email);
   }
 
+  auth.resetPassword = async function (password, id, token) {
+    const response = await api.resetPassword (password, id, token)
+    return response;
+  }
+
   auth.guestLogin = async function () {
     try {
       const response = await api.loginUser("guest@gmail.com", "GuestPassword");

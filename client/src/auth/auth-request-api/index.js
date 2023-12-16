@@ -41,6 +41,7 @@ export const updateUser = (id, user) => {
 
 export const getUserByUsername = (username) => api.get(`/user/${username}`);
 export const createEmailLink = (emails) => api.post('/password-reset', {email: emails})
+export const resetPassword = (password, id, token) => api.post('/confirm/:id/:token', {password: password, id: id, token: token})
 const apis = {
   getLoggedIn,
   loginUser,
@@ -48,7 +49,8 @@ const apis = {
   registerUser,
   updateUser,
   getUserByUsername,
-  createEmailLink
+  createEmailLink,
+  resetPassword
 }
 
 export default apis

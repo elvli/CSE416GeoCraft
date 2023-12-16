@@ -1,15 +1,19 @@
-import { React, useState } from "react";
+import { React, useState, useContext } from "react";
 import { Form, Button, Card, Row} from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import "./ConfirmScreen.scss";
+import AuthContext from "../../auth";
 
 export default function ConfirmScreen() {
   const [validated, setValidated] = useState(false)
   const [passwordCheck, setPasswordCheck] = useState("");
   const [confirmPassCheck, setConfirmPassCheck] = useState("");
   const [passwordLengthError, setPasswordLengthError] = useState(false);
+  const { auth } = useContext(AuthContext);
   const [passwordMatchError, setPasswordMatchError] = useState(false);
+  const { token, id} = useParams()
   const navigate = useNavigate();
   
   const handleSubmit = (event) => {
@@ -22,7 +26,11 @@ export default function ConfirmScreen() {
     else {
       event.preventDefault();
       event.stopPropagation();
-      navigate("/login")
+      const formData = new FormData(event.currentTarget);
+      const response = auth.resetPassword(formData.get('password'), id, token)
+        navigate('/login')
+
+
     }
   }
 
