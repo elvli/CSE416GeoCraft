@@ -1,9 +1,10 @@
-import { React, useState, useContext, useEffect } from "react";
+import { React, useState, useContext, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import AuthContext from '../../auth'
 import GlobalStoreContext from "../../store";
 import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal, PublishMapModal } from '../../components'
 // import { Card } from 'react-bootstrap'
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./ProfilePage.scss";
 
 export default function ProfilePage() {
@@ -16,6 +17,8 @@ export default function ProfilePage() {
   const [exportMapShow, setExportMapShow] = useState(false);
   const [editProfileShow, setEditProfileShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
+  const fileInputRef = useRef(null);
+
   const { username } = useParams();
   const aboutMeText = auth.getAboutMe();
 
@@ -56,6 +59,12 @@ export default function ProfilePage() {
   async function handlePublishClose(event) {
     setPublishMapShow(false)
   }
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+
+    // Perform any additional logic here, such as uploading the file
+  };
 
   var functions = {
     handleDeleteMap: handleDeleteMap,
@@ -96,17 +105,35 @@ export default function ProfilePage() {
         <div className="col">
 
           <div className="text-white d-flex flex-row profile-banner">
-            <div className="ms-4 mt-5 d-flex flex-column">
+            <div className="ms-4 mt-5 d-flex flex-column position-relative">
               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt1ceyneFkZchgkrwN7dZxWNl_C5Dctvc5BzNh_rEzPQ&s"
                 alt="Default Profile Pic"
-                className="img-fluid img-thumbnail mt-4 mb-2 profile-pic"
+                className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
               />
+              {username === auth.getUsername() && (
+               <label
+                htmlFor="imageInput"
+                className="camera-icon-container position-absolute bottom-0 end-0"
+                style={{ zIndex: 1, width: "50px", height: "50px", cursor: "pointer" }}
+              >
+                <input
+                  type="file"
+                  id="imageInput"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleImageUpload}
+                />
+                <i className="bi-camera-fill text-dark" style={{ fontSize: "3rem" }}></i>
+              </label>
+              )}
+
 
               {username === auth.getUsername() && (
                 <button type="button" className="btn btn-outline-dark edit-profile-btn" data-mdb-ripple-color="dark" onClick={handleEditProfile}>
                   Edit profile
                 </button>
               )}
+
             </div>
 
             <div className="ms-3 username-text">
