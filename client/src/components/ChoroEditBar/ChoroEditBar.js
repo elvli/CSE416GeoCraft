@@ -56,15 +56,10 @@ export default function ChoroEditBar(props) {
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
   const handleAddRow = (regionInfo) => {
-    if (tableData == []) {
-      setTableData([{ id: 1, region: regionInfo, data: '' }])
-    }
-    else {
-      setTableData((prevTableData) => [
-        ...prevTableData,
-        { id: prevTableData.length + 1, region: regionInfo, data: '' },
-      ]);
-    }
+    setTableData((prevTableData) => [
+      ...prevTableData,
+      { id: prevTableData.length + 1, region: regionInfo, data: '' },
+    ]);
   };
 
   const handleEditChange = (event, rowIndex, colName) => {
@@ -81,7 +76,6 @@ export default function ChoroEditBar(props) {
     setIsEditing(null);
   };
 
-
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId);
     mapData.choroData.regionData = tableData;
@@ -89,26 +83,6 @@ export default function ChoroEditBar(props) {
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
     console.log('DADTATA', tableData)
-  };
-
-  const updateTable = async () => {
-    try {
-      var mapData = await store.getMapDataById(mapId)
-      var newRegionData = []
-      for (let i in mapData.choroData.regionData) {
-        newRegionData.push({
-          'id': mapData.choroData.regionData[i]['id'],
-          'region': mapData.choroData.regionData[i]['region'],
-          'data': mapData.choroData.regionData[i]['data']
-        });
-      }
-      setTableData(newRegionData);
-      setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue])
-      setChoroTheme(mapData.choroData.choroSettings.theme);
-    }
-    catch {
-      console.log('cannot load mapdata');
-    }
   };
 
   const changeDataHeader = (event) => {
@@ -142,6 +116,31 @@ export default function ChoroEditBar(props) {
 
   useEffect(() => {
     try {
+      const updateTable = async () => {
+        try {
+          var mapData = await store.getMapDataById(mapId)
+          var newRegionData = []
+          for (let i in mapData.choroData.regionData) {
+            newRegionData.push({
+              'id': mapData.choroData.regionData[i]['id'],
+              'region': mapData.choroData.regionData[i]['region'],
+              'data': mapData.choroData.regionData[i]['data']
+            });
+          }
+          setTableData((prevTableData) => {
+            return newRegionData;
+          });
+          setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue])
+          setChoroTheme(mapData.choroData.choroSettings.theme);
+
+          const regionArray = tableData.map((dict) => dict.region);
+          setPrevSelectedRegions(regionArray);
+        }
+        catch {
+          console.log('cannot load mapdata');
+        }
+      };
+
       updateTable();
     } catch (error) {
       console.log('Cannot update table');
@@ -186,15 +185,20 @@ export default function ChoroEditBar(props) {
               <Button className="edit-button" variant="dark" onClick={toggleSideBar}>
                 <ViewStacked />
               </Button>
+            </Row>
+            
+            <Row>
               <Button className="edit-button" variant="dark" onClick={handleSave}>
                 <Save />
               </Button>
             </Row>
+
             <Row>
               <Button className="edit-button" variant="dark" onClick={store.undo()}>
                 <ArrowCounterclockwise />
               </Button>
             </Row>
+
             <Row>
               <Button className="edit-button" variant="dark" onClick={store.redo()}>
                 <ArrowClockwise />
@@ -207,7 +211,6 @@ export default function ChoroEditBar(props) {
               </Button>
             </Row>
           </Col>
-
         </div>
         <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="choro-map-sidebar">
           <div className="list-group list-group-flush edit-tools-list">
@@ -229,7 +232,7 @@ export default function ChoroEditBar(props) {
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Choropleth Map Data</Accordion.Header>
                   <Accordion.Body>
-                    <div className="table-responsive table-custom-scrollbar">
+                    <div className="choro-table table-custom-scrollbar">
                       <Table striped bordered hover>
                         <thead>
                           <tr>
@@ -262,13 +265,7 @@ export default function ChoroEditBar(props) {
                             <tr key={row.id}>
                               <td>{row.id}</td>
                               <td>
-                                <input
-                                  className="cells"
-                                  type="text"
-                                  value={row.region}
-                                  onChange={(event) => handleEditChange(event, rowIndex, 'region')}
-                                  onBlur={handleEditBlur}
-                                />
+                                <p>{row.region}</p>
                               </td>
                               <td>
                                 <input
@@ -283,9 +280,6 @@ export default function ChoroEditBar(props) {
                           ))}
                         </tbody>
                       </Table>
-                      {/* <Button className='add-row-button btn btn-light' onClick={handleAddRow('')}>
-                        <PlusCircleFill className='add-row-icon' />
-                      </Button> */}
                     </div>
 
                     <div className='JSONButton'>

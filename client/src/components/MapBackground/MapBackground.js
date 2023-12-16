@@ -164,7 +164,6 @@ export default function MapBackground(props) {
             for (let i in mapData.points) {
               if (mapData.points[i]['longitude'] && mapData.points[i]['latitude'] && !isNaN(mapData.points[i]['longitude']) && !isNaN(mapData.points[i]['latitude'])) {
                 pointsCollection.push([mapData.points[i]['latitude'], mapData.points[i]['longitude'], mapData.points[i]['id'], mapData.points[i]['color']])
-                console.log(pointsCollection)
               }
             }
           }

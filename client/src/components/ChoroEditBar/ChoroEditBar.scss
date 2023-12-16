@@ -4,11 +4,12 @@
   overflow-x: hidden;
   position: fixed;
   left: 0;
+  width: 57.6px;
 }
 
 #choro-map-sidebar {
   min-height: 95vh;
-  min-width: 60vh;
+  min-width: 30vh;
 
   .sidebar-heading {
     padding: 0.875rem 1.25rem;
@@ -20,17 +21,33 @@
   }
 
   .choro-map-accordian {
-    width: 100%;
+    width: 96%;
     margin-top: 4px;
     margin-left: 8px;
-    min-width: 61vh;
+    min-width: 20vh;
   }
 
   &.invisible {
-    margin-left: -60vh; // Make sure its the negative min-width of choro-map-menu
+    margin-left: -30vh; // Make sure its the negative min-width of choro-map-menu
   }
 }
 
 .th-editable.editing {
   background-color: #eee; /* or any background color you prefer */
+}
+
+.choro-table {
+  max-height: 450px;
+
+  thead th {
+    position: static;
+  }
+
+  tbody th {
+    position: sticky;
+  }
+
+  tbody td {
+    padding: 10px 8px 0 8px;
+  }
 }
