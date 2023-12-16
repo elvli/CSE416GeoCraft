@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const auth = require('./auth');
 const baseUrl = "https://geocraftmaps.azurewebsites.net";
-// const baseUrl = "http://localhost:3000";
+ //const baseUrl = "http://localhost:3000";
 // const baseUrl = "https://geocraftbackend.azurewebsites.net";
 
 require("dotenv").config();
@@ -46,6 +46,10 @@ app.post('/login', AuthController.loginUser);
 app.get('/logout', AuthController.logoutUser);
 app.post('/register', AuthController.registerUser);
 app.put('/user/:id', AuthController.updateUser);
+app.post('/password-reset', AuthController.createEmailLink)
+app.post('/confirm/:id/:token', AuthController.resetPassword)
+app.post(`/confirm/:id/:token/verify-token/`, AuthController.verifyLink)
+
 
 app.post('/map', auth.verify, MapController.createMap);
 app.delete('/map/:id', auth.verify, MapController.deleteMap);
