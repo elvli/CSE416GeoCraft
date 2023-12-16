@@ -218,7 +218,7 @@ createEmailLink = async (req, res) => {
     }
     const secret = process.env.JWT_SECRET + user.passwordHash
     const token = jwt.sign({email: user.email, id: user._id}, secret, {expiresIn: "15m"})
-    const link = `http://localhost:3000/verify/${user._id}/${token}`
+    const link = `http://localhost:3000/confirm/${user._id}/${token}`
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -254,6 +254,45 @@ createEmailLink = async (req, res) => {
     });
   }
 }
+resetPassword = async (req, res) => {
+  const id = req.body.id;
+  const token = req.body.token
+  const password = req.body.password;
+  const user = await User.findOne({_id: id})
+  if(!user) {
+    return res.status(404).json({
+      success: false,
+      error: 'User not found!',
+    });
+  }
+  const secret = process.env.JWT_SECRET + user.passwordHash
+  try {
+   
+    jwt.verify(token, secret)
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: 'Unverified',
+    });
+  }
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  const passwordHash = await bcrypt.hash(password, salt);
+  user.passwordHash = passwordHash
+  user.save()
+  .then(() => {
+        console.log('Password saved!')
+        return res.status(201).json({
+        })
+      })
+      .catch(error => {
+        return res.status(400).json({
+          errorMessage: 'Password was not saved!'
+        })
+      })
+}
 
 module.exports = {
   getLoggedIn,
@@ -261,5 +300,6 @@ module.exports = {
   loginUser,
   logoutUser,
   updateUser,
-  createEmailLink
+  createEmailLink,
+  resetPassword
 }
