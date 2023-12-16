@@ -9,18 +9,17 @@ export default function MapBackground(props) {
   const { map } = props;
   const { store } = useContext(GlobalStoreContext);
   const mapContainer = store.container;
-  // const map = useRef(null);
   const [lng, setLng] = useState(12.7971);
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
   const [update, setUpdate] = useState(false)
 
-  var points = <></>
-
   async function generateMap(id, mapbox) {
     if (mapbox.current || typeof window === 'undefined') return;
 
     try {
+      let admId = 'ID_0';
+
       mapbox.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
@@ -106,7 +105,7 @@ export default function MapBackground(props) {
             'fill-opacity': 0,
             'fill-color': '#FF0000'
           },
-          filter: ['==', 'ID_1', ''],
+          filter: ['==', admId, ''],
         });
 
         const popup = new mapboxgl.Popup({
@@ -120,10 +119,21 @@ export default function MapBackground(props) {
           const hoveredRegion = e.features[0];
 
           if (hoveredRegion) {
-            const regionId = hoveredRegion.properties.ID_1;
-            const regionName = hoveredRegion.properties.NAME_1;
+            let regionId;
+            let regionName;
 
-            mapbox.current.setFilter('highlight-region', ['==', 'ID_1', regionId]);
+            for (let i = 5; i >= 0; i--) {
+              admId = `ID_${i}`;
+              const admName = `NAME_${i}`;
+              if (hoveredRegion.properties.hasOwnProperty(admName)) {
+
+                regionId = hoveredRegion.properties[admId];
+                regionName = hoveredRegion.properties[admName];
+                break;
+              }
+            }
+
+            mapbox.current.setFilter('highlight-region', ['==', admId, regionId]);
             mapbox.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
 
             popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(mapbox.current);
@@ -132,7 +142,7 @@ export default function MapBackground(props) {
 
         // This unhighlights a region and removes the popup when no longer hovering over it
         mapbox.current.on('mouseleave', 'geojson-border-fill', () => {
-          mapbox.current.setFilter('highlight-region', ['==', 'ID_1', '']);
+          mapbox.current.setFilter('highlight-region', ['==', admId, '']);
           mapbox.current.setPaintProperty('highlight-region', 'fill-opacity', 0);
 
           popup.remove();

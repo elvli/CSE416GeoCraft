@@ -82,7 +82,6 @@ export default function ChoroEditBar(props) {
     mapData.choroData.choroSettings = { theme: "red", headerValue: tableHeaders[2] };
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
-    console.log('DADTATA', tableData)
   };
 
   const changeDataHeader = (event) => {
@@ -152,19 +151,25 @@ export default function ChoroEditBar(props) {
       const clickedRegion = e.features[0];
 
       if (clickedRegion) {
-        const regionName = clickedRegion.properties.NAME_1;
+        // const regionName = clickedRegion.properties.NAME_1;
+        let regionName;
+
+        for (let i = 5; i >= 0; i--) {
+          const propertyName = `NAME_${i}`;
+          if (clickedRegion.properties.hasOwnProperty(propertyName)) {
+            regionName = clickedRegion.properties[propertyName];
+            break;
+          }
+        }
 
         setSelectedRegion(regionName);
-        if (doesRegionExist(tableData, regionName)) {
-          console.log('Region selected once already!!!!!');
-        }
-        else {
+        if (!doesRegionExist(tableData, regionName)) {
           handleAddRow(regionName);
           setPrevSelectedRegions((prevRegions) => [...prevRegions, regionName]);
-          console.log('PrevSelected REGIONS', [...prevSelectedRegions, regionName]);
         }
-
-        console.log('Clicked region:', regionName);
+        else {
+          console.log('Region selected once already!!!!!');
+        }
       }
     };
 
@@ -176,6 +181,68 @@ export default function ChoroEditBar(props) {
     };
   }, [prevSelectedRegions]);
 
+
+  const tableContent = (
+    <div className="choro-table table-custom-scrollbar">
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Region</th>
+            <th
+              className={`th-editable ${isEditing === 2 ? 'editing' : ''}`}
+              onDoubleClick={() => setIsEditing(2)}
+            >
+              {isEditing === 2 ? (
+                <input
+                  type="text"
+                  value={tableHeaders[2]}
+                  onChange={changeDataHeader}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      handleEditBlur();
+                    }
+                  }}
+                  onBlur={handleEditBlur}
+                />
+              ) : (
+                tableHeaders[2]
+              )}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {tableData.map((row, rowIndex) => (
+            <tr key={row.id}>
+              <td>{row.id}</td>
+              <td>
+                <p>{row.region}</p>
+              </td>
+              <td>
+                <input
+                  className="cells"
+                  type="text"
+                  value={row.data || ''}
+                  onChange={(event) => handleEditChange(event, rowIndex, 'data')}
+                  onBlur={handleEditBlur}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </div>
+  );
+
+  const downloadJSONButon = (
+    < div className='choro-JSONButton' >
+      <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
+        Download JSON
+      </Button>
+      <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
+    </div >
+  )
+
   return (
     <div>
       <div className={`d-flex flex-row`} id="choro-map-edit">
@@ -186,7 +253,7 @@ export default function ChoroEditBar(props) {
                 <ViewStacked />
               </Button>
             </Row>
-            
+
             <Row>
               <Button className="edit-button" variant="dark" onClick={handleSave}>
                 <Save />
@@ -232,62 +299,8 @@ export default function ChoroEditBar(props) {
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Choropleth Map Data</Accordion.Header>
                   <Accordion.Body>
-                    <div className="choro-table table-custom-scrollbar">
-                      <Table striped bordered hover>
-                        <thead>
-                          <tr>
-                            <th>ID</th>
-                            <th>Region</th>
-                            <th
-                              className={`th-editable ${isEditing === 2 ? 'editing' : ''}`}
-                              onDoubleClick={() => setIsEditing(2)}
-                            >
-                              {isEditing === 2 ? (
-                                <input
-                                  type="text"
-                                  value={tableHeaders[2]}
-                                  onChange={changeDataHeader}
-                                  onKeyDown={(event) => {
-                                    if (event.key === 'Enter') {
-                                      handleEditBlur();
-                                    }
-                                  }}
-                                  onBlur={handleEditBlur}
-                                />
-                              ) : (
-                                tableHeaders[2]
-                              )}
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tableData.map((row, rowIndex) => (
-                            <tr key={row.id}>
-                              <td>{row.id}</td>
-                              <td>
-                                <p>{row.region}</p>
-                              </td>
-                              <td>
-                                <input
-                                  className="cells"
-                                  type="text"
-                                  value={row.data || ''}
-                                  onChange={(event) => handleEditChange(event, rowIndex, 'data')}
-                                  onBlur={handleEditBlur}
-                                />
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </Table>
-                    </div>
-
-                    <div className='JSONButton'>
-                      <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
-                        Download JSON
-                      </Button>
-                      <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
-                    </div>
+                    {tableContent}
+                    {downloadJSONButon}
                   </Accordion.Body>
                 </Accordion.Item>
 
