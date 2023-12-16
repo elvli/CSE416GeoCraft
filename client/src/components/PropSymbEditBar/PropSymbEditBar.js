@@ -15,9 +15,10 @@ export default function PropSymbEditBar(props) {
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
-  const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude']);
+  const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude', 'Color', 'Size']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
+  const [settingsValues, setsettingsValues] = useState([41.8473 ,12.7971, 5.43])
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -56,7 +57,7 @@ export default function PropSymbEditBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '' })
+    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', color: '', size: '' })
     setTableData(newTable)
   }
 
@@ -91,7 +92,10 @@ export default function PropSymbEditBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
-    mapData.points = tableData
+    mapData.propPoints = tableData
+    mapData.settings.longitude = settingsValues[1]
+    mapData.settings.latitude = settingsValues[0]
+    mapData.settings.zoom = settingsValues[2]
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
@@ -100,11 +104,13 @@ export default function PropSymbEditBar(props) {
     try {
       const points = await store.getMapDataById(mapId)
       var newPoints = []
-      for (let i in points.points) {
+      for (let i in points.propPoints) {
         newPoints.push({
-          'id': points.points[i]['id'],
-          'latitude': points.points[i]['latitude'],
-          'longitude': points.points[i]['longitude']
+          'id': points.propPoints[i]['id'],
+          'latitude': points.propPoints[i]['latitude'],
+          'longitude': points.propPoints[i]['longitude'],
+          'color': points.propPoints[i]['color'],
+          'size': points.propPoints[i]['size']
         });
       }
       setTableData(newPoints);
@@ -112,6 +118,25 @@ export default function PropSymbEditBar(props) {
     catch {
       console.log('cannot load mapdata');
     }
+  } 
+
+  const handleSettingChange  = (event, setting) =>  {
+    var newSettings = ['','','']
+    newSettings[0] = settingsValues[0]
+    newSettings[1] = settingsValues[1]
+    newSettings[2] = settingsValues[2]
+    switch(setting) {
+      case 0:
+        newSettings[0] = event.target.value
+        break
+      case 1:
+        newSettings[1] = event.target.value
+        break
+      case 2:
+        newSettings[2] = event.target.value
+        break
+    }
+    setsettingsValues(newSettings)
   }
 
   const downloadJson = () => {
@@ -212,6 +237,7 @@ export default function PropSymbEditBar(props) {
                           <tr>
                             {tableHeaders.map((header, index) => (
                               <th
+                                className={'point-map-edit-header-' + header}
                                 key={index + 1}
                                 onBlur={handleHeaderBlur}
                               >
@@ -246,7 +272,18 @@ export default function PropSymbEditBar(props) {
                                       />
                                     ) : colIndex !== 3 ? (
                                       row[colName]
-                                    ) : <></>}
+                                    ) : <select name="variables" onChange={(event) => handleEditChange(event, rowIndex, colName)}>
+                                            <option> {row[colName]} </option>
+                                            <option value={'white'} >white</option>
+                                            <option value={'black'} >black</option>
+                                            <option value={'red'} >red</option>
+                                            <option value={'orange'} >orange</option>
+                                            <option value={'yellow'} >yellow</option>
+                                            <option value={'green'} >green</option>
+                                            <option value={'blue'} >blue</option>
+                                            <option value={'purple'} >purple</option>
+                                        </select>
+                                }
                                 </td>
                               ))}
                             </tr>
@@ -270,7 +307,19 @@ export default function PropSymbEditBar(props) {
 
                   <Accordion.Header>Propotional Symbol Map Settings</Accordion.Header>
                   <Accordion.Body>
-                    {heatmap}
+                  <div className="input-group">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="">Default Center</span>
+                    </div>
+                    <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)}/>
+                    <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)}/>
+                  </div>
+                    <div className="input-group setting-zoom">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="">Default Zoom</span>
+                    </div>
+                    <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)}/>
+                  </div>
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

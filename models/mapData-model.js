@@ -12,6 +12,15 @@ const mapDataSchema = new Schema(
         color: String,
       }], required: false
     },
+    propPoints : {
+      type: [{
+        id: Number,
+        longitude: String,
+        latitude: String,
+        color: String,
+        size: String,
+      }], required: false
+    },
     choroData: {
       type: {
         regionData: [{
