@@ -142,3 +142,14 @@
     margin-bottom: 24px;
   }
 }
+
+.input-group {
+  .input-group-text {
+    border-top-right-radius: 0px;  
+    border-bottom-right-radius: 0px;  
+  }
+
+  .default-zoom {
+    padding-right: 17px;
+  }
+}
