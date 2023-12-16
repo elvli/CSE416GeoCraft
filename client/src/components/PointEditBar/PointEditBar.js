@@ -18,7 +18,7 @@ export default function PointEditBar(props) {
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude', 'Color']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
-  const color = ['white','black', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']
+  const [settingsValues, setsettingsValues] = useState([41.8473 ,12.7971, 5.43])
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -86,7 +86,24 @@ export default function PointEditBar(props) {
     setTableData(updatedData);
   };
 
-
+  const handleSettingChange  = (event, setting) =>  {
+    var newSettings = ['','','']
+    newSettings[0] = settingsValues[0]
+    newSettings[1] = settingsValues[1]
+    newSettings[2] = settingsValues[2]
+    switch(setting) {
+      case 0:
+        newSettings[0] = event.target.value
+        break
+      case 1:
+        newSettings[1] = event.target.value
+        break
+      case 2:
+        newSettings[2] = event.target.value
+        break
+    }
+    setsettingsValues(newSettings)
+  }
 
   const handleEditBlur = () => {
     setIsEditing(null);
@@ -95,6 +112,9 @@ export default function PointEditBar(props) {
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
     mapData.points = tableData
+    mapData.settings.longitude = settingsValues[1]
+    mapData.settings.latitude = settingsValues[0]
+    mapData.settings.zoom = settingsValues[2]
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
@@ -112,6 +132,7 @@ export default function PointEditBar(props) {
         });
       }
       setTableData(newPoints);
+      setsettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
     }
     catch {
       console.log('cannot load mapdata');
@@ -276,6 +297,20 @@ export default function PointEditBar(props) {
 
                   <Accordion.Header>Point Map Settings</Accordion.Header>
                   <Accordion.Body>
+                  <div className="input-group">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="">Default Center</span>
+                    </div>
+                    <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)}/>
+                    <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)}/>
+                  </div>
+                    <div className="input-group setting-zoom">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text" id="">Default Zoom</span>
+                    </div>
+                    <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)}/>
+                  </div>
+                  
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

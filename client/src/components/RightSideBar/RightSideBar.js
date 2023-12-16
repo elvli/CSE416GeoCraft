@@ -72,7 +72,7 @@ export default function RightSideBar() {
             <div className="col-md-8">
               <input
                 type="text"
-                className="form-control"
+                className="form-control rightside-comment"
                 id="comment-form-control"
                 placeholder="Comment"
                 value={textInput}

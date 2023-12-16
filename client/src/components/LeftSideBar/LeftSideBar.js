@@ -139,7 +139,7 @@ export default function LeftSideBar(props) {
               <input
                 type="text"
                 id="form1"
-                className="form-control"
+                className="form-control query"
                 placeholder="Search"
                 value={queryInput}
                 onChange={handleQueryChange}
