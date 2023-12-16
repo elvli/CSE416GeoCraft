@@ -217,7 +217,7 @@ createEmailLink = async (req, res) => {
       });
     }
     const secret = process.env.JWT_SECRET + user.passwordHash
-    const token = jwt.sign({email: user.email, id: user._id}, secret, {expiresIn: "15m"})
+    const token = jwt.sign({email: user.email, id: user._id}, secret, {expiresIn: "5m"})
     const link = `http://localhost:3000/confirm/${user._id}/${token}`
     var transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -245,7 +245,6 @@ createEmailLink = async (req, res) => {
     return res.status(200).json({
       success: true,
     });
-    return res
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -285,6 +284,7 @@ resetPassword = async (req, res) => {
   .then(() => {
         console.log('Password saved!')
         return res.status(201).json({
+          success: true
         })
       })
       .catch(error => {
@@ -293,7 +293,37 @@ resetPassword = async (req, res) => {
         })
       })
 }
+verifyLink = async (req, res) => {
+  console.log("PING PONG")
+  const {id, token} = req.params
+  // const token = req.body.token
+  // const id = req.body.id;
+  console.log(id)
+  const user = await User.findOne({_id: id})
+  if(!user) {
+    return res.status(404).json({
+      success: false,
+      error: 'User not found!',
+    });
+  }
+  const secret = process.env.JWT_SECRET + user.passwordHash
+  try {
+   
+    jwt.verify(token, secret)
+    console.log("success")
+    return res.status(200).json({
+      success: true,
+    });
 
+  } catch (error) {
+    console.error(error);
+    return res.status(200).json({
+      success: false,
+    });
+  }
+  
+
+}
 module.exports = {
   getLoggedIn,
   registerUser,
@@ -301,5 +331,6 @@ module.exports = {
   logoutUser,
   updateUser,
   createEmailLink,
-  resetPassword
+  resetPassword,
+  verifyLink
 }

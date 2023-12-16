@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import "./ConfirmScreen.scss";
 import AuthContext from "../../auth";
+import { useEffect } from "react";
 
 export default function ConfirmScreen() {
   const [validated, setValidated] = useState(false)
@@ -14,6 +15,8 @@ export default function ConfirmScreen() {
   const { auth } = useContext(AuthContext);
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const { token, id} = useParams()
+  const [verify, setVerify] = useState(true)
+  const [first, setFirst] = useState(true)
   const navigate = useNavigate();
   
   const handleSubmit = (event) => {
@@ -33,6 +36,7 @@ export default function ConfirmScreen() {
 
     }
   }
+
 
   const handlePasswordChange = (event) => {
     const password = event.target.value;
@@ -59,34 +63,47 @@ export default function ConfirmScreen() {
       event.target.setCustomValidity('');
     }
   };
+  let card = <div className="confirm-screen">
+  <Row className="rows">
+    <h1>Reset Password</h1>
+    <p>Enter your new password</p>
+  </Row>
+  <br />
+  <Form noValidate validated={validated} onSubmit={handleSubmit}>
+    <Form.Group>
+      <Form.Control className="confirm-item" name='password' required type="password" placeholder="New Password" size="lg" onChange={handlePasswordChange} />
+      {passwordLengthError && <div className="sign-up-error-message text-danger">Password must be at least 8 characters.</div>}
+    </Form.Group>
+    <br />
+    <Form.Group>
+      <Form.Control className="confirm-item" name='confirmPassword' required type="password" placeholder="Confirm New Password" size="lg" onChange={handleConfirmPasswordChange} />
+      {passwordMatchError && <div className="sign-up-error-message text-danger">Passwords do not match.</div>}
+    </Form.Group>
+    <br /> <br />
+    <Form.Group>
+      <Button className="confirm-button" type="submit">Enter</Button>
+    </Form.Group>
+  </Form>
+</div>
+  // if (auth.verifyLink(id, token)) {
+  //   card = 
+  // }
+  // else {
+  //   card = <div className="confirm-screen">
+  //     <Row className="rows">
+  //       <h1>Your Link Has Expired</h1>
+  //       <p>Your reset password link has expired</p>
+  //     </Row>
+      
+  //   </div>
+  // }
 
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 background-container">
       <Card className="sign-up-screen">
         <Card.Body>
           <img src={GeoCraftLogoBlack} alt="GeoCraft Logo" className="sign-in-logo" />
-          <div className="confirm-screen">
-            <Row className="rows">
-              <h1>Reset Password</h1>
-              <p>Enter your new password</p>
-            </Row>
-            <br />
-            <Form noValidate validated={validated} onSubmit={handleSubmit}>
-              <Form.Group>
-                <Form.Control className="confirm-item" name='password' required type="password" placeholder="New Password" size="lg" onChange={handlePasswordChange} />
-                {passwordLengthError && <div className="sign-up-error-message text-danger">Password must be at least 8 characters.</div>}
-              </Form.Group>
-              <br />
-              <Form.Group>
-                <Form.Control className="confirm-item" name='confirmPassword' required type="password" placeholder="Confirm New Password" size="lg" onChange={handleConfirmPasswordChange} />
-                {passwordMatchError && <div className="sign-up-error-message text-danger">Passwords do not match.</div>}
-              </Form.Group>
-              <br /> <br />
-              <Form.Group>
-                <Button className="confirm-button" type="submit">Enter</Button>
-              </Form.Group>
-            </Form>
-          </div>
+          {card}
         </Card.Body>
       </Card>
     </div>

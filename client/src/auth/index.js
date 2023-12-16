@@ -236,6 +236,17 @@ function AuthContextProvider(props) {
     const response = await api.resetPassword (password, id, token)
     return response;
   }
+  auth.verifyLink = function (id, token) {
+    console.log("PING PONG")
+    async function asyncVerify() {
+      const response = await api.verifyLink(id, token)
+      if(response.data.success) return true
+      else return false
+    }
+    let result = asyncVerify()
+    return result
+    
+  }
 
   auth.guestLogin = async function () {
     try {

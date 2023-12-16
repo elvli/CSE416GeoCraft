@@ -41,7 +41,8 @@ export const updateUser = (id, user) => {
 
 export const getUserByUsername = (username) => api.get(`/user/${username}`);
 export const createEmailLink = (emails) => api.post('/password-reset', {email: emails})
-export const resetPassword = (password, id, token) => api.post('/confirm/:id/:token', {password: password, id: id, token: token})
+export const resetPassword = (password, id, token) => api.post(`/confirm/${id}/${token}`, {password: password, id: id, token: token})
+export const verifyLink = (id, token) => api.post(`/confirm/${id}/${token}/verify-token/`)
 const apis = {
   getLoggedIn,
   loginUser,
@@ -50,7 +51,8 @@ const apis = {
   updateUser,
   getUserByUsername,
   createEmailLink,
-  resetPassword
+  resetPassword,
+  verifyLink
 }
 
 export default apis
