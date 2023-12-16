@@ -18,6 +18,7 @@ export default function ProfilePage() {
   const [editProfileShow, setEditProfileShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
   const fileInputRef = useRef(null);
+  const [profilePic, setProfilePic] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt1ceyneFkZchgkrwN7dZxWNl_C5Dctvc5BzNh_rEzPQ&s");
 
   const { username } = useParams();
   const aboutMeText = auth.getAboutMe();
@@ -62,6 +63,16 @@ export default function ProfilePage() {
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     console.log(file);
+    
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setProfilePic(reader.result);
+      };
+
+      reader.readAsDataURL(file);
+    }
 
     // Perform any additional logic here, such as uploading the file
   };
@@ -106,10 +117,16 @@ export default function ProfilePage() {
 
           <div className="text-white d-flex flex-row profile-banner">
             <div className="ms-4 mt-5 d-flex flex-column position-relative">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt1ceyneFkZchgkrwN7dZxWNl_C5Dctvc5BzNh_rEzPQ&s"
+            <div
+            className="img-container"
+            style={{ width: "150px", height: "150px" }}
+             >
+              <img src={profilePic}
                 alt="Default Profile Pic"
                 className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
+              </div>
               {username === auth.getUsername() && (
                <label
                 htmlFor="imageInput"
@@ -127,13 +144,6 @@ export default function ProfilePage() {
               </label>
               )}
 
-
-              {username === auth.getUsername() && (
-                <button type="button" className="btn btn-outline-dark edit-profile-btn" data-mdb-ripple-color="dark" onClick={handleEditProfile}>
-                  Edit profile
-                </button>
-              )}
-
             </div>
 
             <div className="ms-3 username-text">
@@ -141,19 +151,32 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="p-4 bg-light">
-            <div className="d-flex justify-content-end text-center py-1">
-              <div>
-                <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.ownerName === username)).length}</p>
-                <p className="small text-muted mb-0">Maps</p>
-              </div>
-
-              <div className="px-3">
-                <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.likes.includes(username))).length}</p>
-                <p className="small text-muted mb-0">Likes</p>
-              </div>
-            </div>
+          <div className="p-4 bg-light d-flex flex-column">
+      <div className="d-flex justify-content-start py-1">
+        {username === auth.getUsername() && (
+          <button
+            type="button"
+            className="btn btn-outline-dark edit-profile-btn text-centered"
+            data-mdb-ripple-color="dark"
+            onClick={handleEditProfile}
+            style={{ fontSize: "16px", width: "150px" }}
+          >
+            Edit profile
+          </button>
+        )}
+        <div className="d-flex text-center py-1 ms-auto">
+          <div>
+            <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.ownerName === username)).length}</p>
+            <p className="small text-muted mb-0">Maps</p>
           </div>
+
+          <div className="px-3">
+            <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.likes.includes(username))).length}</p>
+            <p className="small text-muted mb-0">Likes</p>
+          </div>
+        </div>
+      </div>
+      </div>
 
           <div className="card-body p-4 text-black">
             <div className="mb-5">
