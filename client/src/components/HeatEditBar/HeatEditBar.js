@@ -1,5 +1,5 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
-import { Button, Table, ButtonGroup, Card } from 'react-bootstrap';
+import { Button, Table, ButtonGroup, Card, AccordionHeader } from 'react-bootstrap';
 import './HeatEditBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import Row from 'react-bootstrap/Row';
@@ -404,11 +404,17 @@ export default function HeatEditBar(props) {
                       </Button>
                       <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
                     </div>
+                    
                   </Accordion.Body>
                 </Accordion.Item>
-                
+                <Accordion.Item eventKey="2">
+                  <AccordionHeader>Heat Map Editor</AccordionHeader>
+                  <Accordion.Body>
+                    {!heatMapData?fileUploader:options}
+                  </Accordion.Body>
+                </Accordion.Item>
               </Accordion>
-                {!heatMapData?fileUploader:options}
+                
             </div>
           </div>
         </div>
