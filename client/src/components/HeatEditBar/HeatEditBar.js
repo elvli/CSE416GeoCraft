@@ -6,7 +6,7 @@ import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import { HexColorPicker } from "react-colorful";
-import HeatPointModal from '../HeatPointModal/HeatPointModal';
+// import HeatPointModal from '../HeatPointModal/HeatPointModal';
 
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
