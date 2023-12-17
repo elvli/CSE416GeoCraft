@@ -50,11 +50,11 @@ export default function MapCreateModal(props) {
               <Form.Label>Select Your Map Type</Form.Label>
               <Form.Select name='mapType' required >
                 <option value="">Select your map type</option>
+                <option value="arrow">Arrow Map</option>
+                <option value="choro">Choropleth Map</option>
                 <option value="heat">Heat Map</option>
                 <option value="point">Point Map</option>
                 <option value="propSymb">Proportional Symbols Map</option>
-                <option value="choro">Choropleth Map</option>
-                <option value="arrow">Arrow Map</option>
               </Form.Select>
             </Form.Group>
           </Modal.Body>

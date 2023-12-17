@@ -1,19 +1,14 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
-import { Button, Table, ButtonGroup, Card, AccordionHeader } from 'react-bootstrap';
+import { Button, Table, AccordionHeader, Row, Col, Dropdown } from 'react-bootstrap';
 import './HeatEditBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import { GlobalStoreContext } from '../../store'
-import { XLg, PlusCircleFill, ViewStacked, Save } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
-import ToggleButton from 'react-bootstrap/ToggleButton';
-import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
-import { ChromePicker } from 'react-color'
 import { HexColorPicker } from "react-colorful";
 
 export default function HeatEditBar(props) {
-  const { mapId, points, settings } = props;
+  const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
@@ -23,6 +18,7 @@ export default function HeatEditBar(props) {
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude'
   ]);
+  const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
 
   const [picker1, setPicker1] = useState(false);
   const [picker2, setPicker2] = useState(false);
@@ -39,7 +35,7 @@ export default function HeatEditBar(props) {
     ['linear'],
     ['heatmap-density'],
     0,
-      'rgba(33,102,172,0)',
+    'rgba(33,102,172,0)',
     0.2,
     color1,
     0.4,
@@ -58,6 +54,40 @@ export default function HeatEditBar(props) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
+
+  function handleUndo(event) {
+    event.preventDefault();
+    store.undo();
+  }
+
+  function handleRedo(event) {
+    event.preventDefault();
+    store.redo();
+  }
+
+  const handleSettingChange = (event, setting) => {
+    var newSettings = ['', '', '']
+    newSettings[0] = settingsValues[0]
+    newSettings[1] = settingsValues[1]
+    newSettings[2] = settingsValues[2]
+    switch (setting) {
+      case 0:
+        newSettings[0] = event.target.value
+        break;
+      case 1:
+        newSettings[1] = event.target.value
+        break;
+      case 2:
+        newSettings[2] = event.target.value
+        break;
+      default:
+        newSettings = settingsValues;
+    }
+    setSettingsValues(newSettings)
+  }
+
+
+
 
   // THESE FUNCTIONS HANDLE FILE LOADING
   const handleFileChange = (event) => {
@@ -127,6 +157,16 @@ export default function HeatEditBar(props) {
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
     mapData.points = tableData
+
+    var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
+    var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
+    var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
+    setSettingsValues([latitude, longitude, zoom])
+
+    mapData.settings.longitude = settingsValues[1];
+    mapData.settings.latitude = settingsValues[0];
+    mapData.settings.zoom = settingsValues[2];
+
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
@@ -142,7 +182,9 @@ export default function HeatEditBar(props) {
           'longitude': points.points[i]['longitude']
         });
       }
+
       setTableData(newPoints);
+      setSettingsValues([map.settings.latitude, map.settings.longitude, map.settings.zoom])
     }
     catch {
       console.log('cannot load mapdata');
@@ -176,7 +218,7 @@ export default function HeatEditBar(props) {
     event.preventDefault();
 
   }
-  
+
   const [heatMapData, setHeatMapData] = useState(null);
 
   const handleHeatMap = async (event) => {
@@ -187,7 +229,7 @@ export default function HeatEditBar(props) {
       var text = event.target.result;
       try {
         var json = JSON.parse(text);
-        setHeatMapData(json) 
+        setHeatMapData(json)
         store.updateMapData({
           type: 'heat',
           import: true,
@@ -201,17 +243,17 @@ export default function HeatEditBar(props) {
   }
 
   let fileUploader = <div className="drop-zone">
-  <div className="drop-zone-text">
-    Drag & Drop or Click Browse to select a file
-  </div>
+    <div className="drop-zone-text">
+      Drag & Drop or Click Browse to select a file
+    </div>
     <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
     {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
     {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
   </div>
   useEffect(() => {
     store.updateMapData({
-      type:'heat',
-      import:false,
+      type: 'heat',
+      import: false,
       data: {
         type: 'color',
         data: currentColor
@@ -236,7 +278,7 @@ export default function HeatEditBar(props) {
       1,
       color5
     ])
-  }, [color1,color2,color3,color4,color5])
+  }, [color1, color2, color3, color4, color5])
 
 
   const cover = {
@@ -249,43 +291,55 @@ export default function HeatEditBar(props) {
 
   let options = <div >
     <p>Select a color</p>
-        <Button className='heat-button' onClick={()=>{setPicker1(!picker1)}}>
-          Red
-        </Button>
-        <Button className='heat-button' onClick={()=>{setPicker2(!picker2)}}>
-          Orange
-        </Button>
-        <Button className='heat-button' onClick={()=>{setPicker3(!picker3)}}>
-          Yellow
-        </Button>
-        <Button className='heat-button' onClick={()=>{setPicker4(!picker4)}}>
-          Green
-        </Button>
-        <Button  className='heat-button' onClick={()=>{setPicker5(!picker5)}}>
-          Blue
-        </Button>
-        { picker1 ? <div className='heat-popover'>
-          <div style={ cover } onClick={ (event)=>{setPicker1(false)} }/>
-          <HexColorPicker color={color1} onChange={setColor1}/>
-        </div> : null }
-        { picker2 ? <div className='heat-popover'>
-          <div style={ cover } onClick={ (event)=>{setPicker2(false) } }/>
-          <HexColorPicker color={color2} onChange={setColor2}/>
-        </div> : null }
-        { picker3 ? <div className='heat-popover'>
-          <div style={ cover } onClick={ (event)=>{setPicker3(false) } }/>
-          <HexColorPicker color={color3} onChange={setColor3}/>
-        </div> : null }
-        { picker4 ? <div className='heat-popover'>
-          <div style={ cover } onClick={ (event)=>{setPicker4(false)} }/>
-          <HexColorPicker color={color4} onChange={setColor4}/>
-        </div> : null }
-        { picker5 ? <div className='heat-popover'>
-          <div style={ cover } onClick={ (event)=>{setPicker5(false)} }/>
-          <HexColorPicker color={color5} onChange={setColor5}/>
-        </div> : null }
+    <Button className='heat-button' onClick={() => { setPicker1(!picker1) }}>
+      Red
+    </Button>
+    <Button className='heat-button' onClick={() => { setPicker2(!picker2) }}>
+      Orange
+    </Button>
+    <Button className='heat-button' onClick={() => { setPicker3(!picker3) }}>
+      Yellow
+    </Button>
+    <Button className='heat-button' onClick={() => { setPicker4(!picker4) }}>
+      Green
+    </Button>
+    <Button className='heat-button' onClick={() => { setPicker5(!picker5) }}>
+      Blue
+    </Button>
+    {picker1 ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setPicker1(false) }} />
+      <HexColorPicker color={color1} onChange={setColor1} />
+    </div> : null}
+    {picker2 ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setPicker2(false) }} />
+      <HexColorPicker color={color2} onChange={setColor2} />
+    </div> : null}
+    {picker3 ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setPicker3(false) }} />
+      <HexColorPicker color={color3} onChange={setColor3} />
+    </div> : null}
+    {picker4 ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setPicker4(false) }} />
+      <HexColorPicker color={color4} onChange={setColor4} />
+    </div> : null}
+    {picker5 ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setPicker5(false) }} />
+      <HexColorPicker color={color5} onChange={setColor5} />
+    </div> : null}
 
   </div>
+
+
+  // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
+
+  const handleSetDefaults = () => {
+    var latitude = map.current.getCenter().lat.toFixed(4);
+    var longitude = map.current.getCenter().lng.toFixed(4);
+    var zoom = map.current.getZoom().toFixed(2);
+    setSettingsValues([latitude, longitude, zoom]);
+  }
+
+
 
 
   return (
@@ -297,33 +351,34 @@ export default function HeatEditBar(props) {
               <Button className="edit-button" variant="dark" onClick={toggleSideBar}>
                 <ViewStacked />
               </Button>
+            </Row>
+
+            <Row>
               <Button className="edit-button" variant="dark" onClick={handleSave}>
-                <Save></Save>
+                <Save />
               </Button>
             </Row>
-            {/* <Row>
-              <Button className="button" variant="dark">
-                <PencilSquare />
-              </Button>
-            </Row>
+
             <Row>
-              <Button className="button" variant="dark">
-                <Wrench />
+              <Button className="edit-button" variant="dark" onClick={handleUndo}>
+                <ArrowCounterclockwise />
               </Button>
             </Row>
+
             <Row>
-              <Button className="button" variant="dark">
-                <Gear />
+              <Button className="edit-button" variant="dark" onClick={handleRedo}>
+                <ArrowClockwise />
               </Button>
-            </Row> */}
+            </Row>
+
             <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
             </Row>
           </Col>
-
         </div>
+
         <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="heat-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
@@ -404,22 +459,46 @@ export default function HeatEditBar(props) {
                       </Button>
                       <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
                     </div>
-                    
+
                   </Accordion.Body>
                 </Accordion.Item>
+
                 <Accordion.Item eventKey="2">
                   <AccordionHeader>Heat Map Editor</AccordionHeader>
                   <Accordion.Body>
-                    {!heatMapData?fileUploader:options}
+                    {!heatMapData ? fileUploader : options}
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="3">
+                  <Accordion.Header>Choropleth Map Settings</Accordion.Header>
+                  <Accordion.Body>
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text" id="">Default Center</span>
+                      </div>
+                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} />
+                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} />
+                    </div>
+
+                    <div className="input-group setting-zoom">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text default-zoom" id="">Default Zoom</span>
+                      </div>
+                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
+                    </div>
+
+                    <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
+                      Set Defaults Here
+                    </Button>
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
-                
             </div>
           </div>
         </div>
       </div>
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
-    </div>
+    </div >
   )
 }

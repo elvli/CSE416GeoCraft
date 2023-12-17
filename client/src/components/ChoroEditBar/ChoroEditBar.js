@@ -66,7 +66,7 @@ export default function ChoroEditBar(props) {
 
 
 
-  // This sets up the editbar and its states
+  // THIS SETS UP THE EDITBAR AND ITS STATES
 
   useEffect(() => {
     try {
@@ -108,6 +108,7 @@ export default function ChoroEditBar(props) {
 
 
   // THESE FUNCTIONS HANDLE FILE LOADING
+
   const handleFileChange = (event) => {
     handleFileSelection(event.target.files);
   };
@@ -248,6 +249,8 @@ export default function ChoroEditBar(props) {
 
 
 
+  // THIS HANDLES USERS CLICKING ON A REGION OF THE MAP
+
   useEffect(() => {
     const regionSelectHandler = (e) => {
       const clickedRegion = e.features[0];
@@ -281,6 +284,11 @@ export default function ChoroEditBar(props) {
       map.current.off('click', 'geojson-border-fill', regionSelectHandler);
     };
   }, [prevSelectedRegions]);
+
+
+
+
+// THIS HANDLES ADDING LAYERS TO REGIONS WITH THE PROPER COLOR VALUES
 
   // useEffect(() => {
   //   console.log('herehrehrehrehreh');
@@ -341,7 +349,8 @@ export default function ChoroEditBar(props) {
 
 
 
-  // This portion handles downloading the mapdata as a json file:
+  // THIS HANDLES DOWNLOADING MAP DATA AS A JSON FILE
+
   const downloadJson = () => {
     const json = JSON.stringify({ headers: tableHeaders, data: tableData });
     setJsonData(json);
@@ -368,7 +377,7 @@ export default function ChoroEditBar(props) {
 
 
 
-  // This portion handles seletecting map themes.
+  // THIS HANDLES SELECTING MAP THEMES
 
   const handleGradientSelect = (selectedOption) => {
     setChoroTheme(selectedOption.name);
@@ -443,12 +452,17 @@ export default function ChoroEditBar(props) {
 
 
 
+  // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
+
   const handleSetDefaults = () => {
     var latitude = map.current.getCenter().lat.toFixed(4);
     var longitude = map.current.getCenter().lng.toFixed(4);
     var zoom = map.current.getZoom().toFixed(2);
     setSettingsValues([latitude, longitude, zoom]);
   }
+
+
+
 
   return (
     <div>
