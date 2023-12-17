@@ -398,7 +398,27 @@ export default function MapBackground(props) {
             )
             map.current.getSource('line-map').setData(myGeoJSON);
           }
-
+          else if (store.currentList && store.currentList.mapType === "heat") {
+            var tableData = mapData.heatmap.data
+            var arr = []
+            if(mapData.heatmap) {
+              for(let i = 0; i < tableData.length; i++) {
+                var lat = Math.min(90, Math.max(-90, parseFloat(tableData[i]['latitude'])));
+                var long = Math.min(180, Math.max(-180, parseFloat(tableData[i]['longitude'])));
+                var mag = Math.min(180, Math.max(-180, parseFloat(tableData[i]['magnitude'])));
+                arr.push({ "type": "Feature", "properties": { "mag": mag }, "geometry": { "type": "Point", "coordinates": [ long, lat, 0 ] } })
+              }
+            }
+            
+            var json = {
+              "type": "FeatureCollection",
+              "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+              "features": []
+            };
+            json['features'] = arr
+            console.log("print")
+            generateHeatMap(json, mapData.heatmap.color)
+          }
 
           else {
             map.current.getSource('map-source').setData({});
@@ -412,7 +432,7 @@ export default function MapBackground(props) {
 
     updateMapData();
   }, [update || store.currentList]);
-  function generateHeatMap(mapData) {
+  function generateHeatMap(mapData, color) {
     if(!map.current.getSource('earthquakes')) {
       map.current.addSource('earthquakes', {
         'type': 'geojson',
@@ -450,23 +470,7 @@ export default function MapBackground(props) {
             // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
             // Begin color ramp at 0-stop with a 0-transparancy color
             // to create a blur-like effect.
-            'heatmap-color': [
-              'interpolate',
-              ['linear'],
-              ['heatmap-density'],
-              0,
-              'rgba(33,102,172,0)',
-              0.2,
-              'rgb(103,169,207)',
-              0.4,
-              'rgb(209,229,240)',
-              0.6,
-              'rgb(253,219,199)',
-              0.8,
-              'rgb(239,138,98)',
-              1,
-              'rgb(178,24,43)'
-            ],
+            'heatmap-color': color,
             // Adjust the heatmap radius by zoom level
             'heatmap-radius': [
               'interpolate',
@@ -554,7 +558,7 @@ export default function MapBackground(props) {
     if (store.mapdata) {
       if (store.mapdata.type === 'heat') {
         if (store.mapdata.import) {
-          generateHeatMap(store.mapdata.data)
+          // generateHeatMap(store.mapdata.data)
           store.emptyMapData()
         }
         else {

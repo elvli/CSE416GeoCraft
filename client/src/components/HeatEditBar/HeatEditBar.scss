@@ -34,9 +34,15 @@
 .heat-popover {
   position: absolute;
   z-index: 2;
-  right: 9.2vw;
+  right: 12.5vw;
 }
 
 .heat-button {
- margin: 3px;
+  margin: 10px;
+  width: 50px;
+  height: 40px;
+  border-radius: 8px;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
