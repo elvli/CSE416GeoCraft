@@ -21,6 +21,16 @@ const mapDataSchema = new Schema(
         size: String,
       }], required: false
     },
+    lineData : {
+      type: [{
+        id: Number,
+        startlongitude: String,
+        startlatitude: String,
+        endlongitude: String,
+        endlatitude: String,
+        color: String,
+      }], required: false
+    },
     choroData: {
       type: {
         regionData: [{

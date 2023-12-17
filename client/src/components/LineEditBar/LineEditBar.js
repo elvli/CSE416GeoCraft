@@ -15,7 +15,7 @@ export default function LineEditSideBar(props) {
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
-  const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude']);
+  const [tableHeaders, setTableHeaders] = useState(['ID', 'Start Latitude', 'Start Longitude', 'End Latitude', 'End Longitude', 'Color']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
@@ -91,7 +91,7 @@ export default function LineEditSideBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '' })
+    newTable.push({ id: newTable.length + 1, startlatitude: '', startlongitude: '', endlatitude: '', endlongitude: '', color: ''  })
     setTableData(newTable)
   }
 
@@ -126,7 +126,7 @@ export default function LineEditSideBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
-    mapData.points = tableData;
+    mapData.lineData = tableData;
 
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
@@ -145,11 +145,14 @@ export default function LineEditSideBar(props) {
     try {
       const points = await store.getMapDataById(mapId)
       var newPoints = []
-      for (let i in points.points) {
+      for (let i in points.lineData) {
         newPoints.push({
-          'id': points.points[i]['id'],
-          'latitude': points.points[i]['latitude'],
-          'longitude': points.points[i]['longitude']
+          'id': points.lineData[i]['id'],
+          'startlatitude': points.lineData[i]['startlatitude'],
+          'startlongitude': points.lineData[i]['startlongitude'],
+          'endlatitude': points.lineData[i]['endlatitude'],
+          'endlongitude': points.lineData[i]['endlongitude'],
+          'color': points.lineData[i]['color']
         });
       }
       setTableData(newPoints);
@@ -275,23 +278,34 @@ export default function LineEditSideBar(props) {
                         </thead>
 
                         <tbody>
-                          {tableData.map((row, rowIndex) => (
+                        {tableData.map((row, rowIndex) => (
                             <tr key={row.id}>
                               {Object.keys(row).map((colName, colIndex) => (
                                 <td
                                   key={colIndex}
                                 >
                                   {
-                                    colIndex !== 0 && colIndex !== 3 ? (
+                                    colIndex !== 0 && colIndex !== 5 ? (
                                       <input className='cells'
                                         type="text"
                                         value={row[colName]}
                                         onChange={(event) => handleEditChange(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                       />
-                                    ) : colIndex !== 3 ? (
+                                    ) : colIndex !== 5 ? (
                                       row[colName]
-                                    ) : <></>}
+                                    ) : <select name="variables" onChange={(event) => handleEditChange(event, rowIndex, colName)}>
+                                      <option> {row[colName]} </option>
+                                      <option value={'white'} >white</option>
+                                      <option value={'black'} >black</option>
+                                      <option value={'red'} >red</option>
+                                      <option value={'orange'} >orange</option>
+                                      <option value={'yellow'} >yellow</option>
+                                      <option value={'green'} >green</option>
+                                      <option value={'blue'} >blue</option>
+                                      <option value={'purple'} >purple</option>
+                                    </select>
+                                  }
                                 </td>
                               ))}
                             </tr>

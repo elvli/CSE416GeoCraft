@@ -46,6 +46,10 @@ export default function MapBackground(props) {
           type: 'geojson',
           data: null,
         });
+        mapbox.current.addSource('line-map', {
+          type: 'geojson',
+          data: null,
+        });
 
         map.current.addLayer({
           'id': 'points',
@@ -112,6 +116,33 @@ export default function MapBackground(props) {
               1
             ]
           }
+        })
+
+        mapbox.current.addLayer({
+          id: 'lines',
+          type: 'line',
+          source: 'line-map',
+          layout: {
+            'line-cap': 'round',
+            'line-join': 'round'
+            },
+            paint: {
+            'line-color': [
+              'match',
+              ['get', 'color'],
+              'white', 'white',
+              'black', 'black',
+              'red', 'red',
+              'orange', 'orange',
+              'yellow', 'yellow',
+              'green', 'green',
+              'blue', 'blue',
+              'purple', 'purple',
+              'white'
+            ],
+            'line-width': 2.5
+            },
+            filter: ['in', '$type', 'LineString']
         })
 
         mapbox.current.addLayer({
@@ -238,6 +269,10 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
             var pointsCollection = []
             if (mapData.points) {
               for (let i in mapData.points) {
@@ -272,12 +307,15 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
-
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
             var pointsCollection = []
             if (mapData.propPoints) {
               for (let i in mapData.propPoints) {
-                if (mapData.propPoints[i]['longitude'] && mapData.propPoints[i]['latitude'] && !isNaN(mapData.propPoints[i]['longitude']) &&
-                  !isNaN(mapData.propPoints[i]['latitude']) && !isNaN(mapData.propPoints[i]['size'])) {
+                if (mapData.propPoints[i]['longitude'] && mapData.propPoints[i]['latitude'] && mapData.propPoints[i]['size'] 
+                && !isNaN(mapData.propPoints[i]['longitude']) && !isNaN(mapData.propPoints[i]['latitude']) && !isNaN(mapData.propPoints[i]['size'])) {
 
                   var latitude = Math.min(90, Math.max(-90, parseFloat(mapData.propPoints[i]['latitude'])));
                   var longitude = Math.min(180, Math.max(-180, parseFloat(mapData.propPoints[i]['longitude'])));
@@ -305,9 +343,63 @@ export default function MapBackground(props) {
               })
             )
             map.current.getSource('propSymbol-map').setData(myGeoJSON);
-
-
+              
           }
+
+
+          else if (store.currentList && store.currentList.mapType === "line") {
+            map.current.getSource('point-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
+            var pointsCollection = []
+            if (mapData.lineData) {
+              for (let i in mapData.lineData) {
+                if (mapData.lineData[i]['startlongitude'] && mapData.lineData[i]['startlatitude'] 
+                && !isNaN(mapData.lineData[i]['startlongitude']) && !isNaN(mapData.lineData[i]['startlatitude']
+                && mapData.lineData[i]['endlongitude'] && mapData.lineData[i]['endlatitude'] 
+                && !isNaN(mapData.lineData[i]['endlongitude']) && !isNaN(mapData.lineData[i]['endlatitude'])
+                )) {
+
+                  var slatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['startlatitude'])));
+                  var slongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['startlongitude'])));
+                  var elatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['endlatitude'])));
+                  var elongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['endlongitude'])));
+                  
+                  pointsCollection.push([slatitude, slongitude, mapData.lineData[i]['id'], elatitude,  elongitude, mapData.lineData[i]['color']])
+                }
+              }
+            }
+
+            var myGeoJSON = {};
+            myGeoJSON.type = "FeatureCollection";
+            myGeoJSON.features = [];
+            pointsCollection.map((point) =>
+              myGeoJSON.features.push({
+                'type': 'Feature',
+                'geometry': {
+                  'type': 'LineString',
+                  'coordinates': [
+                    [parseFloat(point[1]), parseFloat(point[0])],
+                    [parseFloat(point[4]), parseFloat(point[3])]
+                  ]
+
+                },
+                'properties': {
+                  'id': point[2],
+                  'color' : point[5]
+                }
+              })
+            )
+            map.current.getSource('line-map').setData(myGeoJSON);
+          }
+
+
           else {
             map.current.getSource('map-source').setData({});
             map.current.getSource('point-map').setData({});
