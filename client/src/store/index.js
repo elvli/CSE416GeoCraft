@@ -239,7 +239,9 @@ function GlobalStoreContextProvider(props) {
   }
 
   store.updateMapDataById = async function (id, mapData) {
+    console.log('apples')
     const response = await api.updateMapDataById(id, mapData);
+    console.log('bananas')
     if (response.data.success) {
       console.log('Successfully updated mapdata')
     }

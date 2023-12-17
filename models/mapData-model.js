@@ -40,7 +40,8 @@ const mapDataSchema = new Schema(
         }],
         choroSettings: {
           theme: String,
-          headerValue: String
+          stepCount: String,
+          headerValue: String,
         }
       },
       required: false

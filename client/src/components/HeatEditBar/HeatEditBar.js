@@ -1,25 +1,27 @@
 import React, { useState, useRef, useContext, useEffect } from 'react'
-import { Button, Table, AccordionHeader, Row, Col, Dropdown } from 'react-bootstrap';
+import { Button, Table, AccordionHeader, Row, Col, Dropdown, Form } from 'react-bootstrap';
 import './HeatEditBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import { HexColorPicker } from "react-colorful";
+import HeatPointModal from '../HeatPointModal/HeatPointModal';
 
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
+  const [showHeat, setShowHeat] = useState(false)
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null)
-  const [tableData, setTableData] = useState(points);
+  const [tableData, setTableData] = useState([{ id: 1, longitude: 0, latitude: 0, magnitide: 0 }]);
   const [tableHeaders, setTableHeaders] = useState([
-    'ID', 'Latitude', 'Longitude'
+    'ID', 'Latitude', 'Longitude', 'Magnitude'
   ]);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
-
+  const colors = store.getMapDataById(mapId)
   const [picker1, setPicker1] = useState(false);
   const [picker2, setPicker2] = useState(false);
   const [picker3, setPicker3] = useState(false);
@@ -37,16 +39,21 @@ export default function HeatEditBar(props) {
     0,
     'rgba(33,102,172,0)',
     0.2,
-    color1,
+    color1,//6
     0.4,
-    color2,
+    color2,//8
     0.6,
-    color3,
+    color3,//10
     0.8,
-    color4,
+    color4,//12
     1,
-    color5,
+    color5,//14
   ])
+  const [heatMapData, setHeatMapData] = useState({
+    "type": "FeatureCollection",
+    "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+    "features": []
+  });
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
 
@@ -121,7 +128,26 @@ export default function HeatEditBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '' })
+    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', magnitide: '' })
+    // var data = heatMapData
+    // data['features'].push({ "type": "Feature", "properties": { "mag": parseFloat(mag) }, "geometry": { "type": "Point", "coordinates": [ parseFloat(lat), parseFloat(long), 0 ] } })
+    // setHeatMapData(data)
+    // store.updateMapData({
+    //   type: 'heat',
+    //   import: true,
+    //   data: data
+    // })
+    setTableData(newTable)
+  }
+  const handleAddRowFiles = (arr) => {
+    var newTable = []
+    for (let i = 0; i < tableData.length; i++) {
+      newTable.push(tableData[i])
+    }
+    for (let i = 0; i < arr.length; i++) {
+      newTable.push({ id: newTable.length + 1, latitude: arr[i]['geometry']['coordinates'][1], longitude: arr[i]['geometry']['coordinates'][0], magnitide: arr[i]['properties']['mag'] })
+    }
+    
     setTableData(newTable)
   }
 
@@ -156,7 +182,7 @@ export default function HeatEditBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
-    mapData.points = tableData
+    mapData.heatmap = {data: tableData, color: currentColor}
 
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
@@ -166,7 +192,7 @@ export default function HeatEditBar(props) {
     mapData.settings.longitude = settingsValues[1];
     mapData.settings.latitude = settingsValues[0];
     mapData.settings.zoom = settingsValues[2];
-
+   
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
@@ -175,16 +201,23 @@ export default function HeatEditBar(props) {
     try {
       const points = await store.getMapDataById(mapId)
       var newPoints = []
-      for (let i in points.points) {
-        newPoints.push({
-          'id': points.points[i]['id'],
-          'latitude': points.points[i]['latitude'],
-          'longitude': points.points[i]['longitude']
-        });
+      for (let i = 0; i < points.heatmap.data.length; i++) {
+        newPoints.push(points.heatmap.data[i]);
       }
 
+      setCurrentColor(points.heatmap.color)
+      setColor1(currentColor[6])
+      setColor2(currentColor[8])
+      setColor3(currentColor[10])
+      setColor4(currentColor[12])
+      setColor5(currentColor[14])
+
+      console.log(color5)
       setTableData(newPoints);
-      setSettingsValues([map.settings.latitude, map.settings.longitude, map.settings.zoom])
+      
+      //setSettingsValues([map.settings.latitude, map.settings.longitude, map.settings.zoom])
+
+
     }
     catch {
       console.log('cannot load mapdata');
@@ -205,21 +238,10 @@ export default function HeatEditBar(props) {
     URL.revokeObjectURL(url);
   };
 
-  useEffect(() => {
-    try {
-      updateTable();
-    }
-    catch (error) {
-      console.log('cannot update table');
-    }
-  }, []);
 
-  const generateHeatMap = async (event) => {
-    event.preventDefault();
 
-  }
 
-  const [heatMapData, setHeatMapData] = useState(null);
+  
 
   const handleHeatMap = async (event) => {
     event.preventDefault();
@@ -229,12 +251,15 @@ export default function HeatEditBar(props) {
       var text = event.target.result;
       try {
         var json = JSON.parse(text);
-        setHeatMapData(json)
-        store.updateMapData({
-          type: 'heat',
-          import: true,
-          data: json
-        })
+        var arr = json['features'].concat(heatMapData['features'])
+        json['features'] = arr
+        handleAddRowFiles(arr)
+        // setHeatMapData(json)
+        // store.updateMapData({
+        //   type: 'heat',
+        //   import: true,
+        //   data: json
+        // })
       } catch (error) {
         console.error('Error handling file selection:', error);
       }
@@ -244,41 +269,11 @@ export default function HeatEditBar(props) {
 
   let fileUploader = <div className="drop-zone">
     <div className="drop-zone-text">
-      Drag & Drop or Click Browse to select a file
+      <h6>There's no data at the moment</h6>
     </div>
-    <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
-    {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
-    {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
+    
   </div>
-  useEffect(() => {
-    store.updateMapData({
-      type: 'heat',
-      import: false,
-      data: {
-        type: 'color',
-        data: currentColor
-      }
-    })
-  }, [currentColor])
-  useEffect(() => {
-    setCurrentColor([
-      'interpolate',
-      ['linear'],
-      ['heatmap-density'],
-      0,
-      'rgba(33,102,172,0)',
-      0.2,
-      color1,
-      0.4,
-      color2,
-      0.6,
-      color3,
-      0.8,
-      color4,
-      1,
-      color5
-    ])
-  }, [color1, color2, color3, color4, color5])
+
 
 
   const cover = {
@@ -291,20 +286,20 @@ export default function HeatEditBar(props) {
 
   let options = <div >
     <p>Select a color</p>
-    <Button className='heat-button' onClick={() => { setPicker1(!picker1) }}>
-      Red
+    <Button className='heat-button' onClick={() => { setPicker1(!picker1) }} style={{ backgroundColor: color1 }}>
+
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker2(!picker2) }}>
-      Orange
+    <Button className='heat-button' onClick={() => { setPicker2(!picker2) }} style={{ backgroundColor: color2 }}>
+
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker3(!picker3) }}>
-      Yellow
+    <Button className='heat-button' onClick={() => { setPicker3(!picker3) }} style={{ backgroundColor: color3 }}>
+
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker4(!picker4) }}>
-      Green
+    <Button className='heat-button' onClick={() => { setPicker4(!picker4) }} style={{ backgroundColor: color4 }}>
+
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker5(!picker5) }}>
-      Blue
+    <Button className='heat-button' onClick={() => { setPicker5(!picker5) }} style={{ backgroundColor: color5 }}>
+
     </Button>
     {picker1 ? <div className='heat-popover'>
       <div style={cover} onClick={(event) => { setPicker1(false) }} />
@@ -338,7 +333,43 @@ export default function HeatEditBar(props) {
     var zoom = map.current.getZoom().toFixed(2);
     setSettingsValues([latitude, longitude, zoom]);
   }
-
+  useEffect(() => {
+    store.updateMapData({
+      type: 'heat',
+      import: false,
+      data: {
+        type: 'color',
+        data: currentColor
+      }
+    })
+  }, [currentColor])
+  useEffect(() => {
+    setCurrentColor([
+      'interpolate',
+      ['linear'],
+      ['heatmap-density'],
+      0,
+      'rgba(33,102,172,0)',
+      0.2,
+      color1,
+      0.4,
+      color2,
+      0.6,
+      color3,
+      0.8,
+      color4,
+      1,
+      color5
+    ])
+  }, [color1, color2, color3, color4, color5])
+  useEffect(() => {
+    try {
+      updateTable();
+    }
+    catch (error) {
+      console.log('cannot update table');
+    }
+  }, []);
 
 
 
@@ -391,7 +422,7 @@ export default function HeatEditBar(props) {
                       <div className="drop-zone-text">
                         Attach a .json, .kml, or .shp file.
                       </div>
-                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
+                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange}/>
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
@@ -432,14 +463,14 @@ export default function HeatEditBar(props) {
                                   key={colIndex}
                                 >
                                   {
-                                    colIndex !== 0 && colIndex !== 3 ? (
+                                    colIndex !== 0 && colIndex !== 4 ? (
                                       <input className='cells'
                                         type="text"
                                         value={row[colName]}
                                         onChange={(event) => handleEditChange(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                       />
-                                    ) : colIndex !== 3 ? (
+                                    ) : colIndex !== 4 ? (
                                       row[colName]
                                     ) : <></>}
                                 </td>
@@ -452,7 +483,14 @@ export default function HeatEditBar(props) {
                         <PlusCircleFill className='add-row-icon' />
                       </Button>
                     </div>
-
+                    <div className="drop-zone">
+                      <div className="drop-zone-text">
+                        <h6>Drag & Drop or Click Browse to select a file</h6>
+                      </div>
+                        <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
+                      {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
+                      {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
+                    </div>                    
                     <div className='JSONButton'>
                       <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
                         Download JSON
@@ -466,7 +504,7 @@ export default function HeatEditBar(props) {
                 <Accordion.Item eventKey="2">
                   <AccordionHeader>Heat Map Editor</AccordionHeader>
                   <Accordion.Body>
-                    {!heatMapData ? fileUploader : options}
+                    {tableData.length==0 ? fileUploader : options}
                   </Accordion.Body>
                 </Accordion.Item>
 
@@ -499,6 +537,7 @@ export default function HeatEditBar(props) {
         </div>
       </div>
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
+      {/* <HeatPointModal saveAndExitShow={showHeat} handlesaveAndExitShowClose={(event) => { setShowHeat(false) }} handleHeatMap={handleHeatMap} handleAddRow={handleAddRow}  /> */}
     </div >
   )
 }

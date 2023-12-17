@@ -122,22 +122,8 @@ getMapDataById = async (req, res) => {
         var Pbf = require('pbf');
         var utf8 = Buffer.from(mapData.GeoJson, 'base64')
         var geojson = geobuf.decode(new Pbf(utf8));
-
-
-
-
-
-
-
         mapData.GeoJson = geojson;
-        //console.log('mapData Geojson: ', mapData.GeoJson)
-
-
       }
-
-
-
-
 
       return res.status(200).json({ success: true, mapData: mapData });
     }).catch(err => console.log(err))

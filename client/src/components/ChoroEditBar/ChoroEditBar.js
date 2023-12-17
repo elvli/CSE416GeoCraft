@@ -6,6 +6,7 @@ import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import './ChoroEditBar.scss';
+import chroma from 'chroma-js';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA'
 
@@ -26,6 +27,7 @@ export default function ChoroEditBar(props) {
   const [activeKey, setActiveKey] = useState(['0']);
   const [geoJsonData, setGeoJsonData] = useState(null);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
+  const [stepCount, setStepCount] = useState('5');
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -88,8 +90,9 @@ export default function ChoroEditBar(props) {
 
           const regionArray = tableData.map((dict) => dict.region);
           setPrevSelectedRegions(regionArray);
-          setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue]);
           setChoroTheme(mapData.choroData.choroSettings.theme);
+          setStepCount(mapData.choroData.choroSettings.stepCount);
+          setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue]);
 
           setSettingsValues([mapData.settings.latitude, mapData.settings.longitude, mapData.settings.zoom])
         }
@@ -140,10 +143,12 @@ export default function ChoroEditBar(props) {
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
 
   const handleAddRow = (regionInfo) => {
-    setTableData((prevTableData) => [
-      ...prevTableData,
-      { id: prevTableData.length + 1, region: regionInfo, data: '0' },
-    ]);
+    if (!doesRegionExist(tableData, regionInfo)) {
+      setTableData((prevTableData) => [
+        ...prevTableData,
+        { id: prevTableData.length + 1, region: regionInfo, data: '0' },
+      ]);
+    }
   };
 
   const handleEditChange = (event, rowIndex, colName) => {
@@ -163,17 +168,25 @@ export default function ChoroEditBar(props) {
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId);
     setGeoJsonData(mapData.GeoJson);
-    mapData.choroData.regionData = tableData;
-    mapData.choroData.choroSettings = { theme: choroTheme, headerValue: tableHeaders[2] };
 
+    // THIS CORRECTS THE STEP COUNT SO THAT IT IS IN RANGE [1, 25]
+    var correctedStepCount;
+    if (stepCount === '')
+      correctedStepCount = '5'
+    else
+      correctedStepCount = Math.min(25, Math.max(1, parseFloat(stepCount))).toString();
+    setStepCount(correctedStepCount);
+
+    // THIS CORRECTS THE COORDINATES SO THAT THEY ARE IN RANGE [-90, 90] AND [-180, 180]
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
     var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
     setSettingsValues([latitude, longitude, zoom])
 
-    mapData.settings.longitude = settingsValues[1];
-    mapData.settings.latitude = settingsValues[0];
-    mapData.settings.zoom = settingsValues[2];
+    // THIS SETS THE NEW DATA TO THE MAPDATA OBJECT
+    mapData.choroData.regionData = tableData;
+    mapData.choroData.choroSettings = { theme: choroTheme, stepCount: correctedStepCount, headerValue: tableHeaders[2] };
+    mapData.settings = { latitude: settingsValues[0], longitude: settingsValues[1], zoom: settingsValues[2] }
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -249,12 +262,17 @@ export default function ChoroEditBar(props) {
 
 
 
+  function getValueForRegion(targetRegion) {
+    const result = tableData.find(entry => entry.region === targetRegion);
+    return result ? result.data : null;
+  }
+
 
   // THIS HANDLES USERS CLICKING ON A REGION OF THE MAP
 
   useEffect(() => {
-    const regionSelectHandler = (e) => {
-      const clickedRegion = e.features[0];
+    const regionSelectHandler = (event) => {
+      const clickedRegion = event.features[0];
       var propertyName;
 
       if (clickedRegion) {
@@ -278,14 +296,22 @@ export default function ChoroEditBar(props) {
         }
         setActiveKey((prevActiveKey) => [...prevActiveKey, '1']);
 
+        // console.log('KSKS:', getValueForRegion(regionName))
+        // console.log('ARR:', findGradient(choroTheme).gradient)
+        // const regionsArray = tableData.map(entry => entry.region);
+        // console.log('herehrehrehrehreh: ', regionsArray);
+
+        var layerColor = interpolateColor(getValueForRegion(regionName), findGradient(choroTheme).gradient)
+        console.log('layerColor', layerColor)
+
         map.current.addLayer({
           id: `${regionName}-choro`,
           type: 'fill',
           source: 'map-source',
           filter: ['==', propertyName, regionName],
           paint: {
-            'fill-color': 'blue',
-            'fill-opacity': 0.6,
+            'fill-color': layerColor,
+            'fill-opacity': 1,
           },
         });
       }
@@ -304,62 +330,29 @@ export default function ChoroEditBar(props) {
   // THIS HANDLES ADDING LAYERS TO REGIONS WITH THE PROPER COLOR VALUES
 
   // useEffect(() => {
-  //   console.log('herehrehrehrehreh');
+  //   const updateLayers = () => {
+  //     const regionsArray = tableData.map(entry => entry.region);
+  //     console.log('herehrehrehrehreh: ', regionsArray);
 
-  //   // Check if the map and 'map-source' are available
-  //   if (map.current.isSourceLoaded('map-source')) {
-  //     console.log('start filling tableData');
-
-  //     const fillLayerId = 'region-fill';
-  //     const lineLayerId = 'region-line';
-
-  //     // Remove existing layers if they exist
-  //     if (map.current.getLayer(fillLayerId)) {
-  //       map.current.removeLayer(fillLayerId);
-  //     }
-  //     if (map.current.getLayer(lineLayerId)) {
-  //       map.current.removeLayer(lineLayerId);
-  //     }
-
-  //     // Add a fill layer
-  //     map.current.addLayer({
-  //       id: fillLayerId,
-  //       type: 'fill',
-  //       source: 'map-source',
-  //       paint: {
-  //         'fill-opacity': 1,
-  //         'fill-color': '#0000FF',
-  //       },
-  //     });
-
-  //     // Add a line layer
-  //     // map.current.addLayer({
-  //     //   id: lineLayerId,
-  //     //   type: 'line',
-  //     //   source: 'region-source',
-  //     //   layout: {},
-  //     //   paint: {
-  //     //     'line-color': 'blue',
-  //     //     'line-width': 2,
-  //     //   },
-  //     //   filter: ['in', 'NAME_1', ...prevSelectedRegions], // Adjust the property name based on your GeoJSON structure
-  //     // });
-  //   } else {
-  //     // Set up a listener to wait for the source to load
-  //     const sourceLoadListener = () => {
-  //       // Remove the listener to avoid multiple calls
-  //       map.current.off('sourceload', 'map-source', sourceLoadListener);
-
-  //       // Trigger the effect again now that the source is loaded
-  //       setGeoJsonData(geoJsonData); // Assuming you have some state change to trigger the effect again
+  //     for (var i = 0; i < regionsArray.length; i++) {
+  //       console.log('CURRENT LAYER', i);
+  //       map.current.addLayer({
+  //         id: `${regionsArray[i]}-choro`,
+  //         type: 'fill',
+  //         source: 'map-source',
+  //         filter: ['==', 'ID_1', regionsArray[i]],
+  //         paint: {
+  //           'fill-color': interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient),
+  //           'fill-opacity': 1,
+  //         },
+  //       });
   //     };
+  //   };
 
-  //     // Attach the listener
-  //     map.current.on('sourceload', 'map-source', sourceLoadListener);
-  //   }
-  // }, [geoJsonData, map]);
-
-
+  //   // if (tableData.length > 0) {
+  //   updateLayers();
+  //   // }
+  // }, [tableData]);
 
 
   // THIS HANDLES DOWNLOADING MAP DATA AS A JSON FILE
@@ -392,22 +385,49 @@ export default function ChoroEditBar(props) {
 
   // THIS HANDLES SELECTING MAP THEMES
 
+  const findGradient = (themeName) => colorGradients.find(theme => theme.name === themeName);
+
+  function generateColors(steps, gradient) {
+    const colorStops = gradient.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/g) || [];
+
+    if (colorStops.length < 2) {
+      throw new Error('Invalid gradient format. At least two color stops are required.');
+    }
+
+    const colors = chroma
+      .scale(colorStops)
+      .colors(steps);
+
+    return colors;
+  }
+
+  function interpolateColor(value, gradient) {
+    const gradientArray = generateColors(parseFloat(stepCount), gradient);
+
+    var adjustedValue = Math.max(0, Math.min(100, parseFloat(value)));
+    var index = parseInt(Math.round((adjustedValue * (gradientArray.length - 1)) / 100));
+
+    const resultColor = gradientArray[index];
+
+    return resultColor;
+  }
+
   const handleGradientSelect = (selectedOption) => {
     setChoroTheme(selectedOption.name);
   };
 
   const colorGradients = [
-    { name: 'Warm', gradient: 'linear-gradient(to left, #FF0000, #ff5733, #ff8c1a, #ffc300, #f7d559)' },
+    { name: 'Warm', gradient: 'linear-gradient(to right, #f7d559, #ffc300, #ff8c1a, #ff5733, #FF0000)' },
     { name: 'Cool', gradient: 'linear-gradient(to right, #96FFFF, #0013de)' },
     { name: 'Hot and Cold', gradient: 'linear-gradient(to right, #FF0000, #0013de)' },
-    { name: 'Forest', gradient: 'linear-gradient(to left, #14452F, #009900, #66cc66, #A1DDA1)' },
+    { name: 'Forest', gradient: 'linear-gradient(to right, #A1DDA1, #66cc66, #009900, #14452F)' },
     { name: 'Grayscale', gradient: 'linear-gradient(to right, #D9D8DA, #363439)' },
     { name: 'Baja Blast', gradient: 'linear-gradient(to right, #FCFB62, #17E0BC)' },
     { name: 'Vice City', gradient: 'linear-gradient(to right, #ffcc00, #ff3366, #cc33ff, #9933ff)' },
     { name: 'Rainbow', gradient: 'linear-gradient(to right, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #6633cc)' },
+    { name: 'Test1', gradient: 'linear-gradient(to right, #f2f5c6, #263590)' },
+    { name: 'Test2', gradient: 'linear-gradient(to right, #f2f5c6, #bfc5b9, #8c95ab, #59659e, #263590)' },
   ];
-
-  const findGradient = (themeName) => colorGradients.find(theme => theme.name === themeName);
 
   const dropdownToggleContent = choroTheme ? (
     <div className="d-flex align-items-center">
@@ -463,6 +483,38 @@ export default function ChoroEditBar(props) {
   );
 
 
+
+
+  // THIS HANDLES USERS SETTING STEP COUNT FOR THEIR GRADIENT
+
+  const handleStepChange = (event) => {
+    const numericValue = event.target.value.replace(/[^0-9]/g, '');
+    console.log('chagneAL:', numericValue)
+    setStepCount(numericValue);
+  };
+
+  const handleStepKeyDown = (event) => {
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === 'Backspace';
+    if (!isNumericOrBackspace) {
+      event.preventDefault();
+    }
+  };
+
+  const stepInput = (
+    <div className="input-group">
+      <div className="input-group-prepend">
+        <span className="input-group-text" id="">Gradient Steps</span>
+      </div>
+      <input
+        type="text"
+        className="form-control"
+        placeholder='Steps'
+        value={stepCount}
+        onChange={handleStepChange}
+        onKeyDown={handleStepKeyDown}
+      />
+    </div>
+  );
 
 
   // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
@@ -542,6 +594,7 @@ export default function ChoroEditBar(props) {
                   <Accordion.Body>
                     {tableContent}
                     {gradientDropDown}
+                    {stepInput}
                     {downloadJSONButton}
                   </Accordion.Body>
                 </Accordion.Item>
