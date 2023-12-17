@@ -1,5 +1,7 @@
 const express = require("express");
+const multer = require('multer');
 const cors = require('cors');
+const path = require('path');
 const mongoose = require("mongoose");
 const AuthController = require('./controllers/auth-controller');
 const MapController = require('./controllers/map-controller');
@@ -8,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const auth = require('./auth');
 const baseUrl = "https://geocraftmaps.azurewebsites.net";
- //const baseUrl = "http://localhost:3000";
+// const baseUrl = "http://localhost:3000";
 // const baseUrl = "https://geocraftbackend.azurewebsites.net";
 
 require("dotenv").config();
@@ -34,6 +36,17 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'client/public');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -65,6 +78,16 @@ app.post('/mapData', auth.verify, MapDataController.createMapData);
 app.delete('/mapData/:id', auth.verify, MapDataController.deleteMapData);
 app.put('/mapData/:id', auth.verify, MapDataController.updateMapDataById);
 app.get('/mapData/:id', MapDataController.getMapDataById);
+
+app.post('/upload', upload.single('profilePic'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+    // Assuming you have a database model for users, update the profile picture URL
+  // for the user in your database here.
+  // For now, just return the filename as a response.
+  res.json({ filename: req.file.filename });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on post ${PORT}`);

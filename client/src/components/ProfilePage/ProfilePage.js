@@ -1,5 +1,6 @@
 import { React, useState, useContext, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
+import axios from 'axios'; // Import Axios
 import AuthContext from '../../auth'
 import GlobalStoreContext from "../../store";
 import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal, PublishMapModal } from '../../components'
@@ -60,21 +61,24 @@ export default function ProfilePage() {
   async function handlePublishClose(event) {
     setPublishMapShow(false)
   }
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    console.log(file);
-    
+
     if (file) {
-      const reader = new FileReader();
+      const formData = new FormData();
+      formData.append('profilePic', file);
 
-      reader.onloadend = () => {
-        setProfilePic(reader.result);
-      };
+      try {
+        // const response = await axios.post('https://geocraftmapsbackend.onrender.com/upload', formData);
+        const response = await axios.post('http:localhost3001/upload', formData);
+        console.log(response.data);
 
-      reader.readAsDataURL(file);
+        // Update the profile picture URL in your component state
+        setProfilePic(`${process.env.PUBLIC_URL}/${response.data.filename}`);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
     }
-
-    // Perform any additional logic here, such as uploading the file
   };
 
   var functions = {
@@ -121,7 +125,7 @@ export default function ProfilePage() {
             className="img-container"
             style={{ width: "150px", height: "150px" }}
              >
-              <img src={profilePic}
+              <img src= {profilePic}
                 alt="Default Profile Pic"
                 className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
