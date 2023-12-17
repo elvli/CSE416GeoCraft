@@ -69,8 +69,8 @@ export default function ProfilePage() {
       formData.append('profilePic', file);
 
       try {
-        // const response = await axios.post('https://geocraftmapsbackend.onrender.com/upload', formData);
-        const response = await axios.post('http:localhost3001/upload', formData);
+        const response = await axios.post('https://geocraftmapsbackend.onrender.com/upload', formData);
+        // const response = await axios.post('http:localhost3001/upload', formData);
         console.log(response.data);
 
         // Update the profile picture URL in your component state
