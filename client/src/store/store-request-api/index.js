@@ -51,8 +51,8 @@ export const createMapData = (id) => {
     choroData: {},
     mapID: id,
     settings: {
-      latitude: 40.9083,
-      longitude: -73.1217,
+      latitude: 40.9171,
+      longitude: -73.1237,
       zoom: 13.91
     }
   })

@@ -32,11 +32,13 @@
 }
 
 .th-editable.editing {
-  background-color: #eee; /* or any background color you prefer */
+  background-color: #eee;
+  /* or any background color you prefer */
 }
 
 .choro-table {
-  max-height: 450px;
+  max-height: 420px;
+  margin-bottom: 10px;
 
   thead th {
     position: static;

@@ -66,7 +66,7 @@ export default function ChoroEditBar(props) {
 
 
 
-  // This sets up the editbar and its states
+  // THIS SETS UP THE EDITBAR AND ITS STATES
 
   useEffect(() => {
     try {
@@ -108,6 +108,7 @@ export default function ChoroEditBar(props) {
 
 
   // THESE FUNCTIONS HANDLE FILE LOADING
+
   const handleFileChange = (event) => {
     handleFileSelection(event.target.files);
   };
@@ -141,7 +142,7 @@ export default function ChoroEditBar(props) {
   const handleAddRow = (regionInfo) => {
     setTableData((prevTableData) => [
       ...prevTableData,
-      { id: prevTableData.length + 1, region: regionInfo, data: '' },
+      { id: prevTableData.length + 1, region: regionInfo, data: '0' },
     ]);
   };
 
@@ -222,6 +223,7 @@ export default function ChoroEditBar(props) {
             </th>
           </tr>
         </thead>
+
         <tbody>
           {tableData.map((row, rowIndex) => (
             <tr key={row.id}>
@@ -248,15 +250,18 @@ export default function ChoroEditBar(props) {
 
 
 
+  // THIS HANDLES USERS CLICKING ON A REGION OF THE MAP
+
   useEffect(() => {
     const regionSelectHandler = (e) => {
       const clickedRegion = e.features[0];
+      var propertyName;
 
       if (clickedRegion) {
         let regionName;
 
         for (let i = 5; i >= 0; i--) {
-          const propertyName = `NAME_${i}`;
+          propertyName = `NAME_${i}`;
           if (clickedRegion.properties.hasOwnProperty(propertyName)) {
             regionName = clickedRegion.properties[propertyName];
             break;
@@ -272,6 +277,17 @@ export default function ChoroEditBar(props) {
           console.log('Region selected once already!!!!!');
         }
         setActiveKey((prevActiveKey) => [...prevActiveKey, '1']);
+
+        map.current.addLayer({
+          id: `${regionName}-choro`,
+          type: 'fill',
+          source: 'map-source',
+          filter: ['==', propertyName, regionName],
+          paint: {
+            'fill-color': 'blue',
+            'fill-opacity': 0.6,
+          },
+        });
       }
     };
 
@@ -281,6 +297,11 @@ export default function ChoroEditBar(props) {
       map.current.off('click', 'geojson-border-fill', regionSelectHandler);
     };
   }, [prevSelectedRegions]);
+
+
+
+
+  // THIS HANDLES ADDING LAYERS TO REGIONS WITH THE PROPER COLOR VALUES
 
   // useEffect(() => {
   //   console.log('herehrehrehrehreh');
@@ -341,7 +362,8 @@ export default function ChoroEditBar(props) {
 
 
 
-  // This portion handles downloading the mapdata as a json file:
+  // THIS HANDLES DOWNLOADING MAP DATA AS A JSON FILE
+
   const downloadJson = () => {
     const json = JSON.stringify({ headers: tableHeaders, data: tableData });
     setJsonData(json);
@@ -368,7 +390,7 @@ export default function ChoroEditBar(props) {
 
 
 
-  // This portion handles seletecting map themes.
+  // THIS HANDLES SELECTING MAP THEMES
 
   const handleGradientSelect = (selectedOption) => {
     setChoroTheme(selectedOption.name);
@@ -443,12 +465,17 @@ export default function ChoroEditBar(props) {
 
 
 
+  // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
+
   const handleSetDefaults = () => {
     var latitude = map.current.getCenter().lat.toFixed(4);
     var longitude = map.current.getCenter().lng.toFixed(4);
     var zoom = map.current.getZoom().toFixed(2);
     setSettingsValues([latitude, longitude, zoom]);
   }
+
+
+
 
   return (
     <div>

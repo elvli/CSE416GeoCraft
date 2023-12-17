@@ -40,6 +40,10 @@
   position: relative;
 }
 
+.table {
+  margin-bottom: 0rem;
+}
+
 .table-responsive {
   max-height: 450px;
 
@@ -117,11 +121,11 @@
 }
 
 .table-custom-scrollbar {
-  overflow-y: auto;
+  // overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: darkgray transparent;
   overflow: auto;
-  max-height: 400px;
+  // max-height: 400px;
 
   &::-webkit-scrollbar {
     width: 10px;
