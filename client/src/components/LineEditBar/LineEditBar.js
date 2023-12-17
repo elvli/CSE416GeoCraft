@@ -163,19 +163,25 @@ export default function LineEditSideBar(props) {
     }
   }
 
-  const downloadJson = () => {
-    const json = JSON.stringify({ headers: tableHeaders, data: tableData });
+  const downloadJson = async () => {
+    const data = await store.getMapDataById(mapId)
+    const json = JSON.stringify(data);
     setJsonData(json);
 
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
     downloadLinkRef.current.href = url;
-    downloadLinkRef.current.download = 'table_data.json';
+    var string = store.currentList.name
+    downloadLinkRef.current.download = string.concat('.json');
     downloadLinkRef.current.click();
 
     URL.revokeObjectURL(url);
   };
+
+  const downloadPic = async (arg) => {
+    const rewait = await store.setPrint(arg)
+  }
 
   useEffect(() => {
     try {
@@ -316,13 +322,6 @@ export default function LineEditSideBar(props) {
                         <PlusCircleFill className='add-row-icon' />
                       </Button>
                     </div>
-
-                    <div className='JSONButton'>
-                      <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
-                        Download JSON
-                      </Button>
-                      <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
-                    </div>
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="2">
@@ -348,6 +347,30 @@ export default function LineEditSideBar(props) {
                       Set Defaults Here
                     </Button>
                   </Accordion.Body>
+                  <Accordion.Item eventKey="3">
+                  <Accordion.Header>Download</Accordion.Header>
+                  <Accordion.Body>
+                    <div>
+                      <div className='JSONButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
+                          Download JSON
+                        </Button>
+                        <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
+                      </div>
+                      <div className='PNGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(1); }}>
+                          Download PNG
+                        </Button>
+                      </div>
+                      <div className='JPGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(2); }}>
+                          Download JPG
+                        </Button>
+                      </div>
+                    </div>
+                    
+                  </Accordion.Body>
+                </Accordion.Item>
                 </Accordion.Item>
               </Accordion>
             </div>

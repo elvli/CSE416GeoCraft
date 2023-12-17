@@ -10,7 +10,8 @@ export const GlobalStoreActionType = {
   LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
   SET_CURRENT_LIST: "SET_CURRENT_LIST",
   UPDATE_MAP_DATA: "UPDATE_MAP_DATA",
-  EMPTY_MAP_DATA: "EMPTY_MAP_DATA"
+  EMPTY_MAP_DATA: "EMPTY_MAP_DATA",
+  SET_PRINT : 'SET_PRINT',
 }
 
 const tps = new jsTPS();
@@ -26,6 +27,7 @@ function GlobalStoreContextProvider(props) {
     container: mapContainer,
     sort: [0],
     mapdata: null,
+    print: 0,
   });
 
   const storeReducer = (action) => {
@@ -38,6 +40,7 @@ function GlobalStoreContextProvider(props) {
           container: store.container,
           sort: store.sort,
           mapdata: null,
+          print: store.print,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_LIST: {
@@ -47,6 +50,7 @@ function GlobalStoreContextProvider(props) {
           container: store.container,
           sort: store.sort,
           mapdata: null,
+          print: store.print,
         });
       }
       case GlobalStoreActionType.UPDATE_MAP_DATA: {
@@ -55,7 +59,8 @@ function GlobalStoreContextProvider(props) {
           currentList: store.currentList,
           container: store.container,
           sort: store.sort,
-          mapdata: payload
+          mapdata: payload,
+          print: store.print,
         });
       }
       case GlobalStoreActionType.EMPTY_MAP_DATA: {
@@ -64,7 +69,18 @@ function GlobalStoreContextProvider(props) {
           currentList: store.currentList,
           container: store.container,
           sort: store.sort,
-          mapdata: null
+          mapdata: null,
+          print: store.print,
+        });
+      }
+      case GlobalStoreActionType.SET_PRINT: {
+        return setStore({
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          container: store.container,
+          sort: store.sort,
+          mapdata: store.mapdata,
+          print: payload,
         });
       }
       default:
@@ -324,6 +340,16 @@ function GlobalStoreContextProvider(props) {
     }
     return getMapDataById(id);
   };
+
+  store.setPrint = function (arg) {
+    async function setPrint(arg) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_PRINT,
+        payload: arg
+      });
+    }
+    setPrint(arg)
+  }
 
   store.undo = function () {
     tps.undoTransaction();

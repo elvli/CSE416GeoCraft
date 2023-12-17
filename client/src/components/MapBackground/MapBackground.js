@@ -13,6 +13,7 @@ export default function MapBackground(props) {
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
   const [update, setUpdate] = useState(false)
+  const downloadLinkRef = useRef(null);
 
   async function generateMap(id, mapbox) {
     if (mapbox.current || typeof window === 'undefined') return;
@@ -25,6 +26,7 @@ export default function MapBackground(props) {
         style: 'mapbox://styles/mapbox/dark-v11',
         center: [lng, lat],
         zoom: zoom,
+        preserveDrawingBuffer: true
       });
 
       mapbox.current.on('move', () => {
@@ -412,6 +414,33 @@ export default function MapBackground(props) {
 
     updateMapData();
   }, [update || store.currentList]);
+
+
+  useEffect(() => {
+    if (store.print === 1){
+        var string = store.currentList.name
+        let link = document.createElement('a');
+        link.download = string.concat('.png');
+        link.href = map.current.getCanvas().toDataURL('image/png');
+        link.click();
+
+        store.setPrint(0)
+        
+    }
+    else if (store.print === 2){
+      console.log(map.current.getCanvas().toDataURL('image/jpeg'))
+      var string = store.currentList.name
+      let link = document.createElement('a');
+      link.download = string.concat('.jpg');
+      link.href = map.current.getCanvas().toDataURL('image/jpeg');
+      link.click();
+
+      store.setPrint(0)
+      
+  }
+  }, [store.print]);
+
+
   function generateHeatMap(mapData) {
     if(!map.current.getSource('earthquakes')) {
       map.current.addSource('earthquakes', {
