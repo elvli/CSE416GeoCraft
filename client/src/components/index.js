@@ -23,7 +23,7 @@ import VerifyScreen from './VerifyScreen/VerifyScreen.js';
 import HeatEditBar from './HeatEditBar/HeatEditBar.js'
 import ChoroEditBar from './ChoroEditBar/ChoroEditBar.js'
 import PointEditBar from './PointEditBar/PointEditBar.js'
-import ArrowEditBar from './ArrowEditBar/ArrowEditBar.js'
+import LineEditBar from './LineEditBar/LineEditBar.js'
 
 export {
   AppBanner,
@@ -51,5 +51,5 @@ export {
   HeatEditBar,
   ChoroEditBar,
   PointEditBar,
-  ArrowEditBar
+  LineEditBar
 };

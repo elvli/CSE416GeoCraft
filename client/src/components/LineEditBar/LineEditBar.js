@@ -3,9 +3,9 @@ import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
-import './ArrowEditBar.scss';
+import './LineEditBar.scss';
 
-export default function ArrowEditSideBar(props) {
+export default function LineEditSideBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
 
@@ -194,7 +194,7 @@ export default function ArrowEditSideBar(props) {
 
   return (
     <div>
-      <div className={`d-flex flex-row`} id="arrow-map-sidebar">
+      <div className={`d-flex flex-row`} id="line-map-sidebar">
         <div className="edit-left-bar">
           <Col id="edit-left-tool">
             <Row>
@@ -229,10 +229,10 @@ export default function ArrowEditSideBar(props) {
           </Col>
 
         </div>
-        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="arrow-map-menu">
+        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="line-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen className='arrow-map-accordian'>
+              <Accordion defaultActiveKey={['0']} alwaysOpen className='line-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body
@@ -249,7 +249,7 @@ export default function ArrowEditSideBar(props) {
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
 
-                  <Accordion.Header>Arrow Map Data</Accordion.Header>
+                  <Accordion.Header>Line Map Data</Accordion.Header>
                   <Accordion.Body>
                     <div className="table-responsive table-custom-scrollbar">
                       <Table striped bordered hover>
@@ -313,7 +313,7 @@ export default function ArrowEditSideBar(props) {
                 </Accordion.Item>
                 <Accordion.Item eventKey="2">
 
-                  <Accordion.Header>Arrow Map Settings</Accordion.Header>
+                  <Accordion.Header>Line Map Settings</Accordion.Header>
                   <Accordion.Body>
                     <div className="input-group">
                       <div className="input-group-prepend">

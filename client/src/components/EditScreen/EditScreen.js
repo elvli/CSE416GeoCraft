@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import GlobalStoreContext from "../../store";
 import AppBanner from "../AppBanner/AppBanner.js"
 import PropSymbEditBar from "../PropSymbEditBar/PropSymbEditBar.js"
-import ArrowEditBar from "../ArrowEditBar/ArrowEditBar.js"
+import LineEditSideBar from "../LineEditBar/LineEditBar.js"
 import PointEditBar from "../PointEditBar/PointEditBar.js"
 import ChoroEditBar from "../ChoroEditBar/ChoroEditBar.js"
 import MapBackground from "../MapBackground/MapBackground.js"
@@ -11,7 +11,7 @@ import HeatEditBar from "../HeatEditBar/HeatEditBar.js"
 
 const componentMapping = {
   heat: HeatEditBar,
-  arrow: ArrowEditBar,
+  line: LineEditSideBar,
   point: PointEditBar,
   choro: ChoroEditBar,
   propSymb: PropSymbEditBar,

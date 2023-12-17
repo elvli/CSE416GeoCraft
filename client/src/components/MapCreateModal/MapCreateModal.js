@@ -54,7 +54,7 @@ export default function MapCreateModal(props) {
                 <option value="point">Point Map</option>
                 <option value="propSymb">Proportional Symbols Map</option>
                 <option value="choro">Choropleth Map</option>
-                <option value="arrow">Arrow Map</option>
+                <option value="line">Line Map</option>
               </Form.Select>
             </Form.Group>
           </Modal.Body>
