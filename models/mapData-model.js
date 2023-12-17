@@ -39,6 +39,7 @@ const mapDataSchema = new Schema(
           data: Number,
         }],
         choroSettings: {
+          propName: String,
           theme: String,
           stepCount: String,
           headerValue: String,

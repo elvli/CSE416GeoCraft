@@ -48,7 +48,7 @@ export const createMapData = (id) => {
   return api.post(`/mapData/`, {
     // SPECIFY THE PAYLOAD
     points: [],
-    choroData: {region: [], choroSettings: {theme: 'Warm', stepCount: '5', headerValue: 'Value',}},
+    choroData: { region: [], choroSettings: { propName: 'NAME_0', theme: 'Warm', stepCount: '5', headerValue: 'Value', } },
     mapID: id,
     settings: {
       latitude: 40.9171,
