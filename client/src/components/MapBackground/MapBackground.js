@@ -42,6 +42,10 @@ export default function MapBackground(props) {
           type: 'geojson',
           data: null,
         });
+        mapbox.current.addSource('propSymbol-map', {
+          type: 'geojson',
+          data: null,
+        });
 
         map.current.addLayer({
           'id': 'points',
@@ -49,6 +53,40 @@ export default function MapBackground(props) {
           'source': 'point-map',
           'minzoom': 1,
           'paint': {
+            'circle-color': [
+              'match',
+              ['get', 'color'],
+              'white', 'white',
+              'black', 'black',
+              'red', 'red',
+              'orange', 'orange',
+              'yellow', 'yellow',
+              'green', 'green',
+              'blue', 'blue',
+              'purple', 'purple',
+              'white'
+            ],
+            'circle-stroke-color': 'white',
+            'circle-stroke-width': 1,
+            'circle-opacity': [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              1,
+              0,
+              2,
+              1
+            ]
+          }
+        })
+
+        map.current.addLayer({
+          'id': 'propsymbol',
+          'type': 'circle',
+          'source': 'propSymbol-map',
+          'minzoom': 1,
+          'paint': {
+            'circle-radius': ['get', 'size'],
             'circle-color': [
               'match',
               ['get', 'color'],
@@ -192,11 +230,21 @@ export default function MapBackground(props) {
           }
           const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
           map.current.getSource('map-source').setData(geoJSON);
-          var pointsCollection = []
+
+
+
+          if (store.currentList && store.currentList.mapType === "point"){
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            var pointsCollection = []
           if (mapData.points) {
             for (let i in mapData.points) {
               if (mapData.points[i]['longitude'] && mapData.points[i]['latitude'] && !isNaN(mapData.points[i]['longitude']) && !isNaN(mapData.points[i]['latitude'])) {
-                pointsCollection.push([mapData.points[i]['latitude'], mapData.points[i]['longitude'], mapData.points[i]['id'], mapData.points[i]['color']])
+                var latitude = Math.min(90, Math.max(-90, parseFloat(mapData.points[i]['latitude'])));
+                var longitude = Math.min(180, Math.max(-180, parseFloat(mapData.points[i]['longitude'])));
+                pointsCollection.push([latitude, longitude, mapData.points[i]['id'], mapData.points[i]['color']])
               }
             }
           }
@@ -219,10 +267,52 @@ export default function MapBackground(props) {
           )
           map.current.getSource('point-map').setData(myGeoJSON);
         }
+        else if(store.currentList && store.currentList.mapType === "propSymb"){
+          map.current.getSource('point-map').setData({
+            type: 'FeatureCollection',
+            features: []
+          });
+
+          var pointsCollection = []
+          if (mapData.propPoints) {
+            for (let i in mapData.propPoints) {
+              if (mapData.propPoints[i]['longitude'] && mapData.propPoints[i]['latitude'] && !isNaN(mapData.propPoints[i]['longitude']) && 
+              !isNaN(mapData.propPoints[i]['latitude']) && !isNaN(mapData.propPoints[i]['size'])) {
+
+                var latitude = Math.min(90, Math.max(-90, parseFloat(mapData.propPoints[i]['latitude'])));
+                var longitude = Math.min(180, Math.max(-180, parseFloat(mapData.propPoints[i]['longitude'])));
+                var size = Math.max(1, parseFloat(mapData.propPoints[i]['size']))
+                pointsCollection.push([latitude, longitude, mapData.propPoints[i]['id'], mapData.propPoints[i]['color'], size])
+              }
+            }
+          }
+
+          var myGeoJSON = {};
+          myGeoJSON.type = "FeatureCollection";
+          myGeoJSON.features = [];
+          pointsCollection.map((point) =>
+            myGeoJSON.features.push({
+              'type': 'Feature',
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [parseFloat(point[1]), parseFloat(point[0])]
+              },
+              'properties': {
+                'color': point[3],
+                'id': point[2],
+                'size': point[4],
+              }
+            })
+          )
+          map.current.getSource('propSymbol-map').setData(myGeoJSON);
+
+
+        }
         else {
           map.current.getSource('map-source').setData({});
           map.current.getSource('point-map').setData({});
         }
+          }
       } catch (error) {
         console.error('Error updating map data:', error);
       }
