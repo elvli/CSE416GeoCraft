@@ -270,6 +270,8 @@ export default function ChoroEditBar(props) {
 
   // THIS HANDLES USERS CLICKING ON A REGION OF THE MAP
 
+  const isLayerAdded = useRef(false);
+
   useEffect(() => {
     const regionSelectHandler = (event) => {
       const clickedRegion = event.features[0];
@@ -301,23 +303,67 @@ export default function ChoroEditBar(props) {
         // const regionsArray = tableData.map(entry => entry.region);
         // console.log('herehrehrehrehreh: ', regionsArray);
 
-        var layerColor = interpolateColor(getValueForRegion(regionName), findGradient(choroTheme).gradient)
-        console.log('layerColor', layerColor)
+        // var layerColor = interpolateColor(getValueForRegion(regionName), findGradient(choroTheme).gradient)
+        // console.log('layerColor', layerColor)
+        // // console.log(propertyName)
 
-        map.current.addLayer({
-          id: `${regionName}-choro`,
-          type: 'fill',
-          source: 'map-source',
-          filter: ['==', propertyName, regionName],
-          paint: {
-            'fill-color': layerColor,
-            'fill-opacity': 1,
-          },
-        });
+        // map.current.addLayer({
+        //   id: `${regionName}-choro`,
+        //   type: 'fill',
+        //   source: 'map-source',
+        //   filter: ['==', propertyName, regionName],
+        //   paint: {
+        //     'fill-color': layerColor,
+        //     'fill-opacity': 1,
+        //   },
+        // });
       }
     };
 
     map.current.on('click', 'geojson-border-fill', regionSelectHandler);
+
+    const addLayer = () => {
+      const regionsArray = tableData.map(entry => entry.region);
+
+      for (var i = 0; i < regionsArray.length; i++) {
+        var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient);
+
+        // THIS ADDED THE APPROPRIATE COLOR BASED ON THE REGIONS VALUE
+        map.current.addLayer({
+          id: `${regionsArray[i]}-choro`,
+          type: 'fill',
+          source: 'map-source',
+          filter: ['==', 'NAME_1', regionsArray[i]],
+          paint: {
+            'fill-color': color,
+            'fill-opacity': 1,
+          },
+        });
+      };
+      
+      // THIS ADDED A BORDER SO THAT THE REGIONS DON'T GET MIXED UP TOGETHER
+      map.current.addLayer({
+        id: 'choro-border',
+        type: 'line',
+        source: 'map-source',
+        paint: {
+          'line-opacity': 1,
+          'line-color': '#FFFFFF',
+          'line-width': 0.5,
+        },
+      });
+    };
+
+    const tryAddLayer = () => {
+      if (!isLayerAdded.current && map.current.isStyleLoaded() && tableData.length > 0) {
+        addLayer();
+        isLayerAdded.current = true;
+      } else {
+        setTimeout(tryAddLayer, 100);
+      }
+    };
+
+    tryAddLayer();
 
     return () => {
       map.current.off('click', 'geojson-border-fill', regionSelectHandler);
@@ -425,8 +471,6 @@ export default function ChoroEditBar(props) {
     { name: 'Baja Blast', gradient: 'linear-gradient(to right, #FCFB62, #17E0BC)' },
     { name: 'Vice City', gradient: 'linear-gradient(to right, #ffcc00, #ff3366, #cc33ff, #9933ff)' },
     { name: 'Rainbow', gradient: 'linear-gradient(to right, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #6633cc)' },
-    { name: 'Test1', gradient: 'linear-gradient(to right, #f2f5c6, #263590)' },
-    { name: 'Test2', gradient: 'linear-gradient(to right, #f2f5c6, #bfc5b9, #8c95ab, #59659e, #263590)' },
   ];
 
   const dropdownToggleContent = choroTheme ? (
