@@ -1,27 +1,24 @@
-import { React, useState, useContext } from "react";
-import { Form, Button, Card, Row} from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
-import "./ConfirmScreen.scss";
+import React, { useState, useContext } from "react";
+import { Form, Button, Card, Row } from 'react-bootstrap';
+import { useNavigate, useParams } from "react-router-dom";
 import AuthContext from "../../auth";
-import { useEffect } from "react";
+import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png';
+import "./ConfirmScreen.scss";
 
 export default function ConfirmScreen() {
-  const [validated, setValidated] = useState(false)
+  const [validated, setValidated] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState("");
   const [confirmPassCheck, setConfirmPassCheck] = useState("");
   const [passwordLengthError, setPasswordLengthError] = useState(false);
   const { auth } = useContext(AuthContext);
   const [passwordMatchError, setPasswordMatchError] = useState(false);
-  const { token, id} = useParams()
-  const [verify, setVerify] = useState(true)
-  const [first, setFirst] = useState(true)
+  const { token, id } = useParams();
   const navigate = useNavigate();
-  
+
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
-    if (form.checkValidity() === false  || passwordLengthError || passwordMatchError) {
+    if (form.checkValidity() === false || passwordLengthError || passwordMatchError) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
@@ -31,9 +28,7 @@ export default function ConfirmScreen() {
       event.stopPropagation();
       const formData = new FormData(event.currentTarget);
       const response = auth.resetPassword(formData.get('password'), id, token)
-        navigate('/login')
-
-
+      navigate('/login')
     }
   }
 
@@ -44,15 +39,16 @@ export default function ConfirmScreen() {
     setPasswordLengthError(password.length < 8);
 
     if (password.length < 8) {
-      event.target.setCustomValidity(`Password must be at least ${ 8} characters.`);
-    } 
+      event.target.setCustomValidity(`Password must be at least ${8} characters.`);
+    }
     else {
       event.target.setCustomValidity('');
     }
 
     setPasswordMatchError(password !== confirmPassCheck);
   };
-  
+
+
   const handleConfirmPasswordChange = (event) => {
     const confirmPass = event.target.value;
     setConfirmPassCheck(confirmPass);
@@ -63,40 +59,31 @@ export default function ConfirmScreen() {
       event.target.setCustomValidity('');
     }
   };
+
+
   let card = <div className="confirm-screen">
-  <Row className="rows">
-    <h1>Reset Password</h1>
-    <p>Enter your new password</p>
-  </Row>
-  <br />
-  <Form noValidate validated={validated} onSubmit={handleSubmit}>
-    <Form.Group>
-      <Form.Control className="confirm-item" name='password' required type="password" placeholder="New Password" size="lg" onChange={handlePasswordChange} />
-      {passwordLengthError && <div className="sign-up-error-message text-danger">Password must be at least 8 characters.</div>}
-    </Form.Group>
+    <Row className="rows">
+      <h1>Reset Password</h1>
+      <p>Enter your new password</p>
+    </Row>
     <br />
-    <Form.Group>
-      <Form.Control className="confirm-item" name='confirmPassword' required type="password" placeholder="Confirm New Password" size="lg" onChange={handleConfirmPasswordChange} />
-      {passwordMatchError && <div className="sign-up-error-message text-danger">Passwords do not match.</div>}
-    </Form.Group>
-    <br /> <br />
-    <Form.Group>
-      <Button className="confirm-button" type="submit">Enter</Button>
-    </Form.Group>
-  </Form>
-</div>
-  // if (auth.verifyLink(id, token)) {
-  //   card = 
-  // }
-  // else {
-  //   card = <div className="confirm-screen">
-  //     <Row className="rows">
-  //       <h1>Your Link Has Expired</h1>
-  //       <p>Your reset password link has expired</p>
-  //     </Row>
-      
-  //   </div>
-  // }
+    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form.Group>
+        <Form.Control className="confirm-item" name='password' required type="password" placeholder="New Password" size="lg" onChange={handlePasswordChange} />
+        {passwordLengthError && <div className="sign-up-error-message text-danger">Password must be at least 8 characters.</div>}
+      </Form.Group>
+      <br />
+      <Form.Group>
+        <Form.Control className="confirm-item" name='confirmPassword' required type="password" placeholder="Confirm New Password" size="lg" onChange={handleConfirmPasswordChange} />
+        {passwordMatchError && <div className="sign-up-error-message text-danger">Passwords do not match.</div>}
+      </Form.Group>
+      <br /> <br />
+      <Form.Group>
+        <Button className="confirm-button" type="submit">Enter</Button>
+      </Form.Group>
+    </Form>
+  </div>
+
 
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 background-container">

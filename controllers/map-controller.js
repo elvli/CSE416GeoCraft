@@ -8,8 +8,8 @@ createMap = (req, res) => {
       errorMessage: 'UNAUTHORIZED'
     })
   }
+
   const body = req.body;
-  console.log("createMap body: " + JSON.stringify(body));
   if (!body) {
     return res.status(400).json({
       success: false,
@@ -18,13 +18,12 @@ createMap = (req, res) => {
   }
 
   const map = new Map(body);
-  console.log("newly created Map: " + map.toString());
+
   if (!map) {
     return res.status(400).json({ success: false, error: err })
   }
 
   User.findOne({ _id: req.userId }).then((user) => {
-    console.log("user found: " + JSON.stringify(user));
     user.maps.push(map._id);
     user
       .save()
@@ -51,10 +50,8 @@ deleteMap = async (req, res) => {
       errorMessage: 'UNAUTHORIZED'
     })
   }
-  console.log("delete Map with id: " + JSON.stringify(req.params.id));
-  console.log("delete " + req.params.id);
+
   Map.findById({ _id: req.params.id }).then((map) => {
-    console.log("Map found: " + JSON.stringify(map));
     if (!map) {
       return res.status(404).json({
         errorMessage: 'Map not found!',
@@ -65,13 +62,13 @@ deleteMap = async (req, res) => {
     async function asyncFindUser(mapList) {
       try {
         const user = User.findOne({ email: mapList.ownerEmail })
+
         if (!user) {
           return res.status(404).json({
             errorMessage: 'User was not found',
           })
         }
 
-        console.log("correct user!");
         Map.deleteOne({ _id: req.params.id }).then(() => {
           return res.status(200).json({ success: true, data: {} });
         }).catch(err => console.log(err))
@@ -92,16 +89,19 @@ deleteMap = async (req, res) => {
 getMapById = async (req, res) => {
   try {
     const map = await Map.findById(req.params.id);
+
     if (!map) {
       return res.status(404).json({
         success: false,
         error: 'Map not found'
       });
     }
+
     return res.status(200).json({
       success: true,
       map: map
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -123,6 +123,7 @@ updateMultipleMaps = async (req, res) => {
       errorMessage: 'UNAUTHORIZED'
     })
   }
+
   try {
     const body = req.body.data;
 
@@ -132,8 +133,9 @@ updateMultipleMaps = async (req, res) => {
         error: 'You must provide a body to update',
       });
     }
+
     const result = await Map.updateMany({ ownerName: body.current }, { $set: { ownerName: body.username, ownerEmail: body.email } })
-    console.log(`Updated ${result.modifiedCount} documents`);
+
     return res.status(200).json({ success: true, data: result.modifiedCount })
   } catch {
     console.dir
@@ -147,15 +149,18 @@ getMaps = async (req, res) => {
       errorMessage: 'UNAUTHORIZED'
     })
   }
+
   await Map.find({}, (err, maps) => {
     if (err) {
       return res.status(400).json({ success: false, error: err })
     }
+
     if (!maps.length) {
       return res
         .status(404)
         .json({ success: false, error: `Maps not found` })
     }
+
     return res.status(200).json({ success: true, data: maps })
   }).catch(err => console.log(err))
 }
@@ -166,23 +171,21 @@ getPublishedMaps = async (req, res) => {
       errorMessage: 'UNAUTHORIZED'
     })
   }
-  console.log("getPublishedMaps");
+
   await User.findOne({ _id: req.userId }, (err, user) => {
-    console.log("find user with id " + req.userId);
     async function asyncFindList() {
       await Map.find({ published: true }, (err, maps) => {
-        console.log("found Maps: " + JSON.stringify(maps));
         if (err) {
           return res.status(400).json({ success: false, error: err })
         }
+
         if (!maps) {
-          console.log("!maps.length");
           return res
             .status(404)
             .json({ success: false, error: 'Maps not found' })
         }
+
         else {
-          console.log("Send the Published Map pairs");
           // PUT ALL THE LISTS INTO ID, NAME PAIRS
           let pairs = [];
           for (let key in maps) {
@@ -222,10 +225,6 @@ updateMapById = async (req, res) => {
 
     const body = req.body.map;
 
-    console.log("req.body.name: " + req.body.map.name);
-    console.log("Updated map: " + JSON.stringify(body.likes));
-    console.log("Updated map: " + JSON.stringify(body.dislikes));
-
     if (!body) {
       return res.status(400).json({
         success: false,
@@ -233,7 +232,6 @@ updateMapById = async (req, res) => {
       });
     }
 
-    // Use async/await with findOneAndUpdate
     const updatedMap = await Map.findOneAndUpdate(
       { _id: req.params.id },
       body,
@@ -246,9 +244,6 @@ updateMapById = async (req, res) => {
         error: 'Map not found!',
       });
     }
-
-    console.log("Updated map: " + JSON.stringify(updatedMap.likes));
-    console.log("Updated map: " + JSON.stringify(updatedMap.dislikes));
 
     return res.status(200).json({
       success: true,
@@ -274,14 +269,14 @@ updateUserFeedback = async (req, res) => {
       });
     }
     const body = req.body.map;
-    console.log("updateMap: " + JSON.stringify(body));
+
     if (!body) {
       return res.status(400).json({
         success: false,
         error: 'You must provide a body to update',
       });
     }
-    // Use async/await with findOneAndUpdate
+
     const updatedMap = await Map.findByIdAndUpdate(
       req.params.id,
       {
@@ -292,13 +287,14 @@ updateUserFeedback = async (req, res) => {
       },
       { new: true, runValidators: true }
     );
+
     if (!updatedMap) {
       return res.status(404).json({
         success: false,
         error: 'Map not found!',
       });
     }
-    console.log("Updated map: " + JSON.stringify(updatedMap));
+
     return res.status(200).json({
       success: true,
       map: updatedMap,

@@ -1,9 +1,8 @@
-import React from "react"
-import '../App.css';
+import React, { useState, useEffect, useContext, useRef } from "react"
 import { EditRegionModal, MapBackground, PublishMapModal } from ".";
-import { useState, useEffect, useContext, useRef } from "react";
 import { AppBanner, LeftSideBar, RightSideBar, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal } from '../components'
-import { GlobalStoreContext } from '../store'
+import { GlobalStoreContext } from '../store';
+import '../App.css';
 
 export default function HomeScreen() {
   const [newMapShow, setNewMapShow] = useState(false);
@@ -64,7 +63,7 @@ export default function HomeScreen() {
       <div className="row1">
 
         <div className="background">
-          <MapBackground map={mapbox}/>
+          <MapBackground map={mapbox} />
         </div>
 
         <div className="foreground">
@@ -79,7 +78,6 @@ export default function HomeScreen() {
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
       <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
-      {/* <button onClick={() => navigate("create")}>Create</button> */}
     </div>
   )
 }

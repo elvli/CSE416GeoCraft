@@ -12,7 +12,7 @@ const mapDataSchema = new Schema(
         color: String,
       }], required: false
     },
-    propPoints : {
+    propPoints: {
       type: [{
         id: Number,
         longitude: String,
@@ -21,7 +21,7 @@ const mapDataSchema = new Schema(
         size: String,
       }], required: false
     },
-    lineData : {
+    lineData: {
       type: [{
         id: Number,
         startlongitude: String,
@@ -60,4 +60,4 @@ const mapDataSchema = new Schema(
   { timestamps: true },
 )
 
-module.exports = mongoose.model('MapData', mapDataSchema)
+module.exports = mongoose.model('MapData', mapDataSchema);

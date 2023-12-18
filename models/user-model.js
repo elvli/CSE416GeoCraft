@@ -9,11 +9,11 @@ const UserSchema = new Schema(
     username: { type: String, required: true },
     email: { type: String, required: true },
     passwordHash: { type: String, required: true },
-    aboutMe: {type: String },
+    aboutMe: { type: String },
     maps: [{ type: ObjectId, ref: 'Maps' }],
-    profilePicture: {type: String },
+    profilePicture: { type: String },
   },
   { timestamps: true },
 )
 
-module.exports = mongoose.model('User', UserSchema)
+module.exports = mongoose.model('User', UserSchema);

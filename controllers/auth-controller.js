@@ -99,7 +99,6 @@ logoutUser = async (req, res) => {
 registerUser = async (req, res) => {
   try {
     const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture } = req.body;
-    console.log("auth-controller: ", req.body);
     if (password.length < 8) {
       return res
         .status(400)
@@ -177,7 +176,6 @@ updateUser = async (req, res) => {
       })
     }
     const body = req.body.user;
-    console.log("updateUser: " + JSON.stringify(body));
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
@@ -197,7 +195,6 @@ updateUser = async (req, res) => {
         error: 'User not found!',
       });
     }
-    console.log("Updated User: " + JSON.stringify(updatedUser));
     return res.status(200).json({
       success: true,
       user: updatedUser,
@@ -214,7 +211,7 @@ updateUser = async (req, res) => {
 createEmailLink = async (req, res) => {
   const email = req.body.email
   try {
-    const user = await User.findOne({email: email})
+    const user = await User.findOne({ email: email })
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -222,7 +219,7 @@ createEmailLink = async (req, res) => {
       });
     }
     const secret = process.env.JWT_SECRET + user.passwordHash
-    const token = jwt.sign({email: user.email, id: user._id}, secret, {expiresIn: "5m"})
+    const token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: "5m" })
     const link = `http://localhost:3000/confirm/${user._id}/${token}`
     var transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -231,15 +228,15 @@ createEmailLink = async (req, res) => {
         pass: process.env.GMAIL_PASSWORD
       }
     });
-    
+
     var mailOptions = {
       from: process.env.GMAIL,
       to: email,
       subject: 'Verification Link',
       text: `Here's the link: ${link}`
     };
-    
-    transporter.sendMail(mailOptions, function(error, info){
+
+    transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
       } else {
@@ -258,12 +255,13 @@ createEmailLink = async (req, res) => {
     });
   }
 }
+
 resetPassword = async (req, res) => {
   const id = req.body.id;
   const token = req.body.token
   const password = req.body.password;
-  const user = await User.findOne({_id: id})
-  if(!user) {
+  const user = await User.findOne({ _id: id })
+  if (!user) {
     return res.status(404).json({
       success: false,
       error: 'User not found!',
@@ -271,9 +269,7 @@ resetPassword = async (req, res) => {
   }
   const secret = process.env.JWT_SECRET + user.passwordHash
   try {
-   
     jwt.verify(token, secret)
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -281,31 +277,30 @@ resetPassword = async (req, res) => {
       error: 'Unverified',
     });
   }
+
   const saltRounds = 10;
   const salt = await bcrypt.genSalt(saltRounds);
   const passwordHash = await bcrypt.hash(password, salt);
-  user.passwordHash = passwordHash
+  user.passwordHash = passwordHash;
+  
   user.save()
-  .then(() => {
-        console.log('Password saved!')
-        return res.status(201).json({
-          success: true
-        })
+    .then(() => {
+      console.log('Password saved!')
+      return res.status(201).json({
+        success: true
       })
-      .catch(error => {
-        return res.status(400).json({
-          errorMessage: 'Password was not saved!'
-        })
+    })
+    .catch(error => {
+      return res.status(400).json({
+        errorMessage: 'Password was not saved!'
       })
+    })
 }
+
 verifyLink = async (req, res) => {
-  console.log("PING PONG")
-  const {id, token} = req.params
-  // const token = req.body.token
-  // const id = req.body.id;
-  console.log(id)
-  const user = await User.findOne({_id: id})
-  if(!user) {
+  const { id, token } = req.params
+  const user = await User.findOne({ _id: id })
+  if (!user) {
     return res.status(404).json({
       success: false,
       error: 'User not found!',
@@ -313,9 +308,8 @@ verifyLink = async (req, res) => {
   }
   const secret = process.env.JWT_SECRET + user.passwordHash
   try {
-   
+
     jwt.verify(token, secret)
-    console.log("success")
     return res.status(200).json({
       success: true,
     });
@@ -326,7 +320,7 @@ verifyLink = async (req, res) => {
       success: false,
     });
   }
-  
+
 
 }
 module.exports = {

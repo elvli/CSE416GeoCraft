@@ -1,10 +1,10 @@
 import React from "react";
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, Button, Modal, Row, Col } from "react-bootstrap";
 import AuthContext from '../../auth'
-import "./EditProfileModal.scss";
 import GlobalStoreContext from "../../store";
-import { useNavigate } from "react-router-dom";
+import "./EditProfileModal.scss";
 
 export default function EditProfileModal(props) {
   const { editProfileShow, handleEditProfileClose } = props;
@@ -20,11 +20,14 @@ export default function EditProfileModal(props) {
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
-    } else {
+    }
+
+    else {
       event.preventDefault();
       event.stopPropagation();
       const formData = new FormData(event.currentTarget);
@@ -35,14 +38,16 @@ export default function EditProfileModal(props) {
         email: formData.get("changeEmail"),
         aboutMe: formData.get("changeAboutMe")
       }
+
       auth.updateUser(user);
       store.updateMultipleMaps({
         current: currentUsername,
         username: formData.get("changeUsername"),
         email: formData.get("changeEmail"),
       })
-      
+
       handleEditProfileClose(event);
+
       let username = formData.get("changeUsername")
       navigate(`/profile/${username}`)
     }
@@ -50,7 +55,7 @@ export default function EditProfileModal(props) {
   const handleClosing = (event) => {
     setValidated(false);
     handleEditProfileClose(event);
-    
+
   };
 
   return (
@@ -72,6 +77,7 @@ export default function EditProfileModal(props) {
                   defaultValue={currentFirstName}
                 />
               </Form.Group>
+
               <Form.Group as={Col}>
                 <Form.Control
                   className="map-name"
@@ -84,6 +90,7 @@ export default function EditProfileModal(props) {
 
             <Form.Group>
               <Form.Label>Change email</Form.Label>
+
               <Form.Control
                 className="map-name"
                 name="changeEmail"
@@ -94,6 +101,7 @@ export default function EditProfileModal(props) {
 
             <Form.Group>
               <Form.Label>Change username</Form.Label>
+
               <Form.Control
                 className="map-name"
                 name="changeUsername"
@@ -104,6 +112,7 @@ export default function EditProfileModal(props) {
 
             <Form.Group>
               <Form.Label>Change profile banner</Form.Label>
+
               <Form.Select name="profileBanner">
                 <option value="">Choose a color for your profile banner</option>
                 <option value="Red">Red</option>
@@ -118,6 +127,7 @@ export default function EditProfileModal(props) {
 
             <Form.Group>
               <Form.Label>Change about me</Form.Label>
+
               <textarea
                 className="map-name form-control"
                 name="changeAboutMe"
@@ -133,6 +143,7 @@ export default function EditProfileModal(props) {
             <Button variant="secondary" onClick={handleClosing}>
               Close
             </Button>
+
             <Form.Group>
               <Button variant="primary" type="submit">
                 Save Changes

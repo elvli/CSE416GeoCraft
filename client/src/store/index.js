@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useRef } from 'react'
-import jsTPS from '../common/jsTPS'
 import api from './store-request-api'
 import AuthContext from '../auth'
 
@@ -14,7 +13,6 @@ export const GlobalStoreActionType = {
   SET_PRINT: 'SET_PRINT',
 }
 
-// const tps = new jsTPS();
 
 function GlobalStoreContextProvider(props) {
   const mapContainer = useRef(null);
@@ -170,12 +168,9 @@ function GlobalStoreContextProvider(props) {
     const mapData = await store.getMapDataById(store.currentList._id)
 
     mapData.mapID = response.data.map._id;
-    console.log(`current list id: ${store.currentList._id}`)
-    console.log(`new map id: ${response.data.map._id}`)
     if (response.status === 201) {
       // const nextResponse = await api.forkMapData(mapData)
       const nextResponse = await api.createMapData(response.data.map._id)
-      console.log(nextResponse)
       if (nextResponse.status === 201) {
         const map = response.data.map
         const data = nextResponse.data.mapData
@@ -199,13 +194,10 @@ function GlobalStoreContextProvider(props) {
           data.choroData.choroSettings = mapData.choroData.choroSettings
         }
 
-
-
         data.settings.longitude = mapData.settings.longitude
         data.settings.latitude = mapData.settings.latitude
         data.settings.zoom = mapData.settings.zoom
         const res = await api.updateMapDataById(response.data.map._id, data);
-        console.log('bananas')
         if (res.data.success) {
           console.log('Successfully updated mapdata')
           store.loadIdNamePairs()
@@ -233,6 +225,7 @@ function GlobalStoreContextProvider(props) {
           let map = mapID.data.map;
           async function asyncLoadIdNamePairs() {
             const response = await api.getMapPairs();
+
             if (response.data.success) {
               let pairsArray = response.data.idNamePairs;
               let arr = [];
@@ -264,6 +257,7 @@ function GlobalStoreContextProvider(props) {
         if (response.data.success) {
           let pairsArray = response.data.idNamePairs;
           let arr = [];
+
           for (let key in pairsArray) {
             arr.push(pairsArray[key]);
 
@@ -287,6 +281,7 @@ function GlobalStoreContextProvider(props) {
   store.updateLikeDislike = function (id, maps) {
     async function updateList(map) {
       let response = await api.updateMapById(id, map);
+
       if (response.data.success) {
         store.loadIdNamePairs(id);
       }
@@ -296,6 +291,7 @@ function GlobalStoreContextProvider(props) {
 
   store.updateMapDataById = async function (id, mapData) {
     const response = await api.updateMapDataById(id, mapData);
+
     if (response.data.success) {
       console.log('Successfully updated mapdata')
     }
@@ -304,6 +300,7 @@ function GlobalStoreContextProvider(props) {
   store.deleteMap = function () {
     async function deleteMap() {
       let response = await api.deleteMapById(store.currentList._id)
+
       if (response.data.success) {
         const newResponse = await api.deleteMapDataById(store.currentList._id)
         if (newResponse.data.success) {
@@ -323,6 +320,7 @@ function GlobalStoreContextProvider(props) {
     store.currentList.comments.push(newComment)
     async function asyncAddComment() {
       const response = await api.updateUserFeedback(store.currentList._id, store.currentList);
+
       if (response.data.success) {
         storeReducer({
           type: GlobalStoreActionType.SET_CURRENT_LIST,
@@ -346,6 +344,7 @@ function GlobalStoreContextProvider(props) {
   store.setCurrentList = function (id, mapbox) {
     async function asyncSetCurrentList(id) {
       let response = await api.getMapById(id);
+
       if (response.data.success) {
         let map = response.data.map;
         storeReducer({
@@ -383,6 +382,7 @@ function GlobalStoreContextProvider(props) {
     async function getMapDataById(id) {
       try {
         let response = await api.getMapDataById(id);
+
         if (response.data.success) {
           return response.data.mapData;
         }
@@ -407,39 +407,6 @@ function GlobalStoreContextProvider(props) {
     setPrint(arg)
   }
 
-  // store.undo = function () {
-  //   if (tps.hasTransactionToUndo()) {
-  //     console.log('undo attempted')
-  //     tps.undoTransaction();
-  //   }
-  //   else {
-  //     console.log('no action to undo')
-  //   }
-  // }
-  // store.redo = function () {
-  //   if (tps.hasTransactionToRedo()) {
-  //     console.log('redo attempted')
-  //     tps.doTransaction();
-  //   }
-  //   else {
-  //     console.log('no action to redo')
-  //   }
-  // }
-
-  // function KeyPress(event) {
-  //   if (event.ctrlKey) {
-  //     if (event.key === 'z') {
-  //       store.undo();
-
-  //     }
-  //     if (event.key === 'y') {
-  //       store.redo();
-  //     }
-  //   }
-  // }
-
-  // document.onkeydown = (event) => KeyPress(event);
-
   return (
     <GlobalStoreContext.Provider value={{
       store
@@ -448,5 +415,6 @@ function GlobalStoreContextProvider(props) {
     </GlobalStoreContext.Provider>
   );
 }
+
 export default GlobalStoreContext;
 export { GlobalStoreContextProvider };

@@ -3,8 +3,8 @@ import { GlobalStoreContext } from '../../store'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
 import MapCard from '../MapCard/MapCard';
-import './LeftSideBar.scss'
 import AuthContext from '../../auth'
+import './LeftSideBar.scss'
 
 export default function LeftSideBar(props) {
   const { store } = useContext(GlobalStoreContext);
@@ -12,14 +12,15 @@ export default function LeftSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
   const { handleNewMap, handleDeleteMap, handleFork, handleExport, handlePublish } = props;
-  const [publishedMaps , setPublishedMaps] = useState(false);
+  const [publishedMaps, setPublishedMaps] = useState(false);
   const SortMenu = {
     A_Z: "A-Z",
     POPULAR: "LIKES",
     OLD: "OLD",
     NEW: "NEW",
     Z_A: "Z-A"
-}
+  }
+
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
@@ -37,18 +38,18 @@ export default function LeftSideBar(props) {
   }
 
   var maps;
-  if(publishedMaps || !auth.loggedIn) {
+  if (publishedMaps || !auth.loggedIn) {
     maps = <div>
       {
         store.idNamePairs.map((pair) => {
-            if(pair.published) {
-              return <MapCard
-                key={pair._id}
-                map={pair}
-                functions={functions}
-              />
-            }
+          if (pair.published) {
+            return <MapCard
+              key={pair._id}
+              map={pair}
+              functions={functions}
+            />
           }
+        }
         )
       }
     </div>
@@ -57,28 +58,28 @@ export default function LeftSideBar(props) {
     maps = <div>
       {
         store.idNamePairs.filter(pair => pair.name.toUpperCase().includes(queryInput.toUpperCase())).map((pair) => {
-            if(pair.ownerEmail === auth.getEmail()) {
-              return <MapCard
-                key={pair._id}
-                map={pair}
-                functions={functions}
-              />
-            }
+          if (pair.ownerEmail === auth.getEmail()) {
+            return <MapCard
+              key={pair._id}
+              map={pair}
+              functions={functions}
+            />
           }
+        }
         )
       }
     </div>
   }
 
   const handleUserMaps = () => {
-    if(publishedMaps) {
+    if (publishedMaps) {
 
     }
     else setPublishedMaps(!publishedMaps)
   }
 
   const handleMyMaps = () => {
-    if(!publishedMaps) {
+    if (!publishedMaps) {
 
     }
     else setPublishedMaps(!publishedMaps)
@@ -112,14 +113,14 @@ export default function LeftSideBar(props) {
     <Button className='btn btn-light new-map-btn' aria-label="Create New Map" onClick={handleNewMap}>
       <Plus className='icon-btn' />
     </Button>
-    <Button className='btn btn-light user-maps-btn' aria-label="View Community Maps" onClick={handleUserMaps}  active={publishedMaps}>
+    <Button className='btn btn-light user-maps-btn' aria-label="View Community Maps" onClick={handleUserMaps} active={publishedMaps}>
       <PeopleFill className='icon-btn' />
     </Button>
-    <Button className='btn btn-light my-maps-btn' aria-label="View My Maps" onClick={handleMyMaps}  active={!publishedMaps}>
+    <Button className='btn btn-light my-maps-btn' aria-label="View My Maps" onClick={handleMyMaps} active={!publishedMaps}>
       <PersonFill className='icon-btn' />
     </Button>
   </div>
-  
+
   if (!auth.loggedIn) {
     tools = <div className='column-tools'>
       <Button className='btn btn-light user-maps-btn' onClick={handleUserMaps} active={true}>

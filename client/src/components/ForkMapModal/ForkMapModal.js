@@ -1,16 +1,18 @@
 import React from "react";
 import "./ForkMapModal.scss";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import { Form, Button, Modal } from "react-bootstrap";
 import { useState, useContext } from "react";
 import GlobalStoreContext from "../../store";
+import "./ForkMapModal.scss";
+
 export default function ForkMapModal(props) {
   const { forkMapShow, handleForkMapClose } = props
   const { store } = useContext(GlobalStoreContext);
   const [validated, setValidated] = useState(false);
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
@@ -27,6 +29,7 @@ export default function ForkMapModal(props) {
       handleForkMapClose(event)
     }
   };
+
   const handleClosing = (event) => {
     setValidated(false);
     handleForkMapClose(event)
@@ -39,16 +42,19 @@ export default function ForkMapModal(props) {
           <Modal.Header closeButton>
             <Modal.Title>Fork Map?</Modal.Title>
           </Modal.Header>
+
           <Modal.Body>
             <Form.Group>
               <Form.Label>Enter the new name for the forked map:</Form.Label>
               <Form.Control className="map-name" name='mapName' required type="text" placeholder="Newly Forked Map Name" />
             </Form.Group>
           </Modal.Body>
+
           <Modal.Footer className="d-flex justify-content-center">
             <Button variant="secondary" onClick={handleClosing}>
               Close
             </Button>
+
             <Form.Group>
               <Button variant="primary" type="submit">
                 Confirm

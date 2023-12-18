@@ -3,14 +3,19 @@ import { Button, Table, Accordion, Row, Col, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
 import { XLg, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
-import './ChoroEditBar.scss';
-import chroma from 'chroma-js';
-import jsTPS from '../../common/jsTPS';
 import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
+import ChangeDataHeaderTransaction from '../../transactions/Choro/ChangeDataHeaderTransaction';
+import ChangeStepTransaction from '../../transactions/Choro/ChangeStepTransaction';
+import ChangeTableDataTransaction from '../../transactions/Choro/ChangeTableDataTransaction';
+import GradientSelectTransaction from '../../transactions/Choro/GradientSelectTransaction';
 import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
 import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
+import jsTPS from '../../common/jsTPS';
+import rewind from "@mapbox/geojson-rewind";
+import chroma from 'chroma-js';
+import './ChoroEditBar.scss';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA'
 
@@ -22,6 +27,7 @@ export default function ChoroEditBar(props) {
   const [show, setShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [tableData, setTableData] = useState([]);
+  const [tempTableHeaders, setTempTableHeaders] = useState(['ID', 'Region', 'Value']);
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Region', 'Value']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
@@ -37,11 +43,13 @@ export default function ChoroEditBar(props) {
   const isLayerAdded = useRef(false);
   const [tps, setTPS] = useState(new jsTPS);
 
+  // THIS HANDLES THE TOGGLING OF THE SIDEBAR
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
 
+  // THIS HANDLES UNDOING AN ACTION
   function handleUndo(event) {
     event.preventDefault();
     // store.undo();
@@ -55,6 +63,7 @@ export default function ChoroEditBar(props) {
     }
   }
 
+  // THIS HANDLES REDOING AN ACTION
   function handleRedo(event) {
     event.preventDefault();
     // store.redo();
@@ -67,6 +76,7 @@ export default function ChoroEditBar(props) {
     }
   }
 
+  // THIS DETECTS THE USERS KEYBOARD INPUTS FOR UNDOING, REDOING, AND SAVING
   function KeyPress(event) {
     if (event.ctrlKey) {
       if (event.key === 'z') {
@@ -84,6 +94,10 @@ export default function ChoroEditBar(props) {
 
   document.onkeydown = (event) => KeyPress(event);
 
+
+
+
+  // THIS HANDLES CHANGES TO DEFAULT MAP SETTINGS
   const handleSettingChange = (event, setting) => {
     // Capture the current settings
     const oldSettings = [...settingsValues];
@@ -101,10 +115,8 @@ export default function ChoroEditBar(props) {
         newSettings[2] = event.target.value;
         break;
       default:
-      // Do nothing for other cases
     }
 
-    // Create a transaction and add it to the jsTPS
     const settingsChangeTransaction = new SettingsChangeTransaction(
       oldSettings,
       newSettings,
@@ -118,41 +130,41 @@ export default function ChoroEditBar(props) {
 
   // THIS SETS UP THE EDITBAR AND ITS STATES
 
+  const updateTable = async () => {
+    try {
+      var mapData = await store.getMapDataById(mapId)
+
+      // THIS SECTION FILLS IN TABLEDATA WITH THE CHOROPLETH DATA FROM THE BACKEND
+      var newRegionData = []
+      for (let i in mapData.choroData.regionData) {
+        newRegionData.push({
+          'id': mapData.choroData.regionData[i]['id'],
+          'region': mapData.choroData.regionData[i]['region'],
+          'data': mapData.choroData.regionData[i]['data']
+        });
+      }
+      setTableData(newRegionData);
+
+      const regionArray = tableData.map((dict) => dict.region);
+      setPrevSelectedRegions(regionArray);
+      setPropName(mapData.choroData.choroSettings.propName);
+      setChoroTheme(mapData.choroData.choroSettings.theme);
+      setStepCount(mapData.choroData.choroSettings.stepCount);
+      setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue]);
+
+      // THIS WILL TRIGGER THE CHOROPLETH MAP TO RE-RENDER REGION LAYERS
+      isLayerAdded.current = false;
+      setChoroRenders((prev) => prev + 1);
+
+      setSettingsValues([mapData.settings.latitude, mapData.settings.longitude, mapData.settings.zoom])
+    }
+    catch {
+      console.log('cannot load mapdata');
+    }
+  };
+
   useEffect(() => {
     try {
-      const updateTable = async () => {
-        try {
-          var mapData = await store.getMapDataById(mapId)
-
-          // THIS SECTION FILLS IN TABLEDATA WITH THE CHOROPLETH DATA FROM THE BACKEND
-          var newRegionData = []
-          for (let i in mapData.choroData.regionData) {
-            newRegionData.push({
-              'id': mapData.choroData.regionData[i]['id'],
-              'region': mapData.choroData.regionData[i]['region'],
-              'data': mapData.choroData.regionData[i]['data']
-            });
-          }
-          setTableData(newRegionData);
-
-          const regionArray = tableData.map((dict) => dict.region);
-          setPrevSelectedRegions(regionArray);
-          setPropName(mapData.choroData.choroSettings.propName);
-          setChoroTheme(mapData.choroData.choroSettings.theme);
-          setStepCount(mapData.choroData.choroSettings.stepCount);
-          setTableHeaders(['ID', 'Region', mapData.choroData.choroSettings.headerValue]);
-
-          // THIS WILL TRIGGER THE CHOROPLETH MAP TO RE-RENDER REGION LAYERS
-          isLayerAdded.current = false;
-          setChoroRenders((prev) => prev + 1);
-
-          setSettingsValues([mapData.settings.latitude, mapData.settings.longitude, mapData.settings.zoom])
-        }
-        catch {
-          console.log('cannot load mapdata');
-        }
-      };
-
       updateTable();
     } catch (error) {
       console.log('Cannot update table');
@@ -170,21 +182,48 @@ export default function ChoroEditBar(props) {
 
   const handleFileSelection = async (files) => {
     const file = files[0];
+    var extension = file.name.split(".")[1];
     var reader = new FileReader();
-    let mapData = await store.getMapDataById(mapId);
-
     reader.onloadend = async (event) => {
       var text = event.target.result;
 
-      try {
+      if (extension === 'json') {
         var json = JSON.parse(text);
-        console.log('Original file size:', text.length, 'bytes');
+        var mapData = await store.getMapDataById(mapId);
+
+        if (json.mapID) {
+          mapData.GeoJson = json.GeoJson;
+          mapData.choroData.regionData = json.choroData.regionData;
+          mapData.choroData.choroSettings = json.choroData.choroSettings;
+          mapData.settings = json.settings;
+
+          await store.updateMapDataById(mapId, mapData);
+          await store.setCurrentList(mapId, 0);
+          updateTable();
+        }
+
+        else if (json.type === 'FeatureCollection' || json.features) {
+          mapData.GeoJson = json;
+          await store.updateMapDataById(mapId, mapData);
+          await store.setCurrentList(mapId, 0)
+        }
+      }
+
+      else if (extension === 'kml') {
+        mapData = await store.getMapDataById(mapId);
+        var tj = require('@mapbox/togeojson')
+        var kml = new DOMParser().parseFromString(text, "text/xml"); // create xml dom object
+        json = tj.kml(kml); // convert xml dom to geojson
+        rewind(json, false); // correct right hand rule
         mapData.GeoJson = json;
         await store.updateMapDataById(mapId, mapData);
-        await store.setCurrentList(mapId, 0)
-      } catch (error) {
-        console.error('Error handling file selection:', error);
+        await store.setCurrentList(mapId, 0);
       }
+
+      // var json = JSON.parse(text);
+      // mapData.GeoJson = json;
+      // await store.updateMapDataById(mapId, mapData);
+      // await store.setCurrentList(mapId, 0)
     };
     reader.readAsText(file);
   }
@@ -202,17 +241,34 @@ export default function ChoroEditBar(props) {
   };
 
   const handleEditChange = (event, rowIndex, colName) => {
-    const updatedData = tableData.map((row, index) => {
-      if (index === rowIndex) {
-        return { ...row, [colName]: event.target.value };
-      }
-      return row;
-    });
-    setTableData(updatedData);
+    const oldValue = tableData[rowIndex][colName];
+    const newValue = event.target.value;
+
+    const changeTableDataTransaction = new ChangeTableDataTransaction(
+      rowIndex,
+      colName,
+      oldValue,
+      newValue,
+      setTableData
+    );
+    tps.addTransaction(changeTableDataTransaction);
   };
 
-  const handleEditBlur = () => {
+  const handleEditTableBlur = () => {
     setIsEditing(null);
+  };
+
+  const handleEditHeaderBlur = () => {
+    const oldTableHeaders = tableHeaders.slice();
+    const newTableHeaders = tempTableHeaders.slice();
+
+    const changeDataHeaderTransaction = new ChangeDataHeaderTransaction(
+      oldTableHeaders,
+      newTableHeaders,
+      setTableHeaders,  // assuming setTableHeaders is your state update function
+      setIsEditing      // assuming setIsEditing is your state update function
+    );
+    tps.addTransaction(changeDataHeaderTransaction);
   };
 
   const handleSave = async () => {
@@ -253,10 +309,10 @@ export default function ChoroEditBar(props) {
   };
 
   // THIS CHANGES THE HEADER OF THE VALUE COLUMN (THIRD FROM LEFT)
-  const changeDataHeader = (event) => {
+  const changeTempDataHeader = (event) => {
     const newHeaders = [...tableHeaders];
     newHeaders[2] = event.target.value
-    setTableHeaders(newHeaders);
+    setTempTableHeaders(newHeaders);
   };
 
   // THIS CHECKS IF A REGION NAME EXISTS IN tableData
@@ -303,14 +359,14 @@ export default function ChoroEditBar(props) {
               {isEditing === 2 ? (
                 <input
                   type="text"
-                  value={tableHeaders[2]}
-                  onChange={changeDataHeader}
+                  value={tempTableHeaders[2]}
+                  onChange={changeTempDataHeader}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
-                      handleEditBlur();
+                      handleEditHeaderBlur();
                     }
                   }}
-                  onBlur={handleEditBlur}
+                  onBlur={handleEditHeaderBlur}
                 />
               ) : (
                 tableHeaders[2]
@@ -332,7 +388,7 @@ export default function ChoroEditBar(props) {
                   type="text"
                   value={(row.data === 0) ? '0' : row.data}
                   onChange={(event) => handleEditChange(event, rowIndex, 'data')}
-                  onBlur={handleEditBlur}
+                  onBlur={handleEditTableBlur}
                 />
               </td>
             </tr>
@@ -468,19 +524,33 @@ export default function ChoroEditBar(props) {
 
   // THIS HANDLES DOWNLOADING MAP DATA AS A JSON FILE
 
-  const downloadJson = () => {
-    const json = JSON.stringify({ headers: tableHeaders, data: tableData });
+  const downloadJson = async () => {
+    const data = await store.getMapDataById(mapId)
+    const json = JSON.stringify(data);
     setJsonData(json);
 
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
     downloadLinkRef.current.href = url;
-    downloadLinkRef.current.download = 'table_data.json';
+    var string = store.currentList.name
+    downloadLinkRef.current.download = string.concat('.json');
     downloadLinkRef.current.click();
 
     URL.revokeObjectURL(url);
   };
+
+  const downloadPic = async (arg) => {
+    const rewait = await store.setPrint(arg);
+  }
+
+  const handleRemoveGeoJson = async () => {
+    var mapData = await store.getMapDataById(mapId);
+    mapData.GeoJson = null;
+
+    await store.updateMapDataById(mapId, mapData);
+    await store.setCurrentList(mapId, 0);
+  }
 
   const downloadJSONButton = (
     < div className='choro-json-button' >
@@ -532,7 +602,15 @@ export default function ChoroEditBar(props) {
   }
 
   const handleGradientSelect = (selectedOption) => {
-    setChoroTheme(selectedOption.name);
+    const oldChoroTheme = choroTheme;
+    const newChoroTheme = selectedOption.name;
+
+    const gradientSelectTransaction = new GradientSelectTransaction(
+      oldChoroTheme,
+      newChoroTheme,
+      setChoroTheme
+    );
+    tps.addTransaction(gradientSelectTransaction);
   };
 
   // THESE ARE THE GRADIENTS THAT WE ALLOW THE USER TO CHOOSE
@@ -607,7 +685,15 @@ export default function ChoroEditBar(props) {
 
   const handleStepChange = (event) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, '');
-    setStepCount(numericValue);
+    const oldStepCount = stepCount;
+    const newStepCount = numericValue;
+
+    const changeStepTransaction = new ChangeStepTransaction(
+      oldStepCount,
+      newStepCount,
+      setStepCount
+    );
+    tps.addTransaction(changeStepTransaction);
   };
 
   const handleStepKeyDown = (event) => {
@@ -640,7 +726,6 @@ export default function ChoroEditBar(props) {
 
   const handleSetDefaults = () => {
     const oldSettings = [...settingsValues];
-
     const latitude = map.current.getCenter().lat.toFixed(4);
     const longitude = map.current.getCenter().lng.toFixed(4);
     const zoom = map.current.getZoom().toFixed(2);
@@ -747,6 +832,31 @@ export default function ChoroEditBar(props) {
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
                       Set Defaults Here
                     </Button>
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="3">
+                  <Accordion.Header>Download</Accordion.Header>
+                  <Accordion.Body>
+                    <div>
+                      <div className='JSONButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
+                          Download JSON
+                        </Button>
+                        <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
+                      </div>
+                      <div className='PNGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(1); }}>
+                          Download PNG
+                        </Button>
+                      </div>
+                      <div className='JPGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(2); }}>
+                          Download JPG
+                        </Button>
+                      </div>
+                    </div>
+
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

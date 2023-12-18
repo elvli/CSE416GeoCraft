@@ -1,8 +1,8 @@
 import { React, useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Form, Row, Col, Button, Card } from 'react-bootstrap';
 import AuthContext from '../../auth'
 import "./SignUpScreen.scss";
-import { Form, Row, Col, Button, Card } from 'react-bootstrap';
-import { useNavigate } from "react-router-dom";
 
 export default function SignUpScreen() {
   const { auth } = useContext(AuthContext);
@@ -51,7 +51,7 @@ export default function SignUpScreen() {
     setUserEmail(email);
     setEmailMatchError(confirmEmail !== email);
   };
-  
+
   const handleConfirmEmailChange = (event) => {
     const confirmEmailInput = event.target.value;
     setConfirmEmail(confirmEmailInput);
@@ -64,7 +64,7 @@ export default function SignUpScreen() {
       event.target.setCustomValidity('');
     }
   };
-  
+
   const handlePasswordChange = (event) => {
     const password = event.target.value;
     setPasswordCheck(password);
@@ -72,14 +72,14 @@ export default function SignUpScreen() {
 
     if (password.length < 8) {
       event.target.setCustomValidity(`Password must be at least 8 characters.`);
-    } 
+    }
     else {
       event.target.setCustomValidity('');
     }
 
     setPasswordMatchError(password !== confirmPassCheck);
   };
-  
+
   const handleConfirmPasswordChange = (event) => {
     const confirmPass = event.target.value;
     setConfirmPassCheck(confirmPass);
@@ -92,15 +92,15 @@ export default function SignUpScreen() {
   };
 
   useEffect(() => {
-    if (auth.loggedIn){
+    if (auth.loggedIn) {
       navigate("/");
     }
   });
 
   var usernameError = ''
   var emailError = ''
-  if (auth.errorMessage){
-    if (auth.errorMessage === 'An account with this username already exists.'){
+  if (auth.errorMessage) {
+    if (auth.errorMessage === 'An account with this username already exists.') {
       usernameError = auth.errorMessage
       emailError = ''
     }
@@ -112,7 +112,7 @@ export default function SignUpScreen() {
   }
 
 
-  
+
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 background-container">
       <Card className="sign-up-screen">
@@ -137,7 +137,7 @@ export default function SignUpScreen() {
             <br />
             <Row>
               <Form.Group>
-                <Form.Control className="sign-up-item" name='email' required type="email" placeholder="Email" size="lg" onChange={handleEmailChange}/>
+                <Form.Control className="sign-up-item" name='email' required type="email" placeholder="Email" size="lg" onChange={handleEmailChange} />
                 {emailError != '' && <div className="sign-up-error-message text-danger">{emailError}</div>}
               </Form.Group>
             </Row>
@@ -171,8 +171,8 @@ export default function SignUpScreen() {
             </Row>
           </Form>
           <div className="login-ref">
-              <a href="/login">Already have an account? Click here.</a>
-            </div>
+            <a href="/login">Already have an account? Click here.</a>
+          </div>
         </Card.Body>
       </Card>
     </div>
