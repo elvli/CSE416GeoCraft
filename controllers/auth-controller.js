@@ -154,6 +154,7 @@ registerUser = async (req, res) => {
         username: savedUser.username,
         email: savedUser.email,
         aboutMe: savedUser.aboutMe,
+        profilePicture: savedUser.profilePicture
       }
     })
 
@@ -183,6 +184,7 @@ updateUser = async (req, res) => {
         username: body.username,
         email: body.email,
         aboutMe: body.aboutMe,
+        profilePicture: body.profilePicture
       },
       { new: true, runValidators: true }
     )
