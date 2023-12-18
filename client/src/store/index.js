@@ -164,6 +164,62 @@ function GlobalStoreContextProvider(props) {
       console.log("API FAILED TO CREATE A NEW LIST");
     }
   }
+  store.forkMap = async function (title) {
+    let newMapName = title
+    const response = await api.createMap(newMapName, auth.user.username, auth.user.email, store.currentList.mapType);
+    const mapData = await store.getMapDataById(store.currentList._id)
+    
+    mapData.mapID = response.data.map._id;
+    console.log(`current list id: ${store.currentList._id}`)
+      console.log(`new map id: ${response.data.map._id}`)
+    if (response.status === 201) {
+      // const nextResponse = await api.forkMapData(mapData)
+      const nextResponse = await api.createMapData(response.data.map._id)
+       console.log(nextResponse)
+      if (nextResponse.status === 201) {
+          const map = response.data.map
+          const data = nextResponse.data.mapData
+          data.GeoJson = mapData.GeoJson?mapData.GeoJson:null
+          if(mapData.points&&map.mapType === "point") {
+            data.points = [...mapData.points]
+          }
+          if(mapData.propPoints&&map.mapType === "propSymb") {
+            data.propPoints = [...mapData.propPoints]
+          }
+          if(mapData.lineData&&map.mapType === "line") {
+            data.lineData = [...mapData.lineData]
+          }
+          if(mapData.heatmap&&map.mapType === "heat") {
+            data.heatmap = {data: null, color: null}
+            data.heatmap.data = [...mapData.heatmap.data]
+            data.heatmap.color = [...mapData.heatmap.color]
+          }
+          if(mapData.choroData&&map.mapType === "choro") {
+            data.choroData.regionData = mapData.choroData.regionData
+            data.choroData.choroSettings = mapData.choroData.choroSettings
+          }
+          
+          
+          
+          data.settings.longitude = mapData.settings.longitude
+          data.settings.latitude = mapData.settings.latitude
+          data.settings.zoom = mapData.settings.zoom
+        const res = await api.updateMapDataById(response.data.map._id, data);
+        console.log('bananas')
+        if (res.data.success) {
+          console.log('Successfully updated mapdata')
+          store.loadIdNamePairs()
+        }
+        
+      }
+      else {
+        console.log("mapData failed");
+      }
+    }
+    else {
+      console.log("API FAILED TO CREATE A NEW LIST");
+    }
+  }
   store.setSort = function (type) {
     store.sort[0] = type;
     store.loadIdNamePairs()
@@ -239,9 +295,7 @@ function GlobalStoreContextProvider(props) {
   }
 
   store.updateMapDataById = async function (id, mapData) {
-    console.log('apples')
     const response = await api.updateMapDataById(id, mapData);
-    console.log('bananas')
     if (response.data.success) {
       console.log('Successfully updated mapdata')
     }

@@ -275,6 +275,10 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
+            map.current.getSource('earthquakes').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
             var pointsCollection = []
             if (mapData.points) {
               for (let i in mapData.points) {
@@ -310,6 +314,10 @@ export default function MapBackground(props) {
               features: []
             });
             map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('earthquakes').setData({
               type: 'FeatureCollection',
               features: []
             });
@@ -358,6 +366,10 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
+            map.current.getSource('earthquakes').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
 
             var pointsCollection = []
             if (mapData.lineData) {
@@ -401,6 +413,18 @@ export default function MapBackground(props) {
             map.current.getSource('line-map').setData(myGeoJSON);
           }
           else if (store.currentList && store.currentList.mapType === "heat") {
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('point-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
             var tableData = mapData.heatmap.data
             var arr = []
             if(mapData.heatmap) {
@@ -420,6 +444,7 @@ export default function MapBackground(props) {
             json['features'] = arr
             console.log("print")
             generateHeatMap(json, mapData.heatmap.color)
+            map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', mapData.heatmap.color)
           }
 
           else {
@@ -583,22 +608,19 @@ export default function MapBackground(props) {
 
   }
 
-  useEffect(() => {
-    if (store.mapdata) {
-      if (store.mapdata.type === 'heat') {
-        if (store.mapdata.import) {
-          // generateHeatMap(store.mapdata.data)
-          store.emptyMapData()
-        }
-        else {
-          if (store.mapdata.data.type === 'color') {
-            map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', store.mapdata.data.data)
-            store.emptyMapData()
-          }
-        }
-      }
-    }
-  }, [store.mapdata])
+  // useEffect(() => {
+  //   if (store.mapdata) {
+  //     if (store.mapdata.type === 'heat') {
+  //       if (store.mapdata.data.type === 'color') {
+  //         if(map.current.getSource('earthquakes')) {
+  //           map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', store.mapdata.data.data)
+  //           store.emptyMapData()
+  //         }
+          
+  //       }
+  //     }
+  //   }
+  // }, [store.mapdata])
 
   return (
     <div>
