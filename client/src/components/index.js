@@ -24,6 +24,7 @@ import HeatEditBar from './HeatEditBar/HeatEditBar.js'
 import ChoroEditBar from './ChoroEditBar/ChoroEditBar.js'
 import PointEditBar from './PointEditBar/PointEditBar.js'
 import LineEditBar from './LineEditBar/LineEditBar.js'
+import RemoveGeoJsonModal from './RemoveGeoJsonModal/RemoveGeoJsonModal.js';
 
 export {
   AppBanner,
@@ -51,5 +52,6 @@ export {
   HeatEditBar,
   ChoroEditBar,
   PointEditBar,
-  LineEditBar
+  LineEditBar,
+  RemoveGeoJsonModal,
 };

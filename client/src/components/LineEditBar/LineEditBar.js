@@ -5,6 +5,8 @@ import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclo
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './LineEditBar.scss';
 import rewind from "@mapbox/geojson-rewind";
+import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
+
 
 
 export default function LineEditSideBar(props) {
@@ -14,6 +16,7 @@ export default function LineEditSideBar(props) {
   // State variables
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
+  const [showGeoModal, setShowGeoModal] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
@@ -209,6 +212,14 @@ export default function LineEditSideBar(props) {
     const rewait = await store.setPrint(arg)
   }
 
+  const handleRemoveGeoJson = async () => {
+    var mapData = await store.getMapDataById(mapId)
+    mapData.GeoJson = null
+
+    await store.updateMapDataById(mapId, mapData)
+    await store.setCurrentList(mapId, 0)
+  }
+
   useEffect(() => {
     try {
       updateTable();
@@ -267,7 +278,7 @@ export default function LineEditSideBar(props) {
         <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="line-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen className='line-map-accordian'>
+              <Accordion defaultActiveKey={['0']} className='line-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body
@@ -372,6 +383,12 @@ export default function LineEditSideBar(props) {
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
                       Set Defaults Here
                     </Button>
+                    <div>
+                      <Button className="remove-geojson-button" variant="btn btn-dark" onClick={() => setShowGeoModal(true)}>
+                        Remove GeoJson Data
+                      </Button>
+                    </div>
+                    
                   </Accordion.Body>
                   <Accordion.Item eventKey="3">
                   <Accordion.Header>Download</Accordion.Header>
@@ -403,7 +420,8 @@ export default function LineEditSideBar(props) {
           </div>
         </div>
       </div>
-      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
+      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave}/>
+      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson}/>
     </div>
   )
 }
