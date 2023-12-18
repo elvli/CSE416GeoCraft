@@ -94,6 +94,16 @@ export default function ChoroEditBar(props) {
 
   document.onkeydown = (event) => KeyPress(event);
 
+  // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
+  // INTO ANY OF THE INPUTS
+  const handleStepKeyDown = (event) => {
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter';
+
+    if (!isNumericOrBackspace) {
+      event.preventDefault();
+    }
+  };
+
 
 
 
@@ -358,6 +368,7 @@ export default function ChoroEditBar(props) {
             >
               {isEditing === 2 ? (
                 <input
+                  className='data-header-input'
                   type="text"
                   value={tempTableHeaders[2]}
                   onChange={changeTempDataHeader}
@@ -388,6 +399,7 @@ export default function ChoroEditBar(props) {
                   type="text"
                   value={(row.data === 0) ? '0' : row.data}
                   onChange={(event) => handleEditChange(event, rowIndex, 'data')}
+                  onKeyDown={handleStepKeyDown}
                   onBlur={handleEditTableBlur}
                 />
               </td>
@@ -695,13 +707,6 @@ export default function ChoroEditBar(props) {
     tps.addTransaction(changeStepTransaction);
   };
 
-  const handleStepKeyDown = (event) => {
-    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === 'Backspace';
-    if (!isNumericOrBackspace) {
-      event.preventDefault();
-    }
-  };
-
   const stepInput = (
     <div className="input-group">
       <div className="input-group-prepend">
@@ -817,15 +822,36 @@ export default function ChoroEditBar(props) {
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} />
-                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} />
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder='Latitude'
+                        value={settingsValues[0]}
+                        onChange={(event) => handleSettingChange(event, 0)}
+                        onKeyDown={handleStepKeyDown}
+                      />
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder='Longitude'
+                        value={settingsValues[1]}
+                        onChange={(event) => handleSettingChange(event, 1)}
+                        onKeyDown={handleStepKeyDown}
+                      />
                     </div>
 
                     <div className="input-group setting-zoom">
                       <div className="input-group-prepend">
                         <span className="input-group-text default-zoom" id="">Default Zoom</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder='Zoom'
+                        value={settingsValues[2]}
+                        onChange={(event) => handleSettingChange(event, 2)}
+                        onKeyDown={handleStepKeyDown}
+                      />
                     </div>
 
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >

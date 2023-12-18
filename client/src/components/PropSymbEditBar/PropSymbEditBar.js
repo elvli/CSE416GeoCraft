@@ -1,16 +1,16 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { Button, Table, Accordion, Row, Col, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
+import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare } from 'react-bootstrap-icons';
+import MapNameModal from '../MapNameModal/MapNameModal';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
-import './PropSymbEditBar.scss'
-import rewind from "@mapbox/geojson-rewind";
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
 import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
 import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
-import jsTPS from '../../common/jsTPS';
 import PointMapTransaction from '../../transactions/Point/PointMapTransaction';
-import MapNameModal from '../MapNameModal/MapNameModal';
+import rewind from "@mapbox/geojson-rewind";
+import jsTPS from '../../common/jsTPS';
+import './PropSymbEditBar.scss'
 
 export default function PropSymbEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -106,7 +106,15 @@ export default function PropSymbEditBar(props) {
 
   document.onkeydown = (event) => KeyPress(event);
 
+  // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
+  // INTO ANY OF THE INPUTS
+  const handleStepKeyDown = (event) => {
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter';
 
+    if (!isNumericOrBackspace) {
+      event.preventDefault();
+    }
+  };
 
 
   // THESE FUNCTIONS HANDLE FILE LOADING
@@ -121,10 +129,10 @@ export default function PropSymbEditBar(props) {
     reader.onloadend = async (event) => {
       var text = event.target.result;
 
-      if (extension === 'json'){
+      if (extension === 'json') {
         var json = JSON.parse(text);
         var mapData = await store.getMapDataById(mapId)
-        if (json.mapID){
+        if (json.mapID) {
           mapData.GeoJson = json.GeoJson
           mapData.propPoints = json.propPoints
           mapData.settings = json.settings
@@ -133,14 +141,14 @@ export default function PropSymbEditBar(props) {
           updateTable()
         }
 
-        else if (json.type === 'FeatureCollection' || json.features){
+        else if (json.type === 'FeatureCollection' || json.features) {
           mapData.GeoJson = json;
           await store.updateMapDataById(mapId, mapData);
           await store.setCurrentList(mapId, 0)
         }
       }
 
-      else if (extension === 'kml'){
+      else if (extension === 'kml') {
         var mapData = await store.getMapDataById(mapId)
         var tj = require('@mapbox/togeojson')
         var kml = new DOMParser().parseFromString(text, "text/xml"); // create xml dom object
@@ -151,10 +159,10 @@ export default function PropSymbEditBar(props) {
         await store.setCurrentList(mapId, 0)
       }
 
-        // var json = JSON.parse(text);
-        // mapData.GeoJson = json;
-        // await store.updateMapDataById(mapId, mapData);
-        // await store.setCurrentList(mapId, 0)
+      // var json = JSON.parse(text);
+      // mapData.GeoJson = json;
+      // await store.updateMapDataById(mapId, mapData);
+      // await store.setCurrentList(mapId, 0)
     };
     reader.readAsText(file);
   }
@@ -338,7 +346,7 @@ export default function PropSymbEditBar(props) {
             </Row>
 
             <Row>
-            <Button className="edit-button" variant="dark" onClick={() => setShowName(true)} aria-label="change map name">
+              <Button className="edit-button" variant="dark" onClick={() => setShowName(true)} aria-label="change map name">
                 <PencilSquare />
               </Button>
             </Row>
@@ -411,6 +419,7 @@ export default function PropSymbEditBar(props) {
                                         value={row[colName]}
                                         onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
+                                        onKeyDown={handleStepKeyDown}
                                       />
                                     ) : colIndex !== 3 ? (
                                       row[colName]
@@ -446,15 +455,15 @@ export default function PropSymbEditBar(props) {
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} />
-                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} />
+                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <div className="input-group setting-zoom">
                       <div className="input-group-prepend">
                         <span className="input-group-text default-zoom" id="">Default Zoom</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
+                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
@@ -490,7 +499,7 @@ export default function PropSymbEditBar(props) {
                         </Button>
                       </div>
                     </div>
-                    
+
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
@@ -498,8 +507,8 @@ export default function PropSymbEditBar(props) {
           </div>
         </div>
       </div>
-      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave}/>
-      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson}/>
+      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
+      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
     </div>
   )
