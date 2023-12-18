@@ -6,11 +6,12 @@ import Modal from "react-bootstrap/Modal";
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 export default function SaveAndExitModal(props) {
-  const { saveAndExitShow, handlesaveAndExitShowClose } = props
+  const { saveAndExitShow, handlesaveAndExitShowClose, save } = props
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
+    save()
     navigate("/")
 
     

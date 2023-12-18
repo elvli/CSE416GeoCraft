@@ -5,6 +5,7 @@ import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclo
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './PropSymbEditBar.scss'
 import rewind from "@mapbox/geojson-rewind";
+import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
 
 export default function PropSymbEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -13,6 +14,7 @@ export default function PropSymbEditBar(props) {
   // State variables
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
+  const [showGeoModal, setShowGeoModal] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
@@ -206,6 +208,14 @@ export default function PropSymbEditBar(props) {
     const rewait = await store.setPrint(arg)
   }
 
+  const handleRemoveGeoJson = async () => {
+    var mapData = await store.getMapDataById(mapId)
+    mapData.GeoJson = null
+
+    await store.updateMapDataById(mapId, mapData)
+    await store.setCurrentList(mapId, 0)
+  }
+
   useEffect(() => {
     try {
       updateTable();
@@ -262,7 +272,7 @@ export default function PropSymbEditBar(props) {
         <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="prop-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen className='prop-map-accordian'>
+              <Accordion defaultActiveKey={['0']} className='prop-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body
@@ -368,6 +378,13 @@ export default function PropSymbEditBar(props) {
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
                       Set Defaults Here
                     </Button>
+
+                    <div>
+                      <Button className="remove-geojson-button" variant="btn btn-dark" onClick={() => setShowGeoModal(true)}>
+                        Remove GeoJson Data
+                      </Button>
+                    </div>
+
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="3">
@@ -399,7 +416,8 @@ export default function PropSymbEditBar(props) {
           </div>
         </div>
       </div>
-      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
+      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave}/>
+      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson}/>
     </div>
   )
 }
