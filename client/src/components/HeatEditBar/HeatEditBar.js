@@ -8,7 +8,7 @@ import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import { HexColorPicker } from "react-colorful";
 // import HeatPointModal from '../HeatPointModal/HeatPointModal';
 import MapNameModal from '../MapNameModal/MapNameModal';
-
+import RangeSelector from './RangeSelector';
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
@@ -24,6 +24,28 @@ export default function HeatEditBar(props) {
   ]);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
   const colors = store.getMapDataById(mapId)
+  const [rangeMag1, setRangeMag1] = useState(0);
+  const [rangeMag2, setRangeMag2] = useState(0);
+  const [rangeMag3, setRangeMag3] = useState(0);
+  const [rangeMag4, setRangeMag4] = useState(0);
+  const [rangeIntensity1, setRangeIntensity1] = useState(0);
+  const [rangeIntensity2, setRangeIntensity2] = useState(0);
+  const [rangeIntensity3, setRangeIntensity3] = useState(0);
+  const [rangeIntensity4, setRangeIntensity4] = useState(0);
+  const [rangeRadius1, setRangeRadius1] = useState(0);
+  const [rangeRadius2, setRangeRadius2] = useState(0);
+  const [rangeRadius3, setRangeRadius3] = useState(0);
+  const [rangeRadius4, setRangeRadius4] = useState(0);
+  const [rangeOpacity1, setRangeOpacity1] = useState(0);
+  const [rangeOpacity2, setRangeOpacity2] = useState(0);
+  const [rangeOpacity3, setRangeOpacity3] = useState(0);
+  const [rangeOpacity4, setRangeOpacity4] = useState(0);
+  const [selectRangeMag, setSelectRangeMag] = useState(false);
+  const [selectRangeIntensity, setSelectRangeIntensity] = useState(false);
+  const [selectRangeRadius, setSelectRangeRadius] = useState(false);
+  const [selectRangeOpacity, setSelectRangeOpacity] = useState(false);
+  
+
   const [picker1, setPicker1] = useState(false);
   const [picker2, setPicker2] = useState(false);
   const [picker3, setPicker3] = useState(false);
@@ -34,6 +56,42 @@ export default function HeatEditBar(props) {
   const [color3, setColor3] = useState("#FDDBC7");
   const [color4, setColor4] = useState("#EF8A62");
   const [color5, setColor5] = useState("#B2182B");
+  const [currentMag, setCurrentMag] = useState([
+    'interpolate',
+    ['linear'],
+    ['get', 'mag'],
+    0,//3
+    0,//4
+    6,//5
+    1//6
+    ],)
+  const [currentInt, setCurrentInt] = useState([
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    0,//3
+    1,//4
+    9,//5
+    3//6
+    ])
+  const [currentRad, setCurrentRad] = useState([
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    0,//3
+    2,//4
+    9,//5
+    20//6
+    ])
+  const [currentOpac, setCurrentOpac] = useState( [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    7,//3
+    1,//4
+    9,//5
+    0//6
+    ])
   const [currentColor, setCurrentColor] = useState([
     'interpolate',
     ['linear'],
@@ -184,7 +242,7 @@ export default function HeatEditBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
-    mapData.heatmap = {data: tableData, color: currentColor}
+    mapData.heatmap = {data: tableData, color: currentColor, mag: currentMag, int: currentInt, rad:currentRad, opac:currentOpac}
 
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
@@ -213,6 +271,23 @@ export default function HeatEditBar(props) {
       setColor3(points.heatmap.color[10])
       setColor4(points.heatmap.color[12])
       setColor5(points.heatmap.color[14])
+
+      setRangeMag1(points.heatmap.mag[3])
+      setRangeMag2(points.heatmap.mag[4])
+      setRangeMag3(points.heatmap.mag[5])
+      setRangeMag4(points.heatmap.mag[6])
+      setRangeIntensity1(points.heatmap.int[3])
+      setRangeIntensity2(points.heatmap.int[4])
+      setRangeIntensity3(points.heatmap.int[5])
+      setRangeIntensity4(points.heatmap.int[6])
+      setRangeRadius1(points.heatmap.rad[3])
+      setRangeRadius2(points.heatmap.rad[4])
+      setRangeRadius3(points.heatmap.rad[5])
+      setRangeRadius4(points.heatmap.rad[6])
+      setRangeOpacity1(points.heatmap.opac[3])
+      setRangeOpacity2(points.heatmap.opac[4])
+      setRangeOpacity3(points.heatmap.opac[5])
+      setRangeOpacity4(points.heatmap.opac[6])
 
       console.log(color5)
       setTableData(newPoints);
@@ -304,26 +379,71 @@ export default function HeatEditBar(props) {
       color5
     ])
   }
-  let options = <div >
-    <p>Select a color</p>
-    <Button className='heat-button' onClick={() => { setPicker1(!picker1); changeCurrentColor();}} style={{ backgroundColor: color1 }}>
+  const changeCurrentMag = () => {
+    setCurrentMag([
+      'interpolate',
+      ['linear'],
+      ['get', 'mag'],
+      rangeMag1,
+      rangeMag2,
+      rangeMag3,
+      rangeMag4
+      ])
+  }
+  const changeCurrentInt = () => {
+    setCurrentInt([
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      rangeIntensity1,
+      rangeIntensity2,
+      rangeIntensity3,
+      rangeIntensity4
+      ])
+  }
+  const changeCurrentRad = () => {
+    setCurrentRad([
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      rangeRadius1,
+      rangeRadius2,
+      rangeRadius3,
+      rangeRadius4
+      ])
+  }
+  const changeCurrentOpac = () => {
+    setCurrentOpac([
+      'interpolate',
+      ['linear'],
+      ['zoom'],
+      rangeOpacity1,
+      rangeOpacity2,
+      rangeOpacity3,
+      rangeOpacity4
+      ])
+  }
 
-    </Button>
-    <Button className='heat-button' onClick={() => { setPicker2(!picker2); changeCurrentColor() }} style={{ backgroundColor: color2 }}>
+  // const [selectRangeMag, setSelectRangeMag] = useState(false);
+  // const [selectRangeIntensity, setSelectRangeIntensity] = useState(false);
+  // const [selectRangeRadius, setSelectRangeRadius] = useState(false);
+  // const [selectRangeOpacity, setSelectRangeOpacity] = useState(false);
+  let options = <div className='container '>
+    
+    <Row className="justify-content-md-center">
+      <p>Select a color</p>
+      <Button className='heat-button' onClick={() => { setPicker1(!picker1); changeCurrentColor();}} style={{ backgroundColor: color1 }}/>
+      <Button className='heat-button' onClick={() => { setPicker2(!picker2); changeCurrentColor() }} style={{ backgroundColor: color2 }}/>
+      <Button className='heat-button' onClick={() => { setPicker3(!picker3); changeCurrentColor() }} style={{ backgroundColor: color3 }}/>
+      <Button className='heat-button' onClick={() => { setPicker4(!picker4); changeCurrentColor() }} style={{ backgroundColor: color4 }}/>
+      <Button className='heat-button' onClick={() => { setPicker5(!picker5); changeCurrentColor() }} style={{ backgroundColor: color5 }}/>
 
-    </Button>
-    <Button className='heat-button' onClick={() => { setPicker3(!picker3); changeCurrentColor() }} style={{ backgroundColor: color3 }}>
+      
 
-    </Button>
-    <Button className='heat-button' onClick={() => { setPicker4(!picker4); changeCurrentColor() }} style={{ backgroundColor: color4 }}>
-
-    </Button>
-    <Button className='heat-button' onClick={() => { setPicker5(!picker5); changeCurrentColor() }} style={{ backgroundColor: color5 }}>
-
-    </Button>
+    </Row>
     {picker1 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker1(false); changeCurrentColor()}} />
-      <HexColorPicker color={color1} onChange={setColor1} />
+    <div style={cover} onClick={(event) => { setPicker1(false); changeCurrentColor()}} />
+    <HexColorPicker color={color1} onChange={setColor1} />
     </div> : null}
     {picker2 ? <div className='heat-popover'>
       <div style={cover} onClick={(event) => { setPicker2(false); changeCurrentColor()}} />
@@ -341,6 +461,45 @@ export default function HeatEditBar(props) {
       <div style={cover} onClick={(event) => { setPicker5(false); changeCurrentColor()}} />
       <HexColorPicker color={color5} onChange={setColor5} />
     </div> : null}
+    <br></br>
+    <Row className="justify-content-md-center">
+      <p>Edit Magnitude, Intensity, Radius, Opacity</p>
+      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  changeCurrentMag()}} >Magnitude</Button>
+      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeIntensity(!selectRangeIntensity);  changeCurrentInt()}} >Intensity</Button>
+      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeRadius(!selectRangeRadius);  changeCurrentRad()}} >Radius</Button>
+      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeOpacity(!selectRangeOpacity);  changeCurrentOpac()}} >Opacity</Button>
+
+      
+    </Row>
+    {selectRangeMag ? <div className='heat-popover'>
+    <div style={cover} onClick={(event) => { setSelectRangeMag(false); }} />
+    <RangeSelector setValue1={setRangeMag1} setValue2={setRangeMag2} setValue3={setRangeMag3} setValue4={setRangeMag4}
+              value1={rangeMag1} value2={rangeMag2} value3={rangeMag3} value4={rangeMag4} max={10}
+            />
+    </div> : null}
+    {selectRangeIntensity ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setSelectRangeIntensity(false); }} />
+      <RangeSelector setValue1={setRangeIntensity1} setValue2={setRangeIntensity2} setValue3={setRangeIntensity3} setValue4={setRangeIntensity4}
+                value1={rangeIntensity1} value2={rangeIntensity2} value3={rangeIntensity3} value4={rangeIntensity4} max={10}
+              />
+    </div> : null}
+    {selectRangeRadius ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setSelectRangeRadius(false); }} />
+      <RangeSelector setValue1={setRangeRadius1} setValue2={setRangeRadius2} setValue3={setRangeRadius3} setValue4={setRangeRadius4}
+                value1={rangeRadius1} value2={rangeRadius2} value3={rangeRadius3} value4={rangeRadius4} max={20}
+              />
+    </div> : null}
+    {selectRangeOpacity ? <div className='heat-popover'>
+      <div style={cover} onClick={(event) => { setSelectRangeOpacity(false); }} />
+      <RangeSelector setValue1={setRangeOpacity1} setValue2={setRangeOpacity2} setValue3={setRangeOpacity3} setValue4={setRangeOpacity4}
+                value1={rangeOpacity1} value2={rangeOpacity2} value3={rangeOpacity3} value4={rangeOpacity4} max={10}
+              />
+    </div> : null}
+    
+    
+
+    
+    
 
   </div>
 
@@ -557,6 +716,18 @@ export default function HeatEditBar(props) {
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
+              {/* <RangeSelector setValue1={setRangeMag1} setValue2={setRangeMag2} setValue3={setRangeMag3} setValue4={setRangeMag4}
+                value1={rangeMag1} value2={rangeMag2} value3={rangeMag3} value4={rangeMag4}
+              />
+              <RangeSelector setValue1={setRangeIntensity1} setValue2={setRangeIntensity2} setValue3={setRangeIntensity3} setValue4={setRangeIntensity4}
+                value1={rangeIntensity1} value2={rangeIntensity2} value3={rangeIntensity3} value4={rangeIntensity4}
+              />
+              <RangeSelector setValue1={setRangeRadius1} setValue2={setRangeRadius2} setValue3={setRangeRadius3} setValue4={setRangeRadius4}
+                value1={rangeRadius1} value2={rangeRadius2} value3={rangeRadius3} value4={rangeRadius4}
+              />
+              <RangeSelector setValue1={setRangeOpacity1} setValue2={setRangeOpacity2} setValue3={setRangeOpacity3} setValue4={setRangeOpacity4}
+                value1={rangeOpacity1} value2={rangeOpacity2} value3={rangeOpacity3} value4={rangeOpacity4}
+              /> */}
             </div>
           </div>
         </div>
