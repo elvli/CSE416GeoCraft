@@ -22,7 +22,7 @@ function AuthContextProvider(props) {
     username: null,
     email: null,
     aboutMe: "Click edit profile to add an about me.",
-    profilePicture: null,
+    profilePicture: "yx196dx8ua5em7hfgc1a",
   });
   const history = useNavigate();
 
@@ -230,6 +230,14 @@ function AuthContextProvider(props) {
       aboutMe += auth.user.aboutMe;
     }
     return aboutMe;
+  }
+
+  auth.getProfilePicture = function () {
+    let profilePicture = "";
+    if (auth.user) {
+      profilePicture += auth.user.profilePicture;
+    }
+    return profilePicture;
   }
   auth.createEmailLink = async function (email) {
     const response = await api.createEmailLink(email);
