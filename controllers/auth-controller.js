@@ -25,6 +25,7 @@ getLoggedIn = async (req, res) => {
         email: loggedInUser.email,
         username: loggedInUser.username,
         aboutMe: loggedInUser.aboutMe,
+        profilePicture: loggedInUser.profilePicture
       }
     })
   } catch (err) {
@@ -77,6 +78,7 @@ loginUser = async (req, res) => {
         email: existingUser.email,
         username: existingUser.username,
         aboutMe: existingUser.aboutMe,
+        profilePicture: existingUser.profilePicture,
       }
     })
 
@@ -96,7 +98,7 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe } = req.body;
+    const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture } = req.body;
     console.log("auth-controller: ", req.body);
     if (password.length < 8) {
       return res
@@ -134,12 +136,13 @@ registerUser = async (req, res) => {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const passwordHash = await bcrypt.hash(password, salt);
-    const newUser = new User({ firstName, lastName, username, email, passwordHash, aboutMe });
+    const newUser = new User({ firstName, lastName, username, email, passwordHash, aboutMe, profilePicture });
     const savedUser = await newUser.save();
 
     // LOGIN THE USER
     const token = auth.signToken(savedUser._id);
     console.log("auth-controller: " + savedUser.aboutMe)
+    console.log(savedUser.profilePicture)
 
     await res.cookie("token", token, {
       httpOnly: true,

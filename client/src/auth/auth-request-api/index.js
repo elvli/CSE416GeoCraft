@@ -18,7 +18,7 @@ export const loginUser = (email, password) => {
 
 export const logoutUser = () => api.get(`/logout/`)
 
-export const registerUser = (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe) => {
+export const registerUser = (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture) => {
   console.log("Registering User (Front)");
   return api.post(`/register/`, {
     firstName: firstName,
@@ -29,6 +29,7 @@ export const registerUser = (firstName, lastName, username, email, confirmEmail,
     password: password,
     confirmPassword: confirmPassword,
     aboutMe: aboutMe,
+    profilePicture: profilePicture,
   })
 }
 
