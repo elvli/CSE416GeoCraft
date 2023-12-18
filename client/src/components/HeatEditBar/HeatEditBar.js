@@ -466,13 +466,15 @@ export default function HeatEditBar(props) {
     </div> : null}
     <br></br>
     <Row className="justify-content-md-center">
-      <p>Edit Magnitude, Intensity, Radius, Opacity</p>
-      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  changeCurrentMag()}} >Magnitude</Button>
-      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeIntensity(!selectRangeIntensity);  changeCurrentInt()}} >Intensity</Button>
-      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeRadius(!selectRangeRadius);  changeCurrentRad()}} >Radius</Button>
-      <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeOpacity(!selectRangeOpacity);  changeCurrentOpac()}} >Opacity</Button>
-
-      
+          <span className="input-group-text" id="">
+            <Col>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  changeCurrentMag()}} >Magnitude</Button>
+            </Col>
+            <Col><h6>{rangeMag1}</h6></Col>
+            <Col><h6>{rangeMag2}</h6></Col>
+            <Col><h6>{rangeMag3}</h6></Col>
+            <Col><h6>{rangeMag4}</h6></Col>
+          </span>
     </Row>
     {selectRangeMag ? <div className='heat-popover'>
     <div style={cover} onClick={(event) => { setSelectRangeMag(false); changeCurrentMag()}} />
@@ -480,24 +482,72 @@ export default function HeatEditBar(props) {
               value1={rangeMag1} value2={rangeMag2} value3={rangeMag3} value4={rangeMag4} max={10}
             />
     </div> : null}
+    <br></br>
+    <Row className="justify-content-md-center">
+   
+          <span className="input-group-text" id="">
+            <Col>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeIntensity(!selectRangeIntensity);  changeCurrentInt()}} >Intensity</Button>
+            </Col>
+            <Col><h6>{rangeIntensity1}</h6></Col>
+            <Col><h6>{rangeIntensity2}</h6></Col>
+            <Col><h6>{rangeIntensity3}</h6></Col>
+            <Col><h6>{rangeIntensity4}</h6></Col>
+          </span>
+    </Row>
     {selectRangeIntensity ? <div className='heat-popover'>
       <div style={cover} onClick={(event) => { setSelectRangeIntensity(false); changeCurrentInt()}} />
       <RangeSelector setValue1={e=>{setRangeIntensity1(parseInt(e))}} setValue2={e=>{setRangeIntensity2(parseInt(e))}} setValue3={e=>{setRangeIntensity3(parseInt(e))}} setValue4={e=>{setRangeIntensity4(parseInt(e))}}
                 value1={rangeIntensity1} value2={rangeIntensity2} value3={rangeIntensity3} value4={rangeIntensity4} max={10}
               />
     </div> : null}
+    <br></br>
+    <Row className="justify-content-md-center">
+
+          <span className="input-group-text" id="">
+            <Col>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeRadius(!selectRangeRadius);  changeCurrentRad()}} >Radius</Button>
+            </Col>
+            <Col><h6>{rangeRadius1}</h6></Col>
+            <Col><h6>{rangeRadius2}</h6></Col>
+            <Col><h6>{rangeRadius3}</h6></Col>
+            <Col><h6>{rangeRadius4}</h6></Col>
+          </span>
+    </Row>
     {selectRangeRadius ? <div className='heat-popover'>
       <div style={cover} onClick={(event) => { setSelectRangeRadius(false); changeCurrentRad()}} />
       <RangeSelector setValue1={e=>{setRangeRadius1(parseInt(e))}} setValue2={e=>{setRangeRadius2(parseInt(e))}} setValue3={e=>{setRangeRadius3(parseInt(e))}} setValue4={e=>{setRangeRadius4(parseInt(e))}}
                 value1={rangeRadius1} value2={rangeRadius2} value3={rangeRadius3} value4={rangeRadius4} max={20}
               />
     </div> : null}
+    <br></br>
+    <Row className="justify-content-md-center">
+          <span className="input-group-text" id="">
+            <Col>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeOpacity(!selectRangeOpacity);  changeCurrentOpac()}} >Opacity</Button>
+            </Col>
+            <Col><h6>{rangeOpacity1}</h6></Col>
+            <Col><h6>{rangeOpacity2}</h6></Col>
+            <Col><h6>{rangeOpacity3}</h6></Col>
+            <Col><h6>{rangeOpacity4}</h6></Col>
+            
+          </span>
+    </Row>
+    <br></br>
     {selectRangeOpacity ? <div className='heat-popover'>
       <div style={cover} onClick={(event) => { setSelectRangeOpacity(false); changeCurrentOpac()}} />
       <RangeSelector setValue1={e=>{setRangeOpacity1(parseInt(e))}} setValue2={e=>{setRangeOpacity2(parseInt(e))}} setValue3={e=>{setRangeOpacity3(parseInt(e))}} setValue4={e=>{setRangeOpacity4(parseInt(e))}}
                 value1={rangeOpacity1} value2={rangeOpacity2} value3={rangeOpacity3} value4={rangeOpacity4} max={10}
               />
     </div> : null}
+      
+
+      
+   
+    
+    
+    
+    
     
     
 
