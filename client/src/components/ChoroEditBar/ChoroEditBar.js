@@ -7,6 +7,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import './ChoroEditBar.scss';
 import chroma from 'chroma-js';
+import jsTPS from '../../common/jsTPS';
+import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA'
 
@@ -31,6 +33,7 @@ export default function ChoroEditBar(props) {
   const [propName, setPropName] = useState('');
   const [dataRange, setDataRange] = useState([0, 100]);
   const isLayerAdded = useRef(false);
+  const [tps, setTPS] = useState(new jsTPS);
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -39,12 +42,27 @@ export default function ChoroEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
-    store.undo();
+    // store.undo();
+
+    if (tps.hasTransactionToUndo()) {
+      console.log('undo attempted')
+      tps.undoTransaction();
+    }
+    else {
+      console.log('no action to undo')
+    }
   }
 
   function handleRedo(event) {
     event.preventDefault();
-    store.redo();
+    // store.redo();
+    if (tps.hasTransactionToRedo()) {
+      console.log('redo attempted')
+      tps.doTransaction();
+    }
+    else {
+      console.log('no action to redo')
+    }
   }
 
   const handleSettingChange = (event, setting) => {
@@ -69,6 +87,22 @@ export default function ChoroEditBar(props) {
     setSettingsValues(newSettings)
   }
 
+  function KeyPress(event) {
+    if (event.ctrlKey) {
+      if (event.key === 'z') {
+        handleUndo(event)
+      }
+      if (event.key === 'y') {
+        handleRedo(event)
+      }
+      if (event.key === 's') {
+        event.preventDefault();
+        handleSave();
+      }
+    }
+  }
+
+  document.onkeydown = (event) => KeyPress(event);
 
 
 
@@ -152,10 +186,8 @@ export default function ChoroEditBar(props) {
 
   const handleAddRow = (regionInfo) => {
     if (!doesRegionExist(regionInfo)) {
-      setTableData((prevTableData) => [
-        ...prevTableData,
-        { id: prevTableData.length + 1, region: regionInfo, data: '0' },
-      ]);
+      const addRowTransaction = new AddRowTransaction({ id: tableData.length + 1, region: regionInfo, data: '0' }, tableData.length, setTableData);
+      tps.addTransaction(addRowTransaction);
     }
   };
 
