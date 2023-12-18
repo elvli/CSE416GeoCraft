@@ -7,6 +7,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import './ChoroEditBar.scss';
 import chroma from 'chroma-js';
+import jsTPS from '../../common/jsTPS';
+import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
+import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
+import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA'
 
@@ -31,6 +35,7 @@ export default function ChoroEditBar(props) {
   const [propName, setPropName] = useState('');
   const [dataRange, setDataRange] = useState([0, 100]);
   const isLayerAdded = useRef(false);
+  const [tps, setTPS] = useState(new jsTPS);
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -39,35 +44,74 @@ export default function ChoroEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
-    store.undo();
+    // store.undo();
+
+    if (tps.hasTransactionToUndo()) {
+      console.log('undo attempted')
+      tps.undoTransaction();
+    }
+    else {
+      console.log('no action to undo')
+    }
   }
 
   function handleRedo(event) {
     event.preventDefault();
-    store.redo();
+    // store.redo();
+    if (tps.hasTransactionToRedo()) {
+      console.log('redo attempted')
+      tps.doTransaction();
+    }
+    else {
+      console.log('no action to redo')
+    }
   }
+
+  function KeyPress(event) {
+    if (event.ctrlKey) {
+      if (event.key === 'z') {
+        handleUndo(event)
+      }
+      if (event.key === 'y') {
+        handleRedo(event)
+      }
+      if (event.key === 's') {
+        event.preventDefault();
+        handleSave();
+      }
+    }
+  }
+
+  document.onkeydown = (event) => KeyPress(event);
 
   const handleSettingChange = (event, setting) => {
-    var newSettings = ['', '', '']
-    newSettings[0] = settingsValues[0]
-    newSettings[1] = settingsValues[1]
-    newSettings[2] = settingsValues[2]
+    // Capture the current settings
+    const oldSettings = [...settingsValues];
 
+    // Create new settings based on the change
+    const newSettings = [...settingsValues];
     switch (setting) {
       case 0:
-        newSettings[0] = event.target.value
+        newSettings[0] = event.target.value;
         break;
       case 1:
-        newSettings[1] = event.target.value
+        newSettings[1] = event.target.value;
         break;
       case 2:
-        newSettings[2] = event.target.value
+        newSettings[2] = event.target.value;
         break;
       default:
-        newSettings = settingsValues;
+      // Do nothing for other cases
     }
-    setSettingsValues(newSettings)
-  }
+
+    // Create a transaction and add it to the jsTPS
+    const settingsChangeTransaction = new SettingsChangeTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(settingsChangeTransaction);
+  };
 
 
 
@@ -152,10 +196,8 @@ export default function ChoroEditBar(props) {
 
   const handleAddRow = (regionInfo) => {
     if (!doesRegionExist(regionInfo)) {
-      setTableData((prevTableData) => [
-        ...prevTableData,
-        { id: prevTableData.length + 1, region: regionInfo, data: '0' },
-      ]);
+      const addRowTransaction = new AddRowTransaction({ id: tableData.length + 1, region: regionInfo, data: '0' }, tableData.length, setTableData);
+      tps.addTransaction(addRowTransaction);
     }
   };
 
@@ -597,11 +639,20 @@ export default function ChoroEditBar(props) {
   // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
 
   const handleSetDefaults = () => {
-    var latitude = map.current.getCenter().lat.toFixed(4);
-    var longitude = map.current.getCenter().lng.toFixed(4);
-    var zoom = map.current.getZoom().toFixed(2);
-    setSettingsValues([latitude, longitude, zoom]);
-  }
+    const oldSettings = [...settingsValues];
+
+    const latitude = map.current.getCenter().lat.toFixed(4);
+    const longitude = map.current.getCenter().lng.toFixed(4);
+    const zoom = map.current.getZoom().toFixed(2);
+    const newSettings = [latitude, longitude, zoom];
+
+    const setDefaultsTransaction = new SetDefaultsTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(setDefaultsTransaction);
+  };
 
 
 
@@ -650,7 +701,6 @@ export default function ChoroEditBar(props) {
                 defaultActiveKey={['0']}
                 activeKey={activeKey}
                 onSelect={(newActiveKey) => setActiveKey(newActiveKey)}
-                alwaysOpen
                 className="choro-map-accordian"
               >
                 <Accordion.Item eventKey="0">

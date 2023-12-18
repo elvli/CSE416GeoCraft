@@ -5,6 +5,7 @@ import AuthContext from '../../auth'
 import GlobalStoreContext from "../../store";
 import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal, PublishMapModal } from '../../components'
 // import { Card } from 'react-bootstrap'
+import {Image} from 'cloudinary-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import "./ProfilePage.scss";
 
@@ -19,10 +20,12 @@ export default function ProfilePage() {
   const [editProfileShow, setEditProfileShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
   const fileInputRef = useRef(null);
-  const [profilePic, setProfilePic] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTt1ceyneFkZchgkrwN7dZxWNl_C5Dctvc5BzNh_rEzPQ&s");
 
   const { username } = useParams();
   const aboutMeText = auth.getAboutMe();
+  const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
+  const version = "v1702872120/";
+  const imageName = auth.getProfilePicture();
 
 
   async function handleClose(event) {
@@ -66,16 +69,17 @@ export default function ProfilePage() {
 
     if (file) {
       const formData = new FormData();
-      formData.append('profilePic', file);
+      formData.append('file', file);
+      formData.append("upload_preset", "jkiouekk")
 
       try {
-        const response = await axios.post('https://geocraftmapsbackend.onrender.com/upload', formData);
-        // const response = await axios.post('http://localhost:3001/upload', formData);
-        console.log(response.data);
-
-        // Update the profile picture URL in your component state
-        setProfilePic(`/${response.data.filename}`);
-        console.log(profilePic)
+        const response = await axios.post('https://api.cloudinary.com/v1_1/djmyzbhnk/image/upload', formData, {
+          withCredentials: false,
+        });
+        const user = {
+          profilePicture: response.data.public_id
+        }
+        auth.updateUser(user);
       } catch (error) {
         console.error('Error uploading file:', error);
       }
@@ -126,17 +130,28 @@ export default function ProfilePage() {
             className="img-container"
             style={{ width: "150px", height: "150px" }}
              >
-              <img src= {profilePic}
-                alt="Default Profile Pic"
-                className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
+              <Image
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
+                cloudName="djmyzbhnk"
+                publicId={`${cloudinaryBaseUrl}${version}${imageName}`}
               />
               </div>
               {username === auth.getUsername() && (
                <label
                 htmlFor="imageInput"
                 className="camera-icon-container position-absolute bottom-0 end-0"
-                style={{ zIndex: 1, width: "50px", height: "50px", cursor: "pointer" }}
+                style={{
+                  zIndex: 1,
+                  width: "50px",
+                  height: "50px",
+                  cursor: "pointer",
+                  borderRadius: "50%", // Add this line to make it rounded
+                  backgroundColor: "gray", // Add this line to set a background color
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
                 <input
                   type="file"
@@ -145,7 +160,7 @@ export default function ProfilePage() {
                   style={{ display: "none" }}
                   onChange={handleImageUpload}
                 />
-                <i className="bi-camera-fill text-dark" style={{ fontSize: "3rem" }}></i>
+                <i className="bi-camera text-dark" style={{ fontSize: "2rem" }}></i>
               </label>
               )}
 

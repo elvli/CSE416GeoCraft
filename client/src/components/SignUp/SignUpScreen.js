@@ -30,7 +30,7 @@ export default function SignUpScreen() {
       event.stopPropagation();
       const formData = new FormData(event.currentTarget);
       const aboutMeDefault = "Click edit profile to add an about me.";
-      const profilePictureDefault = null;
+      const profilePictureDefault = 'yx196dx8ua5em7hfgc1a';
 
       auth.registerUser(
         formData.get('firstName'),

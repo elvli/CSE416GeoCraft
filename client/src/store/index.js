@@ -11,10 +11,10 @@ export const GlobalStoreActionType = {
   SET_CURRENT_LIST: "SET_CURRENT_LIST",
   UPDATE_MAP_DATA: "UPDATE_MAP_DATA",
   EMPTY_MAP_DATA: "EMPTY_MAP_DATA",
-  SET_PRINT : 'SET_PRINT',
+  SET_PRINT: 'SET_PRINT',
 }
 
-const tps = new jsTPS();
+// const tps = new jsTPS();
 
 function GlobalStoreContextProvider(props) {
   const mapContainer = useRef(null);
@@ -168,49 +168,49 @@ function GlobalStoreContextProvider(props) {
     let newMapName = title
     const response = await api.createMap(newMapName, auth.user.username, auth.user.email, store.currentList.mapType);
     const mapData = await store.getMapDataById(store.currentList._id)
-    
+
     mapData.mapID = response.data.map._id;
     console.log(`current list id: ${store.currentList._id}`)
-      console.log(`new map id: ${response.data.map._id}`)
+    console.log(`new map id: ${response.data.map._id}`)
     if (response.status === 201) {
       // const nextResponse = await api.forkMapData(mapData)
       const nextResponse = await api.createMapData(response.data.map._id)
-       console.log(nextResponse)
+      console.log(nextResponse)
       if (nextResponse.status === 201) {
-          const map = response.data.map
-          const data = nextResponse.data.mapData
-          data.GeoJson = mapData.GeoJson?mapData.GeoJson:null
-          if(mapData.points&&map.mapType === "point") {
-            data.points = [...mapData.points]
-          }
-          if(mapData.propPoints&&map.mapType === "propSymb") {
-            data.propPoints = [...mapData.propPoints]
-          }
-          if(mapData.lineData&&map.mapType === "line") {
-            data.lineData = [...mapData.lineData]
-          }
-          if(mapData.heatmap&&map.mapType === "heat") {
-            data.heatmap = {data: null, color: null}
-            data.heatmap.data = [...mapData.heatmap.data]
-            data.heatmap.color = [...mapData.heatmap.color]
-          }
-          if(mapData.choroData&&map.mapType === "choro") {
-            data.choroData.regionData = mapData.choroData.regionData
-            data.choroData.choroSettings = mapData.choroData.choroSettings
-          }
-          
-          
-          
-          data.settings.longitude = mapData.settings.longitude
-          data.settings.latitude = mapData.settings.latitude
-          data.settings.zoom = mapData.settings.zoom
+        const map = response.data.map
+        const data = nextResponse.data.mapData
+        data.GeoJson = mapData.GeoJson ? mapData.GeoJson : null
+        if (mapData.points && map.mapType === "point") {
+          data.points = [...mapData.points]
+        }
+        if (mapData.propPoints && map.mapType === "propSymb") {
+          data.propPoints = [...mapData.propPoints]
+        }
+        if (mapData.lineData && map.mapType === "line") {
+          data.lineData = [...mapData.lineData]
+        }
+        if (mapData.heatmap && map.mapType === "heat") {
+          data.heatmap = { data: null, color: null }
+          data.heatmap.data = [...mapData.heatmap.data]
+          data.heatmap.color = [...mapData.heatmap.color]
+        }
+        if (mapData.choroData && map.mapType === "choro") {
+          data.choroData.regionData = mapData.choroData.regionData
+          data.choroData.choroSettings = mapData.choroData.choroSettings
+        }
+
+
+
+        data.settings.longitude = mapData.settings.longitude
+        data.settings.latitude = mapData.settings.latitude
+        data.settings.zoom = mapData.settings.zoom
         const res = await api.updateMapDataById(response.data.map._id, data);
         console.log('bananas')
         if (res.data.success) {
           console.log('Successfully updated mapdata')
           store.loadIdNamePairs()
         }
-        
+
       }
       else {
         console.log("mapData failed");
@@ -407,37 +407,38 @@ function GlobalStoreContextProvider(props) {
     setPrint(arg)
   }
 
-  store.undo = function () {
-    tps.undoTransaction();
-  }
-  store.redo = function () {
-    tps.doTransaction();
-  }
+  // store.undo = function () {
+  //   if (tps.hasTransactionToUndo()) {
+  //     console.log('undo attempted')
+  //     tps.undoTransaction();
+  //   }
+  //   else {
+  //     console.log('no action to undo')
+  //   }
+  // }
+  // store.redo = function () {
+  //   if (tps.hasTransactionToRedo()) {
+  //     console.log('redo attempted')
+  //     tps.doTransaction();
+  //   }
+  //   else {
+  //     console.log('no action to redo')
+  //   }
+  // }
 
-  function KeyPress(event) {
-    if (!store.modalOpen && event.ctrlKey) {
-      if (event.key === 'z') {
-        if (tps.hasTransactionToUndo()) {
-          console.log('undo attempted')
-          store.undo();
-        }
-        else {
-          console.log('no action to undo')
-        }
-      }
-      if (event.key === 'y') {
-        if (tps.hasTransactionToRedo()) {
-          console.log('redo attempted')
-          store.redo();
-        }
-        else {
-          console.log('no action to redo')
-        }
-      }
-    }
-  }
+  // function KeyPress(event) {
+  //   if (event.ctrlKey) {
+  //     if (event.key === 'z') {
+  //       store.undo();
 
-  document.onkeydown = (event) => KeyPress(event);
+  //     }
+  //     if (event.key === 'y') {
+  //       store.redo();
+  //     }
+  //   }
+  // }
+
+  // document.onkeydown = (event) => KeyPress(event);
 
   return (
     <GlobalStoreContext.Provider value={{
