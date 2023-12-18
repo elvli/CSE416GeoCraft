@@ -10,6 +10,11 @@ import { HexColorPicker } from "react-colorful";
 import MapNameModal from '../MapNameModal/MapNameModal';
 import RangeSelector from './RangeSelector';
 import RangeSelectorOpacity from './RangeSelectorOpacity';
+import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
+import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
+import HeatTableTransaction from '../../transactions/Heat/HeatTableTransaction';
+import HeatEditTransaction from '../../transactions/Heat/HeatEditTransaction';
+import jsTPS from '../../common/jsTPS';
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
@@ -45,8 +50,6 @@ export default function HeatEditBar(props) {
   const [selectRangeIntensity, setSelectRangeIntensity] = useState(false);
   const [selectRangeRadius, setSelectRangeRadius] = useState(false);
   const [selectRangeOpacity, setSelectRangeOpacity] = useState(false);
-  
-
   const [picker1, setPicker1] = useState(false);
   const [picker2, setPicker2] = useState(false);
   const [picker3, setPicker3] = useState(false);
@@ -116,6 +119,7 @@ export default function HeatEditBar(props) {
     "features": []
   });
   const [jsonData, setJsonData] = useState('');
+  const [tps, setTPS] = useState(new jsTPS)
   const downloadLinkRef = useRef(null);
 
   function toggleSideBar(event) {
@@ -125,37 +129,74 @@ export default function HeatEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
-    store.undo();
+    // store.undo();
+
+    if (tps.hasTransactionToUndo()) {
+      console.log('undo attempted')
+      tps.undoTransaction();
+    }
+    else {
+      console.log('no action to undo')
+    }
   }
 
   function handleRedo(event) {
     event.preventDefault();
-    store.redo();
+    // store.redo();
+    if (tps.hasTransactionToRedo()) {
+      console.log('redo attempted')
+      tps.doTransaction();
+    }
+    else {
+      console.log('no action to redo')
+    }
   }
 
   const handleSettingChange = (event, setting) => {
-    var newSettings = ['', '', '']
-    newSettings[0] = settingsValues[0]
-    newSettings[1] = settingsValues[1]
-    newSettings[2] = settingsValues[2]
+    // Capture the current settings
+    const oldSettings = [...settingsValues];
+
+    // Create new settings based on the change
+    const newSettings = [...settingsValues];
     switch (setting) {
       case 0:
-        newSettings[0] = event.target.value
+        newSettings[0] = event.target.value;
         break;
       case 1:
-        newSettings[1] = event.target.value
+        newSettings[1] = event.target.value;
         break;
       case 2:
-        newSettings[2] = event.target.value
+        newSettings[2] = event.target.value;
         break;
       default:
-        newSettings = settingsValues;
+      // Do nothing for other cases
     }
-    setSettingsValues(newSettings)
+
+    // Create a transaction and add it to the jsTPS
+    const settingsChangeTransaction = new SettingsChangeTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(settingsChangeTransaction);
   }
 
+  function KeyPress(event) {
+    if (event.ctrlKey) {
+      if (event.key === 'z') {
+        handleUndo(event)
+      }
+      if (event.key === 'y') {
+        handleRedo(event)
+      }
+      if (event.key === 's') {
+        event.preventDefault();
+        handleSave();
+      }
+    }
+  }
 
-
+  document.onkeydown = (event) => KeyPress(event);
 
   // THESE FUNCTIONS HANDLE FILE LOADING
   const handleFileChange = (event) => {
@@ -190,14 +231,6 @@ export default function HeatEditBar(props) {
       newTable.push(tableData[i])
     }
     newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', magnitide: '' })
-    // var data = heatMapData
-    // data['features'].push({ "type": "Feature", "properties": { "mag": parseFloat(mag) }, "geometry": { "type": "Point", "coordinates": [ parseFloat(lat), parseFloat(long), 0 ] } })
-    // setHeatMapData(data)
-    // store.updateMapData({
-    //   type: 'heat',
-    //   import: true,
-    //   data: data
-    // })
     setTableData(newTable)
   }
   const handleAddRowFiles = (arr) => {
@@ -212,9 +245,6 @@ export default function HeatEditBar(props) {
     setTableData(newTable)
   }
 
-  // const handleHeaderDoubleClick = (index) => {
-  //   setIsEditingHeader(index);
-  // };
 
   const handleHeaderChange = (event, index) => {
     const updatedHeaders = [...tableHeaders];
@@ -296,7 +326,7 @@ export default function HeatEditBar(props) {
       
       setTableData(newPoints);
       
-      setSettingsValues([map.settings.latitude, map.settings.longitude, map.settings.zoom])
+      setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
 
 
     }
@@ -365,67 +395,168 @@ export default function HeatEditBar(props) {
     left: '0px',
   }
   const changeCurrentColor = () => {
-    setCurrentColor([
-      'interpolate',
-      ['linear'],
-      ['heatmap-density'],
-      0,
-      'rgba(33,102,172,0)',
-      0.2,
-      color1,
-      0.4,
-      color2,
-      0.6,
-      color3,
-      0.8,
-      color4,
-      1,
-      color5
-    ])
+    const previousColorState = [...currentColor];
+    
+    const doFunction = () => {
+      setCurrentColor([
+        'interpolate',
+        ['linear'],
+        ['heatmap-density'],
+        0,
+        'rgba(33,102,172,0)',
+        0.2,
+        color1,
+        0.4,
+        color2,
+        0.6,
+        color3,
+        0.8,
+        color4,
+        1,
+        color5
+      ])
+      setColor1(color1)
+      setColor2(color2)
+      setColor3(color3)
+      setColor4(color4)
+      setColor5(color5)
+    }
+    const undoFunction = () => {
+      setCurrentColor(previousColorState)
+      setColor1(previousColorState[6])
+      setColor2(previousColorState[8])
+      setColor3(previousColorState[10])
+      setColor4(previousColorState[12])
+      setColor5(previousColorState[14])
+      
+    }
+
+    let transaction = new HeatEditTransaction(doFunction, undoFunction)
+    tps.addTransaction(transaction)
+   
   }
   const changeCurrentMag = () => {
-    setCurrentMag([
-      'interpolate',
-      ['linear'],
-      ['get', 'mag'],
-      rangeMag1,
-      rangeMag2,
-      rangeMag3,
-      rangeMag4
-      ])
+    const previousMag = [...currentMag];
+    const doFunction = () => {
+      setCurrentMag([
+        'interpolate',
+        ['linear'],
+        ['get', 'mag'],
+        rangeMag1,
+        rangeMag2,
+        rangeMag3,
+        rangeMag4
+        ])
+      setRangeMag1(rangeMag1)
+      setRangeMag2(rangeMag2)
+      setRangeMag3(rangeMag3)
+      setRangeMag4(rangeMag4)
+      
+    }
+    const undoFunction = () => {
+      setCurrentMag(previousMag)
+      setRangeMag1(previousMag[3])
+      setRangeMag2(previousMag[4])
+      setRangeMag3(previousMag[5])
+      setRangeMag4(previousMag[6])
+      
+    }
+    let transaction = new HeatEditTransaction(doFunction, undoFunction)
+    tps.addTransaction(transaction)
+    
   }
   const changeCurrentInt = () => {
-    setCurrentInt([
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      rangeIntensity1,
-      rangeIntensity2,
-      rangeIntensity3,
-      rangeIntensity4
-      ])
+    const previousInt = [...currentInt];
+    
+      const doFunction = () => {
+        setCurrentInt([
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          rangeIntensity1,
+          rangeIntensity2,
+          rangeIntensity3,
+          rangeIntensity4
+          ])
+        setRangeIntensity1(rangeIntensity1)
+        setRangeIntensity2(rangeIntensity2)
+        setRangeIntensity3(rangeIntensity3)
+        setRangeIntensity4(rangeIntensity4)
+        
+      }
+      const undoFunction = () => {
+        setCurrentInt(previousInt)
+        setRangeIntensity1(previousInt[3])
+        setRangeIntensity2(previousInt[4])
+        setRangeIntensity3(previousInt[5])
+        setRangeIntensity4(previousInt[6])
+        
+      }
+      let transaction = new HeatEditTransaction(doFunction, undoFunction)
+      tps.addTransaction(transaction)
+    
   }
   const changeCurrentRad = () => {
-    setCurrentRad([
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      rangeRadius1,
-      rangeRadius2,
-      rangeRadius3,
-      rangeRadius4
-      ])
+    const previousRad = [...currentRad];
+    
+      const doFunction = () => {
+        setCurrentRad([
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          rangeRadius1,
+          rangeRadius2,
+          rangeRadius3,
+          rangeRadius4
+          ])
+        setRangeRadius1(rangeRadius1)
+        setRangeRadius2(rangeRadius2)
+        setRangeRadius3(rangeRadius3)
+        setRangeRadius4(rangeRadius4)
+        
+      }
+      const undoFunction = () => {
+        setCurrentRad(previousRad)
+        setRangeRadius1(previousRad[3])
+        setRangeRadius2(previousRad[4])
+        setRangeRadius3(previousRad[5])
+        setRangeRadius4(previousRad[6])
+        
+      }
+      let transaction = new HeatEditTransaction(doFunction, undoFunction)
+      tps.addTransaction(transaction)
+    
   }
   const changeCurrentOpac = () => {
-    setCurrentOpac([
-      'interpolate',
-      ['linear'],
-      ['zoom'],
-      rangeOpacity1,
-      rangeOpacity2,
-      rangeOpacity3,
-      rangeOpacity4
-      ])
+    const previousOpac = [...currentOpac];
+    
+      const doFunction = () => {
+        setCurrentOpac([
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          rangeOpacity1,
+          rangeOpacity2,
+          rangeOpacity3,
+          rangeOpacity4
+          ])
+        setRangeOpacity1(rangeOpacity1)
+        setRangeOpacity2(rangeOpacity2)
+        setRangeOpacity3(rangeOpacity3)
+        setRangeOpacity4(rangeOpacity4)
+        
+      }
+      const undoFunction = () => {
+        setCurrentOpac(previousOpac)
+        setRangeOpacity1(previousOpac[3])
+        setRangeOpacity2(previousOpac[4])
+        setRangeOpacity3(previousOpac[5])
+        setRangeOpacity4(previousOpac[6])
+        
+      }
+      let transaction = new HeatEditTransaction(doFunction, undoFunction)
+      tps.addTransaction(transaction)
+    
   }
 
   // const [selectRangeMag, setSelectRangeMag] = useState(false);
@@ -436,11 +567,11 @@ export default function HeatEditBar(props) {
     
     <Row className="justify-content-md-center">
       <p>Select a color</p>
-      <Button className='heat-button' onClick={() => { setPicker1(!picker1); changeCurrentColor();}} style={{ backgroundColor: color1 }}/>
-      <Button className='heat-button' onClick={() => { setPicker2(!picker2); changeCurrentColor() }} style={{ backgroundColor: color2 }}/>
-      <Button className='heat-button' onClick={() => { setPicker3(!picker3); changeCurrentColor() }} style={{ backgroundColor: color3 }}/>
-      <Button className='heat-button' onClick={() => { setPicker4(!picker4); changeCurrentColor() }} style={{ backgroundColor: color4 }}/>
-      <Button className='heat-button' onClick={() => { setPicker5(!picker5); changeCurrentColor() }} style={{ backgroundColor: color5 }}/>
+      <Button className='heat-button' onClick={() => { setPicker1(!picker1); }} style={{ backgroundColor: color1 }}/>
+      <Button className='heat-button' onClick={() => { setPicker2(!picker2);  }} style={{ backgroundColor: color2 }}/>
+      <Button className='heat-button' onClick={() => { setPicker3(!picker3); }} style={{ backgroundColor: color3 }}/>
+      <Button className='heat-button' onClick={() => { setPicker4(!picker4);  }} style={{ backgroundColor: color4 }}/>
+      <Button className='heat-button' onClick={() => { setPicker5(!picker5);  }} style={{ backgroundColor: color5 }}/>
     </Row>
     {picker1 ? <div className='heat-popover'>
     <div style={cover} onClick={(event) => { setPicker1(false); changeCurrentColor()}} />
@@ -478,7 +609,7 @@ export default function HeatEditBar(props) {
     <Row className="justify-content-md-center">
           <span className="input-group-text" id="">
             <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  changeCurrentMag()}} >Weight</Button>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  }} >Weight</Button>
             </Col>
             <Col><h6>{rangeMag1}</h6></Col>
             <Col><h6>{rangeMag2}</h6></Col>
@@ -497,7 +628,7 @@ export default function HeatEditBar(props) {
    
           <span className="input-group-text" id="">
             <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeIntensity(!selectRangeIntensity);  changeCurrentInt()}} >Intensity</Button>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeIntensity(!selectRangeIntensity);  }} >Intensity</Button>
             </Col>
             <Col><h6>{rangeIntensity1}</h6></Col>
             <Col><h6>{rangeIntensity2}</h6></Col>
@@ -516,7 +647,7 @@ export default function HeatEditBar(props) {
 
           <span className="input-group-text" id="">
             <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeRadius(!selectRangeRadius);  changeCurrentRad()}} >Radius</Button>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeRadius(!selectRangeRadius); }} >Radius</Button>
             </Col>
             <Col><h6>{rangeRadius1}</h6></Col>
             <Col><h6>{rangeRadius2}</h6></Col>
@@ -534,7 +665,7 @@ export default function HeatEditBar(props) {
     <Row className="justify-content-md-center">
           <span className="input-group-text" id="">
             <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeOpacity(!selectRangeOpacity);  changeCurrentOpac()}} >Opacity</Button>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeOpacity(!selectRangeOpacity);  }} >Opacity</Button>
             </Col>
             <Col><h6>{rangeOpacity1}</h6></Col>
             <Col><h6>{rangeOpacity2}</h6></Col>
@@ -560,10 +691,19 @@ export default function HeatEditBar(props) {
   // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
 
   const handleSetDefaults = () => {
-    var latitude = map.current.getCenter().lat.toFixed(4);
-    var longitude = map.current.getCenter().lng.toFixed(4);
-    var zoom = map.current.getZoom().toFixed(2);
-    setSettingsValues([latitude, longitude, zoom]);
+    const oldSettings = [...settingsValues];
+
+    const latitude = map.current.getCenter().lat.toFixed(4);
+    const longitude = map.current.getCenter().lng.toFixed(4);
+    const zoom = map.current.getZoom().toFixed(2);
+    const newSettings = [latitude, longitude, zoom];
+
+    const setDefaultsTransaction = new SetDefaultsTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(setDefaultsTransaction);
   }
   useEffect(() => {
     store.updateMapData({
@@ -746,7 +886,7 @@ export default function HeatEditBar(props) {
                 </Accordion.Item>
 
                 <Accordion.Item eventKey="3">
-                  <Accordion.Header>Choropleth Map Settings</Accordion.Header>
+                  <Accordion.Header>Heat Map Settings</Accordion.Header>
                   <Accordion.Body>
                     <div className="input-group">
                       <div className="input-group-prepend">
