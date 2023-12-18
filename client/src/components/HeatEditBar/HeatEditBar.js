@@ -271,7 +271,6 @@ export default function HeatEditBar(props) {
       setColor3(points.heatmap.color[10])
       setColor4(points.heatmap.color[12])
       setColor5(points.heatmap.color[14])
-
       setRangeMag1(points.heatmap.mag[3])
       setRangeMag2(points.heatmap.mag[4])
       setRangeMag3(points.heatmap.mag[5])

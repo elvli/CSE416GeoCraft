@@ -527,6 +527,10 @@ export default function MapBackground(props) {
             json['features'] = arr;
             generateHeatMap(json, mapData.heatmap.color);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', mapData.heatmap.color);
+            map.current.setPaintProperty('earthquakes-heat', 'heatmap-weight', mapData.heatmap.mag);
+            map.current.setPaintProperty('earthquakes-heat', 'heatmap-intensity', mapData.heatmap.int);
+            map.current.setPaintProperty('earthquakes-heat', 'heatmap-radius', mapData.heatmap.rad);
+            map.current.setPaintProperty('earthquakes-heat', 'heatmap-opacity', mapData.heatmap.opac);
           }
 
 
