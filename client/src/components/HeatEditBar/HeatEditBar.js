@@ -283,42 +283,60 @@ export default function HeatEditBar(props) {
     bottom: '0px',
     left: '0px',
   }
-
+  const changeCurrentColor = () => {
+    setCurrentColor([
+      'interpolate',
+      ['linear'],
+      ['heatmap-density'],
+      0,
+      'rgba(33,102,172,0)',
+      0.2,
+      color1,
+      0.4,
+      color2,
+      0.6,
+      color3,
+      0.8,
+      color4,
+      1,
+      color5
+    ])
+  }
   let options = <div >
     <p>Select a color</p>
-    <Button className='heat-button' onClick={() => { setPicker1(!picker1) }} style={{ backgroundColor: color1 }}>
+    <Button className='heat-button' onClick={() => { setPicker1(!picker1); changeCurrentColor();}} style={{ backgroundColor: color1 }}>
 
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker2(!picker2) }} style={{ backgroundColor: color2 }}>
+    <Button className='heat-button' onClick={() => { setPicker2(!picker2); changeCurrentColor() }} style={{ backgroundColor: color2 }}>
 
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker3(!picker3) }} style={{ backgroundColor: color3 }}>
+    <Button className='heat-button' onClick={() => { setPicker3(!picker3); changeCurrentColor() }} style={{ backgroundColor: color3 }}>
 
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker4(!picker4) }} style={{ backgroundColor: color4 }}>
+    <Button className='heat-button' onClick={() => { setPicker4(!picker4); changeCurrentColor() }} style={{ backgroundColor: color4 }}>
 
     </Button>
-    <Button className='heat-button' onClick={() => { setPicker5(!picker5) }} style={{ backgroundColor: color5 }}>
+    <Button className='heat-button' onClick={() => { setPicker5(!picker5); changeCurrentColor() }} style={{ backgroundColor: color5 }}>
 
     </Button>
     {picker1 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker1(false) }} />
+      <div style={cover} onClick={(event) => { setPicker1(false); changeCurrentColor()}} />
       <HexColorPicker color={color1} onChange={setColor1} />
     </div> : null}
     {picker2 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker2(false) }} />
+      <div style={cover} onClick={(event) => { setPicker2(false); changeCurrentColor()}} />
       <HexColorPicker color={color2} onChange={setColor2} />
     </div> : null}
     {picker3 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker3(false) }} />
+      <div style={cover} onClick={(event) => { setPicker3(false); changeCurrentColor()}} />
       <HexColorPicker color={color3} onChange={setColor3} />
     </div> : null}
     {picker4 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker4(false) }} />
+      <div style={cover} onClick={(event) => { setPicker4(false); changeCurrentColor()}} />
       <HexColorPicker color={color4} onChange={setColor4} />
     </div> : null}
     {picker5 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker5(false) }} />
+      <div style={cover} onClick={(event) => { setPicker5(false); changeCurrentColor()}} />
       <HexColorPicker color={color5} onChange={setColor5} />
     </div> : null}
 
@@ -343,25 +361,25 @@ export default function HeatEditBar(props) {
       }
     })
   }, [currentColor])
-  useEffect(() => {
-    setCurrentColor([
-      'interpolate',
-      ['linear'],
-      ['heatmap-density'],
-      0,
-      'rgba(33,102,172,0)',
-      0.2,
-      color1,
-      0.4,
-      color2,
-      0.6,
-      color3,
-      0.8,
-      color4,
-      1,
-      color5
-    ])
-  }, [color1, color2, color3, color4, color5])
+  // useEffect(() => {
+  //   setCurrentColor([
+  //     'interpolate',
+  //     ['linear'],
+  //     ['heatmap-density'],
+  //     0,
+  //     'rgba(33,102,172,0)',
+  //     0.2,
+  //     color1,
+  //     0.4,
+  //     color2,
+  //     0.6,
+  //     color3,
+  //     0.8,
+  //     color4,
+  //     1,
+  //     color5
+  //   ])
+  // }, [color1, color2, color3, color4, color5])
   useEffect(() => {
     try {
       updateTable();
