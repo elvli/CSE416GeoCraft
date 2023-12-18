@@ -53,7 +53,7 @@ export default function MapNameModal(props) {
             </Button>
             <Form.Group>
               <Button variant="primary" type="submit">
-                Confirm
+                Save
               </Button>
             </Form.Group>
 

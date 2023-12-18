@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
-import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './PropSymbEditBar.scss'
 import rewind from "@mapbox/geojson-rewind";
@@ -10,6 +10,7 @@ import SettingsChangeTransaction from '../../transactions/SettingsChangeTransact
 import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 import jsTPS from '../../common/jsTPS';
 import PointMapTransaction from '../../transactions/Point/PointMapTransaction';
+import MapNameModal from '../MapNameModal/MapNameModal';
 
 export default function PropSymbEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -27,6 +28,7 @@ export default function PropSymbEditBar(props) {
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([41.8473, 12.7971, 5.43])
   const [tps, setTPS] = useState(new jsTPS)
+  const [showName, setShowName] = useState(false);
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -336,6 +338,12 @@ export default function PropSymbEditBar(props) {
             </Row>
 
             <Row>
+            <Button className="edit-button" variant="dark" onClick={() => setShowName(true)} aria-label="change map name">
+                <PencilSquare />
+              </Button>
+            </Row>
+
+            <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
@@ -492,6 +500,7 @@ export default function PropSymbEditBar(props) {
       </div>
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave}/>
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson}/>
+      <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
     </div>
   )
 }
