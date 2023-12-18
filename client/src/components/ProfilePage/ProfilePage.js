@@ -166,7 +166,7 @@ export default function ProfilePage() {
                   style={{ display: "none" }}
                   onChange={handleImageUpload}
                 />
-                <img src={cameraLogo} alt="Camera Logo" style={{ width: "50px", height: "50px" }} />
+                <img src={cameraLogo} alt="Camera Logo" style={{ width: "40px", height: "40px" }} />
 
               </label>
               )}
