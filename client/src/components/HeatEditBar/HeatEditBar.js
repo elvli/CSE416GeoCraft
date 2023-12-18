@@ -3,16 +3,18 @@ import { Button, Table, AccordionHeader, Row, Col, Dropdown, Form } from 'react-
 import './HeatEditBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import { GlobalStoreContext } from '../../store'
-import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import { HexColorPicker } from "react-colorful";
 // import HeatPointModal from '../HeatPointModal/HeatPointModal';
+import MapNameModal from '../MapNameModal/MapNameModal';
 
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
+  const [showName, setShowName] = useState(false);
   const [showHeat, setShowHeat] = useState(false)
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null)
@@ -419,19 +421,24 @@ export default function HeatEditBar(props) {
                 <ArrowClockwise />
               </Button>
             </Row>
-
+            <Row>
+              <Button className="edit-button" variant="dark" onClick={() => setShowName(true)} aria-label="change map name">
+                <PencilSquare />
+              </Button>
+            </Row>
             <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
             </Row>
+            
           </Col>
         </div>
 
-        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'}`} id="heat-map-menu">
+        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'} ` } id="heat-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']} alwaysOpen className='heat-map-accordian'>
+              <Accordion defaultActiveKey={['0']}  className='heat-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body
@@ -556,6 +563,7 @@ export default function HeatEditBar(props) {
       </div>
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
       {/* <HeatPointModal saveAndExitShow={showHeat} handlesaveAndExitShowClose={(event) => { setShowHeat(false) }} handleHeatMap={handleHeatMap} handleAddRow={handleAddRow}  /> */}
+      <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
     </div >
   )
 }
