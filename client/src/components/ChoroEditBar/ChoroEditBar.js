@@ -9,6 +9,8 @@ import './ChoroEditBar.scss';
 import chroma from 'chroma-js';
 import jsTPS from '../../common/jsTPS';
 import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
+import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
+import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA'
 
@@ -65,28 +67,6 @@ export default function ChoroEditBar(props) {
     }
   }
 
-  const handleSettingChange = (event, setting) => {
-    var newSettings = ['', '', '']
-    newSettings[0] = settingsValues[0]
-    newSettings[1] = settingsValues[1]
-    newSettings[2] = settingsValues[2]
-
-    switch (setting) {
-      case 0:
-        newSettings[0] = event.target.value
-        break;
-      case 1:
-        newSettings[1] = event.target.value
-        break;
-      case 2:
-        newSettings[2] = event.target.value
-        break;
-      default:
-        newSettings = settingsValues;
-    }
-    setSettingsValues(newSettings)
-  }
-
   function KeyPress(event) {
     if (event.ctrlKey) {
       if (event.key === 'z') {
@@ -103,6 +83,36 @@ export default function ChoroEditBar(props) {
   }
 
   document.onkeydown = (event) => KeyPress(event);
+
+  const handleSettingChange = (event, setting) => {
+    // Capture the current settings
+    const oldSettings = [...settingsValues];
+
+    // Create new settings based on the change
+    const newSettings = [...settingsValues];
+    switch (setting) {
+      case 0:
+        newSettings[0] = event.target.value;
+        break;
+      case 1:
+        newSettings[1] = event.target.value;
+        break;
+      case 2:
+        newSettings[2] = event.target.value;
+        break;
+      default:
+      // Do nothing for other cases
+    }
+
+    // Create a transaction and add it to the jsTPS
+    const settingsChangeTransaction = new SettingsChangeTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(settingsChangeTransaction);
+  };
+
 
 
 
@@ -629,11 +639,20 @@ export default function ChoroEditBar(props) {
   // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
 
   const handleSetDefaults = () => {
-    var latitude = map.current.getCenter().lat.toFixed(4);
-    var longitude = map.current.getCenter().lng.toFixed(4);
-    var zoom = map.current.getZoom().toFixed(2);
-    setSettingsValues([latitude, longitude, zoom]);
-  }
+    const oldSettings = [...settingsValues];
+
+    const latitude = map.current.getCenter().lat.toFixed(4);
+    const longitude = map.current.getCenter().lng.toFixed(4);
+    const zoom = map.current.getZoom().toFixed(2);
+    const newSettings = [latitude, longitude, zoom];
+
+    const setDefaultsTransaction = new SetDefaultsTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(setDefaultsTransaction);
+  };
 
 
 
@@ -682,7 +701,6 @@ export default function ChoroEditBar(props) {
                 defaultActiveKey={['0']}
                 activeKey={activeKey}
                 onSelect={(newActiveKey) => setActiveKey(newActiveKey)}
-                alwaysOpen
                 className="choro-map-accordian"
               >
                 <Accordion.Item eventKey="0">
