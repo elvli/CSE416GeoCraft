@@ -2,9 +2,9 @@ import React, { useState, useContext } from 'react'
 import { Button } from 'react-bootstrap';
 import { ChatRightText, Send } from 'react-bootstrap-icons';
 import CommentCard from '../CommentCard/CommentCard';
-import "./RightSideBar.scss";
 import AuthContext from '../../auth'
 import { GlobalStoreContext } from '../../store';
+import "./RightSideBar.scss";
 
 export default function RightSideBar() {
   const { store } = useContext(GlobalStoreContext);

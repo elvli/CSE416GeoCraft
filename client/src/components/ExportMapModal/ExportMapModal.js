@@ -1,8 +1,6 @@
 import React from "react";
 import "./ExportMapModal.scss";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
+import { Form, Button, Modal } from "react-bootstrap";
 import GlobalStoreContext from "../../store";
 import { useState, useContext, useRef } from "react";
 
@@ -14,6 +12,7 @@ export default function ExportMapModal(props) {
   const { store } = useContext(GlobalStoreContext);
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
@@ -25,16 +24,17 @@ export default function ExportMapModal(props) {
       const formData = new FormData(event.currentTarget);
       console.log(formData.get('mapType'))
       var downloadType = formData.get("mapType")
-      if(downloadType == 'json') {
+
+      if (downloadType == 'json') {
         downloadJson()
       }
-      else if(downloadType == 'jpeg') {
+      else if (downloadType == 'jpeg') {
         downloadPic(2)
       }
       else {
         downloadPic(1)
       }
-        
+
       handleExportMapClose(event)
     }
   };
@@ -42,6 +42,7 @@ export default function ExportMapModal(props) {
   const handleClosing = (event) => {
     handleExportMapClose(event)
   };
+
   const downloadJson = async () => {
     const mapId = store.currentList._id
     const data = await store.getMapDataById(mapId)
@@ -58,9 +59,12 @@ export default function ExportMapModal(props) {
 
     URL.revokeObjectURL(url);
   };
+
   const downloadPic = async (arg) => {
-    const rewait = await store.setPrint(arg)
+    const rewait = await store.setPrint(arg);
   }
+
+
   return (
     <div>
       <Modal centered show={exportMapShow} onHide={handleExportMapClose}>
@@ -68,10 +72,12 @@ export default function ExportMapModal(props) {
           <Modal.Header closeButton>
             <Modal.Title>Export Map?</Modal.Title>
           </Modal.Header>
+
           <Modal.Body>
             <p>Are you sure you want to export this map?</p>
             <Form.Group>
               <Form.Label>Export as</Form.Label>
+              
               <Form.Select name='mapType' required >
                 <option value="">Select export type</option>
                 <option value="json">JSON</option>
@@ -81,10 +87,12 @@ export default function ExportMapModal(props) {
             </Form.Group>
             <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
           </Modal.Body>
+
           <Modal.Footer className="d-flex justify-content-center">
             <Button variant="secondary" onClick={handleClosing}>
               Close
             </Button>
+
             <Form.Group>
               <Button variant="primary" type="submit">
                 Confirm

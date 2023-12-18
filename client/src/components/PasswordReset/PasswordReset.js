@@ -1,9 +1,9 @@
 import { React, useState, useEffect, useContext } from "react";
-import "./PasswordReset.scss";
-import { Form, Button, Card, Row} from 'react-bootstrap';
-import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import { useNavigate } from "react-router-dom";
+import { Form, Button, Card, Row } from 'react-bootstrap';
+import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import AuthContext from '../../auth'
+import "./PasswordReset.scss";
 
 export default function PasswordReset() {
   const { auth } = useContext(AuthContext);
@@ -30,7 +30,7 @@ export default function PasswordReset() {
       auth.createEmailLink(formData.get('email'))
     }
   }
-  
+
   return (
     <div className="d-flex align-items-center justify-content-center vh-100 background-container">
       <Card className="sign-up-screen">
@@ -45,7 +45,7 @@ export default function PasswordReset() {
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Form.Group>
                 <Form.Control className="password-reset-item" name="email" required type="email" placeholder="Email" size="lg" />
-                
+
               </Form.Group>
               <br /> <br />
               <Form.Group>

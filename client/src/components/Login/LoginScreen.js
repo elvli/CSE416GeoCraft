@@ -1,18 +1,17 @@
 import { React, useState, useContext, useEffect } from "react";
-import AuthContext from '../../auth'
 import { Form, Button, Card } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
+import AuthContext from '../../auth'
 import GeoCraftLogoBlack from '../Images/GeoCraftLogoBlack.png'
 import "./LoginScreen.scss";
 
 export default function LoginScreen() {
   const { auth } = useContext(AuthContext);
   const [validated, setValidated] = useState(false);
-  // const [validMSG, setValidMSG] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (auth.loggedIn){
+    if (auth.loggedIn) {
       navigate("/");
     }
   });
@@ -45,7 +44,6 @@ export default function LoginScreen() {
 
   if (auth.errorMessage !== null) {
     console.log('LOGIN ERR')
-    // setValidMSG("Incorrect username or password. Try again or click Forgot password to reset.");
   }
 
   return (

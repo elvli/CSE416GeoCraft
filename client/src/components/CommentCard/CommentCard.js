@@ -1,125 +1,62 @@
-import React from 'react'
-import './CommentCard.scss'
-import { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { PersonCircle } from 'react-bootstrap-icons';
-import Card from 'react-bootstrap/Card';
-import GlobalStoreContext from "../../store";
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import { Button } from "react-bootstrap";
-import { HandThumbsUp, HandThumbsDown, HandThumbsUpFill, HandThumbsDownFill } from 'react-bootstrap-icons';
-import AuthContext from '../../auth'
+import { Row, Col, Card, Button } from 'react-bootstrap';
+import { PersonCircle, HandThumbsUp, HandThumbsDown, HandThumbsUpFill, HandThumbsDownFill } from 'react-bootstrap-icons';
+import GlobalStoreContext from '../../store';
+import AuthContext from '../../auth';
+import './CommentCard.scss';
+
 export default function CommentCard(props) {
+  const { user, comment, map, count, handleReply } = props;
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
-  const { user, comment, map, count, handleReply } = props;
   const email = auth.getEmail();
+
+
   function handleLike(event) {
     event.stopPropagation();
-    // let alreadyLiked = false;
-    let likeArr = map.comments[count].likes
-    let dislikeArr = map.comments[count].dislikes
-    let likeCount = likeArr.length;
-    let dislikeCount = dislikeArr.length;
+    const { likes, dislikes } = map.comments[count];
+    const userEmail = auth.user.email;
+    const likeIndex = likes.indexOf(userEmail);
+    const dislikeIndex = dislikes.indexOf(userEmail);
 
-    if (likeCount == 0 && dislikeCount == 0) {
-      likeArr.push(auth.user.email)
+    if (dislikeIndex !== -1) {
+      dislikes.splice(dislikeIndex, 1);
     }
-    else if (likeCount == 0 && dislikeCount > 0) {
 
-      for (let i = 0; i < dislikeCount; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          dislikeArr.splice(i, 1);
-        }
-      }
-      likeArr.push(auth.user.email)
-    }
-    else if (likeCount > 0 && dislikeCount == 0) {
-      let isLiked = false;
-      for (let i = 0; i < likeArr.length; i++) {
-        if (likeArr[i] === auth.user.email) {
-          isLiked = true;
-          likeArr.splice(i, 1);
-        }
-      }
-      console.log("isLiked: " + isLiked)
-      if (!isLiked) {
-        likeArr.push(auth.user.email)
-      }
+    if (likeIndex === -1) {
+      likes.push(userEmail);
     }
     else {
-      let isLiked = false;
-      for (let i = 0; i < likeCount; i++) {
-        if (likeArr[i] === auth.user.email) {
-          isLiked = true;
-          likeArr.splice(i, 1);
-        }
-      }
-      for (let i = 0; i < dislikeCount; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          dislikeArr.splice(i, 1);
-        }
-      }
-      if (!isLiked) {
-        likeArr.push(auth.user.email)
-      }
+      likes.splice(likeIndex, 1);
     }
 
     store.updateLikeDislike(map._id, map);
   }
+
+
   function handleDislike(event) {
     event.stopPropagation();
-    let likeArr = map.comments[count].likes
-    let dislikeArr = map.comments[count].dislikes
-    let alreadyLiked = false;
-    let likeCount = likeArr.length;
-    let dislikeCount = dislikeArr.length;
-    if (likeCount == 0 && dislikeCount == 0) {
-      dislikeArr.push(auth.user.email)
-    }
-    else if (dislikeCount == 0 && likeCount > 0) {
+    const { likes, dislikes } = map.comments[count];
+    const userEmail = auth.user.email;
+    const likeIndex = likes.indexOf(userEmail);
+    const dislikeIndex = dislikes.indexOf(userEmail);
 
-      for (let i = 0; i < likeCount; i++) {
-        if (likeArr[i] === auth.user.email) {
-          likeArr.splice(i, 1);
-        }
-      }
-      dislikeArr.push(auth.user.email)
+    if (likeIndex !== -1) {
+      likes.splice(likeIndex, 1);
     }
-    else if (dislikeCount > 0 && likeCount == 0) {
-      let isLiked = false;
-      for (let i = 0; i < dislikeArr.length; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          isLiked = true;
-          dislikeArr.splice(i, 1);
-        }
-      }
-      console.log("isLiked: " + isLiked)
-      if (!isLiked) {
-        dislikeArr.push(auth.user.email)
-      }
+
+    if (dislikeIndex === -1) {
+      dislikes.push(userEmail);
     }
     else {
-      let isLiked = false;
-      for (let i = 0; i < dislikeCount; i++) {
-        if (dislikeArr[i] === auth.user.email) {
-          isLiked = true;
-          dislikeArr.splice(i, 1);
-        }
-      }
-      for (let i = 0; i < likeCount; i++) {
-        if (likeArr[i] === auth.user.email) {
-          likeArr.splice(i, 1);
-        }
-      }
-      if (!isLiked) {
-        dislikeArr.push(auth.user.email)
-      }
+      dislikes.splice(dislikeIndex, 1);
     }
 
     store.updateLikeDislike(map._id, map);
   }
+
+
   return (
     <div>
       <Card>

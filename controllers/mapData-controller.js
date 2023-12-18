@@ -8,8 +8,9 @@ createMapData = (req, res) => {
       errorMessage: 'UNAUTHORIZED'
     })
   }
+  
   const body = req.body;
-  console.log("createMap body: " + JSON.stringify(body));
+
   if (!body) {
     return res.status(400).json({
       success: false,
@@ -18,7 +19,7 @@ createMapData = (req, res) => {
   }
 
   const mapData = new MapData(body);
-  console.log("newly created MapData: " + mapData.toString());
+  
   if (!mapData) {
     return res.status(400).json({ success: false, error: err })
   }
@@ -41,12 +42,10 @@ createMapData = (req, res) => {
 
 deleteMapData = (req, res) => {
   try {
-    console.log(req.params)
     MapData.deleteOne({ mapID: req.params.id }).then(() => {
       return res.status(200).json({ success: true, data: {} });
     }).catch(err => console.log(err))
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
@@ -68,6 +67,7 @@ updateMapDataById = async (req, res) => {
     const body = req.body.mapData;
     var geobuf = require('geobuf')
     var Pbf = require('pbf');
+
     if (body.GeoJson) {
       var compressedJSON = geobuf.encode(body.GeoJson, new Pbf());
 
@@ -76,8 +76,6 @@ updateMapDataById = async (req, res) => {
       console.log('mapData before update:', JSON.stringify(body).length, 'bytes');
       body.GeoJson = compressedJSON;
       console.log('mapData after update:', JSON.stringify(body).length, 'bytes');
-
-      console.log('param id: ' + req.params.id)
     }
 
 

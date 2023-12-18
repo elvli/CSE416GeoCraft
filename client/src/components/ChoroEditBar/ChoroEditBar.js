@@ -42,11 +42,13 @@ export default function ChoroEditBar(props) {
   const isLayerAdded = useRef(false);
   const [tps, setTPS] = useState(new jsTPS);
 
+  // THIS HANDLES THE TOGGLING OF THE SIDEBAR
   function toggleSideBar(event) {
     event.preventDefault();
     setIsToggled(!isToggled);
   }
 
+  // THIS HANDLES UNDOING AN ACTION
   function handleUndo(event) {
     event.preventDefault();
     // store.undo();
@@ -60,6 +62,7 @@ export default function ChoroEditBar(props) {
     }
   }
 
+  // THIS HANDLES REDOING AN ACTION
   function handleRedo(event) {
     event.preventDefault();
     // store.redo();
@@ -72,6 +75,7 @@ export default function ChoroEditBar(props) {
     }
   }
 
+  // THIS DETECTS THE USERS KEYBOARD INPUTS FOR UNDOING, REDOING, AND SAVING
   function KeyPress(event) {
     if (event.ctrlKey) {
       if (event.key === 'z') {
@@ -89,6 +93,10 @@ export default function ChoroEditBar(props) {
 
   document.onkeydown = (event) => KeyPress(event);
 
+
+
+
+  // THIS HANDLES CHANGES TO DEFAULT MAP SETTINGS
   const handleSettingChange = (event, setting) => {
     // Capture the current settings
     const oldSettings = [...settingsValues];
@@ -106,10 +114,8 @@ export default function ChoroEditBar(props) {
         newSettings[2] = event.target.value;
         break;
       default:
-      // Do nothing for other cases
     }
 
-    // Create a transaction and add it to the jsTPS
     const settingsChangeTransaction = new SettingsChangeTransaction(
       oldSettings,
       newSettings,

@@ -1,4 +1,4 @@
-import { React, useContext, useRef } from 'react';
+import { React, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, Dropdown } from "react-bootstrap";
 import { HandThumbsUpFill, HandThumbsDownFill, ThreeDotsVertical, PencilFill, HandThumbsUp, HandThumbsDown, } from 'react-bootstrap-icons';
@@ -45,8 +45,6 @@ export default function MapCard(props) {
     handleInteraction(map.dislikes, map.likes, event);
   }
 
-  // const mapbox = useRef(null);
-
   function handleSelectMap(event) {
     event.stopPropagation();
     store.setCurrentList(map._id, null);
@@ -74,13 +72,14 @@ export default function MapCard(props) {
         <Dropdown.Toggle variant="light" id="dropdown-basic" disabled={!auth.loggedIn}>
           <ThreeDotsVertical />
         </Dropdown.Toggle>
+        
         <Dropdown.Menu className='dropdown-menu'>
           <Dropdown.Item onClick={functions.handleFork} className='options-button-options'>Fork</Dropdown.Item>
-          {map.ownerEmail == auth.getEmail() && (
-        <Dropdown.Item onClick={functions.handleDeleteMap} className='options-button-options'>
-          Delete
-        </Dropdown.Item>
-      )}
+          {map.ownerEmail === auth.getEmail() && (
+            <Dropdown.Item onClick={functions.handleDeleteMap} className='options-button-options'>
+              Delete
+            </Dropdown.Item>
+          )}
           <Dropdown.Item onClick={functions.handleExport} className='options-button-options'>Export</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
