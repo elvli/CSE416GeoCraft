@@ -220,7 +220,7 @@ export default function ChoroEditBar(props) {
   // THIS CHECKS IF A REGION NAME EXISTS IN tableData
   const doesRegionExist = (region) => {
     for (const item of tableData) {
-      if (item.tableData === region) {
+      if (item.region === region) {
         return true;
       }
     }
@@ -333,6 +333,7 @@ export default function ChoroEditBar(props) {
 
         // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
         setSelectedRegion(regionName);
+
         if (!doesRegionExist(regionName)) {
           handleAddRow(regionName);
           setPrevSelectedRegions((prevRegions) => [...prevRegions, regionName]);
@@ -378,7 +379,7 @@ export default function ChoroEditBar(props) {
         map.current.addLayer({
           id: layerId,
           type: 'fill',
-          source: 'map-source',
+          source: 'choro-map',
           filter: ['==', propName, regionsArray[i]],
           paint: {
             'fill-color': color,
@@ -398,7 +399,7 @@ export default function ChoroEditBar(props) {
       map.current.addLayer({
         id: 'choro-border',
         type: 'line',
-        source: 'map-source',
+        source: 'choro-map',
         paint: {
           'line-opacity': 1,
           'line-color': '#FFFFFF',
@@ -564,7 +565,6 @@ export default function ChoroEditBar(props) {
 
   const handleStepChange = (event) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, '');
-    console.log('chagneAL:', numericValue)
     setStepCount(numericValue);
   };
 

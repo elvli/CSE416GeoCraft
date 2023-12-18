@@ -2,7 +2,9 @@ import './MapBackground.scss';
 import React, { useRef, useEffect, useState, useContext } from 'react';
 import GlobalStoreContext from '../../store';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import mapboxgl, { Marker } from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
+import chroma from 'chroma-js';
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA';
 
 export default function MapBackground(props) {
@@ -13,12 +15,16 @@ export default function MapBackground(props) {
   const [lat, setLat] = useState(41.8473);
   const [zoom, setZoom] = useState(5.43);
   const [update, setUpdate] = useState(false)
+  const [layersToRemove, setLayersToRemove] = useState([]);
   const downloadLinkRef = useRef(null);
+  const isLayerAdded = useRef(false);
 
   async function generateMap(id, mapbox) {
     if (mapbox.current || typeof window === 'undefined') return;
 
     try {
+      // THIS IS THE ID FOR THE ADMINISTRATIVE LEVELS, ID_0 WOULD BE THE HIGHEST (NATIONAL BORDERS AND SUCH)
+      // ID_5 WOULD BE ONE OF THE LOWEST LEVELS (COUNTY/TOWN BORDERS AND THE LIKE)
       let admId = 'ID_0';
 
       mapbox.current = new mapboxgl.Map({
@@ -36,6 +42,7 @@ export default function MapBackground(props) {
       });
 
       mapbox.current.on('load', () => {
+        // SETUP ALL THE REQUIRED MAPBOX SOURCES
         mapbox.current.addSource('map-source', {
           type: 'geojson',
           data: null,
@@ -49,6 +56,10 @@ export default function MapBackground(props) {
           data: null,
         });
         mapbox.current.addSource('line-map', {
+          type: 'geojson',
+          data: null,
+        });
+        mapbox.current.addSource('choro-map', {
           type: 'geojson',
           data: null,
         });
@@ -127,8 +138,8 @@ export default function MapBackground(props) {
           layout: {
             'line-cap': 'round',
             'line-join': 'round'
-            },
-            paint: {
+          },
+          paint: {
             'line-color': [
               'match',
               ['get', 'color'],
@@ -143,8 +154,8 @@ export default function MapBackground(props) {
               'white'
             ],
             'line-width': 2.5
-            },
-            filter: ['in', '$type', 'LineString']
+          },
+          filter: ['in', '$type', 'LineString']
         })
 
         mapbox.current.addLayer({
@@ -222,7 +233,7 @@ export default function MapBackground(props) {
         generateHeatMap({
           type: 'FeatureCollection',
           features: []
-        },[
+        }, [
           'interpolate',
           ['linear'],
           ['heatmap-density'],
@@ -238,7 +249,7 @@ export default function MapBackground(props) {
           'rgb(239,138,98)',
           1,
           'rgb(178,24,43)'
-          ])
+        ])
         setUpdate(true)
       });
 
@@ -246,6 +257,11 @@ export default function MapBackground(props) {
       console.error('Error generating map:', error);
     }
   }
+
+
+
+
+  // THIS useEffect CALLS THE generateMap FUNCTION ONCE THE COMPONENT RENDERS
 
   useEffect(() => {
     generateMap(store.currentList ? store.currentList._id : null, map);
@@ -255,7 +271,9 @@ export default function MapBackground(props) {
     setUpdate(false)
     const updateMapData = async () => {
       try {
+        layerCleanUp();
         if (store.currentList) {
+          // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
           const mapData = await store.getMapDataById(store.currentList._id);
           if (mapData && mapData.settings.latitude && mapData.settings.longitude && !isNaN(mapData.settings.latitude) && !isNaN(mapData.settings.longitude)) {
 
@@ -280,12 +298,20 @@ export default function MapBackground(props) {
             setZoom(parseFloat(zoomVal))
             map.current.setZoom([parseFloat(zoomVal)])
           }
-          const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
+          // const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
+          const geoJSON = mapData.GeoJson;
           map.current.getSource('map-source').setData(geoJSON);
 
 
 
+
+          // THIS HANDLES RENDERING POINT MAP DATA
+
           if (store.currentList && store.currentList.mapType === "point") {
+            // THIS REMOVES ANY LAYERS ADDED FROM PREVIOUS MAPS
+            layerCleanUp();
+
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('propSymbol-map').setData({
               type: 'FeatureCollection',
               features: []
@@ -298,12 +324,17 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
             var pointsCollection = []
             if (mapData.points) {
               for (let i in mapData.points) {
                 if (mapData.points[i]['longitude'] && mapData.points[i]['latitude'] && !isNaN(mapData.points[i]['longitude']) && !isNaN(mapData.points[i]['latitude'])) {
-                  var latitude = Math.min(90, Math.max(-90, parseFloat(mapData.points[i]['latitude'])));
-                  var longitude = Math.min(180, Math.max(-180, parseFloat(mapData.points[i]['longitude'])));
+                  latitude = Math.min(90, Math.max(-90, parseFloat(mapData.points[i]['latitude'])));
+                  longitude = Math.min(180, Math.max(-180, parseFloat(mapData.points[i]['longitude'])));
                   pointsCollection.push([latitude, longitude, mapData.points[i]['id'], mapData.points[i]['color']])
                 }
               }
@@ -327,7 +358,14 @@ export default function MapBackground(props) {
             )
             map.current.getSource('point-map').setData(myGeoJSON);
           }
+
+
+
+
+          // THIS HANDLES RENDERING PROPORTIONAL SYMBOLS MAP DATA
+
           else if (store.currentList && store.currentList.mapType === "propSymb") {
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('point-map').setData({
               type: 'FeatureCollection',
               features: []
@@ -340,21 +378,26 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
-            var pointsCollection = []
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
+            pointsCollection = []
             if (mapData.propPoints) {
               for (let i in mapData.propPoints) {
-                if (mapData.propPoints[i]['longitude'] && mapData.propPoints[i]['latitude'] && mapData.propPoints[i]['size'] 
-                && !isNaN(mapData.propPoints[i]['longitude']) && !isNaN(mapData.propPoints[i]['latitude']) && !isNaN(mapData.propPoints[i]['size'])) {
+                if (mapData.propPoints[i]['longitude'] && mapData.propPoints[i]['latitude'] && mapData.propPoints[i]['size']
+                  && !isNaN(mapData.propPoints[i]['longitude']) && !isNaN(mapData.propPoints[i]['latitude']) && !isNaN(mapData.propPoints[i]['size'])) {
 
-                  var latitude = Math.min(90, Math.max(-90, parseFloat(mapData.propPoints[i]['latitude'])));
-                  var longitude = Math.min(180, Math.max(-180, parseFloat(mapData.propPoints[i]['longitude'])));
+                  latitude = Math.min(90, Math.max(-90, parseFloat(mapData.propPoints[i]['latitude'])));
+                  longitude = Math.min(180, Math.max(-180, parseFloat(mapData.propPoints[i]['longitude'])));
                   var size = Math.max(1, parseFloat(mapData.propPoints[i]['size']))
                   pointsCollection.push([latitude, longitude, mapData.propPoints[i]['id'], mapData.propPoints[i]['color'], size])
                 }
               }
             }
 
-            var myGeoJSON = {};
+            myGeoJSON = {};
             myGeoJSON.type = "FeatureCollection";
             myGeoJSON.features = [];
             pointsCollection.map((point) =>
@@ -372,11 +415,16 @@ export default function MapBackground(props) {
               })
             )
             map.current.getSource('propSymbol-map').setData(myGeoJSON);
-              
+
           }
 
 
+
+
+          // THIS HANDLES RENDERING LINE MAP DATA
+
           else if (store.currentList && store.currentList.mapType === "line") {
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('point-map').setData({
               type: 'FeatureCollection',
               features: []
@@ -389,27 +437,31 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
 
-            var pointsCollection = []
+            pointsCollection = []
             if (mapData.lineData) {
               for (let i in mapData.lineData) {
-                if (mapData.lineData[i]['startlongitude'] && mapData.lineData[i]['startlatitude'] 
-                && !isNaN(mapData.lineData[i]['startlongitude']) && !isNaN(mapData.lineData[i]['startlatitude']
-                && mapData.lineData[i]['endlongitude'] && mapData.lineData[i]['endlatitude'] 
-                && !isNaN(mapData.lineData[i]['endlongitude']) && !isNaN(mapData.lineData[i]['endlatitude'])
-                )) {
+                if (mapData.lineData[i]['startlongitude'] && mapData.lineData[i]['startlatitude']
+                  && !isNaN(mapData.lineData[i]['startlongitude']) && !isNaN(mapData.lineData[i]['startlatitude']
+                    && mapData.lineData[i]['endlongitude'] && mapData.lineData[i]['endlatitude']
+                    && !isNaN(mapData.lineData[i]['endlongitude']) && !isNaN(mapData.lineData[i]['endlatitude'])
+                  )) {
 
                   var slatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['startlatitude'])));
                   var slongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['startlongitude'])));
                   var elatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['endlatitude'])));
                   var elongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['endlongitude'])));
-                  
-                  pointsCollection.push([slatitude, slongitude, mapData.lineData[i]['id'], elatitude,  elongitude, mapData.lineData[i]['color']])
+
+                  pointsCollection.push([slatitude, slongitude, mapData.lineData[i]['id'], elatitude, elongitude, mapData.lineData[i]['color']])
                 }
               }
             }
 
-            var myGeoJSON = {};
+            myGeoJSON = {};
             myGeoJSON.type = "FeatureCollection";
             myGeoJSON.features = [];
             pointsCollection.map((point) =>
@@ -425,13 +477,20 @@ export default function MapBackground(props) {
                 },
                 'properties': {
                   'id': point[2],
-                  'color' : point[5]
+                  'color': point[5]
                 }
               })
             )
             map.current.getSource('line-map').setData(myGeoJSON);
           }
+
+
+
+
+          // THIS HANDLES RENDERING HEAT DATA
+
           else if (store.currentList && store.currentList.mapType === "heat") {
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('propSymbol-map').setData({
               type: 'FeatureCollection',
               features: []
@@ -444,29 +503,200 @@ export default function MapBackground(props) {
               type: 'FeatureCollection',
               features: []
             });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
             var tableData = mapData.heatmap.data
             var arr = []
-            if(mapData.heatmap) {
-              for(let i = 0; i < tableData.length; i++) {
+            if (mapData.heatmap) {
+              for (let i = 0; i < tableData.length; i++) {
                 var lat = Math.min(90, Math.max(-90, parseFloat(tableData[i]['latitude'])));
                 var long = Math.min(180, Math.max(-180, parseFloat(tableData[i]['longitude'])));
                 var mag = Math.min(180, Math.max(-180, parseFloat(tableData[i]['magnitude'])));
-                arr.push({ "type": "Feature", "properties": { "mag": mag }, "geometry": { "type": "Point", "coordinates": [ long, lat, 0 ] } })
+                arr.push({ "type": "Feature", "properties": { "mag": mag }, "geometry": { "type": "Point", "coordinates": [long, lat, 0] } });
               }
             }
-            
+
             var json = {
               "type": "FeatureCollection",
               "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
               "features": []
             };
-            json['features'] = arr
-            console.log("print")
-            generateHeatMap(json, mapData.heatmap.color)
-            map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', mapData.heatmap.color)
+            json['features'] = arr;
+            generateHeatMap(json, mapData.heatmap.color);
+            map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', mapData.heatmap.color);
+          }
+
+
+
+
+          // THIS HANDLES RENDERING CHOROPLETH MAP DATA
+
+          else if (store.currentList && store.currentList.mapType === "choro") {
+            // THIS REF SIGNALS WHETHER A CHOROPLETH MAP WAS ALREADY BEEN RENDERED OR NOT
+            isLayerAdded.current = false;
+
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('point-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
+            // THIS GRABS ALL THE REQUIRED DATA TO RENDER THE CHOROPLETH MAP
+            tableData = mapData.choroData.regionData;
+            var propName = mapData.choroData.choroSettings.propName;
+            var choroTheme = mapData.choroData.choroSettings.theme;
+            var stepCount = mapData.choroData.choroSettings.stepCount;
+
+            const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+            const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
+
+            // THESE ARE THE GRADIENTS THAT WE ALLOW THE USER TO CHOOSE
+            const colorGradients = [
+              { name: 'Warm', gradient: 'linear-gradient(to right, #f7d559, #ffc300, #ff8c1a, #ff5733, #FF0000)' },
+              { name: 'Cool', gradient: 'linear-gradient(to right, #96FFFF, #0013de)' },
+              { name: 'Hot and Cold', gradient: 'linear-gradient(to right, #FF0000, #0013de)' },
+              { name: 'Forest', gradient: 'linear-gradient(to right, #A1DDA1, #66cc66, #009900, #14452F)' },
+              { name: 'Grayscale', gradient: 'linear-gradient(to right, #D9D8DA, #363439)' },
+              { name: 'Baja Blast', gradient: 'linear-gradient(to right, #FCFB62, #17E0BC)' },
+              { name: 'Vice City', gradient: 'linear-gradient(to right, #ffcc00, #ff3366, #cc33ff, #9933ff)' },
+              { name: 'Rainbow', gradient: 'linear-gradient(to right, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #6633cc)' },
+            ];
+
+            // THIS DIVIDE THE GRADIENT INTO HOWEVER MANY STEPS/GROUPS THE USER WANTS.
+            // THIS UTILIZES THE chromajs LIBRARY
+            function generateColors(steps, gradient) {
+              const colorStops = gradient.match(/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/g) || [];
+
+              if (colorStops.length < 2) {
+                throw new Error('Invalid gradient format. At least two color stops are required.');
+              }
+
+              const colors = chroma
+                .scale(colorStops)
+                .colors(steps);
+
+              return colors;
+            }
+
+            // THIS ASSIGNS THE APPROPRIATE COLOR TO THE REGION BASED ON ITS VALUE
+            function interpolateColor(value, gradient) {
+              const gradientArray = generateColors(parseFloat(stepCount), gradient);
+              const stepSize = (dataRange[1] - dataRange[0]) / stepCount;
+
+              // Find the corresponding index based on the value and dataRange
+              const index = Math.max(
+                0,
+                Math.min(
+                  stepCount - 1,
+                  Math.floor((value - dataRange[0]) / stepSize)
+                )
+              );
+
+              const resultColor = gradientArray[index];
+
+              return resultColor;
+            }
+
+            // THIS GETS THE VALUES FOR THE REGION, THE VALUE DETERMINES THE COLOR OF THE REGION
+            function getValueForRegion(targetRegion) {
+              const result = tableData.find(entry => entry.region === targetRegion);
+              return result ? result.data : null;
+            }
+
+            // THIS FUNCTION FINDS THE GRADIENT DICTIONARY OBJECT WITH THE NAME: themeName
+            const findGradient = (themeName) => colorGradients.find(theme => theme.name === themeName);
+
+            // const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
+            const geoJSON = mapData.GeoJson;
+            map.current.getSource('choro-map').setData(geoJSON);
+
+            // THIS IS A TEMPORARY CONTAINER FOR NEWLY ADDED LAYERS THAT WILL NEED TO BE CLEANED UP LATER
+            var choroLayerIDs = [];
+
+            // THIS FUNCTION ADDS A LATER FOR EACH EXISTING REGION
+            const addLayer = () => {
+              const regionsArray = tableData.map(entry => entry.region);
+              for (var i = 0; i < regionsArray.length; i++) {
+                var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient);
+                const layerId = `${regionsArray[i]}-choro`;
+
+                choroLayerIDs.push(layerId);
+
+                // CHECK IF THE LAYER EXISTS ALREADY. IF IT DOES, REMOVE IT.
+                const existingLayer = map.current.getLayer(layerId);
+
+                if (existingLayer) {
+                  map.current.removeLayer(layerId);
+                  console.log('REMOVED', layerId)
+                }
+
+                // ADD THE NEW LAYER ITS COLOR
+                map.current.addLayer({
+                  id: layerId,
+                  type: 'fill',
+                  source: 'choro-map',
+                  filter: ['==', propName, regionsArray[i]],
+                  paint: {
+                    'fill-color': color,
+                    'fill-opacity': 1,
+                  },
+                });
+              }
+
+              // CHECK IF THE CHOROPLETH BORDER LAYER EXISTS, IF IT DOES, REMOVE IT
+              const borderLayerExists = map.current.getLayer('choro-border');
+
+              if (borderLayerExists) {
+                map.current.removeLayer('choro-border');
+              }
+
+              choroLayerIDs.push('choro-border');
+
+              // ADD THE CHOROPLETH BORDER LAYER
+              map.current.addLayer({
+                id: 'choro-border',
+                type: 'line',
+                source: 'choro-map',
+                paint: {
+                  'line-opacity': 1,
+                  'line-color': '#FFFFFF',
+                  'line-width': 0.5,
+                },
+              });
+            };
+
+            // ONLY ATTEMPT TO ADD LAYER IF MAPBOX IS LOADED AND THERE IS DATA TO BE RENDERED
+            const tryAddLayer = () => {
+              if (!isLayerAdded.current && map.current.isStyleLoaded() && tableData.length > 0) {
+                addLayer();
+                isLayerAdded.current = true;
+              } else {
+                setTimeout(tryAddLayer, 100);
+              }
+            };
+
+            // ONLY RUN tryAddLayer WHEN ON THE HOME PAGE, RENDERING ON THE EDIT PAGE IS HANDLED BY CHOROEDITBAR
+            if (window.location.href === 'http://localhost:3000/' || window.location.href === 'https://geocraftmaps.azurewebsites.net/') {
+              tryAddLayer();
+            }
+
+            // THIS SETS THE TEMPORARY ARRAY OF LAYER IDS TO THE STATE layersToRemove
+            setLayersToRemove(choroLayerIDs);
           }
 
           else {
+            // IF THE MAP TYPE IS NOT ONE OF THE FIVE WE SUPPORT, LOAD SET DATA TO {}
             map.current.getSource('map-source').setData({});
             map.current.getSource('point-map').setData({});
           }
@@ -481,37 +711,40 @@ export default function MapBackground(props) {
 
 
   useEffect(() => {
-    if (store.print === 1){
-        var string = store.currentList.name
-        let link = document.createElement('a');
-        link.download = string.concat('.png');
-        link.href = map.current.getCanvas().toDataURL('image/png');
-        link.click();
-
-        store.setPrint(0)
-        
-    }
-    else if (store.print === 2){
-      console.log(map.current.getCanvas().toDataURL('image/jpeg'))
+    if (store.print === 1) {
       var string = store.currentList.name
+      let link = document.createElement('a');
+      link.download = string.concat('.png');
+      link.href = map.current.getCanvas().toDataURL('image/png');
+      link.click();
+
+      store.setPrint(0)
+
+    }
+    else if (store.print === 2) {
+      console.log(map.current.getCanvas().toDataURL('image/jpeg'))
+      string = store.currentList.name
       let link = document.createElement('a');
       link.download = string.concat('.jpg');
       link.href = map.current.getCanvas().toDataURL('image/jpeg');
       link.click();
 
       store.setPrint(0)
-      
-  }
+    }
   }, [store.print]);
 
 
+
+
+  // THIS HANDLES HEAT MAP GENERATION
+
   function generateHeatMap(mapData, color) {
-    if(!map.current.getSource('earthquakes')) {
+    if (!map.current.getSource('earthquakes')) {
       map.current.addSource('earthquakes', {
         'type': 'geojson',
         'data': mapData
       });
-  
+
       map.current.addLayer(
         {
           'id': 'earthquakes-heat',
@@ -568,7 +801,7 @@ export default function MapBackground(props) {
         },
         'waterway-label'
       );
-  
+
       map.current.addLayer(
         {
           'id': 'earthquakes-point',
@@ -627,19 +860,26 @@ export default function MapBackground(props) {
 
   }
 
-  // useEffect(() => {
-  //   if (store.mapdata) {
-  //     if (store.mapdata.type === 'heat') {
-  //       if (store.mapdata.data.type === 'color') {
-  //         if(map.current.getSource('earthquakes')) {
-  //           map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', store.mapdata.data.data)
-  //           store.emptyMapData()
-  //         }
-          
-  //       }
-  //     }
-  //   }
-  // }, [store.mapdata])
+
+
+
+  // THIS IS A LAYER CLEAN UP FUNCTION, IT REMOVES ANY EXISTING LAYERS 
+  const layerCleanUp = () => {
+    layersToRemove.forEach(layerID => {
+      // CHECK IF LAYER EXISTS BEFORE REMOVING
+      if (map.current.getLayer(layerID)) {
+        map.current.removeLayer(layerID);
+      }
+    });
+
+    setLayersToRemove([]);
+  }
+
+
+
+
+// THIS IS OUR JS COMPONENT. ITS THE LONG LAT BAR THAT DISPLAYS INFO ON THE COORIDNATES AND ZOOM LEVELS OF THE MAP
+// MAP CONTAINER RENDERS THE MAPBOX MAP
 
   return (
     <div>
