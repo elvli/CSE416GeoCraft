@@ -20,13 +20,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       transform: translate(0%, 20%);
-      width: 180px;
+      max-width: 180px;
       white-space: nowrap;
     }
-  }
-
-  .options-button-options {
-    font-size: 11px;
   }
 
   .card-body {
@@ -70,6 +66,10 @@
 
   .dropdown-menu {
     min-width: 20px;
+  }
+
+  .options-button-options {
+    font-size: 12px;
   }
 }
 

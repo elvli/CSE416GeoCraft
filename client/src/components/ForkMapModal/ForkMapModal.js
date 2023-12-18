@@ -40,10 +40,9 @@ export default function ForkMapModal(props) {
             <Modal.Title>Fork Map?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Are you sure you want to fork this map?</p>
             <Form.Group>
-              <Form.Label>Enter the Name of Your Map</Form.Label>
-              <Form.Control className="map-name" name='mapName' required type="text" placeholder="Map Name" />
+              <Form.Label>Enter the new name for the forked map:</Form.Label>
+              <Form.Control className="map-name" name='mapName' required type="text" placeholder="Newly Forked Map Name" />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer className="d-flex justify-content-center">

@@ -145,20 +145,19 @@ export default function CommentCard(props) {
               <Row>
                 <Col xs="auto">
                   <Row xs="auto" className='like-comment-number'>
-
                     <Button
                       onClick={handleLike}
                       className='btn btn-light like-dislike-button'
                       disabled={!auth.loggedIn}
                     >
                       {map.comments && map.comments[count].likes.includes(email) ? (
-                        <HandThumbsUpFill />
+                        <HandThumbsUpFill className='like-dislike-icon' />
                       ) : (
-                        <HandThumbsUp />
+                        <HandThumbsUp className='like-dislike-icon' />
                       )}
-                    </Button>
 
-                    {map.comments ? map.comments[count].likes.length : null}
+                      {map.comments ? map.comments[count].likes.length : null}
+                    </Button>
                   </Row>
 
                 </Col>
@@ -170,13 +169,13 @@ export default function CommentCard(props) {
                       disabled={!auth.loggedIn}
                     >
                       {map.comments && map.comments[count].dislikes.includes(email) ? (
-                        <HandThumbsDownFill />
+                        <HandThumbsDownFill className='like-dislike-icon' />
                       ) : (
-                        <HandThumbsDown />
+                        <HandThumbsDown className='like-dislike-icon' />
                       )}
-                    </Button>
 
-                    {map.comments ? map.comments[count].dislikes.length : null}
+                      {map.comments ? map.comments[count].dislikes.length : null}
+                    </Button>
                   </Row>
                 </Col>
                 <Col >

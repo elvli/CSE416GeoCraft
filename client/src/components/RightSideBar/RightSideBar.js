@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { Button } from 'react-bootstrap';
 import { ChatRightText, Send } from 'react-bootstrap-icons';
 import CommentCard from '../CommentCard/CommentCard';
@@ -29,8 +29,8 @@ export default function RightSideBar() {
     setTextInput("")
   }
 
-  const handleReply = (argument) => (event) => {
-    setTextInput("@" + argument)
+  const handleReply = (user) => (event) => {
+    setTextInput("@" + user + ' ')
   }
 
   const handleKeyDown = (event) => {

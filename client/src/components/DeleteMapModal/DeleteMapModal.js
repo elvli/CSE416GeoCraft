@@ -27,6 +27,7 @@ export default function DeleteMapModal(props) {
         </Modal.Header>
         <Modal.Body>
           <p>Are you sure you want to delete this map?</p>
+          <p>This cannot be undone.</p>
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-center">
           <Button variant="secondary" onClick={handleClosing}>

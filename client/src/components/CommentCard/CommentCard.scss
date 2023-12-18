@@ -1,42 +1,39 @@
-.comment-card {
-  margin-top: -8px;
-  margin-bottom: 18px;
-
-
-
-  
-}
-
 .comment-username {
   float: left;
   text-align: left;
   font-size: 14px;
-
 }
+
 .comment-text {
-    float: left;
-    text-align: left;
-  }
+  float: left;
+  text-align: left;
+}
+
 .profile-pic-comm {
-  
   float: left;
   font-size: 26px
 }
+
 .like-dislike-button {
   float: left;
   border-color: transparent;
-  border-radius: 50%;
+  border-radius: 5px;
   background-color: transparent;
-  
 }
+
 .reply-link {
   float: right;
-  border-radius: 20px;
+  border-radius: 5px;
   background-color: transparent;
   border-color: transparent;
 }
+
 .like-comment-number {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.like-dislike-icon {
+  margin-right: 10px;
 }

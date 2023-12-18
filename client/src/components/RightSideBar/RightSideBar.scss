@@ -56,7 +56,6 @@
 
   &::-webkit-scrollbar-thumb {
     background-color: darkgray;
-    border-radius: 6px;
   }
 
   &::-webkit-scrollbar-track {
@@ -75,7 +74,8 @@
   width: 294px;
   height: 40px;
 }
-.rightside-comment{
+
+.rightside-comment {
   margin-left: 10px;
   margin-top: 10px;
   height: 40px;
