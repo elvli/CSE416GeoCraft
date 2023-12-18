@@ -11,7 +11,7 @@ import chroma from 'chroma-js';
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA'
 
 export default function ChoroEditBar(props) {
-  const { mapId, settings, map } = props;
+  const { mapId, map } = props;
   const { store } = useContext(GlobalStoreContext);
 
   const [isToggled, setIsToggled] = useState(false);
@@ -25,11 +25,11 @@ export default function ChoroEditBar(props) {
   const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
   const [choroTheme, setChoroTheme] = useState('');
   const [activeKey, setActiveKey] = useState(['0']);
-  const [geoJsonData, setGeoJsonData] = useState(null);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
   const [stepCount, setStepCount] = useState('5');
   const [choroRenders, setChoroRenders] = useState(0);
   const [propName, setPropName] = useState('');
+  const [dataRange, setDataRange] = useState([0, 100]);
   const isLayerAdded = useRef(false);
 
   function toggleSideBar(event) {
@@ -52,6 +52,7 @@ export default function ChoroEditBar(props) {
     newSettings[0] = settingsValues[0]
     newSettings[1] = settingsValues[1]
     newSettings[2] = settingsValues[2]
+
     switch (setting) {
       case 0:
         newSettings[0] = event.target.value
@@ -78,6 +79,8 @@ export default function ChoroEditBar(props) {
       const updateTable = async () => {
         try {
           var mapData = await store.getMapDataById(mapId)
+
+          // THIS SECTION FILLS IN TABLEDATA WITH THE CHOROPLETH DATA FROM THE BACKEND
           var newRegionData = []
           for (let i in mapData.choroData.regionData) {
             newRegionData.push({
@@ -86,10 +89,6 @@ export default function ChoroEditBar(props) {
               'data': mapData.choroData.regionData[i]['data']
             });
           }
-
-          // setTableData((prevTableData) => {
-          //   return newRegionData;
-          // });
           setTableData(newRegionData);
 
           const regionArray = tableData.map((dict) => dict.region);
@@ -152,7 +151,7 @@ export default function ChoroEditBar(props) {
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
 
   const handleAddRow = (regionInfo) => {
-    if (!doesRegionExist(tableData, regionInfo)) {
+    if (!doesRegionExist(regionInfo)) {
       setTableData((prevTableData) => [
         ...prevTableData,
         { id: prevTableData.length + 1, region: regionInfo, data: '0' },
@@ -176,49 +175,77 @@ export default function ChoroEditBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId);
-    setGeoJsonData(mapData.GeoJson);
-
-    // THIS CORRECTS THE STEP COUNT SO THAT IT IS IN RANGE [1, 25]
-    var correctedStepCount;
-    if (stepCount === '')
-      correctedStepCount = '5'
-    else
-      correctedStepCount = Math.min(25, Math.max(1, parseFloat(stepCount))).toString();
-    setStepCount(correctedStepCount);
 
     // THIS CORRECTS THE COORDINATES SO THAT THEY ARE IN RANGE [-90, 90] AND [-180, 180]
-    var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
-    var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
-    var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
+    var latitude = (settingsValues[0] !== '') ? Math.min(90, Math.max(-90, parseFloat(settingsValues[0]))) : mapData.settings.latitude;
+    var longitude = (settingsValues[1] !== '') ? Math.min(180, Math.max(-180, parseFloat(settingsValues[1]))) : mapData.settings.longitude;
+    var zoom = (settingsValues[0] !== '') ? Math.min(22, Math.max(1, parseFloat(settingsValues[2]))) : mapData.settings.zoom;
     setSettingsValues([latitude, longitude, zoom])
 
     // THIS WILL TRIGGER THE CHOROPLETH MAP TO RE-RENDER REGION LAYERS
     isLayerAdded.current = false;
     setChoroRenders((prev) => prev + 1);
 
-    // THIS SETS THE NEW DATA TO THE MAPDATA OBJECT
-    mapData.choroData.regionData = tableData;
-    mapData.choroData.choroSettings = { propName: propName, theme: choroTheme, stepCount: correctedStepCount, headerValue: tableHeaders[2] };
+    // THIS SETS NEW DATA TO THE MAPDATA OBJECT AND CORRECT ANY MISSING VALUES
+    var correctedStepCount = (stepCount === '') ? '5' : Math.min(25, Math.max(1, parseFloat(stepCount))).toString();
+    setStepCount(correctedStepCount);
+
+    var dataHeader = (tableHeaders[2] === '') ? mapData.choroData.choroSettings.headerValue : tableHeaders[2];
+    mapData.choroData.choroSettings = { propName: propName, theme: choroTheme, stepCount: correctedStepCount, headerValue: dataHeader };
+
+    // var cleanedTableData = cleanTableData(tableData);
+    // mapData.choroData.regionData = cleanTableData(cleanedTableData);
+    // console.log(cleanedTableData)
+    // setTableData(cleanedTableData)
+    mapData.choroData.regionData = tableData
+
     mapData.settings = { latitude: settingsValues[0], longitude: settingsValues[1], zoom: settingsValues[2] }
+    setTableHeaders([tableHeaders[0], tableHeaders[1], mapData.choroData.choroSettings.headerValue]);
+
+    // THIS SETS THE DATA RANGE FOR tableData (USED FOR COLOR INTERPOLATION)
+    const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+    setDataRange([Math.min(...dataValues), Math.max(...dataValues)]);
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
   };
 
+  // THIS CHANGES THE HEADER OF THE VALUE COLUMN (THIRD FROM LEFT)
   const changeDataHeader = (event) => {
     const newHeaders = [...tableHeaders];
-    newHeaders[2] = event.target.value;
+    newHeaders[2] = event.target.value
     setTableHeaders(newHeaders);
   };
 
-  const doesRegionExist = (array, region) => {
-    for (const item of array) {
-      if (item.region === region) {
+  // THIS CHECKS IF A REGION NAME EXISTS IN tableData
+  const doesRegionExist = (region) => {
+    for (const item of tableData) {
+      if (item.tableData === region) {
         return true;
       }
     }
     return false;
   };
+
+  // THIS CLEANS THE TABLE DATA. IT SETS EMPTY STRINGS TO '0' AND REMOVE CHARACTERS
+  // THAT AREN'T DIGITS OR THE NEGATIVE SIGN '-'
+  // const cleanTableData = (tableData) => {
+  //   // Iterate through each dictionary in the array
+  //   const updatedTableData = tableData.map(entry => {
+  //     // Check and update each value
+  //     const updatedEntry = {};
+  //     for (const key in entry) {
+  //       if (entry.hasOwnProperty(key)) {
+  //         // Check if the value is an empty string and replace it with 0
+  //         updatedEntry[key] = entry[key] === '' ? 0 : entry[key];
+  //       }
+  //     }
+  //     return updatedEntry;
+  //   });
+
+  //   return updatedTableData;
+  // }
+
 
   const tableContent = (
     <div className="choro-table table-custom-scrollbar">
@@ -261,7 +288,7 @@ export default function ChoroEditBar(props) {
                 <input
                   className="cells"
                   type="text"
-                  value={row.data || '0'}
+                  value={(row.data === 0) ? '0' : row.data}
                   onChange={(event) => handleEditChange(event, rowIndex, 'data')}
                   onBlur={handleEditBlur}
                 />
@@ -279,6 +306,8 @@ export default function ChoroEditBar(props) {
   }
 
 
+
+
   // THIS HANDLES USERS CLICKING ON A REGION OF THE MAP
 
   useEffect(() => {
@@ -289,6 +318,7 @@ export default function ChoroEditBar(props) {
       if (clickedRegion) {
         let regionName;
 
+        // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
         for (let i = 5; i >= 0; i--) {
           propertyName = `NAME_${i}`;
           if (clickedRegion.properties.hasOwnProperty(propertyName)) {
@@ -299,11 +329,11 @@ export default function ChoroEditBar(props) {
             propertyName = 'NAME'
           }
         }
-
         setPropName(propertyName);
 
+        // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
         setSelectedRegion(regionName);
-        if (!doesRegionExist(tableData, regionName)) {
+        if (!doesRegionExist(regionName)) {
           handleAddRow(regionName);
           setPrevSelectedRegions((prevRegions) => [...prevRegions, regionName]);
         }
@@ -311,31 +341,13 @@ export default function ChoroEditBar(props) {
           console.log('Region selected once already!!!!!');
         }
         setActiveKey((prevActiveKey) => [...prevActiveKey, '1']);
-
-        // console.log('KSKS:', getValueForRegion(regionName))
-        // console.log('ARR:', findGradient(choroTheme).gradient)
-        // const regionsArray = tableData.map(entry => entry.region);
-        // console.log('herehrehrehrehreh: ', regionsArray);
-
-        // var layerColor = interpolateColor(getValueForRegion(regionName), findGradient(choroTheme).gradient)
-        // console.log('layerColor', layerColor)
-        // // console.log(propertyName)
-
-        // map.current.addLayer({
-        //   id: `${regionName}-choro`,
-        //   type: 'fill',
-        //   source: 'map-source',
-        //   filter: ['==', propertyName, regionName],
-        //   paint: {
-        //     'fill-color': layerColor,
-        //     'fill-opacity': 1,
-        //   },
-        // });
       }
     };
 
+    // WHEN A REGION IS CLICKED ON, RUN regionSelectHandler
     map.current.on('click', 'geojson-border-fill', regionSelectHandler);
 
+    //CLEAN UP
     return () => {
       map.current.off('click', 'geojson-border-fill', regionSelectHandler);
     };
@@ -345,31 +357,24 @@ export default function ChoroEditBar(props) {
 
 
   // THIS HANDLES RENDERING THE REGIONS WITH THE APPROPRIATE COLORS
+  // WILL TRIGGER WHEN choroRenders IS UPDATED
 
   useEffect(() => {
-    console.log("useEffect triggered with choroRenders:", choroRenders);
-
     const addLayer = () => {
-      console.log('RENDERING CHOROMAP: ', choroRenders);
       const regionsArray = tableData.map(entry => entry.region);
 
       for (var i = 0; i < regionsArray.length; i++) {
-        console.log('tableData', typeof (tableData[i].data))
         var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient);
-
         const layerId = `${regionsArray[i]}-choro`;
 
-        // Check if the layer already exists
+        // CHECK IF THE LAYER EXISTS ALREADY. IF IT DOES, REMOVE IT.
         const existingLayer = map.current.getLayer(layerId);
 
         if (existingLayer) {
-          // If it exists, remove it before adding the new one
           map.current.removeLayer(layerId);
         }
 
-        console.log(propName);
-
-        // Add the new layer
+        // ADD THE NEW LAYER ITS COLOR
         map.current.addLayer({
           id: layerId,
           type: 'fill',
@@ -382,15 +387,14 @@ export default function ChoroEditBar(props) {
         });
       }
 
-      // Check if the choro-border layer already exists
+      // CHECK IF THE CHOROPLETH BORDER LAYER EXISTS, IF IT DOES, REMOVE IT
       const borderLayerExists = map.current.getLayer('choro-border');
 
       if (borderLayerExists) {
-        // If it exists, remove it before adding the new one
         map.current.removeLayer('choro-border');
       }
 
-      // Add the choro-border layer
+      // ADD THE CHOROPLETH BORDER LAYER
       map.current.addLayer({
         id: 'choro-border',
         type: 'line',
@@ -403,6 +407,7 @@ export default function ChoroEditBar(props) {
       });
     };
 
+    // ONLY ATTEMPT TO ADD LAYER IF MAPBOX IS LOADED AND THERE IS DATA TO BE RENDERED
     const tryAddLayer = () => {
       if (!isLayerAdded.current && map.current.isStyleLoaded() && tableData.length > 0) {
         addLayer();
@@ -446,7 +451,7 @@ export default function ChoroEditBar(props) {
 
 
 
-  // THIS HANDLES SELECTING MAP THEMES
+  // THESE FUNCTIONS HANDLE SELECTING MAP THEMES AND CREATING GRADIENT STEPS
 
   const findGradient = (themeName) => colorGradients.find(theme => theme.name === themeName);
 
@@ -464,11 +469,19 @@ export default function ChoroEditBar(props) {
     return colors;
   }
 
+  // THIS ASSIGNS THE APPROPRIATE COLOR FOR THE REGIONS VALUE
   function interpolateColor(value, gradient) {
     const gradientArray = generateColors(parseFloat(stepCount), gradient);
+    const stepSize = (dataRange[1] - dataRange[0]) / stepCount;
 
-    var adjustedValue = Math.max(0, Math.min(100, parseFloat(value)));
-    var index = parseInt(Math.round((adjustedValue * (gradientArray.length - 1)) / 100));
+    // Find the corresponding index based on the value and dataRange
+    const index = Math.max(
+      0,
+      Math.min(
+        stepCount - 1,
+        Math.floor((value - dataRange[0]) / stepSize)
+      )
+    );
 
     const resultColor = gradientArray[index];
 
@@ -479,6 +492,7 @@ export default function ChoroEditBar(props) {
     setChoroTheme(selectedOption.name);
   };
 
+  // THESE ARE THE GRADIENTS THAT WE ALLOW THE USER TO CHOOSE
   const colorGradients = [
     { name: 'Warm', gradient: 'linear-gradient(to right, #f7d559, #ffc300, #ff8c1a, #ff5733, #FF0000)' },
     { name: 'Cool', gradient: 'linear-gradient(to right, #96FFFF, #0013de)' },
@@ -576,6 +590,8 @@ export default function ChoroEditBar(props) {
       />
     </div>
   );
+
+
 
 
   // THIS HANDLES CHANGING MAP SETTINGS TO THE CURRENT CENTER OF THE MAPBOX MAP
