@@ -6,7 +6,7 @@ import AuthContext from '../../auth'
 import GlobalStoreContext from '../../store'
 import RangeSlider from 'react-bootstrap-range-slider';
 import './HeatEditBar.scss'
-export default function RangeSelector(props) {
+export default function RangeSelectorOpacity(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const { setValue1, setValue2, setValue3, setValue4, value1, value2, value3, value4, max} = props
@@ -21,42 +21,41 @@ export default function RangeSelector(props) {
             <Container>
                 <Row>
                     <Col xs="8">
+   
                     <RangeSlider
                         onChange={e => setValue1(e.target.value)}
                         size='sm'
-                        value={value1}
                         max={value3-1}
+                        value={value1}
                     />
                     </Col>
                 </Row>
                 <Row>
                     <Col xs="8">
-
+            
                     <RangeSlider
                         onChange={e => setValue2(e.target.value)}
                         size='sm'
                         max={max}
-                        
                         value={value2}
                     />
                     </Col>
                 </Row>
                 <Row>
                     <Col xs="8">
-
+        
                     <RangeSlider
                         onChange={e => setValue3(e.target.value)}
                         size='sm'
-                        min={value1+1}
                         max={max}
+                        min={value1+1}
                         value={value3}
-      
                     />
                     </Col>
                 </Row>
                 <Row as={Row}>
                     <Col xs="8">
-
+          
                     <RangeSlider
                         onChange={e => setValue4(e.target.value)}
                         size='sm'

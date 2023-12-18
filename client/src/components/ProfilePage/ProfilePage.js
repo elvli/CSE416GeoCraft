@@ -6,7 +6,7 @@ import GlobalStoreContext from "../../store";
 import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal, PublishMapModal } from '../../components'
 // import { Card } from 'react-bootstrap'
 import {Image} from 'cloudinary-react';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import cameraLogo from '.././Images/cameraicon.png';
 import "./ProfilePage.scss";
 
 export default function ProfilePage() {
@@ -26,6 +26,12 @@ export default function ProfilePage() {
   const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
   const version = "v1702872120/";
   const imageName = auth.getProfilePicture();
+  const totalLikes = store.idNamePairs.reduce((sum, pair) => {
+    if (pair.ownerName === username) {
+      return sum + pair.likes.length;
+    }
+    return sum;
+  }, 0);
 
 
   async function handleClose(event) {
@@ -147,7 +153,7 @@ export default function ProfilePage() {
                   height: "50px",
                   cursor: "pointer",
                   borderRadius: "50%", // Add this line to make it rounded
-                  backgroundColor: "gray", // Add this line to set a background color
+                  backgroundColor: "black", // Add this line to set a background color
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -160,7 +166,8 @@ export default function ProfilePage() {
                   style={{ display: "none" }}
                   onChange={handleImageUpload}
                 />
-                <i className="bi-camera text-dark" style={{ fontSize: "2rem" }}></i>
+                <img src={cameraLogo} alt="Camera Logo" style={{ width: "40px", height: "40px" }} />
+
               </label>
               )}
 
@@ -191,7 +198,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="px-3">
-            <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.likes.includes(username))).length}</p>
+            <p className="mb-1 h5">{totalLikes}</p>
             <p className="small text-muted mb-0">Likes</p>
           </div>
         </div>

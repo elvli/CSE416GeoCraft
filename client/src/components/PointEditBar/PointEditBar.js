@@ -6,6 +6,10 @@ import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './PointEditBar.scss'
 import rewind from "@mapbox/geojson-rewind";
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
+import PointMapTransaction from '../../transactions/Point/PointMapTransaction';
+import jsTPS from '../../common/jsTPS';
+import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
+import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 
 export default function PointEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -22,6 +26,7 @@ export default function PointEditBar(props) {
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([41.8473, 12.7971, 5.43])
+  const [tps, setTPS] = useState(new jsTPS)
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -30,36 +35,74 @@ export default function PointEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
-    store.undo();
+    // store.undo();
+
+    if (tps.hasTransactionToUndo()) {
+      console.log('undo attempted')
+      tps.undoTransaction();
+    }
+    else {
+      console.log('no action to undo')
+    }
   }
 
   function handleRedo(event) {
     event.preventDefault();
-    store.redo();
+    // store.redo();
+    if (tps.hasTransactionToRedo()) {
+      console.log('redo attempted')
+      tps.doTransaction();
+    }
+    else {
+      console.log('no action to redo')
+    }
   }
 
   const handleSettingChange = (event, setting) => {
-    var newSettings = ['', '', '']
-    newSettings[0] = settingsValues[0]
-    newSettings[1] = settingsValues[1]
-    newSettings[2] = settingsValues[2]
+    // Capture the current settings
+    const oldSettings = [...settingsValues];
+
+    // Create new settings based on the change
+    const newSettings = [...settingsValues];
     switch (setting) {
       case 0:
-        newSettings[0] = event.target.value
+        newSettings[0] = event.target.value;
         break;
       case 1:
-        newSettings[1] = event.target.value
+        newSettings[1] = event.target.value;
         break;
       case 2:
-        newSettings[2] = event.target.value
+        newSettings[2] = event.target.value;
         break;
       default:
-        newSettings = settingsValues;
+      // Do nothing for other cases
     }
-    setSettingsValues(newSettings)
+
+    // Create a transaction and add it to the jsTPS
+    const settingsChangeTransaction = new SettingsChangeTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(settingsChangeTransaction);
   }
 
+  function KeyPress(event) {
+    if (event.ctrlKey) {
+      if (event.key === 'z') {
+        handleUndo(event)
+      }
+      if (event.key === 'y') {
+        handleRedo(event)
+      }
+      if (event.key === 's') {
+        event.preventDefault();
+        handleSave();
+      }
+    }
+  }
 
+  document.onkeydown = (event) => KeyPress(event);
 
 
   // THESE FUNCTIONS HANDLE FILE LOADING
@@ -122,6 +165,19 @@ export default function PointEditBar(props) {
     setTableData(newTable)
   }
 
+  const handleRemoveRow = () => {
+    var newTable = []
+    for (let i = 0; i < tableData.length; i++) {
+      newTable.push(tableData[i])
+    }
+    setTableData(newTable)
+  }
+
+  const handleAddRowTransaction = () => { // 0 is update table, 1 is row stuff
+    let transaction = new PointMapTransaction([handleEditChange, handleAddRow, handleRemoveRow], 1, 0, 0, 0, 0)
+    tps.addTransaction(transaction)
+  }
+
   // const handleHeaderDoubleClick = (index) => {
   //   setIsEditingHeader(index);
   // };
@@ -136,15 +192,22 @@ export default function PointEditBar(props) {
     setIsEditingHeader(null);
   };
 
-  const handleEditChange = (event, rowIndex, colName) => {
+  const handleEditChange = (value, rowIndex, colName) => {
     const updatedData = tableData.map((row, index) => {
       if (index === rowIndex) {
-        return { ...row, [colName]: event.target.value };
+        return { ...row, [colName]: value };
       }
       return row;
     });
     setTableData(updatedData);
   };
+
+  const handleEditChangeTransaction = (event, rowIndex, colName) => { // 0 is update table, 1 is row stuff
+    console.log(event.target.value, tableData[rowIndex][colName])
+    let transaction = new PointMapTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
+    tps.addTransaction(transaction)
+    console.log(tps.getSize)
+  }
 
   const handleEditBlur = () => {
     setIsEditing(null);
@@ -225,10 +288,19 @@ export default function PointEditBar(props) {
   }, []);
 
   const handleSetDefaults = () => {
-    var latitude = map.current.getCenter().lat.toFixed(4);
-    var longitude = map.current.getCenter().lng.toFixed(4);
-    var zoom = map.current.getZoom().toFixed(2);
-    setSettingsValues([latitude, longitude, zoom]);
+    const oldSettings = [...settingsValues];
+
+    const latitude = map.current.getCenter().lat.toFixed(4);
+    const longitude = map.current.getCenter().lng.toFixed(4);
+    const zoom = map.current.getZoom().toFixed(2);
+    const newSettings = [latitude, longitude, zoom];
+
+    const setDefaultsTransaction = new SetDefaultsTransaction(
+      oldSettings,
+      newSettings,
+      setSettingsValues
+    );
+    tps.addTransaction(setDefaultsTransaction);
   }
 
   return (
@@ -325,12 +397,12 @@ export default function PointEditBar(props) {
                                       <input className='cells'
                                         type="text"
                                         value={row[colName]}
-                                        onChange={(event) => handleEditChange(event, rowIndex, colName)}
+                                        onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                       />
                                     ) : colIndex !== 3 ? (
                                       row[colName]
-                                    ) : <select name="variables" onChange={(event) => handleEditChange(event, rowIndex, colName)}>
+                                    ) : <select name="variables" value={row[colName]} onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}>
                                       <option> {row[colName]} </option>
                                       <option value={'white'} >white</option>
                                       <option value={'black'} >black</option>
@@ -348,7 +420,7 @@ export default function PointEditBar(props) {
                           ))}
                         </tbody>
                       </Table>
-                      <Button className='add-row-button btn btn-light' onClick={handleAddRow}>
+                      <Button className='add-row-button btn btn-light' onClick={handleAddRowTransaction}>
                         <PlusCircleFill className='add-row-icon' />
                       </Button>
                     </div>
