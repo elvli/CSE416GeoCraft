@@ -56,7 +56,7 @@ export default function LeftSideBar(props) {
   else {
     maps = <div>
       {
-        store.idNamePairs.map((pair) => {
+        store.idNamePairs.filter(pair => pair.name.toUpperCase().includes(queryInput.toUpperCase())).map((pair) => {
             if(pair.ownerEmail === auth.getEmail()) {
               return <MapCard
                 key={pair._id}
