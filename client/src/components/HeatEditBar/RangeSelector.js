@@ -25,7 +25,7 @@ export default function RangeSelector(props) {
                     <RangeSlider
                         onChange={e => setValue1(e.target.value)}
                         size='sm'
-                        max={max}
+                        max={value2}
                     />
                     </Col>
                 </Row>
@@ -35,7 +35,8 @@ export default function RangeSelector(props) {
                     <RangeSlider
                         onChange={e => setValue2(e.target.value)}
                         size='sm'
-                        max={max}
+                        max={value3}
+                        min={value1}
                     />
                     </Col>
                 </Row>
@@ -46,6 +47,7 @@ export default function RangeSelector(props) {
                         onChange={e => setValue3(e.target.value)}
                         size='sm'
                         max={max}
+                        min={value2}
                     />
                     </Col>
                 </Row>
