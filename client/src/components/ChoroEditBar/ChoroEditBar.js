@@ -39,7 +39,7 @@ export default function ChoroEditBar(props) {
   const [stepCount, setStepCount] = useState('5');
   const [choroRenders, setChoroRenders] = useState(0);
   const [propName, setPropName] = useState('');
-  const [dataRange, setDataRange] = useState([0, 100]);
+  // const [dataRange, setDataRange] = useState([0, 100]);
   const isLayerAdded = useRef(false);
   const [tps, setTPS] = useState(new jsTPS);
 
@@ -300,9 +300,9 @@ export default function ChoroEditBar(props) {
     mapData.settings = { latitude: settingsValues[0], longitude: settingsValues[1], zoom: settingsValues[2] }
     setTableHeaders([tableHeaders[0], tableHeaders[1], mapData.choroData.choroSettings.headerValue]);
 
-    // THIS SETS THE DATA RANGE FOR tableData (USED FOR COLOR INTERPOLATION)
-    const dataValues = tableData.map(entry => parseInt(entry.data, 10));
-    setDataRange([Math.min(...dataValues), Math.max(...dataValues)]);
+    // // THIS SETS THE DATA RANGE FOR tableData (USED FOR COLOR INTERPOLATION)
+    // const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+    // setDataRange([Math.min(...dataValues), Math.max(...dataValues)]);
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -463,13 +463,13 @@ export default function ChoroEditBar(props) {
       const regionsArray = tableData.map(entry => entry.region);
 
       for (var i = 0; i < regionsArray.length; i++) {
-        var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient);
+        const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+        const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
+        var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient, dataRange);
         const layerId = `${regionsArray[i]}-choro`;
 
         // CHECK IF THE LAYER EXISTS ALREADY. IF IT DOES, REMOVE IT.
-        const existingLayer = map.current.getLayer(layerId);
-
-        if (existingLayer) {
+        if (map.current.getLayer(layerId)) {
           map.current.removeLayer(layerId);
         }
 
@@ -487,9 +487,7 @@ export default function ChoroEditBar(props) {
       }
 
       // CHECK IF THE CHOROPLETH BORDER LAYER EXISTS, IF IT DOES, REMOVE IT
-      const borderLayerExists = map.current.getLayer('choro-border');
-
-      if (borderLayerExists) {
+      if (map.current.getLayer('choro-border')) {
         map.current.removeLayer('choro-border');
       }
 
@@ -583,11 +581,11 @@ export default function ChoroEditBar(props) {
   }
 
   // THIS ASSIGNS THE APPROPRIATE COLOR FOR THE REGIONS VALUE
-  function interpolateColor(value, gradient) {
+  function interpolateColor(value, gradient, dataRange) {
     const gradientArray = generateColors(parseFloat(stepCount), gradient);
     const stepSize = (dataRange[1] - dataRange[0]) / stepCount;
 
-    // Find the corresponding index based on the value and dataRange
+    // FIND THE CORRESPONDING INDEX BASED ON THE value AND dataRange
     const index = Math.max(
       0,
       Math.min(
@@ -601,6 +599,7 @@ export default function ChoroEditBar(props) {
     return resultColor;
   }
 
+  // THIS HANDLES THE SELCECTING A GRADIENT FROM THE DROPDOWN
   const handleGradientSelect = (selectedOption) => {
     const oldChoroTheme = choroTheme;
     const newChoroTheme = selectedOption.name;
