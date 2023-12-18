@@ -9,6 +9,10 @@ import './ChoroEditBar.scss';
 import chroma from 'chroma-js';
 import jsTPS from '../../common/jsTPS';
 import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
+import ChangeDataHeaderTransaction from '../../transactions/Choro/ChangeDataHeaderTransaction';
+import ChangeStepTransaction from '../../transactions/Choro/ChangeStepTransaction';
+import ChangeTableDataTransaction from '../../transactions/Choro/ChangeTableDataTransaction';
+import GradientSelectTransaction from '../../transactions/Choro/GradientSelectTransaction';
 import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
 import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 
@@ -22,6 +26,7 @@ export default function ChoroEditBar(props) {
   const [show, setShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [tableData, setTableData] = useState([]);
+  const [tempTableHeaders, setTempTableHeaders] = useState(['ID', 'Region', 'Value']);
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Region', 'Value']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
@@ -202,17 +207,34 @@ export default function ChoroEditBar(props) {
   };
 
   const handleEditChange = (event, rowIndex, colName) => {
-    const updatedData = tableData.map((row, index) => {
-      if (index === rowIndex) {
-        return { ...row, [colName]: event.target.value };
-      }
-      return row;
-    });
-    setTableData(updatedData);
+    const oldValue = tableData[rowIndex][colName];
+    const newValue = event.target.value;
+
+    const changeTableDataTransaction = new ChangeTableDataTransaction(
+      rowIndex,
+      colName,
+      oldValue,
+      newValue,
+      setTableData
+    );
+    tps.addTransaction(changeTableDataTransaction);
   };
 
-  const handleEditBlur = () => {
+  const handleEditTableBlur = () => {
     setIsEditing(null);
+  };
+
+  const handleEditHeaderBlur = () => {
+    const oldTableHeaders = tableHeaders.slice();
+    const newTableHeaders = tempTableHeaders.slice();
+
+    const changeDataHeaderTransaction = new ChangeDataHeaderTransaction(
+      oldTableHeaders,
+      newTableHeaders,
+      setTableHeaders,  // assuming setTableHeaders is your state update function
+      setIsEditing      // assuming setIsEditing is your state update function
+    );
+    tps.addTransaction(changeDataHeaderTransaction);
   };
 
   const handleSave = async () => {
@@ -253,10 +275,10 @@ export default function ChoroEditBar(props) {
   };
 
   // THIS CHANGES THE HEADER OF THE VALUE COLUMN (THIRD FROM LEFT)
-  const changeDataHeader = (event) => {
+  const changeTempDataHeader = (event) => {
     const newHeaders = [...tableHeaders];
     newHeaders[2] = event.target.value
-    setTableHeaders(newHeaders);
+    setTempTableHeaders(newHeaders);
   };
 
   // THIS CHECKS IF A REGION NAME EXISTS IN tableData
@@ -303,14 +325,14 @@ export default function ChoroEditBar(props) {
               {isEditing === 2 ? (
                 <input
                   type="text"
-                  value={tableHeaders[2]}
-                  onChange={changeDataHeader}
+                  value={tempTableHeaders[2]}
+                  onChange={changeTempDataHeader}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
-                      handleEditBlur();
+                      handleEditHeaderBlur();
                     }
                   }}
-                  onBlur={handleEditBlur}
+                  onBlur={handleEditHeaderBlur}
                 />
               ) : (
                 tableHeaders[2]
@@ -332,7 +354,7 @@ export default function ChoroEditBar(props) {
                   type="text"
                   value={(row.data === 0) ? '0' : row.data}
                   onChange={(event) => handleEditChange(event, rowIndex, 'data')}
-                  onBlur={handleEditBlur}
+                  onBlur={handleEditTableBlur}
                 />
               </td>
             </tr>
@@ -532,7 +554,15 @@ export default function ChoroEditBar(props) {
   }
 
   const handleGradientSelect = (selectedOption) => {
-    setChoroTheme(selectedOption.name);
+    const oldChoroTheme = choroTheme;
+    const newChoroTheme = selectedOption.name;
+
+    const gradientSelectTransaction = new GradientSelectTransaction(
+      oldChoroTheme,
+      newChoroTheme,
+      setChoroTheme
+    );
+    tps.addTransaction(gradientSelectTransaction);
   };
 
   // THESE ARE THE GRADIENTS THAT WE ALLOW THE USER TO CHOOSE
@@ -607,7 +637,15 @@ export default function ChoroEditBar(props) {
 
   const handleStepChange = (event) => {
     const numericValue = event.target.value.replace(/[^0-9]/g, '');
-    setStepCount(numericValue);
+    const oldStepCount = stepCount;
+    const newStepCount = numericValue;
+
+    const changeStepTransaction = new ChangeStepTransaction(
+      oldStepCount,
+      newStepCount,
+      setStepCount
+    );
+    tps.addTransaction(changeStepTransaction);
   };
 
   const handleStepKeyDown = (event) => {
@@ -640,7 +678,6 @@ export default function ChoroEditBar(props) {
 
   const handleSetDefaults = () => {
     const oldSettings = [...settingsValues];
-
     const latitude = map.current.getCenter().lat.toFixed(4);
     const longitude = map.current.getCenter().lng.toFixed(4);
     const zoom = map.current.getZoom().toFixed(2);
