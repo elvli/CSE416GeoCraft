@@ -46,7 +46,7 @@ export default function ExportMapModal(props) {
     const mapId = store.currentList._id
     const data = await store.getMapDataById(mapId)
     const json = JSON.stringify(data);
-    setJsonData(json);
+
 
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -79,6 +79,7 @@ export default function ExportMapModal(props) {
                 <option value="png">PNG</option>
               </Form.Select>
             </Form.Group>
+            <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
           </Modal.Body>
           <Modal.Footer className="d-flex justify-content-center">
             <Button variant="secondary" onClick={handleClosing}>
