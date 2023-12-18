@@ -22,6 +22,7 @@ function AuthContextProvider(props) {
     username: null,
     email: null,
     aboutMe: "Click edit profile to add an about me.",
+    profilePicture: null,
   });
   const history = useNavigate();
 
@@ -73,7 +74,8 @@ function AuthContextProvider(props) {
           LasttName: payload.LastName,
           username: payload.username,
           email: payload.email,
-          aboutMe: payload.aboutMe
+          aboutMe: payload.aboutMe,
+          profilePicture: payload.profilePicture
         })
       }
       default:
@@ -174,6 +176,7 @@ function AuthContextProvider(props) {
           username: response.data.user.username,
           email: response.data.user.email,
           aboutMe: response.data.user.aboutMe,
+          profilePicture: response.data.user.profilePicture
         }
       })
       auth.getLoggedIn();

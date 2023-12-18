@@ -11,6 +11,7 @@ const UserSchema = new Schema(
     passwordHash: { type: String, required: true },
     aboutMe: {type: String },
     maps: [{ type: ObjectId, ref: 'Maps' }],
+    profilePicture: {type: String },
   },
   { timestamps: true },
 )
