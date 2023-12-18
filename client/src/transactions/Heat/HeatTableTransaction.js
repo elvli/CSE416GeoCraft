@@ -1,16 +1,35 @@
 import jsTPS_Transaction from "../../common/jsTPS.js"
 
 export default class HeatTableTransaction extends jsTPS_Transaction {
-  constructor(initStore, initIndex, initSong) {
+  constructor(functions, proceed, oldData, newData, rowIndex, colName) {
     super();
-    this.store = initStore;
+    this.functions = functions;
+    this.proceed = proceed
+    this.oldData = oldData
+    this.newData  = newData
+    this.rowIndex = rowIndex
+    this.colName = colName
   }
 
   doTransaction() {
-    // this.store;
+    switch (this.proceed){
+        case 0:
+            this.functions[0](this.newData, this.rowIndex, this.colName)
+            break;
+        case 1:
+            this.functions[1]()
+            break;
+    }
   }
 
   undoTransaction() {
-    
+    switch (this.proceed){
+        case 0:
+            this.functions[0](this.oldData, this.rowIndex, this.colName)
+            break;
+        case 1:
+            this.functions[2]()
+            break;
+    }
   }
 }
