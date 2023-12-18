@@ -206,11 +206,11 @@ export default function HeatEditBar(props) {
       }
 
       setCurrentColor(points.heatmap.color)
-      setColor1(currentColor[6])
-      setColor2(currentColor[8])
-      setColor3(currentColor[10])
-      setColor4(currentColor[12])
-      setColor5(currentColor[14])
+      setColor1(points.heatmap.color[6])
+      setColor2(points.heatmap.color[8])
+      setColor3(points.heatmap.color[10])
+      setColor4(points.heatmap.color[12])
+      setColor5(points.heatmap.color[14])
 
       console.log(color5)
       setTableData(newPoints);
