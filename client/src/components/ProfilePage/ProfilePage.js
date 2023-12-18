@@ -26,6 +26,12 @@ export default function ProfilePage() {
   const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
   const version = "v1702872120/";
   const imageName = auth.getProfilePicture();
+  const totalLikes = store.idNamePairs.reduce((sum, pair) => {
+    if (pair.ownerName === username) {
+      return sum + pair.likes.length;
+    }
+    return sum;
+  }, 0);
 
 
   async function handleClose(event) {
@@ -191,7 +197,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="px-3">
-            <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.likes.includes(username))).length}</p>
+            <p className="mb-1 h5">{totalLikes}</p>
             <p className="small text-muted mb-0">Likes</p>
           </div>
         </div>
