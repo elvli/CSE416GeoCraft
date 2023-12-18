@@ -6,7 +6,7 @@ import GlobalStoreContext from "../../store";
 import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal, PublishMapModal } from '../../components'
 // import { Card } from 'react-bootstrap'
 import {Image} from 'cloudinary-react';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import cameraLogo from '.././Images/cameraicon.png';
 import "./ProfilePage.scss";
 
 export default function ProfilePage() {
@@ -153,7 +153,7 @@ export default function ProfilePage() {
                   height: "50px",
                   cursor: "pointer",
                   borderRadius: "50%", // Add this line to make it rounded
-                  backgroundColor: "gray", // Add this line to set a background color
+                  backgroundColor: "black", // Add this line to set a background color
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -166,7 +166,8 @@ export default function ProfilePage() {
                   style={{ display: "none" }}
                   onChange={handleImageUpload}
                 />
-                <i className="bi-camera text-dark" style={{ fontSize: "2rem" }}></i>
+                <img src={cameraLogo} alt="Camera Logo" style={{ width: "50px", height: "50px" }} />
+
               </label>
               )}
 
