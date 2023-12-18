@@ -4,6 +4,8 @@ import { GlobalStoreContext } from '../../store';
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './LineEditBar.scss';
+import rewind from "@mapbox/geojson-rewind";
+
 
 export default function LineEditSideBar(props) {
   const { mapId, points, settings, map } = props;
@@ -66,21 +68,45 @@ export default function LineEditSideBar(props) {
 
   const handleFileSelection = async (files) => {
     const file = files[0];
+    var extension = file.name.split(".")[1];
     var reader = new FileReader();
-    let mapData = await store.getMapDataById(mapId);
-
     reader.onloadend = async (event) => {
       var text = event.target.result;
 
-      try {
+      if (extension === 'json'){
         var json = JSON.parse(text);
-        console.log('Original file size:', text.length, 'bytes');
-        mapData.GeoJson = json;
-        await store.updateMapDataById(mapId, mapData);
-        await store.setCurrentList(mapId, 0)
-      } catch (error) {
-        console.error('Error handling file selection:', error);
+        var mapData = await store.getMapDataById(mapId)
+        if (json.mapID){
+          mapData.GeoJson = json.GeoJson
+          mapData.lineData = json.lineData
+          mapData.settings = json.settings
+          await store.updateMapDataById(mapId, mapData)
+          await store.setCurrentList(mapId, 0)
+          updateTable()
+        }
+
+        else if (json.type === 'FeatureCollection' || json.features){
+          mapData.GeoJson = json;
+          await store.updateMapDataById(mapId, mapData);
+          await store.setCurrentList(mapId, 0)
+        }
       }
+
+      else if (extension === 'kml'){
+        var mapData = await store.getMapDataById(mapId)
+        var tj = require('@mapbox/togeojson')
+        var kml = new DOMParser().parseFromString(text, "text/xml"); // create xml dom object
+        var json = tj.kml(kml); // convert xml dom to geojson
+        rewind(json, false); // correct right hand rule
+        mapData.GeoJson = json
+        await store.updateMapDataById(mapId, mapData)
+        await store.setCurrentList(mapId, 0)
+      }
+
+        // var json = JSON.parse(text);
+        // mapData.GeoJson = json;
+        // await store.updateMapDataById(mapId, mapData);
+        // await store.setCurrentList(mapId, 0)
     };
     reader.readAsText(file);
   }
