@@ -9,6 +9,7 @@ import { HexColorPicker } from "react-colorful";
 // import HeatPointModal from '../HeatPointModal/HeatPointModal';
 import MapNameModal from '../MapNameModal/MapNameModal';
 import RangeSelector from './RangeSelector';
+import RangeSelectorOpacity from './RangeSelectorOpacity';
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
@@ -295,7 +296,7 @@ export default function HeatEditBar(props) {
       
       setTableData(newPoints);
       
-      //setSettingsValues([map.settings.latitude, map.settings.longitude, map.settings.zoom])
+      setSettingsValues([map.settings.latitude, map.settings.longitude, map.settings.zoom])
 
 
     }
@@ -440,9 +441,6 @@ export default function HeatEditBar(props) {
       <Button className='heat-button' onClick={() => { setPicker3(!picker3); changeCurrentColor() }} style={{ backgroundColor: color3 }}/>
       <Button className='heat-button' onClick={() => { setPicker4(!picker4); changeCurrentColor() }} style={{ backgroundColor: color4 }}/>
       <Button className='heat-button' onClick={() => { setPicker5(!picker5); changeCurrentColor() }} style={{ backgroundColor: color5 }}/>
-
-      
-
     </Row>
     {picker1 ? <div className='heat-popover'>
     <div style={cover} onClick={(event) => { setPicker1(false); changeCurrentColor()}} />
@@ -468,7 +466,19 @@ export default function HeatEditBar(props) {
     <Row className="justify-content-md-center">
           <span className="input-group-text" id="">
             <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  changeCurrentMag()}} >Magnitude</Button>
+              <div className='heat-range-button' ></div>
+            </Col>
+            <Col><h6>Zoom X</h6></Col>
+            <Col><h6>X</h6></Col>
+            <Col><h6>Zoom Y</h6></Col>
+            <Col><h6>Y</h6></Col>
+          </span>
+    </Row>
+
+    <Row className="justify-content-md-center">
+          <span className="input-group-text" id="">
+            <Col>
+              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  changeCurrentMag()}} >Weight</Button>
             </Col>
             <Col><h6>{rangeMag1}</h6></Col>
             <Col><h6>{rangeMag2}</h6></Col>
@@ -482,7 +492,7 @@ export default function HeatEditBar(props) {
               value1={rangeMag1} value2={rangeMag2} value3={rangeMag3} value4={rangeMag4} max={10}
             />
     </div> : null}
-    <br></br>
+
     <Row className="justify-content-md-center">
    
           <span className="input-group-text" id="">
@@ -501,7 +511,7 @@ export default function HeatEditBar(props) {
                 value1={rangeIntensity1} value2={rangeIntensity2} value3={rangeIntensity3} value4={rangeIntensity4} max={10}
               />
     </div> : null}
-    <br></br>
+
     <Row className="justify-content-md-center">
 
           <span className="input-group-text" id="">
@@ -520,7 +530,7 @@ export default function HeatEditBar(props) {
                 value1={rangeRadius1} value2={rangeRadius2} value3={rangeRadius3} value4={rangeRadius4} max={20}
               />
     </div> : null}
-    <br></br>
+
     <Row className="justify-content-md-center">
           <span className="input-group-text" id="">
             <Col>
@@ -533,27 +543,17 @@ export default function HeatEditBar(props) {
             
           </span>
     </Row>
-    <br></br>
+    
     {selectRangeOpacity ? <div className='heat-popover'>
       <div style={cover} onClick={(event) => { setSelectRangeOpacity(false); changeCurrentOpac()}} />
-      <RangeSelector setValue1={e=>{setRangeOpacity1(parseInt(e))}} setValue2={e=>{setRangeOpacity2(parseInt(e))}} setValue3={e=>{setRangeOpacity3(parseInt(e))}} setValue4={e=>{setRangeOpacity4(parseInt(e))}}
+      <RangeSelectorOpacity setValue1={e=>{setRangeOpacity1(parseInt(e))}} setValue2={e=>{setRangeOpacity2(parseInt(e))}} setValue3={e=>{setRangeOpacity3(parseInt(e))}} setValue4={e=>{setRangeOpacity4(parseInt(e))}}
                 value1={rangeOpacity1} value2={rangeOpacity2} value3={rangeOpacity3} value4={rangeOpacity4} max={10}
               />
     </div> : null}
-      
-
-      
-   
-    
-    
-    
-    
-    
-    
-
-    
-    
-
+    <br></br>
+    <Row>
+      When zoom level is at Zoom X or less X will be used, if it's at Zoom Y or greater it will switch to Y
+    </Row>
   </div>
 
 
@@ -769,18 +769,6 @@ export default function HeatEditBar(props) {
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>
-              {/* <RangeSelector setValue1={setRangeMag1} setValue2={setRangeMag2} setValue3={setRangeMag3} setValue4={setRangeMag4}
-                value1={rangeMag1} value2={rangeMag2} value3={rangeMag3} value4={rangeMag4}
-              />
-              <RangeSelector setValue1={setRangeIntensity1} setValue2={setRangeIntensity2} setValue3={setRangeIntensity3} setValue4={setRangeIntensity4}
-                value1={rangeIntensity1} value2={rangeIntensity2} value3={rangeIntensity3} value4={rangeIntensity4}
-              />
-              <RangeSelector setValue1={setRangeRadius1} setValue2={setRangeRadius2} setValue3={setRangeRadius3} setValue4={setRangeRadius4}
-                value1={rangeRadius1} value2={rangeRadius2} value3={rangeRadius3} value4={rangeRadius4}
-              />
-              <RangeSelector setValue1={setRangeOpacity1} setValue2={setRangeOpacity2} setValue3={setRangeOpacity3} setValue4={setRangeOpacity4}
-                value1={rangeOpacity1} value2={rangeOpacity2} value3={rangeOpacity3} value4={rangeOpacity4}
-              /> */}
             </div>
           </div>
         </div>
