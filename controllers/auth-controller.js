@@ -33,6 +33,25 @@ getLoggedIn = async (req, res) => {
   }
 }
 
+getUserByUsername = async (req, res) => {
+  try {
+    console.log(req.params)
+    const { username } = req.params;
+    const userInfo = await User.findOne({ username: username });
+    return res.status(200).json({
+      user: {
+        email: userInfo.email,
+        username: userInfo.username,
+        aboutMe: userInfo.aboutMe,
+        profilePicture: userInfo.profilePicture
+      }
+    })
+  }
+  catch(err) {
+    res.json(false);
+  }
+  }
+
 loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -331,5 +350,6 @@ module.exports = {
   updateUser,
   createEmailLink,
   resetPassword,
-  verifyLink
+  verifyLink,
+  getUserByUsername
 }
