@@ -15,8 +15,10 @@ import HeatTableTransaction from '../../transactions/Heat/HeatTableTransaction';
 import HeatEditTransaction from '../../transactions/Heat/HeatEditTransaction';
 import jsTPS from '../../common/jsTPS';
 import EditRegionModal from '../EditRegionModal/EditRegionModal';
-
-
+import shpParser from 'shpjs';
+import JSZip from 'jszip';
+import rewind from "@mapbox/geojson-rewind";
+const shp = require("shpjs");
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
@@ -221,23 +223,189 @@ export default function HeatEditBar(props) {
 
   const handleFileSelection = async (files) => {
     const file = files[0];
+    var extension = file.name.split(".")[1];
     var reader = new FileReader();
-    let mapData = await store.getMapDataById(mapId);
-
     reader.onloadend = async (event) => {
       var text = event.target.result;
 
-      try {
+      if (extension === 'json') {
         var json = JSON.parse(text);
-        console.log('Original file size:', text.length, 'bytes');
-        mapData.GeoJson = json;
-        await store.updateMapDataById(mapId, mapData);
-        await store.setCurrentList(mapId, 0)
-      } catch (error) {
-        console.error('Error handling file selection:', error);
+        var mapData = await store.getMapDataById(mapId)
+        if (json.mapID) {
+          mapData.GeoJson = json.GeoJson
+          mapData.lineData = json.lineData
+          mapData.settings = json.settings
+          await store.updateMapDataById(mapId, mapData)
+          await store.setCurrentList(mapId, 0)
+          updateTable()
+        }
+
+        else if (json.type === 'FeatureCollection' || json.features) {
+          mapData.GeoJson = json;
+          await store.updateMapDataById(mapId, mapData);
+          await store.setCurrentList(mapId, 0)
+        }
       }
+
+      else if (extension === 'kml') {
+        var mapData = await store.getMapDataById(mapId)
+        var tj = require('@mapbox/togeojson')
+        var kml = new DOMParser().parseFromString(text, "text/xml"); // create xml dom object
+        var json = tj.kml(kml); // convert xml dom to geojson
+        rewind(json, false); // correct right hand rule
+        mapData.GeoJson = json
+        await store.updateMapDataById(mapId, mapData)
+        await store.setCurrentList(mapId, 0)
+      }
+
+      else if (extension === "zip") {  
+        var zip = new JSZip();
+        var shpArr = [];
+        var dbfArr = [];
+        var arr = []
+        var shpArr0 = []
+        var dbfArr0 = []
+        var arr0 = []
+        var count = 0
+        var count1 = 0
+        async function shpCombiner() {
+          zip.loadAsync(text).then(function (zips) {
+            Object.keys(zips.files).forEach(function (filename) {
+              count++
+              
+              
+            })
+            count--
+            console.log(count)
+            Object.keys(zips.files).forEach(function (filename) {
+              zip.files[filename].async('string').then(function (fileData){
+                if(filename.split(".")[1] != "txt") {
+                  
+                  zip.file(filename).async('blob').then( async (blob) => {                    
+                    const buffer = await blob.arrayBuffer();
+                    console.log(filename);
+                    if (buffer && buffer.byteLength > 0) {
+                      // Parse the shapefile here
+  
+  
+                     
+  
+                      try {
+                        count1++
+                        console.log(count1)
+                        if(filename.endsWith("adm1.shp") ) {
+                          
+                           shpArr = (shp.parseShp(buffer /*optional prj str*/));
+                           if(arr.length == 1) {
+                            arr = [shpArr, arr[0]]
+                           }
+                           else {
+                            arr.push(shpArr)
+                           }
+                           
+                        }
+                        else if(filename.endsWith("adm1.dbf")) {
+                           dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
+                           arr.push(dbfArr)
+                           
+                        }
+                        if(filename.endsWith("adm0.shp") ) {
+                          
+                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
+                          if(arr0.length == 1) {
+                           arr0 = [shpArr0, arr0[0]]
+                          }
+                          else {
+                           arr0.push(shpArr0)
+                          }
+                          
+                        }
+                        else if(filename.endsWith("adm0.dbf")) {
+                            dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
+                            arr0.push(dbfArr0)
+                            
+                        }
+                        // if(arr.length == 2) {
+                        //   let combined = await shp.combine(arr)
+                          
+                        //   var mapData = await store.getMapDataById(mapId)
+                        //   mapData.GeoJson = combined
+                        //   await store.updateMapDataById(mapId, mapData)
+                        //   await store.setCurrentList(mapId, 0)
+                        // }
+                        
+                        if(count == count1) {
+                          console.log(dbfArr0)
+                          if(arr.length == 2) {
+                            let combined = await shp.combine(arr)
+                            
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                          else {
+                            let combined = await shp.combine(arr0)
+                          
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                            
+                        } 
+                        
+  
+  
+        
+                      } catch (error) {
+                        console.error("Error parsing shapefile:", error);
+                      }
+  
+  
+                      if(filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp" ) {
+                        
+                        }
+                    
+                    } else {
+                      console.error("Invalid or empty shapefile buffer");
+                    }
+                    
+                  }); 
+                }
+                
+              })
+            })
+          })
+        }
+        await shpCombiner()
+        console.log("APPLES")
+                    
+
+        
+        // let arr2 = await shp.combine([shpArr, dbfArr])
+        // console.log(shpArr)
+        
+         
+        
+        //json = shpHandler(text);
+        
+      }
+
+
+
+      // var json = JSON.parse(text);
+      // mapData.GeoJson = json;
+      // await store.updateMapDataById(mapId, mapData);
+      // await store.setCurrentList(mapId, 0)
     };
-    reader.readAsText(file);
+    if(extension === "zip" || extension === "shp") {
+      reader.readAsArrayBuffer(file);
+    }
+    else {
+      reader.readAsText(file);
+    }
+    
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
@@ -874,9 +1042,9 @@ export default function HeatEditBar(props) {
                     className="d-flex flex-column" >
                     <div className="drop-zone">
                       <div className="drop-zone-text">
-                        Attach a .json, .kml, or .shp file.
+                        Attach a .json, .kml, or .shp file {"(must be in zip)"}.
                       </div>
-                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
+                      <input type="file" id="my_file_input" accept=".json,.kml,.zip" onChange={handleFileChange} />
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
@@ -942,7 +1110,7 @@ export default function HeatEditBar(props) {
                       <div className="drop-zone-text">
                         <h6>Drag & Drop or Click Browse to select a file</h6>
                       </div>
-                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
+                      <input type="file" id="my_file_input" accept=".json" onChange={handleHeatMap} />
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
