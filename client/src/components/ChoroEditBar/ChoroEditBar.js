@@ -340,7 +340,6 @@ export default function ChoroEditBar(props) {
     // THIS SETS THE DATA FOR THE MAP LEGEND
     mapData.legendTitle = legendTitle;
     mapData.legend = generateLegend();
-    console.log('CHORO LEGEND', mapData.legend);
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -588,6 +587,7 @@ export default function ChoroEditBar(props) {
   const generateLegend = () => {
     const sortedTableData = tableData.sort((a, b) => parseInt(b.data) - parseInt(a.data));
     const regionsArray = sortedTableData.map(entry => entry.region);
+    tableData.sort((a, b) => a.id - b.id);
 
     const dataValues = tableData.map(entry => parseInt(entry.data, 10));
     const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
@@ -595,15 +595,14 @@ export default function ChoroEditBar(props) {
 
     var legendTable = [];
 
-    for (var i = 0; i < regionsArray.length; i++) {
+    for (var i = 0; i < Math.min(regionsArray.length, intervals.length); i++) {
       var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient, dataRange);
       var num1 = intervals[i][0];
       var num2 = intervals[i][1];
 
-      const description = `${num1}-${num2}`;
+      const description = `${num1} to ${num2}`;
 
       legendTable.push({ color: color, description: description });
-      console.log({ color: color, description: description });
     }
 
     return legendTable;
