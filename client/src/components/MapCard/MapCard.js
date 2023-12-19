@@ -9,7 +9,7 @@ import './MapCard.scss'
 export default function MapCard(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
-  const { map, functions, selected } = props
+  const { map, functions } = props
   const username = auth.loggedIn ? auth.user._id : 0;
   const navigate = useNavigate();
 
@@ -47,7 +47,11 @@ export default function MapCard(props) {
 
   function handleSelectMap(event) {
     event.stopPropagation();
-    store.setCurrentList(map._id, null);
+    if (!store.currentList || store.currentList._id !== map._id) {
+      store.setCurrentList(map._id, null);
+    }
+    // store.setCurrentList(map._id, null);
+    // console.log('iadwdawd', store.currentList)
   }
 
   let dropdown = <div className='options-button'>
@@ -72,7 +76,7 @@ export default function MapCard(props) {
         <Dropdown.Toggle variant="light" id="dropdown-basic" disabled={!auth.loggedIn}>
           <ThreeDotsVertical />
         </Dropdown.Toggle>
-        
+
         <Dropdown.Menu className='dropdown-menu'>
           <Dropdown.Item onClick={functions.handleFork} className='options-button-options'>Fork</Dropdown.Item>
           {map.ownerEmail === auth.getEmail() && (
@@ -93,7 +97,7 @@ export default function MapCard(props) {
 
   return (
     <div>
-      <div className={`card map-card ${(store.currentList != null) && (store.currentList._id === map._id) ? { selected } : ''}`} onClick={handleSelectMap}>
+      <div className={`card map-card ${((store.currentList) && (store.currentList._id === map._id)) ? 'selected' : ''}`} onClick={handleSelectMap}>
         <div className="card-header">
           <p className="map-title">{map.name}</p>
           {dropdown}
