@@ -799,18 +799,18 @@ export default function HeatEditBar(props) {
             regionName = clickedRegion.properties[propertyName];
             break;
           }
+          else if(clickedRegion.properties.hasOwnProperty('NAME')) {
+            regionName = clickedRegion.properties['NAME'];
+          }
           else {
-            propertyName = 'NAME'
+            regionName = ''
           }
         }
-        setPropName(propertyName);
-        console.log(regionName)
+        
         // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
         setSelectedRegion(regionName);
 
-        
-        setActiveKey((prevActiveKey) => [...prevActiveKey, '1']);
-        setShowRegion(true)
+    
       }
     };
 
