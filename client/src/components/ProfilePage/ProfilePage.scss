@@ -1,17 +1,25 @@
 @use "../../styles/theme" as theme;
 
 .profile-container {
+  background-color: #FFFFFF;
+
   .profile-banner {
     background-color: #000;
     height: 200px;
 
-    .profile-pic {
-      width: 150px;
+    .edit-profile-btn {
       z-index: 1;
     }
 
-    .edit-profile-btn {
-      z-index: 1;
+    .img-container {
+      margin-top: 20px;
+      width: 150px;
+      height: 150px;
+
+      .profile-pic {
+        width: 150px;
+        z-index: 1;
+      }
     }
   }
 

@@ -5,7 +5,7 @@ import AuthContext from '../../auth'
 import GlobalStoreContext from "../../store";
 import { AppBanner, MapCard, MapCreateModal, DeleteMapModal, ForkMapModal, ExportMapModal, EditProfileModal, PublishMapModal } from '../../components'
 // import { Card } from 'react-bootstrap'
-import {Image} from 'cloudinary-react';
+import { Image } from 'cloudinary-react';
 import cameraLogo from '.././Images/cameraicon.png';
 import "./ProfilePage.scss";
 
@@ -49,6 +49,7 @@ export default function ProfilePage() {
 
     fetchImageName();
   }, []);
+
   const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
   const version = "v1702872120/";
   const totalLikes = store.idNamePairs.reduce((sum, pair) => {
@@ -111,16 +112,16 @@ export default function ProfilePage() {
           profilePicture: response.data.public_id
         }
         auth.updateUser(user);
-        for (let i in store.idNamePairs){
-          if (store.idNamePairs[i].published && store.idNamePairs[i].comments){
+        for (let i in store.idNamePairs) {
+          if (store.idNamePairs[i].published && store.idNamePairs[i].comments) {
             var map = false
-            for (let j in store.idNamePairs[i].comments){
-              if (store.idNamePairs[i].comments[j].user === auth.user.username){
+            for (let j in store.idNamePairs[i].comments) {
+              if (store.idNamePairs[i].comments[j].user === auth.user.username) {
                 map = store.idNamePairs[i]
                 map.comments[j].profilePicture = response.data.public_id
               }
             }
-            if (map){
+            if (map) {
               store.updateLikeDislike(map._id, map)
             }
           }
@@ -171,43 +172,41 @@ export default function ProfilePage() {
 
           <div className="text-white d-flex flex-row profile-banner">
             <div className="ms-4 mt-5 d-flex flex-column position-relative">
-            <div
-            className="img-container"
-            style={{ width: "150px", height: "150px" }}
-             >
-              <Image
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
-                cloudName="djmyzbhnk"
-                publicId={`${cloudinaryBaseUrl}${version}${(username === auth.getUsername()) ? auth.user.profilePicture : imageName}`}
-              />
+              <div className="img-container">
+                <Image
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
+                  cloudName="djmyzbhnk"
+                  publicId={`${cloudinaryBaseUrl}${version}${(username === auth.getUsername()) ? auth.user.profilePicture : imageName}`}
+                />
               </div>
               {username === auth.getUsername() && (
-               <label
-                htmlFor="imageInput"
-                className="camera-icon-container position-absolute bottom-0 end-0"
-                style={{
-                  zIndex: 1,
-                  width: "50px",
-                  height: "50px",
-                  cursor: "pointer",
-                  borderRadius: "50%", // Add this line to make it rounded
-                  backgroundColor: "black", // Add this line to set a background color
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <input
-                  type="file"
-                  id="imageInput"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleImageUpload}
-                />
-                <img src={cameraLogo} alt="Camera Logo" style={{ width: "40px", height: "40px" }} />
+                <label
+                  htmlFor="imageInput"
+                  className="camera-icon-container position-absolute bottom-0 end-0"
+                  style={{
+                    zIndex: 1,
+                    width: "50px",
+                    height: "50px",
+                    cursor: "pointer",
+                    borderRadius: "50%", // Add this line to make it rounded
+                    backgroundColor: "black", // Add this line to set a background color
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transform: "translate(0%, 32%)"
+                  }}
+                >
+                  <input
+                    type="file"
+                    id="imageInput"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleImageUpload}
+                  />
+                  <img src={cameraLogo} alt="Camera Logo" style={{ width: "40px", height: "40px" }} />
 
-              </label>
+                </label>
               )}
 
             </div>
@@ -218,31 +217,31 @@ export default function ProfilePage() {
           </div>
 
           <div className="p-4 bg-light d-flex flex-column">
-      <div className="d-flex justify-content-start py-1">
-        {username === auth.getUsername() && (
-          <button
-            type="button"
-            className="btn btn-outline-dark edit-profile-btn text-centered"
-            data-mdb-ripple-color="dark"
-            onClick={handleEditProfile}
-            style={{ fontSize: "16px", width: "150px" }}
-          >
-            Edit profile
-          </button>
-        )}
-        <div className="d-flex text-center py-1 ms-auto">
-          <div>
-            <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.ownerName === username)).length}</p>
-            <p className="small text-muted mb-0">Maps</p>
-          </div>
+            <div className="d-flex justify-content-start py-1">
+              {username === auth.getUsername() && (
+                <button
+                  type="button"
+                  className="btn btn-outline-dark edit-profile-btn text-centered"
+                  data-mdb-ripple-color="dark"
+                  onClick={handleEditProfile}
+                  style={{ fontSize: "16px", width: "150px" }}
+                >
+                  Edit profile
+                </button>
+              )}
+              <div className="d-flex text-center py-1 ms-auto">
+                <div>
+                  <p className="mb-1 h5">{(store.idNamePairs.filter(pair => pair.ownerName === username)).length}</p>
+                  <p className="small text-muted mb-0">Maps</p>
+                </div>
 
-          <div className="px-3">
-            <p className="mb-1 h5">{totalLikes}</p>
-            <p className="small text-muted mb-0">Likes</p>
+                <div className="px-3">
+                  <p className="mb-1 h5">{totalLikes}</p>
+                  <p className="small text-muted mb-0">Likes</p>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      </div>
 
           <div className="card-body p-4 text-black">
             <div className="mb-5">
@@ -271,7 +270,7 @@ export default function ProfilePage() {
               </div>
             </nav>
             <div className="tab-content" >
-              {(auth.user && (auth.user.username === username)) ? (activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))): activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username && pair.published))}
+              {(auth.user && (auth.user.username === username)) ? (activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))) : activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username && pair.published))}
               {(auth.user && (auth.user.username === username)) ? (activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))) : <></>}
             </div>
           </div>
@@ -281,7 +280,7 @@ export default function ProfilePage() {
       <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
-      <EditProfileModal aboutMeText = {aboutMeText} editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose} />
+      <EditProfileModal aboutMeText={aboutMeText} editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose} />
       <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
     </div >
   );
