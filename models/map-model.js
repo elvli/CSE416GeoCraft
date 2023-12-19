@@ -13,6 +13,7 @@ const mapSchema = new Schema(
         comment: String,
         likes: { type: Array },
         dislikes: { type: Array },
+        profilePicture: {type: String}
       }], required: false
     },
     published: { type: Boolean, required: true },

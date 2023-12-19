@@ -48,6 +48,7 @@ export default function RightSideBar() {
           comment={userComment.comment}
           count={index}
           map={store.currentList}
+          profilePicture={userComment.profilePicture}
           handleReply={handleReply}
         />
       ))

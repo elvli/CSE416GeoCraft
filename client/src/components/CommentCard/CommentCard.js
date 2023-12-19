@@ -4,13 +4,16 @@ import { Row, Col, Card, Button } from 'react-bootstrap';
 import { PersonCircle, HandThumbsUp, HandThumbsDown, HandThumbsUpFill, HandThumbsDownFill } from 'react-bootstrap-icons';
 import GlobalStoreContext from '../../store';
 import AuthContext from '../../auth';
+import {Image} from 'cloudinary-react';
 import './CommentCard.scss';
 
 export default function CommentCard(props) {
-  const { user, comment, map, count, handleReply } = props;
+  const { user, comment, map, count, handleReply, profilePicture } = props;
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const email = auth.getEmail();
+  const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
+  const version = "v1702872120/";
 
 
   function handleLike(event) {
@@ -63,7 +66,16 @@ export default function CommentCard(props) {
         <Card.Body>
           <Row>
             <Col xs="auto">
+            {profilePicture ? (
+                <Image
+                  style={{  width: "30px", height: "30px", borderRadius: '100px', objectFit: "cover"}}
+                  className="img-fluid rounded-circle"
+                  cloudName="djmyzbhnk"
+                  publicId={`${cloudinaryBaseUrl}${version}${profilePicture}`}
+                />
+            ) : (
               <PersonCircle className="profile-pic-comm" />
+            )}
             </Col>
             <Col>
               <Row>
