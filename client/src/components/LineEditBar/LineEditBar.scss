@@ -70,16 +70,17 @@
   justify-content: center;
   margin-top: 10px;
   margin-bottom: -6px;
-  display:inline-block;
+  display: inline-block;
 
 }
 
 .PNGButton {
-  display:inline-block;
+  display: inline-block;
   margin-left: 8px;
 }
+
 .JPGButton {
-  display:inline-block;
+  display: inline-block;
   margin-left: 8px;
 }
 
@@ -119,7 +120,7 @@
   .edit-button {
     max-width: 48px;
     height: 46.35px;
-    transform: translate(35%, 0%);
+    transform: translate(35%, -60%);
   }
 
   #edit-close-button {
@@ -159,6 +160,7 @@
 
 .input-group {
   margin-bottom: -10px;
+
   .input-group-text {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;

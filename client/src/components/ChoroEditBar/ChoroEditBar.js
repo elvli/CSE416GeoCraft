@@ -8,6 +8,7 @@ import PublishMapModal from '../PublishMapModal/PublishMapModal';
 import mapboxgl from 'mapbox-gl';
 import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
 import ChangeDataHeaderTransaction from '../../transactions/Choro/ChangeDataHeaderTransaction';
+import ChangeLegendTitleTransaction from '../../transactions/Choro/ChangeLegendTitleTransaction';
 import ChangeStepTransaction from '../../transactions/Choro/ChangeStepTransaction';
 import ChangeTableDataTransaction from '../../transactions/Choro/ChangeTableDataTransaction';
 import GradientSelectTransaction from '../../transactions/Choro/GradientSelectTransaction';
@@ -561,7 +562,12 @@ export default function ChoroEditBar(props) {
 
   // THIS HANDLES THE EDITING OF THE MAP LEGEND
   const handleLegendTitleChange = (event) => {
-    setLegendTitle(event.target.value)
+    const changeLegendTitleTransaction = new ChangeLegendTitleTransaction(
+      legendTitle,
+      event.target.value,
+      setLegendTitle
+    );
+    tps.addTransaction(changeLegendTitleTransaction);
   }
 
   const handleLegendEditBlur = () => {
