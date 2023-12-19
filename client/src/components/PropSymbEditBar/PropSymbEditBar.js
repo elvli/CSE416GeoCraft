@@ -169,6 +169,8 @@ export default function PropSymbEditBar(props) {
           mapData.GeoJson = json.GeoJson
           mapData.propPoints = json.propPoints
           mapData.settings = json.settings
+          mapData.legend = json.legend
+          mapData.legendTitle = json.legendTitle
           await store.updateMapDataById(mapId, mapData)
           await store.setCurrentList(mapId, 0)
           updateTable()

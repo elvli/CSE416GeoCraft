@@ -169,6 +169,8 @@ export default function PointEditBar(props) {
           mapData.GeoJson = json.GeoJson
           mapData.points = json.points
           mapData.settings = json.settings
+          mapData.legend = json.legend
+          mapData.legendTitle = json.legendTitle
           await store.updateMapDataById(mapId, mapData)
           await store.setCurrentList(mapId, 0)
           updateTable()
