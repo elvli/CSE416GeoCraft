@@ -112,6 +112,20 @@ export default function ProfilePage() {
           profilePicture: response.data.public_id
         }
         auth.updateUser(user);
+        for (let i in store.idNamePairs){
+          if (store.idNamePairs[i].published && store.idNamePairs[i].comments){
+            var map = false
+            for (let j in store.idNamePairs[i].comments){
+              if (store.idNamePairs[i].comments[j].user === auth.user.username){
+                map = store.idNamePairs[i]
+                map.comments[j].profilePicture = response.data.public_id
+              }
+            }
+            if (map){
+              store.updateLikeDislike(map._id, map)
+            }
+          }
+        }
       } catch (error) {
         console.error('Error uploading file:', error);
       }
