@@ -79,12 +79,12 @@ export default function MapCard(props) {
 
         <Dropdown.Menu className='dropdown-menu'>
           <Dropdown.Item onClick={functions.handleFork} className='options-button-options'>Fork</Dropdown.Item>
+          <Dropdown.Item onClick={functions.handleExport} className='options-button-options'>Export</Dropdown.Item>
           {map.ownerEmail === auth.getEmail() && (
             <Dropdown.Item onClick={functions.handleDeleteMap} className='options-button-options'>
               Delete
             </Dropdown.Item>
           )}
-          <Dropdown.Item onClick={functions.handleExport} className='options-button-options'>Export</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     </div>
