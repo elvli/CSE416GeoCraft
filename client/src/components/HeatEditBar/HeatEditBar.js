@@ -29,7 +29,7 @@ export default function HeatEditBar(props) {
   const [showHeat, setShowHeat] = useState(false)
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null)
-  const [tableData, setTableData] = useState([{ id: 1, longitude: 0, latitude: 0, magnitide: 0 }]);
+  const [tableData, setTableData] = useState([{ id: 1, longitude: 0, latitude: 0, magnitude: 0 }]);
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude', 'Magnitude'
   ]);
@@ -64,6 +64,7 @@ export default function HeatEditBar(props) {
   const [color3, setColor3] = useState("#FDDBC7");
   const [color4, setColor4] = useState("#EF8A62");
   const [color5, setColor5] = useState("#B2182B");
+  const [legendData, setLegendData] = useState([])
   const [currentMag, setCurrentMag] = useState([
     'interpolate',
     ['linear'],
@@ -414,7 +415,7 @@ export default function HeatEditBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', magnitide: '' })
+    newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', magnitude: '' })
     setTableData(newTable)
   }
   const handleRemoveRow = () => {
@@ -434,7 +435,7 @@ export default function HeatEditBar(props) {
       newTable.push(tableData[i])
     }
     for (let i = 0; i < arr.length; i++) {
-      newTable.push({ id: newTable.length + 1, latitude: arr[i]['geometry']['coordinates'][1], longitude: arr[i]['geometry']['coordinates'][0], magnitide: arr[i]['properties']['mag'] })
+      newTable.push({ id: newTable.length + 1, latitude: arr[i]['geometry']['coordinates'][1], longitude: arr[i]['geometry']['coordinates'][0], magnitude: arr[i]['properties']['mag'] })
     }
 
     setTableData(newTable)
@@ -493,8 +494,10 @@ export default function HeatEditBar(props) {
     try {
       const points = await store.getMapDataById(mapId)
       var newPoints = []
+      var legendPoints = []
       for (let i = 0; i < points.heatmap.data.length; i++) {
         newPoints.push(points.heatmap.data[i]);
+        legendPoints.push(points.heatmap.data[i][2])
       }
 
       setCurrentColor(points.heatmap.color)
