@@ -14,6 +14,7 @@ import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitle
 import rewind from "@mapbox/geojson-rewind";
 import jsTPS from '../../common/jsTPS';
 import './PointEditBar.scss'
+import EditRegionModal from '../EditRegionModal/EditRegionModal';
 
 
 export default function PointEditBar(props) {
@@ -21,6 +22,9 @@ export default function PointEditBar(props) {
   const { store } = useContext(GlobalStoreContext);
 
   // State variables
+  const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [showRegion, setShowRegion] = useState(false);
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [showName, setShowName] = useState(false);
@@ -364,6 +368,46 @@ export default function PointEditBar(props) {
     );
     tps.addTransaction(setDefaultsTransaction);
   }
+  useEffect(() => {
+    const regionSelectHandler = (event) => {
+      event.preventDefault()
+      const clickedRegion = event.features[0];
+      var propertyName;
+
+      if (clickedRegion) {
+        
+        let regionName;
+
+        // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
+        for (let i = 5; i >= 0; i--) {
+          propertyName = `NAME_${i}`;
+          if (clickedRegion.properties.hasOwnProperty(propertyName)) {
+            regionName = clickedRegion.properties[propertyName];
+            break;
+          }
+          else if(clickedRegion.properties.hasOwnProperty('NAME')) {
+            regionName = clickedRegion.properties['NAME'];
+          }
+          else {
+            regionName = ''
+          }
+        }
+        
+        // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
+        setSelectedRegion(regionName);
+        setShowRegion(true)
+    
+      }
+    };
+
+    // WHEN A REGION IS CLICKED ON, RUN regionSelectHandler
+    map.current.on('dblclick', 'geojson-border-fill', regionSelectHandler);
+
+    //CLEAN UP
+    return () => {
+      map.current.off('click', 'geojson-border-fill', regionSelectHandler);
+    };
+  }, [prevSelectedRegions]);
 
   return (
     <div>
@@ -620,6 +664,7 @@ export default function PointEditBar(props) {
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
+      <EditRegionModal editRegionShow={showRegion} handleEditRegionClose={(event) => { setShowRegion(false) }} mapId={mapId} region={selectedRegion} tps={tps}>   </EditRegionModal>
     </div>
   )
 }

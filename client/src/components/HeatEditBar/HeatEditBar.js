@@ -125,8 +125,6 @@ export default function HeatEditBar(props) {
   const [tps, setTPS] = useState(new jsTPS)
   const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
-  const [propName, setPropName] = useState('');
-  const [activeKey, setActiveKey] = useState(['0']);
   const regionEditFunctions = {
     
   }
