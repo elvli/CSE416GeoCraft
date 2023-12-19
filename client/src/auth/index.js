@@ -224,20 +224,32 @@ function AuthContextProvider(props) {
     return email;
   }
 
-  auth.getAboutMe = function () {
-    let aboutMe = "";
-    if (auth.user) {
-      aboutMe += auth.user.aboutMe;
-    }
-    return aboutMe;
+  auth.getAboutMe = function (username) {
+    async function asyncgetUserByUsername() {
+      try {
+        const response = await api.getUserByUsername(username);
+        if(response.data.user && response.data.user.aboutMe){
+          return response.data.user.aboutMe
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }    
+    return asyncgetUserByUsername()
   }
 
-  auth.getProfilePicture = function () {
-    let profilePicture = "";
-    if (auth.user) {
-      profilePicture += auth.user.profilePicture;
-    }
-    return profilePicture;
+  auth.getProfilePicture = function (username) {
+    async function asyncgetUserByUsername() {
+      try {
+        const response = await api.getUserByUsername(username);
+        if(response.data.user && response.data.user.profilePicture){
+          return response.data.user.profilePicture
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }    
+    return asyncgetUserByUsername()
   }
   auth.createEmailLink = function (email) {
     async function asyncCreateEmailLink() {

@@ -47,6 +47,7 @@ mongoose
 app.get('/loggedIn', AuthController.getLoggedIn);
 app.post('/login', AuthController.loginUser);
 app.get('/logout', AuthController.logoutUser);
+app.get('/user/:username', AuthController.getUserByUsername);
 app.post('/register', AuthController.registerUser);
 app.put('/user/:id', AuthController.updateUser);
 app.post('/password-reset', AuthController.createEmailLink)

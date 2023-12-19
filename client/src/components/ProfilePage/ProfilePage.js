@@ -19,13 +19,38 @@ export default function ProfilePage() {
   const [exportMapShow, setExportMapShow] = useState(false);
   const [editProfileShow, setEditProfileShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
+  const [aboutMeText, setAboutMeText] = useState('');
+  const [imageName, setImageName] = useState('');
   const fileInputRef = useRef(null);
 
   const { username } = useParams();
-  const aboutMeText = auth.getAboutMe();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await auth.getAboutMe(username);
+        setAboutMeText(result || ''); // If result is falsy, set an empty string
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [username]);
+
+  useEffect(() => {
+    const fetchImageName = async () => {
+      try {
+        const result = await auth.getProfilePicture(username);
+        setImageName(result || ''); // If result is falsy, set an empty string
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchImageName();
+  }, [username]);
   const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
   const version = "v1702872120/";
-  const imageName = auth.getProfilePicture();
   const totalLikes = store.idNamePairs.reduce((sum, pair) => {
     if (pair.ownerName === username) {
       return sum + pair.likes.length;
