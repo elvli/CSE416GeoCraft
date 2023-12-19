@@ -10,6 +10,8 @@ export default function ExportMapModal(props) {
   const { exportMapShow, handleExportMapClose } = props
   const [validated, setValidated] = useState(false);
   const { store } = useContext(GlobalStoreContext);
+
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
 
@@ -22,30 +24,29 @@ export default function ExportMapModal(props) {
       event.preventDefault();
       event.stopPropagation();
       const formData = new FormData(event.currentTarget);
-      console.log(formData.get('mapType'))
-      var downloadType = formData.get("mapType")
+      var downloadType = formData.get("fileType");
 
-      if (downloadType == 'json') {
-        downloadJson()
+      if (downloadType === 'json') {
+        downloadJson();
       }
-      else if (downloadType == 'jpeg') {
-        downloadPic(2)
+      else if (downloadType === 'jpeg') {
+        downloadPic(2);
       }
       else {
-        downloadPic(1)
+        downloadPic(1);
       }
 
-      handleExportMapClose(event)
+      handleExportMapClose(event);
     }
   };
 
   const handleClosing = (event) => {
-    handleExportMapClose(event)
+    handleExportMapClose(event);
   };
 
   const downloadJson = async () => {
     const mapId = store.currentList._id
-    const data = await store.getMapDataById(mapId)
+    const data = await store.getMapDataById(mapId);
     const json = JSON.stringify(data);
 
 
@@ -53,7 +54,7 @@ export default function ExportMapModal(props) {
     const url = URL.createObjectURL(blob);
 
     downloadLinkRef.current.href = url;
-    var string = store.currentList.name
+    var string = store.currentList.name;
     downloadLinkRef.current.download = string.concat('.json');
     downloadLinkRef.current.click();
 
@@ -77,8 +78,8 @@ export default function ExportMapModal(props) {
             <p>Are you sure you want to export this map?</p>
             <Form.Group>
               <Form.Label>Export as</Form.Label>
-              
-              <Form.Select name='mapType' required >
+
+              <Form.Select name='fileType' required >
                 <option value="">Select export type</option>
                 <option value="json">JSON</option>
                 <option value="jpeg">JPEG</option>

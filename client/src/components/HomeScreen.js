@@ -49,6 +49,7 @@ export default function HomeScreen() {
     setExportMapShow(false)
   }
   async function handleExport(event) {
+    store.setCurrentList(store.currentList._id, null);
     setExportMapShow(true);
   }
 

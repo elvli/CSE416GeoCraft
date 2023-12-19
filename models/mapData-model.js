@@ -55,7 +55,13 @@ const mapDataSchema = new Schema(
         latitude: String,
         zoom: String
       }, required: true
-    }
+    },
+    legend3: { type: [{
+      Color: String,
+      Description: String,
+    }], required: false
+    },
+    legend3Title: { type: String }
   },
   { timestamps: true },
 )

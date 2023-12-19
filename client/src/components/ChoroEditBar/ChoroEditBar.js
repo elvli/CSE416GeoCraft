@@ -1,8 +1,10 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
-import { XLg, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise } from 'react-bootstrap-icons';
+import { XLg, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
+import MapNameModal from '../MapNameModal/MapNameModal';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
+import PublishMapModal from '../PublishMapModal/PublishMapModal';
 import mapboxgl from 'mapbox-gl';
 import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
 import ChangeDataHeaderTransaction from '../../transactions/Choro/ChangeDataHeaderTransaction';
@@ -25,6 +27,8 @@ export default function ChoroEditBar(props) {
 
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
+  const [showName, setShowName] = useState(false);
+  const [publishMapShow, setPublishMapShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [tempTableHeaders, setTempTableHeaders] = useState(['ID', 'Region', 'Value']);
@@ -104,8 +108,12 @@ export default function ChoroEditBar(props) {
     }
   };
 
-
-
+  async function handlePublish(event) {
+    setPublishMapShow(true)
+  }
+  async function handlePublishClose(event) {
+    setPublishMapShow(false)
+  }
 
   // THIS HANDLES CHANGES TO DEFAULT MAP SETTINGS
   const handleSettingChange = (event, setting) => {
@@ -562,15 +570,6 @@ export default function ChoroEditBar(props) {
     await store.setCurrentList(mapId, 0);
   }
 
-  const downloadJSONButton = (
-    < div className='choro-json-button' >
-      <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
-        Download JSON
-      </Button>
-      <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
-    </div >
-  );
-
 
 
 
@@ -776,6 +775,18 @@ export default function ChoroEditBar(props) {
             </Row>
 
             <Row>
+              <Button className="edit-button" variant="dark" onClick={() => setShowName(true)} aria-label="change map name">
+                <PencilSquare />
+              </Button>
+            </Row>
+
+            <Row>
+              <Button className="edit-button" variant="dark" onClick={handlePublish}>
+                <FileEarmarkArrowUp />
+              </Button>
+            </Row>
+
+            <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
@@ -811,7 +822,6 @@ export default function ChoroEditBar(props) {
                     {tableContent}
                     {gradientDropDown}
                     {stepInput}
-                    {downloadJSONButton}
                   </Accordion.Body>
                 </Accordion.Item>
 
@@ -889,7 +899,9 @@ export default function ChoroEditBar(props) {
           </div>
         </div>
       </div>
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
+      <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
     </div>
   )
 }
