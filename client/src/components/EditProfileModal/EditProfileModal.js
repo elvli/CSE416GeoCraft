@@ -7,7 +7,7 @@ import GlobalStoreContext from "../../store";
 import "./EditProfileModal.scss";
 
 export default function EditProfileModal(props) {
-  const { editProfileShow, handleEditProfileClose } = props;
+  const { aboutMeText, editProfileShow, handleEditProfileClose } = props;
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const [validated, setValidated] = useState(false);
@@ -132,7 +132,7 @@ export default function EditProfileModal(props) {
                 className="map-name form-control"
                 name="changeAboutMe"
                 rows="4"
-                defaultValue={currentAboutMe}
+                defaultValue={auth.user.aboutMe}
                 style={{ resize: "none" }} // Add the style to prevent resizing
               />
             </Form.Group>

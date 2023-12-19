@@ -35,7 +35,6 @@ getLoggedIn = async (req, res) => {
 
 getUserByUsername = async (req, res) => {
   try {
-    console.log(req.params)
     const { username } = req.params;
     const userInfo = await User.findOne({ username: username });
     return res.status(200).json({

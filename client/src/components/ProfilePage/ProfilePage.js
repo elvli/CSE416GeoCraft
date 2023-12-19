@@ -28,14 +28,15 @@ export default function ProfilePage() {
     const fetchData = async () => {
       try {
         const result = await auth.getAboutMe(username);
-        setAboutMeText(result || ''); // If result is falsy, set an empty string
+        console.log(result)
+        setAboutMeText(result); // If result is falsy, set an empty string
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, [username]);
+  }, []);
 
   useEffect(() => {
     const fetchImageName = async () => {
@@ -48,7 +49,7 @@ export default function ProfilePage() {
     };
 
     fetchImageName();
-  }, [username]);
+  }, []);
   const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
   const version = "v1702872120/";
   const totalLikes = store.idNamePairs.reduce((sum, pair) => {
@@ -165,7 +166,7 @@ export default function ProfilePage() {
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 className="img-fluid img-thumbnail mt-2 mb-2 profile-pic"
                 cloudName="djmyzbhnk"
-                publicId={`${cloudinaryBaseUrl}${version}${imageName}`}
+                publicId={`${cloudinaryBaseUrl}${version}${(username === auth.getUsername()) ? auth.user.profilePicture : imageName}`}
               />
               </div>
               {username === auth.getUsername() && (
@@ -234,7 +235,7 @@ export default function ProfilePage() {
             <div className="mb-5">
               <p className="lead fw-normal mb-1">About Me</p>
               <div className="p-4 about-me-container" >
-                <p className="font-italic mb-1">{aboutMeText}</p>
+                <p className="font-italic mb-1">{(username === auth.getUsername()) ? auth.user.aboutMe : aboutMeText}</p>
 
               </div>
             </div>
@@ -267,7 +268,7 @@ export default function ProfilePage() {
       <DeleteMapModal deleteMapShow={deleteMapShow} handleDeleteMapClose={handleDeleteMapClose} />
       <ForkMapModal forkMapShow={forkMapShow} handleForkMapClose={handleForkClose} />
       <ExportMapModal exportMapShow={exportMapShow} handleExportMapClose={handleExportClose} />
-      <EditProfileModal editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose} />
+      <EditProfileModal aboutMeText = {aboutMeText} editProfileShow={editProfileShow} handleEditProfileClose={handleEditProfileClose} />
       <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
     </div >
   );
