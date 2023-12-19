@@ -340,6 +340,7 @@ export default function ChoroEditBar(props) {
     // THIS SETS THE DATA FOR THE MAP LEGEND
     mapData.legendTitle = legendTitle;
     mapData.legend = generateLegend();
+    console.log('CHORO LEGEND', mapData.legend);
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -560,16 +561,6 @@ export default function ChoroEditBar(props) {
 
 
   // THIS HANDLES THE EDITING OF THE MAP LEGEND
-  const handleEditLegendChange = (event, rowIndex, colName) => {
-    const updatedData = legendTableData.map((row, index) => {
-      if (index === rowIndex) {
-        return { ...row, [colName]: event.target.value };
-      }
-      return row;
-    });
-    setLegendTableData(updatedData);
-  };
-
   const handleLegendTitleChange = (event) => {
     setLegendTitle(event.target.value)
   }
@@ -591,11 +582,13 @@ export default function ChoroEditBar(props) {
       intervals.push([Math.round(start), Math.round(end)]);
     }
 
-    return intervals;
+    return intervals.reverse();
   }
 
   const generateLegend = () => {
-    const regionsArray = tableData.map(entry => entry.region);
+    const sortedTableData = tableData.sort((a, b) => parseInt(b.data) - parseInt(a.data));
+    const regionsArray = sortedTableData.map(entry => entry.region);
+
     const dataValues = tableData.map(entry => parseInt(entry.data, 10));
     const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
     const intervals = createIntervals(dataRange, stepCount);
@@ -604,11 +597,16 @@ export default function ChoroEditBar(props) {
 
     for (var i = 0; i < regionsArray.length; i++) {
       var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient, dataRange);
-      const description = `${color[0]}-${color[1]}`;
-      
-      legendTable.push({color: color, Description: description});
+      var num1 = intervals[i][0];
+      var num2 = intervals[i][1];
 
+      const description = `${num1}-${num2}`;
+
+      legendTable.push({ color: color, description: description });
+      console.log({ color: color, description: description });
     }
+
+    return legendTable;
   }
 
 

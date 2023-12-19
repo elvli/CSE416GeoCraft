@@ -299,7 +299,7 @@ export default function MapBackground(props) {
             setZoom(parseFloat(zoomVal))
             map.current.setZoom([parseFloat(zoomVal)])
           }
-          // const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
+
           const geoJSON = mapData.GeoJson;
           map.current.getSource('map-source').setData(geoJSON);
 
@@ -485,6 +485,7 @@ export default function MapBackground(props) {
             map.current.getSource('line-map').setData(myGeoJSON);
 
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
+              console.log('HI LEGEND')
               var title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
@@ -496,17 +497,17 @@ export default function MapBackground(props) {
                       title
                   }</h4>
                   {mapData.legend.map((row) => (
-                    row['description'] !== '' ? ( 
+                    row['description'] !== '' ? (
                       row.color === 'White' ? (
-                      <div className='legendTip'>
-                        <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                        {row.description}
-                      </div>
-                      ):
-                      <div>
-                        <span style={{ backgroundColor: row.color }} />
-                        {row.description}
-                      </div>
+                        <div className='legendTip'>
+                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                          {row.description}
+                        </div>
+                      ) :
+                        <div>
+                          <span style={{ backgroundColor: row.color }} />
+                          {row.description}
+                        </div>
                     ) : <div></div>
                   ))
                   }
@@ -653,7 +654,6 @@ export default function MapBackground(props) {
             // THIS FUNCTION FINDS THE GRADIENT DICTIONARY OBJECT WITH THE NAME: themeName
             const findGradient = (themeName) => colorGradients.find(theme => theme.name === themeName);
 
-            // const geoJSON = mapData.GeoJson ? mapData.GeoJson : 'https://raw.githubusercontent.com/elvli/GeoJSONFiles/main/ITA_adm1-2.json';
             const geoJSON = mapData.GeoJson;
             map.current.getSource('choro-map').setData(geoJSON);
 
@@ -674,7 +674,6 @@ export default function MapBackground(props) {
 
                 if (existingLayer) {
                   map.current.removeLayer(layerId);
-                  console.log('REMOVED', layerId)
                 }
 
                 // ADD THE NEW LAYER ITS COLOR
@@ -725,6 +724,38 @@ export default function MapBackground(props) {
             // ONLY RUN tryAddLayer WHEN ON THE HOME PAGE, RENDERING ON THE EDIT PAGE IS HANDLED BY CHOROEDITBAR
             if (window.location.href === 'http://localhost:3000/' || window.location.href === 'https://geocraftmaps.azurewebsites.net/') {
               tryAddLayer();
+            }
+
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+              console.log('HI LEGEND choro')
+              title = ''
+              if (mapData.legendTitle) {
+                title = mapData.legendTitle;
+              }
+              div =
+                <div id="state-legend" className="legend">
+                  <h4>{
+                    title === '' ? ('Legend') :
+                      title
+                  }</h4>
+                  {mapData.legend.map((row) => (
+                    row['description'] !== '' ? (
+                      row.color === 'White' ? (
+                        <div className='legendTip'>
+                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                          {row.description}
+                        </div>
+                      ) :
+                        <div>
+                          <span style={{ backgroundColor: row.color }} />
+                          {row.description}
+                        </div>
+                    ) : <div></div>
+                  ))
+                  }
+
+                </div>
+              setLegend(div);
             }
 
             // THIS SETS THE TEMPORARY ARRAY OF LAYER IDS TO THE STATE layersToRemove
