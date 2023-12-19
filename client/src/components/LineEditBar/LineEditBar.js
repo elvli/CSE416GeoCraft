@@ -25,6 +25,7 @@ export default function LineEditSideBar(props) {
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Start Latitude', 'Start Longitude', 'End Latitude', 'End Longitude', 'Color']);
+  const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
@@ -477,32 +478,32 @@ export default function LineEditSideBar(props) {
                         Remove GeoJson Data
                       </Button>
                     </div>
+                  
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="3">
+                  <Accordion.Header>Download</Accordion.Header>
+                  <Accordion.Body>
+                    <div>
+                      <div className='JSONButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
+                          Download JSON
+                        </Button>
+                        <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
+                      </div>
+                      <div className='PNGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(1); }}>
+                          Download PNG
+                        </Button>
+                      </div>
+                      <div className='JPGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(2); }}>
+                          Download JPG
+                        </Button>
+                      </div>
+                    </div>
 
                   </Accordion.Body>
-                  <Accordion.Item eventKey="3">
-                    <Accordion.Header>Download</Accordion.Header>
-                    <Accordion.Body>
-                      <div>
-                        <div className='JSONButton'>
-                          <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
-                            Download JSON
-                          </Button>
-                          <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
-                        </div>
-                        <div className='PNGButton'>
-                          <Button variant="btn btn-dark" onClick={() => { downloadPic(1); }}>
-                            Download PNG
-                          </Button>
-                        </div>
-                        <div className='JPGButton'>
-                          <Button variant="btn btn-dark" onClick={() => { downloadPic(2); }}>
-                            Download JPG
-                          </Button>
-                        </div>
-                      </div>
-
-                    </Accordion.Body>
-                  </Accordion.Item>
                 </Accordion.Item>
               </Accordion>
             </div>

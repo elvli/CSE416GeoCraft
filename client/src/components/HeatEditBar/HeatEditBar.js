@@ -243,6 +243,17 @@ export default function HeatEditBar(props) {
     newTable.push({ id: newTable.length + 1, latitude: '', longitude: '', magnitide: '' })
     setTableData(newTable)
   }
+  const handleRemoveRow = () => {
+    var newTable = []
+    for (let i = 0; i < tableData.length; i++) {
+      newTable.push(tableData[i])
+    }
+    setTableData(newTable)
+  }
+  const handleAddRowTransaction = () => { // 0 is update table, 1 is row stuff
+    let transaction = new HeatTableTransaction([handleEditChange, handleAddRow, handleRemoveRow], 1, 0, 0, 0, 0)
+    tps.addTransaction(transaction)
+  }
   const handleAddRowFiles = (arr) => {
     var newTable = []
     for (let i = 0; i < tableData.length; i++) {
@@ -270,12 +281,18 @@ export default function HeatEditBar(props) {
   const handleEditChange = (event, rowIndex, colName) => {
     const updatedData = tableData.map((row, index) => {
       if (index === rowIndex) {
-        return { ...row, [colName]: event.target.value };
+        return { ...row, [colName]: event };
       }
       return row;
     });
     setTableData(updatedData);
   };
+  const handleEditChangeTransaction = (event, rowIndex, colName) => { // 0 is update table, 1 is row stuff
+    console.log(event.target.value, tableData[rowIndex][colName])
+    let transaction = new HeatTableTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
+    tps.addTransaction(transaction)
+    console.log(tps.getSize)
+  }
 
   const handleEditBlur = () => {
     setIsEditing(null);
@@ -854,7 +871,7 @@ export default function HeatEditBar(props) {
                                       <input className='cells'
                                         type="text"
                                         value={row[colName]}
-                                        onChange={(event) => handleEditChange(event, rowIndex, colName)}
+                                        onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                         onKeyDown={handleStepKeyDown}
                                       />
@@ -867,7 +884,7 @@ export default function HeatEditBar(props) {
                           ))}
                         </tbody>
                       </Table>
-                      <Button className='add-row-button btn btn-light' onClick={handleAddRow}>
+                      <Button className='add-row-button btn btn-light' onClick={handleAddRowTransaction}>
                         <PlusCircleFill className='add-row-icon' />
                       </Button>
                     </div>

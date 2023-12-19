@@ -316,7 +316,7 @@ function GlobalStoreContextProvider(props) {
   }
 
   store.addComment = function (comment, user) {
-    let newComment = { user: user.username, comment: comment, likes: [], dislikes: [] }
+    let newComment = { user: user.username, comment: comment, likes: [], dislikes: [], profilePicture: user.profilePicture }
     store.currentList.comments.push(newComment)
     async function asyncAddComment() {
       const response = await api.updateUserFeedback(store.currentList._id, store.currentList);
