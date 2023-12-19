@@ -241,8 +241,8 @@ createEmailLink = async (req, res) => {
     }
     const secret = process.env.JWT_SECRET + user.passwordHash
     const token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: "5m" })
-    const link = `http://localhost:3000/confirm/${user._id}/${token}`
-    // const link = `https://geocraftmaps.azurewebsites.net/confirm/${user._id}/${token}`
+    //const link = `http://localhost:3000/confirm/${user._id}/${token}`
+     const link = `https://geocraftmaps.azurewebsites.net/confirm/${user._id}/${token}`
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
