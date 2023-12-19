@@ -1,18 +1,24 @@
 import React, { useContext } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import GlobalStoreContext from "../../store";
 
 export default function PublishMapModal(props) {
   const { publishMapShow, handlePublishMapClose } = props
   const { store } = useContext(GlobalStoreContext);
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     event.stopPropagation();
+
     let map = store.currentList;
     map.published = true;
+
     store.updateLikeDislike(map._id, map);
-    handlePublishMapClose()
+    handlePublishMapClose();
+
+    navigate("/");
   };
 
 
@@ -40,6 +46,5 @@ export default function PublishMapModal(props) {
         </Modal.Footer>
       </Modal>
     </div>
-
   )
 }
