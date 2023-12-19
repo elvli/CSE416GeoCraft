@@ -18,6 +18,7 @@ export default function MapBackground(props) {
   const [layersToRemove, setLayersToRemove] = useState([]);
   const downloadLinkRef = useRef(null);
   const isLayerAdded = useRef(false);
+  const [legend, setLegend] = useState(<></>)
 
   async function generateMap(id, mapbox) {
     if (mapbox.current || typeof window === 'undefined') return;
@@ -482,6 +483,29 @@ export default function MapBackground(props) {
               })
             )
             map.current.getSource('line-map').setData(myGeoJSON);
+
+            if (mapData && mapData.legend3 && mapData.legend3.length != 0) {
+              var title = ''
+              if (mapData.legend3Title){
+                title = mapData.legend3Title
+              }
+              var div = 
+              <div id="state-legend" className="legend">
+                <h4>{
+                title == '' ? ('Legend'):
+                title
+                }</h4> 
+                {mapData.legend3.map((x) => (
+                  x['Description'] !== '' ? (
+                    <div><span background-color={x.Color}></span>{x.Description}</div>
+                  ):<div></div>
+                ))
+                }
+              
+              </div>
+              console.log(div)
+              setLegend(div)
+            }
           }
 
 
@@ -932,6 +956,7 @@ export default function MapBackground(props) {
       </div>
       <div ref={mapContainer} className="map-container">
       </div>
+      {legend}
     </div>
   );
 }

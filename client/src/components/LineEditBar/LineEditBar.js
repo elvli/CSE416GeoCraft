@@ -25,7 +25,19 @@ export default function LineEditSideBar(props) {
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Start Latitude', 'Start Longitude', 'End Latitude', 'End Longitude', 'Color']);
+  const [legendTableData, setLegendTableData] = useState(
+    [
+  {'Color': 'White' , 'Description' : '' },
+  {'Color': 'Black' , 'Description' : '' },
+  {'Color': 'Red' , 'Description' : '' },
+  {'Color': 'Orange' , 'Description' : '' },
+  {'Color': 'Yellow' , 'Description' : '' },
+  {'Color': 'Green' , 'Description' : '' },
+  {'Color': 'Blue' , 'Description' : '' },
+  {'Color': 'Purple' , 'Description' : '' },
+]);
   const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
+  const [legendTitle, setLegendTitle] = useState('');
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
@@ -217,10 +229,22 @@ export default function LineEditSideBar(props) {
   };
 
   const handleEditChangeTransaction = (event, rowIndex, colName) => { // 0 is update table, 1 is row stuff
-    console.log(event.target.value, tableData[rowIndex][colName])
     let transaction = new PointMapTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
     tps.addTransaction(transaction)
-    console.log(tps.getSize)
+  }
+
+  const handleEditLegendChange = (event, rowIndex, colName) => {
+    const updatedData = legendTableData.map((row, index) => {
+      if (index === rowIndex) {
+        return { ...row, [colName]: event.target.value };
+      }
+      return row;
+    });
+    setLegendTableData(updatedData);
+  };
+
+  const handleLegnedTitleChange = (event) => {
+    setLegendTitle(event.target.value)
   }
 
   const handleEditBlur = () => {
@@ -239,6 +263,8 @@ export default function LineEditSideBar(props) {
     mapData.settings.longitude = settingsValues[1]
     mapData.settings.latitude = settingsValues[0]
     mapData.settings.zoom = settingsValues[2]
+    mapData.legend3 = legendTableData
+    mapData.legend3Title = legendTitle
 
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
@@ -260,6 +286,18 @@ export default function LineEditSideBar(props) {
       }
       setTableData(newPoints);
       setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
+      if (points.legend3.length !=0){
+        var newLegend = []
+        for (let i in points.legend3) {
+          newLegend.push({
+            'Color': points.legend3[i]['Color'],
+            'Description': points.legend3[i]['Description']
+          });
+        }
+          setLegendTableData(newLegend)
+      }
+      setLegendTitle(points.legend3Title)
+      
     }
     catch {
       console.log('cannot load mapdata');
@@ -393,17 +431,10 @@ export default function LineEditSideBar(props) {
                             {tableHeaders.map((header, index) => (
                               <th
                                 key={index + 1}
-                                onBlur={handleHeaderBlur}
                               >
-                                {isEditingHeader === index + 1 ? (
-                                  <input
-                                    type="text"
-                                    value={header ?? ''}
-                                    onChange={(event) => handleHeaderChange(event, index + 1)}
-                                  />
-                                ) : (
+                                {
                                   header
-                                )}
+                                }
                               </th>
                             ))}
                           </tr>
@@ -482,6 +513,61 @@ export default function LineEditSideBar(props) {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="3">
+                
+                  <Accordion.Header>Edit Legend</Accordion.Header>
+                  <Accordion.Body>
+                    <div className='legend-title'>
+                      <div className="input-group setting-zoom">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text default-zoom" id="">Legend Title</span>
+                        </div>
+                        <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegnedTitleChange(event)} />
+                      </div>
+                    </div>
+                  
+                    <div className="table-responsive table-custom-scrollbar">
+                      <Table striped bordered hover>
+                        <thead>
+                          <tr>
+                            {legendHeaders.map((header, index) => (
+                              <th
+                                key={index + 1}
+                              >
+                                {
+                                  header
+                                }
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {legendTableData.map((row, rowIndex) => (
+                            <tr key={row.id}>
+                              {Object.keys(row).map((colName, colIndex) => (
+                                <td
+                                  key={colIndex}
+                                >
+                                  {
+                                    colIndex !== 0  ? (
+                                      <input className='cells'
+                                        type="text"
+                                        value={row[colName]}
+                                        onChange={(event) => handleEditLegendChange(event, rowIndex, colName)}
+                                        onBlur={handleEditBlur}
+                                      />
+                                    ) : row[colName] 
+                                  }
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="4">
                   <Accordion.Header>Download</Accordion.Header>
                   <Accordion.Body>
                     <div>
