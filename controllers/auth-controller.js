@@ -47,10 +47,10 @@ getUserByUsername = async (req, res) => {
       }
     })
   }
-  catch(err) {
+  catch (err) {
     res.json(false);
   }
-  }
+}
 
 loginUser = async (req, res) => {
   try {
@@ -81,7 +81,7 @@ loginUser = async (req, res) => {
 
     // LOGIN THE USER
     const token = auth.signToken(existingUser._id);
-    const expirationDate = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000));
+    const expirationDate = 60 * 60 * 24 * 7;
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -240,6 +240,7 @@ createEmailLink = async (req, res) => {
     const secret = process.env.JWT_SECRET + user.passwordHash
     const token = jwt.sign({ email: user.email, id: user._id }, secret, { expiresIn: "5m" })
     const link = `http://localhost:3000/confirm/${user._id}/${token}`
+    // const link = `https://geocraftmaps.azurewebsites.net/confirm/${user._id}/${token}`
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -301,7 +302,7 @@ resetPassword = async (req, res) => {
   const salt = await bcrypt.genSalt(saltRounds);
   const passwordHash = await bcrypt.hash(password, salt);
   user.passwordHash = passwordHash;
-  
+
   user.save()
     .then(() => {
       console.log('Password saved!')
