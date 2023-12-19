@@ -1,8 +1,7 @@
-import React from "react";
-import "./ExportMapModal.scss";
+import React, { useState, useContext, useRef }from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import GlobalStoreContext from "../../store";
-import { useState, useContext, useRef } from "react";
+import "./ExportMapModal.scss";
 
 export default function ExportMapModal(props) {
   const downloadLinkRef = useRef(null);

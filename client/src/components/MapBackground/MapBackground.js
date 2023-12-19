@@ -214,7 +214,7 @@ export default function MapBackground(props) {
                 regionName = hoveredRegion.properties[admName];
                 break;
               }
-              else if(hoveredRegion.properties.hasOwnProperty('NAME')) {
+              else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
                 regionId = hoveredRegion.properties['NAME'];
                 regionName = hoveredRegion.properties['NAME'];
                 break;
@@ -668,11 +668,17 @@ export default function MapBackground(props) {
             const colorGradients = [
               { name: 'Warm', gradient: 'linear-gradient(to right, #f7d559, #ffc300, #ff8c1a, #ff5733, #FF0000)' },
               { name: 'Cool', gradient: 'linear-gradient(to right, #96FFFF, #0013de)' },
-              { name: 'Hot and Cold', gradient: 'linear-gradient(to right, #FF0000, #0013de)' },
-              { name: 'Forest', gradient: 'linear-gradient(to right, #A1DDA1, #66cc66, #009900, #14452F)' },
-              { name: 'Grayscale', gradient: 'linear-gradient(to right, #D9D8DA, #363439)' },
+              { name: 'Hot and Cold', gradient: 'linear-gradient(to right, #FF0000, #ff5733, #ff8c1a, #ffc300, #f7d559, #96FFFF, #71c4f7, #4b89ef, #264ee6, #0013de)' },
+              { name: 'Forest', gradient: 'linear-gradient(to right, #fffece, #aede91, #83ca80, #41a65c, #288241, #288241)' },
+              { name: 'Deep Forest', gradient: 'linear-gradient(to right, #d8dd91, #093104)' },
+              { name: 'Lavender', gradient: 'linear-gradient(to right, #d0ceed, #a8aaed, #8281e6, #6569d2, #222572)' },
+              { name: 'Sunset', gradient: 'linear-gradient(to right, #feff9c, #ff9c00, #ff741e, #bc2971, #7a136e)' },
+              { name: 'Barbie', gradient: 'linear-gradient(to right, #f1f1f1, #d7b4da, #f358b4, #e8117c, #a20043)' },
+              { name: 'Aquamirine', gradient: 'linear-gradient(to right, #fcfed5, #a5dcbb, #389bc2, #2a69b2, #293d9f)' },
+              { name: 'Grayscale', gradient: 'linear-gradient(to right, #e5e4e5, #252425)' },
               { name: 'Baja Blast', gradient: 'linear-gradient(to right, #FCFB62, #17E0BC)' },
               { name: 'Vice City', gradient: 'linear-gradient(to right, #ffcc00, #ff3366, #cc33ff, #9933ff)' },
+              { name: 'Evangelion', gradient: 'linear-gradient(to right, #c6faa6, #aff383, #936cad, #533975)' },
               { name: 'Rainbow', gradient: 'linear-gradient(to right, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #6633cc)' },
             ];
 

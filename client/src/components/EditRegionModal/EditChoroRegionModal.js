@@ -3,8 +3,8 @@ import { Form, Button, Modal } from "react-bootstrap";
 import GlobalStoreContext from "../../store";
 import EditRegionTransaction from "../../transactions/EditRegionTransaction";
 
-export default function EditRegionModal(props) {
-  const { editRegionShow, handleEditRegionClose, mapId, region, tps } = props
+export default function EditChoroRegionModal(props) {
+  const { editRegionShow, handleEditRegionClose, mapId, region, tps, changeRegionNameinData } = props
   const { store } = useContext(GlobalStoreContext);
   const [json, setJson] = useState({})
   const [validated, setValidated] = useState(false)
@@ -12,7 +12,10 @@ export default function EditRegionModal(props) {
   function updateMapData(map, formData) {
     const initialRegion = region;
     const newRegion = formData.get("mapName");
+
     async function asyncUpdateMapData(mapId, newName, oldName) {
+      // console.log(newName), 
+      changeRegionNameinData(oldName, newName);
 
       const mapData = await store.getMapDataById(mapId)
 
@@ -33,8 +36,7 @@ export default function EditRegionModal(props) {
       await store.setCurrentList(mapId, 0)
     }
     let transaction = new EditRegionTransaction(asyncUpdateMapData, map, newRegion, initialRegion)
-    tps.addTransaction(transaction)
-
+    tps.addTransaction(transaction);
   }
 
   const handleSubmit = (event) => {

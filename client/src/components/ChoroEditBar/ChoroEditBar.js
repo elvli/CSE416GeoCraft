@@ -2,6 +2,8 @@ import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
 import { XLg, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
+import DataErrorModal from '../DataErrorModal/DataErrorModal';
+import EditChoroRegionModal from '../EditRegionModal/EditChoroRegionModal';
 import MapNameModal from '../MapNameModal/MapNameModal';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import PublishMapModal from '../PublishMapModal/PublishMapModal';
@@ -29,6 +31,8 @@ export default function ChoroEditBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [showName, setShowName] = useState(false);
+  const [showRegion, setShowRegion] = useState(false);
+  const [showDataError, setShowDataError] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -45,20 +49,9 @@ export default function ChoroEditBar(props) {
   const [choroRenders, setChoroRenders] = useState(0);
   const [propName, setPropName] = useState('');
   const isLayerAdded = useRef(false);
-  const [tps, setTPS] = useState(new jsTPS);
-
-  const [legendTableData, setLegendTableData] = useState(
-    [
-      { 'Color': 'White', 'Description': '' },
-      { 'Color': 'Black', 'Description': '' },
-      { 'Color': 'Red', 'Description': '' },
-      { 'Color': 'Orange', 'Description': '' },
-      { 'Color': 'Yellow', 'Description': '' },
-      { 'Color': 'Green', 'Description': '' },
-      { 'Color': 'Blue', 'Description': '' },
-      { 'Color': 'Purple', 'Description': '' },
-    ]);
   const [legendTitle, setLegendTitle] = useState('');
+
+  const [tps, setTPS] = useState(new jsTPS);
 
   // THIS HANDLES THE TOGGLING OF THE SIDEBAR
   function toggleSideBar(event) {
@@ -97,12 +90,10 @@ export default function ChoroEditBar(props) {
   function KeyPress(event) {
     if (event.ctrlKey) {
       if (event.key === 'z') {
-        handleUndo(event)
-      }
-      if (event.key === 'y') {
-        handleRedo(event)
-      }
-      if (event.key === 's') {
+        handleUndo(event);
+      } else if (event.key === 'y') {
+        handleRedo(event);
+      } else if (event.key === 's') {
         event.preventDefault();
         handleSave();
       }
@@ -114,10 +105,13 @@ export default function ChoroEditBar(props) {
   // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
   // INTO ANY OF THE INPUTS
   const handleStepKeyDown = (event) => {
-    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter';
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowReft' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
 
-    if (!isNumericOrBackspace) {
-      event.preventDefault();
+    // ALLOW DEFAULT BEHAVIOR OR CUT, COPY, PASTE, AND SELECT
+    if (!(event.ctrlKey && ['x', 'X', 'c', 'C', 'v', 'V', 'a', 'A'].includes(event.key))) {
+      if (!isNumericOrBackspace) {
+        event.preventDefault();
+      }
     }
   };
 
@@ -328,11 +322,10 @@ export default function ChoroEditBar(props) {
     var dataHeader = (tableHeaders[2] === '') ? mapData.choroData.choroSettings.headerValue : tableHeaders[2];
     mapData.choroData.choroSettings = { propName: propName, theme: choroTheme, stepCount: correctedStepCount, headerValue: dataHeader };
 
-    // var cleanedTableData = cleanTableData(tableData);
-    // mapData.choroData.regionData = cleanTableData(cleanedTableData);
-    // console.log(cleanedTableData)
-    // setTableData(cleanedTableData)
-    mapData.choroData.regionData = tableData
+    // THIS CLEANS THE TABLEDATA AND REPLACES INVALID DATA WITH '0' AND NOTIFIES THE USER
+    var cleanedTableData = cleanTableData();
+    mapData.choroData.regionData = cleanTableData();
+    setTableData(cleanedTableData);
 
     mapData.settings = { latitude: settingsValues[0], longitude: settingsValues[1], zoom: settingsValues[2] }
     setTableHeaders([tableHeaders[0], tableHeaders[1], mapData.choroData.choroSettings.headerValue]);
@@ -341,6 +334,7 @@ export default function ChoroEditBar(props) {
     // THIS SETS THE DATA FOR THE MAP LEGEND
     mapData.legendTitle = legendTitle;
     mapData.legend = generateLegend();
+    console.log(mapData.legend);
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -365,23 +359,24 @@ export default function ChoroEditBar(props) {
 
   // THIS CLEANS THE TABLE DATA. IT SETS EMPTY STRINGS TO '0' AND REMOVE CHARACTERS
   // THAT AREN'T DIGITS OR THE NEGATIVE SIGN '-'
-  // const cleanTableData = (tableData) => {
-  //   // Iterate through each dictionary in the array
-  //   const updatedTableData = tableData.map(entry => {
-  //     // Check and update each value
-  //     const updatedEntry = {};
-  //     for (const key in entry) {
-  //       if (entry.hasOwnProperty(key)) {
-  //         // Check if the value is an empty string and replace it with 0
-  //         updatedEntry[key] = entry[key] === '' ? 0 : entry[key];
-  //       }
-  //     }
-  //     return updatedEntry;
-  //   });
+  const cleanTableData = () => {
+    let dataReplaced = false;
 
-  //   return updatedTableData;
-  // }
+    const updatedTableData = tableData.map(item => {
+      if (!/^-?\d+(\.\d+)?$/.test(item.data)) {
+        dataReplaced = true;
+        return { ...item, data: '0' };
+      }
+      return item;
+    });
 
+    // If data was replaced at least once, set showDataError to true
+    if (dataReplaced) {
+      setShowDataError(true);
+    }
+
+    return updatedTableData;
+  };
 
   const tableContent = (
     <div className="choro-table table-custom-scrollbar">
@@ -446,7 +441,7 @@ export default function ChoroEditBar(props) {
 
 
 
-  // THIS HANDLES USERS CLICKING ON A REGION OF THE MAP
+  // THIS HANDLES USERS CLICKING ON A REGION OF THE MAP AND CHANGING REGION NAMES
 
   useEffect(() => {
     const regionSelectHandler = (event) => {
@@ -483,8 +478,49 @@ export default function ChoroEditBar(props) {
       }
     };
 
+    const regionDblClickHandler = (event) => {
+      event.preventDefault()
+      const clickedRegion = event.features[0];
+      var propertyName;
+
+      if (clickedRegion) {
+
+        let regionName;
+
+        // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
+        for (let i = 5; i >= 0; i--) {
+          propertyName = `NAME_${i}`;
+          if (clickedRegion.properties.hasOwnProperty(propertyName)) {
+            regionName = clickedRegion.properties[propertyName];
+            break;
+          }
+          else if (clickedRegion.properties.hasOwnProperty('NAME')) {
+            regionName = clickedRegion.properties['NAME'];
+          }
+          else {
+            regionName = ''
+          }
+        }
+
+        // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
+        setSelectedRegion(regionName);
+        setShowRegion(true)
+
+      }
+    };
+
+
+    // WHEN A REGION IS DOUBLECLICKED ON, RUN regionDblClickHandler
+    // THIS WILL OPEN A MODAL AND PROMPT THE USER TO CHANGE THE NAME OF THAT REGION
+    map.current.on('dblclick', 'geojson-border-fill', regionDblClickHandler);
+
     // WHEN A REGION IS CLICKED ON, RUN regionSelectHandler
+    // THIS WILL ADD THE REGION TO THE tableData and allow users to edit its values
     map.current.on('click', 'geojson-border-fill', regionSelectHandler);
+
+    // // WHEN A REGION IS DOUBLECLICKED ON, RUN regionDblClickHandler
+    // // THIS WILL OPEN A MODAL AND PROMPT THE USER TO CHANGE THE NAME OF THAT REGION
+    // map.current.on('dblclick', 'geojson-border-fill', regionDblClickHandler);
 
     //CLEAN UP
     return () => {
@@ -492,8 +528,35 @@ export default function ChoroEditBar(props) {
     };
   }, [prevSelectedRegions]);
 
+  // const changeRegionNameinData = (oldRegionName, newRegionName) => {
+  //   tableData.map(item => {
+  //     if (item.region === oldRegionName) {
+  //       return { ...item, region: newRegionName };
+  //     }
+  //     return item;
+  //   });
+  //   setTableData(tableData);
 
+  //   // console.log(prevSelectedRegions);
+  //   const newPrevSelectRegions = prevSelectedRegions.map(region => (region === oldRegionName ? newRegionName : region));
+  //   // console.log(newPrevSelectRegions);
+  //   setPrevSelectedRegions(newPrevSelectRegions);
 
+  //   console.log('JOBS DONE');
+  // }
+  const changeRegionNameinData = (oldRegionName, newRegionName) => {
+    const updatedTableData = tableData.map(item =>
+      item.region === oldRegionName ? { ...item, region: newRegionName } : item
+    );
+
+    setTableData(updatedTableData);
+
+    const updatedPrevSelectedRegions = prevSelectedRegions.map(region =>
+      region === oldRegionName ? newRegionName : region
+    );
+    setPrevSelectedRegions(updatedPrevSelectedRegions);
+    handleSave();
+  };
 
   // THIS HANDLES RENDERING THE REGIONS WITH THE APPROPRIATE COLORS
   // WILL TRIGGER WHEN choroRenders IS UPDATED
@@ -591,9 +654,9 @@ export default function ChoroEditBar(props) {
   }
 
   const generateLegend = () => {
-    const sortedTableData = tableData.sort((a, b) => parseInt(b.data) - parseInt(a.data));
-    const regionsArray = sortedTableData.map(entry => entry.region);
-    tableData.sort((a, b) => a.id - b.id);
+    // const sortedTableData = tableData.sort((a, b) => parseInt(b.data) - parseInt(a.data));
+    // const regionsArray = sortedTableData.map(entry => entry.region);
+    // tableData.sort((a, b) => a.id - b.id);
 
     const dataValues = tableData.map(entry => parseInt(entry.data, 10));
     const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
@@ -601,8 +664,8 @@ export default function ChoroEditBar(props) {
 
     var legendTable = [];
 
-    for (var i = 0; i < Math.min(regionsArray.length, intervals.length); i++) {
-      var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient, dataRange);
+    for (var i = 0; i < Math.min(intervals.length); i++) {
+      var color = interpolateColor(intervals[i][0], findGradient(choroTheme).gradient, dataRange);
       var num1 = intervals[i][0];
       var num2 = intervals[i][1];
 
@@ -683,7 +746,6 @@ export default function ChoroEditBar(props) {
         Math.floor((value - dataRange[0]) / stepSize)
       )
     );
-
     const resultColor = gradientArray[index];
 
     return resultColor;
@@ -706,11 +768,17 @@ export default function ChoroEditBar(props) {
   const colorGradients = [
     { name: 'Warm', gradient: 'linear-gradient(to right, #f7d559, #ffc300, #ff8c1a, #ff5733, #FF0000)' },
     { name: 'Cool', gradient: 'linear-gradient(to right, #96FFFF, #0013de)' },
-    { name: 'Hot and Cold', gradient: 'linear-gradient(to right, #FF0000, #0013de)' },
-    { name: 'Forest', gradient: 'linear-gradient(to right, #A1DDA1, #66cc66, #009900, #14452F)' },
-    { name: 'Grayscale', gradient: 'linear-gradient(to right, #D9D8DA, #363439)' },
+    { name: 'Hot and Cold', gradient: 'linear-gradient(to right, #FF0000, #ff5733, #ff8c1a, #ffc300, #f7d559, #96FFFF, #71c4f7, #4b89ef, #264ee6, #0013de)' },
+    { name: 'Forest', gradient: 'linear-gradient(to right, #fffece, #aede91, #83ca80, #41a65c, #288241, #288241)' },
+    { name: 'Deep Forest', gradient: 'linear-gradient(to right, #d8dd91, #093104)' },
+    { name: 'Lavender', gradient: 'linear-gradient(to right, #d0ceed, #a8aaed, #8281e6, #6569d2, #222572)' },
+    { name: 'Sunset', gradient: 'linear-gradient(to right, #feff9c, #ff9c00, #ff741e, #bc2971, #7a136e)' },
+    { name: 'Barbie', gradient: 'linear-gradient(to right, #f1f1f1, #d7b4da, #f358b4, #e8117c, #a20043)' },
+    { name: 'Aquamirine', gradient: 'linear-gradient(to right, #fcfed5, #a5dcbb, #389bc2, #2a69b2, #293d9f)' },
+    { name: 'Grayscale', gradient: 'linear-gradient(to right, #e5e4e5, #252425)' },
     { name: 'Baja Blast', gradient: 'linear-gradient(to right, #FCFB62, #17E0BC)' },
     { name: 'Vice City', gradient: 'linear-gradient(to right, #ffcc00, #ff3366, #cc33ff, #9933ff)' },
+    { name: 'Evangelion', gradient: 'linear-gradient(to right, #c6faa6, #aff383, #936cad, #533975)' },
     { name: 'Rainbow', gradient: 'linear-gradient(to right, #ff0000, #ff9900, #ffff00, #33cc33, #3399ff, #6633cc)' },
   ];
 
@@ -842,13 +910,13 @@ export default function ChoroEditBar(props) {
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleUndo}>
+              <Button className="edit-button" variant="dark" onClick={handleUndo} disabled={!tps.hasTransactionToUndo()}>
                 <ArrowCounterclockwise />
               </Button>
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleRedo}>
+              <Button className="edit-button" variant="dark" onClick={handleRedo} disabled={!tps.hasTransactionToRedo()}>
                 <ArrowClockwise />
               </Button>
             </Row>
@@ -898,9 +966,11 @@ export default function ChoroEditBar(props) {
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Choropleth Map Data</Accordion.Header>
                   <Accordion.Body>
+
                     {tableContent}
                     {gradientDropDown}
                     {stepInput}
+
                   </Accordion.Body>
                 </Accordion.Item>
 
@@ -996,9 +1066,11 @@ export default function ChoroEditBar(props) {
           </div>
         </div>
       </div>
+      <DataErrorModal showDataError={showDataError} handleShowDataErrorClose={(event) => { setShowDataError(false) }} />
       <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
+      <EditChoroRegionModal editRegionShow={showRegion} handleEditRegionClose={(event) => { setShowRegion(false) }} mapId={mapId} region={selectedRegion} tps={tps} changeRegionNameinData={changeRegionNameinData} />
     </div>
   )
 }
