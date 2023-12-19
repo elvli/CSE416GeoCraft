@@ -14,7 +14,7 @@ export const AuthActionType = {
 
 function AuthContextProvider(props) {
   const [auth, setAuth] = useState({
-    user: null,
+    user: 'Guest',
     loggedIn: false,
     errorMessage: null,
     firstName: null,
@@ -53,7 +53,7 @@ function AuthContextProvider(props) {
       }
       case AuthActionType.LOGOUT_USER: {
         return setAuth({
-          user: null,
+          user: 'Guest',
           loggedIn: false,
           errorMessage: null
         })

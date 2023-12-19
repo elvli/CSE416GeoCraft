@@ -248,18 +248,18 @@ export default function ProfilePage() {
                 >
                   {auth.getUsername() !== username ? `${username}'s Maps` : 'My Maps'}
                 </button>
-                <button
+                {auth.user && auth.user.username === username ? (<button
                   className={`nav-link ${activeTab === 'likedMaps' ? 'active' : ''}`}
                   onClick={() => setActiveTab('likedMaps')}
                   data-bs-toggle="tab"
                 >
                   {auth.getUsername() !== username ? `${username}'s Liked Maps` : 'My Liked Maps'}
-                </button>
+                </button>) : <></>}
               </div>
             </nav>
             <div className="tab-content" >
-              {activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))}
-              {activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))}
+              {auth.user && auth.user.username === username ? (activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName))): activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username && pair.published))}
+              {auth.user && auth.user.username === username ? (activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))) : <></>}
             </div>
           </div>
         </div>
