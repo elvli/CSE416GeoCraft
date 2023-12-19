@@ -1,12 +1,12 @@
 import { React, useContext } from 'react'
-import './AppBanner.scss'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import AuthContext from '../../auth'
-import GeoCraftLogo from '.././Images/GeoCraftGlobeWhite.png';
-import { Button, Dropdown } from 'react-bootstrap';
-import { Person } from 'react-bootstrap-icons';
 import { Link, useLocation } from "react-router-dom";
+import { Button, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store'
+import AuthContext from '../../auth'
+import { Image } from 'cloudinary-react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './AppBanner.scss'
+import GeoCraftLogo from '.././Images/GeoCraftGlobeWhite.png';
 
 export default function AppBanner() {
   const { auth } = useContext(AuthContext);
@@ -14,9 +14,11 @@ export default function AppBanner() {
   const username = auth.getUsername() ? auth.getUsername() : 'Guest';
   const location = useLocation();
 
+  const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
+  const version = "v1702872120/";
+  const profilePicture = auth.user ? auth.user.profilePicture : 'yx196dx8ua5em7hfgc1a';
+
   const handleLogout = () => {
-    // Handle logout logic
-    console.log('Log out button clicked');
     auth.logoutUser();
   };
 
@@ -26,7 +28,6 @@ export default function AppBanner() {
   }
 
   var dropdown = <Dropdown.Menu>
-
     <Dropdown.Item>
       <Link className="dropdown-btn" to={`/profile/${username}`}>
         My Profile
@@ -48,9 +49,7 @@ export default function AppBanner() {
         {currentListName}
       </p>
       <Link to='/'>
-        <Button
-          className="navbar-brand banner-button btn btn-dark mx-auto home-button"
-        >
+        <Button className="navbar-brand banner-button btn btn-dark mx-auto home-button" >
           <img src={GeoCraftLogo}
             alt="GeoCraft Logo"
             className="banner-logo img-fluid"
@@ -58,10 +57,16 @@ export default function AppBanner() {
           />
         </Button>
       </Link>
+
       <Dropdown className="position-fixed account-dropdown">
         <Dropdown.Toggle variant="dark" id="dropdown-basic">
           {username}
-          <Person className="fs-4 profile-dropdown" />
+          <Image
+            style={{ width: "36px", height: "36px", marginLeft: '10px', borderRadius: '100px', objectFit: "cover" }}
+            className="img-fluid rounded-circle"
+            cloudName="djmyzbhnk"
+            publicId={`${cloudinaryBaseUrl}${version}${profilePicture}`}
+          />
         </Dropdown.Toggle>
         {dropdown}
       </Dropdown>

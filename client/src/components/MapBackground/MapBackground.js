@@ -546,13 +546,17 @@ export default function MapBackground(props) {
                     && mapData.lineData[i]['endlongitude'] && mapData.lineData[i]['endlatitude']
                     && !isNaN(mapData.lineData[i]['endlongitude']) && !isNaN(mapData.lineData[i]['endlatitude'])
                   )) {
-
+                    if (mapData.lineData[i]['startlatitude'] !== '' && mapData.lineData[i]['startlongitude'] !== '' 
+                    && mapData.lineData[i]['endlatitude'] !== '' && mapData.lineData[i]['endlongitude'] !== '') {
+                      
                   var slatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['startlatitude'])));
                   var slongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['startlongitude'])));
                   var elatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['endlatitude'])));
                   var elongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['endlongitude'])));
 
                   pointsCollection.push([slatitude, slongitude, mapData.lineData[i]['id'], elatitude, elongitude, mapData.lineData[i]['color']])
+                    }
+
                 }
               }
             }

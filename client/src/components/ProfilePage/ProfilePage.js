@@ -28,7 +28,6 @@ export default function ProfilePage() {
     const fetchData = async () => {
       try {
         const result = await auth.getAboutMe(username);
-        console.log(result)
         setAboutMeText(result); // If result is falsy, set an empty string
       } catch (error) {
         console.error(error);
@@ -112,6 +111,20 @@ export default function ProfilePage() {
           profilePicture: response.data.public_id
         }
         auth.updateUser(user);
+        for (let i in store.idNamePairs){
+          if (store.idNamePairs[i].published && store.idNamePairs[i].comments){
+            var map = false
+            for (let j in store.idNamePairs[i].comments){
+              if (store.idNamePairs[i].comments[j].user === auth.user.username){
+                map = store.idNamePairs[i]
+                map.comments[j].profilePicture = response.data.public_id
+              }
+            }
+            if (map){
+              store.updateLikeDislike(map._id, map)
+            }
+          }
+        }
       } catch (error) {
         console.error('Error uploading file:', error);
       }
@@ -258,8 +271,8 @@ export default function ProfilePage() {
               </div>
             </nav>
             <div className="tab-content" >
-              {auth.user && auth.user.username === username ? (activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName))): activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username && pair.published))}
-              {auth.user && auth.user.username === username ? (activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))) : <></>}
+              {(auth.user && (auth.user.username === username)) ? (activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))): activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username && pair.published))}
+              {(auth.user && (auth.user.username === username)) ? (activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))) : <></>}
             </div>
           </div>
         </div>

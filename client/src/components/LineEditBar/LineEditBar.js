@@ -160,6 +160,8 @@ export default function LineEditSideBar(props) {
           mapData.GeoJson = json.GeoJson
           mapData.lineData = json.lineData
           mapData.settings = json.settings
+          mapData.legend = json.legend
+          mapData.legendTitle = json.legendTitle
           await store.updateMapDataById(mapId, mapData)
           await store.setCurrentList(mapId, 0)
           updateTable()
