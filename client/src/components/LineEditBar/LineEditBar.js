@@ -27,14 +27,14 @@ export default function LineEditSideBar(props) {
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Start Latitude', 'Start Longitude', 'End Latitude', 'End Longitude', 'Color']);
   const [legendTableData, setLegendTableData] = useState(
     [
-      { 'Color': 'White', 'Description': '' },
-      { 'Color': 'Black', 'Description': '' },
-      { 'Color': 'Red', 'Description': '' },
-      { 'Color': 'Orange', 'Description': '' },
-      { 'Color': 'Yellow', 'Description': '' },
-      { 'Color': 'Green', 'Description': '' },
-      { 'Color': 'Blue', 'Description': '' },
-      { 'Color': 'Purple', 'Description': '' },
+      { 'color': 'White', 'description': '' },
+      { 'color': 'Black', 'description': '' },
+      { 'color': 'Red', 'description': '' },
+      { 'color': 'Orange', 'description': '' },
+      { 'color': 'Yellow', 'description': '' },
+      { 'color': 'Green', 'description': '' },
+      { 'color': 'Blue', 'description': '' },
+      { 'color': 'Purple', 'description': '' },
     ]);
   const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
   const [legendTitle, setLegendTitle] = useState('');
@@ -291,8 +291,8 @@ export default function LineEditSideBar(props) {
         var newLegend = [];
         for (let i in points.legend) {
           newLegend.push({
-            'Color': points.legend[i]['Color'],
-            'Description': points.legend[i]['Description']
+            'color': points.legend[i]['color'],
+            'description': points.legend[i]['description']
           });
         }
         setLegendTableData(newLegend);

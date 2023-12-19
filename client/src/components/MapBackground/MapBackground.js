@@ -305,7 +305,7 @@ export default function MapBackground(props) {
 
 
 
-
+          setLegend(<></>)
           // THIS HANDLES RENDERING POINT MAP DATA
 
           if (store.currentList && store.currentList.mapType === "point") {
@@ -496,10 +496,16 @@ export default function MapBackground(props) {
                       title
                   }</h4>
                   {mapData.legend.map((row) => (
-                    row['Description'] !== '' ? (
+                    row['description'] !== '' ? ( 
+                      row.color === 'White' ? (
+                      <div className='legendTip'>
+                        <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                        {row.description}
+                      </div>
+                      ):
                       <div>
-                        <span style={{ backgroundColor: row.Color }} />
-                        {row.Description}
+                        <span style={{ backgroundColor: row.color }} />
+                        {row.description}
                       </div>
                     ) : <div></div>
                   ))

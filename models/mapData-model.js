@@ -58,8 +58,8 @@ const mapDataSchema = new Schema(
     },
     legend: {
       type: [{
-        Color: String,
-        Description: String,
+        color: String,
+        description: String,
       }], required: false
     },
     legendTitle: { type: String }
