@@ -28,7 +28,6 @@ export default function ProfilePage() {
     const fetchData = async () => {
       try {
         const result = await auth.getAboutMe(username);
-        console.log(result)
         setAboutMeText(result); // If result is falsy, set an empty string
       } catch (error) {
         console.error(error);
@@ -272,8 +271,8 @@ export default function ProfilePage() {
               </div>
             </nav>
             <div className="tab-content" >
-              {auth.user && auth.user.username === username ? (activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName))): activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username && pair.published))}
-              {auth.user && auth.user.username === username ? (activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))) : <></>}
+              {(auth.user && (auth.user.username === username)) ? (activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username))): activeTab === 'myMaps' && createRows(store.idNamePairs.filter(pair => pair.ownerName === username && pair.published))}
+              {(auth.user && (auth.user.username === username)) ? (activeTab === 'likedMaps' && createRows(store.idNamePairs.filter(pair => pair.likes.includes(auth.user._id)))) : <></>}
             </div>
           </div>
         </div>
