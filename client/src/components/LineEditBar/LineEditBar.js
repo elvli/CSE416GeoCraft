@@ -25,6 +25,7 @@ export default function LineEditSideBar(props) {
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Start Latitude', 'Start Longitude', 'End Latitude', 'End Longitude', 'Color']);
+  const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
@@ -107,7 +108,15 @@ export default function LineEditSideBar(props) {
 
   document.onkeydown = (event) => KeyPress(event);
 
+  // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
+  // INTO ANY OF THE INPUTS
+  const handleStepKeyDown = (event) => {
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter';
 
+    if (!isNumericOrBackspace) {
+      event.preventDefault();
+    }
+  };
 
 
   // THESE FUNCTIONS HANDLE FILE LOADING
@@ -122,10 +131,10 @@ export default function LineEditSideBar(props) {
     reader.onloadend = async (event) => {
       var text = event.target.result;
 
-      if (extension === 'json'){
+      if (extension === 'json') {
         var json = JSON.parse(text);
         var mapData = await store.getMapDataById(mapId)
-        if (json.mapID){
+        if (json.mapID) {
           mapData.GeoJson = json.GeoJson
           mapData.lineData = json.lineData
           mapData.settings = json.settings
@@ -134,14 +143,14 @@ export default function LineEditSideBar(props) {
           updateTable()
         }
 
-        else if (json.type === 'FeatureCollection' || json.features){
+        else if (json.type === 'FeatureCollection' || json.features) {
           mapData.GeoJson = json;
           await store.updateMapDataById(mapId, mapData);
           await store.setCurrentList(mapId, 0)
         }
       }
 
-      else if (extension === 'kml'){
+      else if (extension === 'kml') {
         var mapData = await store.getMapDataById(mapId)
         var tj = require('@mapbox/togeojson')
         var kml = new DOMParser().parseFromString(text, "text/xml"); // create xml dom object
@@ -152,10 +161,10 @@ export default function LineEditSideBar(props) {
         await store.setCurrentList(mapId, 0)
       }
 
-        // var json = JSON.parse(text);
-        // mapData.GeoJson = json;
-        // await store.updateMapDataById(mapId, mapData);
-        // await store.setCurrentList(mapId, 0)
+      // var json = JSON.parse(text);
+      // mapData.GeoJson = json;
+      // await store.updateMapDataById(mapId, mapData);
+      // await store.setCurrentList(mapId, 0)
     };
     reader.readAsText(file);
   }
@@ -166,7 +175,7 @@ export default function LineEditSideBar(props) {
     for (let i = 0; i < tableData.length; i++) {
       newTable.push(tableData[i])
     }
-    newTable.push({ id: newTable.length + 1, startlatitude: '', startlongitude: '', endlatitude: '', endlongitude: '', color: ''  })
+    newTable.push({ id: newTable.length + 1, startlatitude: '', startlongitude: '', endlatitude: '', endlongitude: '', color: '' })
     setTableData(newTable)
   }
   const handleRemoveRow = () => {
@@ -342,7 +351,7 @@ export default function LineEditSideBar(props) {
             </Row>
 
             <Row>
-            <Button className="edit-button" variant="dark" onClick={() => setShowName(true)} aria-label="change map name">
+              <Button className="edit-button" variant="dark" onClick={() => setShowName(true)} aria-label="change map name">
                 <PencilSquare />
               </Button>
             </Row>
@@ -401,7 +410,7 @@ export default function LineEditSideBar(props) {
                         </thead>
 
                         <tbody>
-                        {tableData.map((row, rowIndex) => (
+                          {tableData.map((row, rowIndex) => (
                             <tr key={row.id}>
                               {Object.keys(row).map((colName, colIndex) => (
                                 <td
@@ -414,6 +423,7 @@ export default function LineEditSideBar(props) {
                                         value={row[colName]}
                                         onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
+                                        onKeyDown={handleStepKeyDown}
                                       />
                                     ) : colIndex !== 5 ? (
                                       row[colName]
@@ -449,15 +459,15 @@ export default function LineEditSideBar(props) {
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} />
-                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} />
+                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <div className="input-group setting-zoom">
                       <div className="input-group-prepend">
                         <span className="input-group-text default-zoom" id="">Default Zoom</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
+                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
@@ -468,9 +478,10 @@ export default function LineEditSideBar(props) {
                         Remove GeoJson Data
                       </Button>
                     </div>
-                    
+                  
                   </Accordion.Body>
-                  <Accordion.Item eventKey="3">
+                </Accordion.Item>
+                <Accordion.Item eventKey="3">
                   <Accordion.Header>Download</Accordion.Header>
                   <Accordion.Body>
                     <div>
@@ -491,17 +502,16 @@ export default function LineEditSideBar(props) {
                         </Button>
                       </div>
                     </div>
-                    
+
                   </Accordion.Body>
-                </Accordion.Item>
                 </Accordion.Item>
               </Accordion>
             </div>
           </div>
         </div>
       </div>
-      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave}/>
-      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson}/>
+      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
+      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
     </div>
   )

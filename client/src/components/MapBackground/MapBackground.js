@@ -594,11 +594,11 @@ export default function MapBackground(props) {
             }
 
             // THIS ASSIGNS THE APPROPRIATE COLOR TO THE REGION BASED ON ITS VALUE
-            function interpolateColor(value, gradient) {
+            function interpolateColor(value, gradient, dataRange) {
               const gradientArray = generateColors(parseFloat(stepCount), gradient);
               const stepSize = (dataRange[1] - dataRange[0]) / stepCount;
 
-              // Find the corresponding index based on the value and dataRange
+              // FIND THE CORRESPONDING INDEX BASED ON THE value AND dataRange
               const index = Math.max(
                 0,
                 Math.min(
@@ -632,7 +632,7 @@ export default function MapBackground(props) {
             const addLayer = () => {
               const regionsArray = tableData.map(entry => entry.region);
               for (var i = 0; i < regionsArray.length; i++) {
-                var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient);
+                var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient, dataRange);
                 const layerId = `${regionsArray[i]}-choro`;
 
                 choroLayerIDs.push(layerId);
@@ -882,8 +882,8 @@ export default function MapBackground(props) {
 
 
 
-// THIS IS OUR JS COMPONENT. ITS THE LONG LAT BAR THAT DISPLAYS INFO ON THE COORIDNATES AND ZOOM LEVELS OF THE MAP
-// MAP CONTAINER RENDERS THE MAPBOX MAP
+  // THIS IS OUR JS COMPONENT. ITS THE LONG LAT BAR THAT DISPLAYS INFO ON THE COORIDNATES AND ZOOM LEVELS OF THE MAP
+  // MAP CONTAINER RENDERS THE MAPBOX MAP
 
   return (
     <div>

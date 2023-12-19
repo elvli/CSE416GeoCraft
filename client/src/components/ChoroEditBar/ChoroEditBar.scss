@@ -33,7 +33,7 @@
 
 .th-editable.editing {
   background-color: #eee;
-  /* or any background color you prefer */
+  padding: 0 0 5px 0;
 }
 
 .choro-table {
@@ -57,4 +57,10 @@
   justify-content: center;
   margin-top: 18px;
   margin-bottom: -6px;
+}
+
+.data-header-input {
+  height: 30px;
+  width: 107px;
+  margin: 0px;
 }

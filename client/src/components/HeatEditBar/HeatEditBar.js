@@ -6,7 +6,6 @@ import { GlobalStoreContext } from '../../store'
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import { HexColorPicker } from "react-colorful";
-// import HeatPointModal from '../HeatPointModal/HeatPointModal';
 import MapNameModal from '../MapNameModal/MapNameModal';
 import RangeSelector from './RangeSelector';
 import RangeSelectorOpacity from './RangeSelectorOpacity';
@@ -15,6 +14,8 @@ import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 import HeatTableTransaction from '../../transactions/Heat/HeatTableTransaction';
 import HeatEditTransaction from '../../transactions/Heat/HeatEditTransaction';
 import jsTPS from '../../common/jsTPS';
+
+
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
@@ -68,7 +69,7 @@ export default function HeatEditBar(props) {
     0,//4
     6,//5
     1//6
-    ],)
+  ],)
   const [currentInt, setCurrentInt] = useState([
     'interpolate',
     ['linear'],
@@ -77,7 +78,7 @@ export default function HeatEditBar(props) {
     1,//4
     9,//5
     3//6
-    ])
+  ])
   const [currentRad, setCurrentRad] = useState([
     'interpolate',
     ['linear'],
@@ -86,8 +87,8 @@ export default function HeatEditBar(props) {
     2,//4
     9,//5
     20//6
-    ])
-  const [currentOpac, setCurrentOpac] = useState( [
+  ])
+  const [currentOpac, setCurrentOpac] = useState([
     'interpolate',
     ['linear'],
     ['zoom'],
@@ -95,7 +96,7 @@ export default function HeatEditBar(props) {
     1,//4
     9,//5
     0//6
-    ])
+  ])
   const [currentColor, setCurrentColor] = useState([
     'interpolate',
     ['linear'],
@@ -118,6 +119,7 @@ export default function HeatEditBar(props) {
     "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
     "features": []
   });
+
   const [jsonData, setJsonData] = useState('');
   const [tps, setTPS] = useState(new jsTPS)
   const downloadLinkRef = useRef(null);
@@ -129,8 +131,6 @@ export default function HeatEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
-    // store.undo();
-
     if (tps.hasTransactionToUndo()) {
       console.log('undo attempted')
       tps.undoTransaction();
@@ -142,7 +142,6 @@ export default function HeatEditBar(props) {
 
   function handleRedo(event) {
     event.preventDefault();
-    // store.redo();
     if (tps.hasTransactionToRedo()) {
       console.log('redo attempted')
       tps.doTransaction();
@@ -153,11 +152,9 @@ export default function HeatEditBar(props) {
   }
 
   const handleSettingChange = (event, setting) => {
-    // Capture the current settings
     const oldSettings = [...settingsValues];
-
-    // Create new settings based on the change
     const newSettings = [...settingsValues];
+
     switch (setting) {
       case 0:
         newSettings[0] = event.target.value;
@@ -197,6 +194,19 @@ export default function HeatEditBar(props) {
   }
 
   document.onkeydown = (event) => KeyPress(event);
+
+  // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
+  // INTO ANY OF THE INPUTS
+  const handleStepKeyDown = (event) => {
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter';
+
+    if (!isNumericOrBackspace) {
+      event.preventDefault();
+    }
+  };
+
+
+
 
   // THESE FUNCTIONS HANDLE FILE LOADING
   const handleFileChange = (event) => {
@@ -241,7 +251,7 @@ export default function HeatEditBar(props) {
     for (let i = 0; i < arr.length; i++) {
       newTable.push({ id: newTable.length + 1, latitude: arr[i]['geometry']['coordinates'][1], longitude: arr[i]['geometry']['coordinates'][0], magnitide: arr[i]['properties']['mag'] })
     }
-    
+
     setTableData(newTable)
   }
 
@@ -273,7 +283,7 @@ export default function HeatEditBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
-    mapData.heatmap = {data: tableData, color: currentColor, mag: currentMag, int: currentInt, rad:currentRad, opac:currentOpac}
+    mapData.heatmap = { data: tableData, color: currentColor, mag: currentMag, int: currentInt, rad: currentRad, opac: currentOpac }
 
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
@@ -283,7 +293,7 @@ export default function HeatEditBar(props) {
     mapData.settings.longitude = settingsValues[1];
     mapData.settings.latitude = settingsValues[0];
     mapData.settings.zoom = settingsValues[2];
-   
+
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
@@ -323,9 +333,9 @@ export default function HeatEditBar(props) {
       setRangeOpacity3(points.heatmap.opac[5])
       setRangeOpacity4(points.heatmap.opac[6])
 
-      
+
       setTableData(newPoints);
-      
+
       setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
 
 
@@ -352,7 +362,7 @@ export default function HeatEditBar(props) {
 
 
 
-  
+
 
   const handleHeatMap = async (event) => {
     event.preventDefault();
@@ -382,7 +392,7 @@ export default function HeatEditBar(props) {
     <div className="drop-zone-text">
       <h6>There's no data at the moment</h6>
     </div>
-    
+
   </div>
 
 
@@ -396,7 +406,7 @@ export default function HeatEditBar(props) {
   }
   const changeCurrentColor = () => {
     const previousColorState = [...currentColor];
-    
+
     const doFunction = () => {
       setCurrentColor([
         'interpolate',
@@ -428,12 +438,12 @@ export default function HeatEditBar(props) {
       setColor3(previousColorState[10])
       setColor4(previousColorState[12])
       setColor5(previousColorState[14])
-      
+
     }
 
     let transaction = new HeatEditTransaction(doFunction, undoFunction)
     tps.addTransaction(transaction)
-   
+
   }
   const changeCurrentMag = () => {
     const previousMag = [...currentMag];
@@ -446,12 +456,12 @@ export default function HeatEditBar(props) {
         rangeMag2,
         rangeMag3,
         rangeMag4
-        ])
+      ])
       setRangeMag1(rangeMag1)
       setRangeMag2(rangeMag2)
       setRangeMag3(rangeMag3)
       setRangeMag4(rangeMag4)
-      
+
     }
     const undoFunction = () => {
       setCurrentMag(previousMag)
@@ -459,104 +469,104 @@ export default function HeatEditBar(props) {
       setRangeMag2(previousMag[4])
       setRangeMag3(previousMag[5])
       setRangeMag4(previousMag[6])
-      
+
     }
     let transaction = new HeatEditTransaction(doFunction, undoFunction)
     tps.addTransaction(transaction)
-    
+
   }
   const changeCurrentInt = () => {
     const previousInt = [...currentInt];
-    
-      const doFunction = () => {
-        setCurrentInt([
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          rangeIntensity1,
-          rangeIntensity2,
-          rangeIntensity3,
-          rangeIntensity4
-          ])
-        setRangeIntensity1(rangeIntensity1)
-        setRangeIntensity2(rangeIntensity2)
-        setRangeIntensity3(rangeIntensity3)
-        setRangeIntensity4(rangeIntensity4)
-        
-      }
-      const undoFunction = () => {
-        setCurrentInt(previousInt)
-        setRangeIntensity1(previousInt[3])
-        setRangeIntensity2(previousInt[4])
-        setRangeIntensity3(previousInt[5])
-        setRangeIntensity4(previousInt[6])
-        
-      }
-      let transaction = new HeatEditTransaction(doFunction, undoFunction)
-      tps.addTransaction(transaction)
-    
+
+    const doFunction = () => {
+      setCurrentInt([
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        rangeIntensity1,
+        rangeIntensity2,
+        rangeIntensity3,
+        rangeIntensity4
+      ])
+      setRangeIntensity1(rangeIntensity1)
+      setRangeIntensity2(rangeIntensity2)
+      setRangeIntensity3(rangeIntensity3)
+      setRangeIntensity4(rangeIntensity4)
+
+    }
+    const undoFunction = () => {
+      setCurrentInt(previousInt)
+      setRangeIntensity1(previousInt[3])
+      setRangeIntensity2(previousInt[4])
+      setRangeIntensity3(previousInt[5])
+      setRangeIntensity4(previousInt[6])
+
+    }
+    let transaction = new HeatEditTransaction(doFunction, undoFunction)
+    tps.addTransaction(transaction)
+
   }
   const changeCurrentRad = () => {
     const previousRad = [...currentRad];
-    
-      const doFunction = () => {
-        setCurrentRad([
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          rangeRadius1,
-          rangeRadius2,
-          rangeRadius3,
-          rangeRadius4
-          ])
-        setRangeRadius1(rangeRadius1)
-        setRangeRadius2(rangeRadius2)
-        setRangeRadius3(rangeRadius3)
-        setRangeRadius4(rangeRadius4)
-        
-      }
-      const undoFunction = () => {
-        setCurrentRad(previousRad)
-        setRangeRadius1(previousRad[3])
-        setRangeRadius2(previousRad[4])
-        setRangeRadius3(previousRad[5])
-        setRangeRadius4(previousRad[6])
-        
-      }
-      let transaction = new HeatEditTransaction(doFunction, undoFunction)
-      tps.addTransaction(transaction)
-    
+
+    const doFunction = () => {
+      setCurrentRad([
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        rangeRadius1,
+        rangeRadius2,
+        rangeRadius3,
+        rangeRadius4
+      ])
+      setRangeRadius1(rangeRadius1)
+      setRangeRadius2(rangeRadius2)
+      setRangeRadius3(rangeRadius3)
+      setRangeRadius4(rangeRadius4)
+
+    }
+    const undoFunction = () => {
+      setCurrentRad(previousRad)
+      setRangeRadius1(previousRad[3])
+      setRangeRadius2(previousRad[4])
+      setRangeRadius3(previousRad[5])
+      setRangeRadius4(previousRad[6])
+
+    }
+    let transaction = new HeatEditTransaction(doFunction, undoFunction)
+    tps.addTransaction(transaction)
+
   }
   const changeCurrentOpac = () => {
     const previousOpac = [...currentOpac];
-    
-      const doFunction = () => {
-        setCurrentOpac([
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          rangeOpacity1,
-          rangeOpacity2,
-          rangeOpacity3,
-          rangeOpacity4
-          ])
-        setRangeOpacity1(rangeOpacity1)
-        setRangeOpacity2(rangeOpacity2)
-        setRangeOpacity3(rangeOpacity3)
-        setRangeOpacity4(rangeOpacity4)
-        
-      }
-      const undoFunction = () => {
-        setCurrentOpac(previousOpac)
-        setRangeOpacity1(previousOpac[3])
-        setRangeOpacity2(previousOpac[4])
-        setRangeOpacity3(previousOpac[5])
-        setRangeOpacity4(previousOpac[6])
-        
-      }
-      let transaction = new HeatEditTransaction(doFunction, undoFunction)
-      tps.addTransaction(transaction)
-    
+
+    const doFunction = () => {
+      setCurrentOpac([
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        rangeOpacity1,
+        rangeOpacity2,
+        rangeOpacity3,
+        rangeOpacity4
+      ])
+      setRangeOpacity1(rangeOpacity1)
+      setRangeOpacity2(rangeOpacity2)
+      setRangeOpacity3(rangeOpacity3)
+      setRangeOpacity4(rangeOpacity4)
+
+    }
+    const undoFunction = () => {
+      setCurrentOpac(previousOpac)
+      setRangeOpacity1(previousOpac[3])
+      setRangeOpacity2(previousOpac[4])
+      setRangeOpacity3(previousOpac[5])
+      setRangeOpacity4(previousOpac[6])
+
+    }
+    let transaction = new HeatEditTransaction(doFunction, undoFunction)
+    tps.addTransaction(transaction)
+
   }
 
   // const [selectRangeMag, setSelectRangeMag] = useState(false);
@@ -564,122 +574,122 @@ export default function HeatEditBar(props) {
   // const [selectRangeRadius, setSelectRangeRadius] = useState(false);
   // const [selectRangeOpacity, setSelectRangeOpacity] = useState(false);
   let options = <div className='container '>
-    
+
     <Row className="justify-content-md-center">
       <p>Select a color</p>
-      <Button className='heat-button' onClick={() => { setPicker1(!picker1); }} style={{ backgroundColor: color1 }}/>
-      <Button className='heat-button' onClick={() => { setPicker2(!picker2);  }} style={{ backgroundColor: color2 }}/>
-      <Button className='heat-button' onClick={() => { setPicker3(!picker3); }} style={{ backgroundColor: color3 }}/>
-      <Button className='heat-button' onClick={() => { setPicker4(!picker4);  }} style={{ backgroundColor: color4 }}/>
-      <Button className='heat-button' onClick={() => { setPicker5(!picker5);  }} style={{ backgroundColor: color5 }}/>
+      <Button className='heat-button' onClick={() => { setPicker1(!picker1); }} style={{ backgroundColor: color1 }} />
+      <Button className='heat-button' onClick={() => { setPicker2(!picker2); }} style={{ backgroundColor: color2 }} />
+      <Button className='heat-button' onClick={() => { setPicker3(!picker3); }} style={{ backgroundColor: color3 }} />
+      <Button className='heat-button' onClick={() => { setPicker4(!picker4); }} style={{ backgroundColor: color4 }} />
+      <Button className='heat-button' onClick={() => { setPicker5(!picker5); }} style={{ backgroundColor: color5 }} />
     </Row>
     {picker1 ? <div className='heat-popover'>
-    <div style={cover} onClick={(event) => { setPicker1(false); changeCurrentColor()}} />
-    <HexColorPicker color={color1} onChange={setColor1} />
+      <div style={cover} onClick={(event) => { setPicker1(false); changeCurrentColor() }} />
+      <HexColorPicker color={color1} onChange={setColor1} />
     </div> : null}
     {picker2 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker2(false); changeCurrentColor()}} />
+      <div style={cover} onClick={(event) => { setPicker2(false); changeCurrentColor() }} />
       <HexColorPicker color={color2} onChange={setColor2} />
     </div> : null}
     {picker3 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker3(false); changeCurrentColor()}} />
+      <div style={cover} onClick={(event) => { setPicker3(false); changeCurrentColor() }} />
       <HexColorPicker color={color3} onChange={setColor3} />
     </div> : null}
     {picker4 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker4(false); changeCurrentColor()}} />
+      <div style={cover} onClick={(event) => { setPicker4(false); changeCurrentColor() }} />
       <HexColorPicker color={color4} onChange={setColor4} />
     </div> : null}
     {picker5 ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setPicker5(false); changeCurrentColor()}} />
+      <div style={cover} onClick={(event) => { setPicker5(false); changeCurrentColor() }} />
       <HexColorPicker color={color5} onChange={setColor5} />
     </div> : null}
     <br></br>
     <Row className="justify-content-md-center">
-          <span className="input-group-text" id="">
-            <Col>
-              <div className='heat-range-button' ></div>
-            </Col>
-            <Col><h6>Zoom X</h6></Col>
-            <Col><h6>X</h6></Col>
-            <Col><h6>Zoom Y</h6></Col>
-            <Col><h6>Y</h6></Col>
-          </span>
+      <span className="input-group-text" id="">
+        <Col>
+          <div className='heat-range-button' ></div>
+        </Col>
+        <Col><h6>Zoom X</h6></Col>
+        <Col><h6>X</h6></Col>
+        <Col><h6>Zoom Y</h6></Col>
+        <Col><h6>Y</h6></Col>
+      </span>
     </Row>
 
     <Row className="justify-content-md-center">
-          <span className="input-group-text" id="">
-            <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag);  }} >Weight</Button>
-            </Col>
-            <Col><h6>{rangeMag1}</h6></Col>
-            <Col><h6>{rangeMag2}</h6></Col>
-            <Col><h6>{rangeMag3}</h6></Col>
-            <Col><h6>{rangeMag4}</h6></Col>
-          </span>
+      <span className="input-group-text" id="">
+        <Col>
+          <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeMag(!selectRangeMag); }} >Weight</Button>
+        </Col>
+        <Col><h6>{rangeMag1}</h6></Col>
+        <Col><h6>{rangeMag2}</h6></Col>
+        <Col><h6>{rangeMag3}</h6></Col>
+        <Col><h6>{rangeMag4}</h6></Col>
+      </span>
     </Row>
     {selectRangeMag ? <div className='heat-popover'>
-    <div style={cover} onClick={(event) => { setSelectRangeMag(false); changeCurrentMag()}} />
-    <RangeSelector setValue1={e=>{setRangeMag1(parseInt(e))}} setValue2={e=>{setRangeMag2(parseInt(e))}} setValue3={e=>{setRangeMag3(parseInt(e))}} setValue4={e=>{setRangeMag4(parseInt(e))}}
-              value1={rangeMag1} value2={rangeMag2} value3={rangeMag3} value4={rangeMag4} max={10}
-            />
+      <div style={cover} onClick={(event) => { setSelectRangeMag(false); changeCurrentMag() }} />
+      <RangeSelector setValue1={e => { setRangeMag1(parseInt(e)) }} setValue2={e => { setRangeMag2(parseInt(e)) }} setValue3={e => { setRangeMag3(parseInt(e)) }} setValue4={e => { setRangeMag4(parseInt(e)) }}
+        value1={rangeMag1} value2={rangeMag2} value3={rangeMag3} value4={rangeMag4} max={10}
+      />
     </div> : null}
 
     <Row className="justify-content-md-center">
-   
-          <span className="input-group-text" id="">
-            <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeIntensity(!selectRangeIntensity);  }} >Intensity</Button>
-            </Col>
-            <Col><h6>{rangeIntensity1}</h6></Col>
-            <Col><h6>{rangeIntensity2}</h6></Col>
-            <Col><h6>{rangeIntensity3}</h6></Col>
-            <Col><h6>{rangeIntensity4}</h6></Col>
-          </span>
+
+      <span className="input-group-text" id="">
+        <Col>
+          <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeIntensity(!selectRangeIntensity); }} >Intensity</Button>
+        </Col>
+        <Col><h6>{rangeIntensity1}</h6></Col>
+        <Col><h6>{rangeIntensity2}</h6></Col>
+        <Col><h6>{rangeIntensity3}</h6></Col>
+        <Col><h6>{rangeIntensity4}</h6></Col>
+      </span>
     </Row>
     {selectRangeIntensity ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setSelectRangeIntensity(false); changeCurrentInt()}} />
-      <RangeSelector setValue1={e=>{setRangeIntensity1(parseInt(e))}} setValue2={e=>{setRangeIntensity2(parseInt(e))}} setValue3={e=>{setRangeIntensity3(parseInt(e))}} setValue4={e=>{setRangeIntensity4(parseInt(e))}}
-                value1={rangeIntensity1} value2={rangeIntensity2} value3={rangeIntensity3} value4={rangeIntensity4} max={10}
-              />
+      <div style={cover} onClick={(event) => { setSelectRangeIntensity(false); changeCurrentInt() }} />
+      <RangeSelector setValue1={e => { setRangeIntensity1(parseInt(e)) }} setValue2={e => { setRangeIntensity2(parseInt(e)) }} setValue3={e => { setRangeIntensity3(parseInt(e)) }} setValue4={e => { setRangeIntensity4(parseInt(e)) }}
+        value1={rangeIntensity1} value2={rangeIntensity2} value3={rangeIntensity3} value4={rangeIntensity4} max={10}
+      />
     </div> : null}
 
     <Row className="justify-content-md-center">
 
-          <span className="input-group-text" id="">
-            <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeRadius(!selectRangeRadius); }} >Radius</Button>
-            </Col>
-            <Col><h6>{rangeRadius1}</h6></Col>
-            <Col><h6>{rangeRadius2}</h6></Col>
-            <Col><h6>{rangeRadius3}</h6></Col>
-            <Col><h6>{rangeRadius4}</h6></Col>
-          </span>
+      <span className="input-group-text" id="">
+        <Col>
+          <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeRadius(!selectRangeRadius); }} >Radius</Button>
+        </Col>
+        <Col><h6>{rangeRadius1}</h6></Col>
+        <Col><h6>{rangeRadius2}</h6></Col>
+        <Col><h6>{rangeRadius3}</h6></Col>
+        <Col><h6>{rangeRadius4}</h6></Col>
+      </span>
     </Row>
     {selectRangeRadius ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setSelectRangeRadius(false); changeCurrentRad()}} />
-      <RangeSelector setValue1={e=>{setRangeRadius1(parseInt(e))}} setValue2={e=>{setRangeRadius2(parseInt(e))}} setValue3={e=>{setRangeRadius3(parseInt(e))}} setValue4={e=>{setRangeRadius4(parseInt(e))}}
-                value1={rangeRadius1} value2={rangeRadius2} value3={rangeRadius3} value4={rangeRadius4} max={20}
-              />
+      <div style={cover} onClick={(event) => { setSelectRangeRadius(false); changeCurrentRad() }} />
+      <RangeSelector setValue1={e => { setRangeRadius1(parseInt(e)) }} setValue2={e => { setRangeRadius2(parseInt(e)) }} setValue3={e => { setRangeRadius3(parseInt(e)) }} setValue4={e => { setRangeRadius4(parseInt(e)) }}
+        value1={rangeRadius1} value2={rangeRadius2} value3={rangeRadius3} value4={rangeRadius4} max={20}
+      />
     </div> : null}
 
     <Row className="justify-content-md-center">
-          <span className="input-group-text" id="">
-            <Col>
-              <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeOpacity(!selectRangeOpacity);  }} >Opacity</Button>
-            </Col>
-            <Col><h6>{rangeOpacity1}</h6></Col>
-            <Col><h6>{rangeOpacity2}</h6></Col>
-            <Col><h6>{rangeOpacity3}</h6></Col>
-            <Col><h6>{rangeOpacity4}</h6></Col>
-            
-          </span>
+      <span className="input-group-text" id="">
+        <Col>
+          <Button className='heat-range-button' variant="dark" onClick={() => { setSelectRangeOpacity(!selectRangeOpacity); }} >Opacity</Button>
+        </Col>
+        <Col><h6>{rangeOpacity1}</h6></Col>
+        <Col><h6>{rangeOpacity2}</h6></Col>
+        <Col><h6>{rangeOpacity3}</h6></Col>
+        <Col><h6>{rangeOpacity4}</h6></Col>
+
+      </span>
     </Row>
-    
+
     {selectRangeOpacity ? <div className='heat-popover'>
-      <div style={cover} onClick={(event) => { setSelectRangeOpacity(false); changeCurrentOpac()}} />
-      <RangeSelectorOpacity setValue1={e=>{setRangeOpacity1(parseInt(e))}} setValue2={e=>{setRangeOpacity2(parseInt(e))}} setValue3={e=>{setRangeOpacity3(parseInt(e))}} setValue4={e=>{setRangeOpacity4(parseInt(e))}}
-                value1={rangeOpacity1} value2={rangeOpacity2} value3={rangeOpacity3} value4={rangeOpacity4} max={10}
-              />
+      <div style={cover} onClick={(event) => { setSelectRangeOpacity(false); changeCurrentOpac() }} />
+      <RangeSelectorOpacity setValue1={e => { setRangeOpacity1(parseInt(e)) }} setValue2={e => { setRangeOpacity2(parseInt(e)) }} setValue3={e => { setRangeOpacity3(parseInt(e)) }} setValue4={e => { setRangeOpacity4(parseInt(e)) }}
+        value1={rangeOpacity1} value2={rangeOpacity2} value3={rangeOpacity3} value4={rangeOpacity4} max={10}
+      />
     </div> : null}
     <br></br>
     <Row>
@@ -783,14 +793,14 @@ export default function HeatEditBar(props) {
                 <XLg />
               </Button>
             </Row>
-            
+
           </Col>
         </div>
 
-        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'} ` } id="heat-map-menu">
+        <div className={`bg-light border-right ${isToggled ? 'invisible' : 'visible'} `} id="heat-map-menu">
           <div className="list-group list-group-flush edit-tools-list">
             <div className="row">
-              <Accordion defaultActiveKey={['0']}  className='heat-map-accordian'>
+              <Accordion defaultActiveKey={['0']} className='heat-map-accordian'>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Attach Data</Accordion.Header>
                   <Accordion.Body
@@ -799,7 +809,7 @@ export default function HeatEditBar(props) {
                       <div className="drop-zone-text">
                         Attach a .json, .kml, or .shp file.
                       </div>
-                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange}/>
+                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
@@ -846,6 +856,7 @@ export default function HeatEditBar(props) {
                                         value={row[colName]}
                                         onChange={(event) => handleEditChange(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
+                                        onKeyDown={handleStepKeyDown}
                                       />
                                     ) : colIndex !== 4 ? (
                                       row[colName]
@@ -864,10 +875,10 @@ export default function HeatEditBar(props) {
                       <div className="drop-zone-text">
                         <h6>Drag & Drop or Click Browse to select a file</h6>
                       </div>
-                        <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
+                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleHeatMap} />
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
-                    </div>                    
+                    </div>
                     <div className='JSONButton'>
                       <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
                         Download JSON
@@ -881,7 +892,7 @@ export default function HeatEditBar(props) {
                 <Accordion.Item eventKey="2">
                   <AccordionHeader>Heat Map Editor</AccordionHeader>
                   <Accordion.Body>
-                    {tableData.length==0 ? fileUploader : options}
+                    {tableData.length == 0 ? fileUploader : options}
                   </Accordion.Body>
                 </Accordion.Item>
 
@@ -892,15 +903,15 @@ export default function HeatEditBar(props) {
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} />
-                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} />
+                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <div className="input-group setting-zoom">
                       <div className="input-group-prepend">
                         <span className="input-group-text default-zoom" id="">Default Zoom</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} />
+                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
