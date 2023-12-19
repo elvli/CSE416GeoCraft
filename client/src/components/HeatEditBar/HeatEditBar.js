@@ -14,6 +14,7 @@ import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 import HeatTableTransaction from '../../transactions/Heat/HeatTableTransaction';
 import HeatEditTransaction from '../../transactions/Heat/HeatEditTransaction';
 import jsTPS from '../../common/jsTPS';
+import EditRegionModal from '../EditRegionModal/EditRegionModal';
 
 
 export default function HeatEditBar(props) {
@@ -21,6 +22,7 @@ export default function HeatEditBar(props) {
   const { store } = useContext(GlobalStoreContext);
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
+  const [showRegion, setShowRegion] = useState(false);
   const [showName, setShowName] = useState(false);
   const [showHeat, setShowHeat] = useState(false)
   const [isEditing, setIsEditing] = useState(null);
@@ -30,7 +32,6 @@ export default function HeatEditBar(props) {
     'ID', 'Latitude', 'Longitude', 'Magnitude'
   ]);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
-  const colors = store.getMapDataById(mapId)
   const [rangeMag1, setRangeMag1] = useState(0);
   const [rangeMag2, setRangeMag2] = useState(0);
   const [rangeMag3, setRangeMag3] = useState(6);
@@ -122,6 +123,13 @@ export default function HeatEditBar(props) {
 
   const [jsonData, setJsonData] = useState('');
   const [tps, setTPS] = useState(new jsTPS)
+  const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [propName, setPropName] = useState('');
+  const [activeKey, setActiveKey] = useState(['0']);
+  const regionEditFunctions = {
+    
+  }
   const downloadLinkRef = useRef(null);
 
   function toggleSideBar(event) {
@@ -362,19 +370,24 @@ export default function HeatEditBar(props) {
     }
   }
 
-  const downloadJson = () => {
-    const json = JSON.stringify({ headers: tableHeaders, data: tableData });
+  const downloadJson = async () => {
+    const data = await store.getMapDataById(mapId)
+    const json = JSON.stringify(data);
     setJsonData(json);
 
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
 
     downloadLinkRef.current.href = url;
-    downloadLinkRef.current.download = 'table_data.json';
+    var string = store.currentList.name
+    downloadLinkRef.current.download = string.concat('.json');
     downloadLinkRef.current.click();
 
     URL.revokeObjectURL(url);
   };
+  const downloadPic = async (arg) => {
+    const rewait = await store.setPrint(arg)
+  }
 
 
 
@@ -769,7 +782,46 @@ export default function HeatEditBar(props) {
       console.log('cannot update table');
     }
   }, []);
+  useEffect(() => {
+    const regionSelectHandler = (event) => {
+      event.preventDefault()
+      const clickedRegion = event.features[0];
+      var propertyName;
 
+      if (clickedRegion) {
+        
+        let regionName;
+
+        // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
+        for (let i = 5; i >= 0; i--) {
+          propertyName = `NAME_${i}`;
+          if (clickedRegion.properties.hasOwnProperty(propertyName)) {
+            regionName = clickedRegion.properties[propertyName];
+            break;
+          }
+          else {
+            propertyName = 'NAME'
+          }
+        }
+        setPropName(propertyName);
+        console.log(regionName)
+        // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
+        setSelectedRegion(regionName);
+
+        
+        setActiveKey((prevActiveKey) => [...prevActiveKey, '1']);
+        setShowRegion(true)
+      }
+    };
+
+    // WHEN A REGION IS CLICKED ON, RUN regionSelectHandler
+    map.current.on('dblclick', 'geojson-border-fill', regionSelectHandler);
+
+    //CLEAN UP
+    return () => {
+      map.current.off('click', 'geojson-border-fill', regionSelectHandler);
+    };
+  }, [prevSelectedRegions]);
 
 
   return (
@@ -896,12 +948,7 @@ export default function HeatEditBar(props) {
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
-                    <div className='JSONButton'>
-                      <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
-                        Download JSON
-                      </Button>
-                      <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
-                    </div>
+       
 
                   </Accordion.Body>
                 </Accordion.Item>
@@ -936,6 +983,30 @@ export default function HeatEditBar(props) {
                     </Button>
                   </Accordion.Body>
                 </Accordion.Item>
+                <Accordion.Item eventKey="4">
+                  <Accordion.Header>Download</Accordion.Header>
+                  <Accordion.Body>
+                    <div>
+                      <div className='JSONButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
+                          Download JSON
+                        </Button>
+                        <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
+                      </div>
+                      <div className='PNGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(1); }}>
+                          Download PNG
+                        </Button>
+                      </div>
+                      <div className='JPGButton'>
+                        <Button variant="btn btn-dark" onClick={() => { downloadPic(2); }}>
+                          Download JPG
+                        </Button>
+                      </div>
+                    </div>
+
+                  </Accordion.Body>
+                </Accordion.Item>
               </Accordion>
             </div>
           </div>
@@ -944,6 +1015,7 @@ export default function HeatEditBar(props) {
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
       {/* <HeatPointModal saveAndExitShow={showHeat} handlesaveAndExitShowClose={(event) => { setShowHeat(false) }} handleHeatMap={handleHeatMap} handleAddRow={handleAddRow}  /> */}
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
+      <EditRegionModal editRegionShow={showRegion} handleEditRegionClose={(event) => { setShowRegion(false) }} mapId={mapId} region={selectedRegion}>  </EditRegionModal>
     </div >
   )
 }
