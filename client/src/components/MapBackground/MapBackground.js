@@ -658,6 +658,30 @@ export default function MapBackground(props) {
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-intensity', mapData.heatmap.int);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-radius', mapData.heatmap.rad);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-opacity', mapData.heatmap.opac);
+            div =
+                <div id="state-legend" className="legend">
+                  <h4>{
+                    title === '' ? ('Legend') :
+                      title
+                  }</h4>
+                  {mapData.legend.map((row) => (
+                    row['description'] !== '' ? (
+                      row.color === 'White' ? (
+                        <div className='legendTip'>
+                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                          {row.description}
+                        </div>
+                      ) :
+                        <div>
+                          <span style={{ backgroundColor: row.color }} />
+                          {row.description}
+                        </div>
+                    ) : <div></div>
+                  ))
+                  }
+
+                </div>
+              setLegend(div);
           }
 
 
@@ -838,21 +862,23 @@ export default function MapBackground(props) {
                     title === '' ? ('Legend') :
                       title
                   }</h4>
-                  {mapData.legend.map((row) => (
-                    row['description'] !== '' ? (
-                      row.color === 'White' ? (
-                        <div className='legendTip'>
-                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                          {row.description}
-                        </div>
-                      ) :
-                        <div>
-                          <span style={{ backgroundColor: row.color }} />
-                          {row.description}
-                        </div>
-                    ) : <div></div>
-                  ))
-                  }
+                  {dataValues.length !== 0 && (
+                    mapData.legend.map((row) => (
+                      row['description'] !== '' ? (
+                        row.color === 'White' ? (
+                          <div className='legendTip'>
+                            <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                            {row.description}
+                          </div>
+                        ) : (
+                          <div>
+                            <span style={{ backgroundColor: row.color }} />
+                            {row.description}
+                          </div>
+                        )
+                      ) : <div key={row.description}></div>
+                    ))
+                  )}
 
                 </div>
               setLegend(div);
