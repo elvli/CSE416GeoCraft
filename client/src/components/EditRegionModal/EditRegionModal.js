@@ -4,34 +4,38 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useState, useContext } from "react";
 import GlobalStoreContext from "../../store";
-
+import EditRegionTransaction from "../../transactions/EditRegionTransaction";
 export default function EditRegionModal(props) {
-  const { editRegionShow, handleEditRegionClose, mapId, region } = props
+  const { editRegionShow, handleEditRegionClose, mapId, region, tps } = props
   const { store } = useContext(GlobalStoreContext);
+  const [json, setJson] = useState({})
   const [validated, setValidated] = useState(false)
-  function updateMapData(mapId, formData) {
-    async function asyncUpdateMapData() {
+  function updateMapData(map, formData) {
+    const initialRegion = region;
+    const newRegion = formData.get("mapName");
+    async function asyncUpdateMapData(mapId, newName, oldName) {
         
         const mapData = await store.getMapDataById(mapId)
 
         const json = mapData.GeoJson
         let j = 0
         for(let i = 0; i < json["features"].length; i++) {
-          if(json['features'][i].properties.hasOwnProperty('NAME_1')&&json['features'][i].properties['NAME_1'] === region) {
-            json['features'][i].properties['NAME_1'] = formData.get("mapName");
+          if(json['features'][i].properties.hasOwnProperty('NAME_1')&&json['features'][i].properties['NAME_1'] === oldName) {
+            json['features'][i].properties['NAME_1'] = newName;
             j = i
           }
-          else if(json['features'][i].properties.hasOwnProperty('NAME')&&json['features'][i].properties['NAME'] === region) {
-            json['features'][i].properties['NAME'] = formData.get("mapName");
+          else if(json['features'][i].properties.hasOwnProperty('NAME')&&json['features'][i].properties['NAME'] === oldName) {
+            json['features'][i].properties['NAME'] = newName;
             j = i
           }
         }
-       // console.log(json)
-      //console.log(json['features'][j].properties['NAME_1'])
+      console.log(json['features'][j].properties['NAME_1'])
       await store.updateMapDataById(mapId, mapData);
       await store.setCurrentList(mapId, 0)
     }
-    asyncUpdateMapData()
+    let transaction = new EditRegionTransaction(asyncUpdateMapData, map, newRegion, initialRegion)
+    tps.addTransaction(transaction)
+    
   }
  
   const handleSubmit = (event) => {
@@ -69,7 +73,7 @@ export default function EditRegionModal(props) {
           </Modal.Header>
           <Modal.Body>
             <Form.Group>
-              <Form.Label>Enter the Name of Region</Form.Label>
+              <Form.Label>Change the name of the region</Form.Label>
               <Form.Control className="map-name" name="mapName" required type="text" placeholder={region} />
             </Form.Group>
           </Modal.Body>
