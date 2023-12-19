@@ -239,13 +239,32 @@ function AuthContextProvider(props) {
     }
     return profilePicture;
   }
-  auth.createEmailLink = async function (email) {
-    const response = await api.createEmailLink(email);
+  auth.createEmailLink = function (email) {
+    async function asyncCreateEmailLink() {
+      try {
+        const response = await api.createEmailLink(email);
+       
+        return true;
+      }
+      catch (error){
+        
+        return false
+      }
+    }
+    return asyncCreateEmailLink()
   }
 
-  auth.resetPassword = async function (password, id, token) {
-    const response = await api.resetPassword (password, id, token)
-    return response;
+  auth.resetPassword = function (password, id, token) {
+    async function asyncResetPassword() {
+      try{
+        const response = await api.resetPassword (password, id, token)
+        return response;
+      } catch(error) {
+        console.error(error)
+      }
+    }
+    return asyncResetPassword()
+    
   }
   auth.verifyLink = function (id, token) {
     console.log("PING PONG")
