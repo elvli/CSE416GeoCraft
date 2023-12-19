@@ -32,7 +32,7 @@ export default function MapBackground(props) {
         style: 'mapbox://styles/mapbox/dark-v11',
         center: [lng, lat],
         zoom: zoom,
-        preserveDrawingBuffer: true
+        preserveDrawingBuffer: true,
       });
 
       mapbox.current.on('move', () => {
@@ -714,26 +714,66 @@ export default function MapBackground(props) {
   }, [update || store.currentList]);
 
 
+
+
+  // useEffect(() => {
+  //   if (store.print === 1) {
+  //     var string = store.currentList.name
+  //     let link = document.createElement('a');
+  //     link.download = string.concat('.png');
+  //     link.href = map.current.getCanvas().toDataURL('image/png');
+  //     link.click();
+
+  //     store.setPrint(0)
+
+  //   }
+  //   else if (store.print === 2) {
+  //     console.log(map.current.getCanvas().toDataURL('image/jpeg'))
+  //     string = store.currentList.name
+  //     let link = document.createElement('a');
+  //     link.download = string.concat('.jpg');
+  //     link.href = map.current.getCanvas().toDataURL('image/jpeg');
+  //     link.click();
+
+  //     store.setPrint(0)
+  //   }
+  // }, [store.print]);
+
   useEffect(() => {
-    if (store.print === 1) {
-      var string = store.currentList.name
-      let link = document.createElement('a');
-      link.download = string.concat('.png');
-      link.href = map.current.getCanvas().toDataURL('image/png');
+    if (store.print === 1 || store.print === 2) {
+      const canvas = map.current.getCanvas();
+      const originalWidth = canvas.width;
+      const originalHeight = canvas.height;
+
+      const inchesWidth = originalWidth / 96;
+      const inchesHeight = originalHeight / 96;
+      console.log(inchesWidth, inchesHeight)
+
+      const offScreenCanvas = document.createElement('canvas');
+      offScreenCanvas.width = originalWidth * 4;
+      offScreenCanvas.height = originalHeight * 4;
+      offScreenCanvas.style.width = `${inchesWidth * 4}in`;
+      offScreenCanvas.style.height = `${inchesHeight * 4}in`;
+
+      const offScreenContext = offScreenCanvas.getContext('2d');
+
+      // DRAW THE MAP ON THE OFF SCREEN CANVAS
+      offScreenContext.drawImage(canvas, 0, 0, offScreenCanvas.width, offScreenCanvas.height);
+
+      const string = store.currentList.name;
+      const link = document.createElement('a');
+
+      if (store.print === 1) {
+        link.download = string.concat('.png');
+        link.href = offScreenCanvas.toDataURL('image/png');
+      } else if (store.print === 2) {
+        link.download = string.concat('.jpg');
+        link.href = offScreenCanvas.toDataURL('image/jpeg');
+      }
+
       link.click();
 
-      store.setPrint(0)
-
-    }
-    else if (store.print === 2) {
-      console.log(map.current.getCanvas().toDataURL('image/jpeg'))
-      string = store.currentList.name
-      let link = document.createElement('a');
-      link.download = string.concat('.jpg');
-      link.href = map.current.getCanvas().toDataURL('image/jpeg');
-      link.click();
-
-      store.setPrint(0)
+      store.setPrint(0);
     }
   }, [store.print]);
 

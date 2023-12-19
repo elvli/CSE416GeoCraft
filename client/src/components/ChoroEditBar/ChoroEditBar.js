@@ -562,15 +562,6 @@ export default function ChoroEditBar(props) {
     await store.setCurrentList(mapId, 0);
   }
 
-  const downloadJSONButton = (
-    < div className='choro-json-button' >
-      <Button variant="btn btn-dark" onClick={() => { downloadJson(); }}>
-        Download JSON
-      </Button>
-      <a href="#" ref={downloadLinkRef} style={{ display: 'none' }} />
-    </div >
-  );
-
 
 
 
@@ -811,7 +802,6 @@ export default function ChoroEditBar(props) {
                     {tableContent}
                     {gradientDropDown}
                     {stepInput}
-                    {downloadJSONButton}
                   </Accordion.Body>
                 </Accordion.Item>
 
