@@ -56,12 +56,13 @@ const mapDataSchema = new Schema(
         zoom: String
       }, required: true
     },
-    legend3: { type: [{
-      Color: String,
-      Description: String,
-    }], required: false
+    legend: {
+      type: [{
+        Color: String,
+        Description: String,
+      }], required: false
     },
-    legend3Title: { type: String }
+    legendTitle: { type: String }
   },
   { timestamps: true },
 )

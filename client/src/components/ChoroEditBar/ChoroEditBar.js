@@ -43,9 +43,21 @@ export default function ChoroEditBar(props) {
   const [stepCount, setStepCount] = useState('5');
   const [choroRenders, setChoroRenders] = useState(0);
   const [propName, setPropName] = useState('');
-  // const [dataRange, setDataRange] = useState([0, 100]);
   const isLayerAdded = useRef(false);
   const [tps, setTPS] = useState(new jsTPS);
+
+  const [legendTableData, setLegendTableData] = useState(
+    [
+      { 'Color': 'White', 'Description': '' },
+      { 'Color': 'Black', 'Description': '' },
+      { 'Color': 'Red', 'Description': '' },
+      { 'Color': 'Orange', 'Description': '' },
+      { 'Color': 'Yellow', 'Description': '' },
+      { 'Color': 'Green', 'Description': '' },
+      { 'Color': 'Blue', 'Description': '' },
+      { 'Color': 'Purple', 'Description': '' },
+    ]);
+  const [legendTitle, setLegendTitle] = useState('');
 
   // THIS HANDLES THE TOGGLING OF THE SIDEBAR
   function toggleSideBar(event) {
@@ -318,9 +330,10 @@ export default function ChoroEditBar(props) {
     mapData.settings = { latitude: settingsValues[0], longitude: settingsValues[1], zoom: settingsValues[2] }
     setTableHeaders([tableHeaders[0], tableHeaders[1], mapData.choroData.choroSettings.headerValue]);
 
-    // // THIS SETS THE DATA RANGE FOR tableData (USED FOR COLOR INTERPOLATION)
-    // const dataValues = tableData.map(entry => parseInt(entry.data, 10));
-    // setDataRange([Math.min(...dataValues), Math.max(...dataValues)]);
+    
+    // THIS SETS THE DATA FOR THE MAP LEGEND
+    mapData.legendTitle = legendTitle;
+    mapData.legend = legendTableData;
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -540,6 +553,30 @@ export default function ChoroEditBar(props) {
 
 
 
+  // THIS HANDLES THE EDITING OF THE MAP LEGEND
+  const handleEditLegendChange = (event, rowIndex, colName) => {
+    const updatedData = legendTableData.map((row, index) => {
+      if (index === rowIndex) {
+        return { ...row, [colName]: event.target.value };
+      }
+      return row;
+    });
+    setLegendTableData(updatedData);
+  };
+
+  const handleLegendTitleChange = (event) => {
+    setLegendTitle(event.target.value)
+  }
+
+  const handleLegendEditBlur = () => {
+    setIsEditing(null);
+  };
+
+
+
+
+
+
   // THIS HANDLES DOWNLOADING MAP DATA AS A JSON FILE
 
   const downloadJson = async () => {
@@ -653,7 +690,7 @@ export default function ChoroEditBar(props) {
 
     <div className="input-group">
       <div className="input-group-prepend">
-        <span className="input-group-text" id="">Map Theme</span>
+        <span className="input-group-text">Map Theme</span>
       </div>
 
       <Dropdown>
@@ -709,7 +746,7 @@ export default function ChoroEditBar(props) {
   const stepInput = (
     <div className="input-group">
       <div className="input-group-prepend">
-        <span className="input-group-text" id="">Gradient Steps</span>
+        <span className="input-group-text">Gradient Steps</span>
       </div>
       <input
         type="text"
@@ -830,7 +867,7 @@ export default function ChoroEditBar(props) {
                   <Accordion.Body>
                     <div className="input-group">
                       <div className="input-group-prepend">
-                        <span className="input-group-text" id="">Default Center</span>
+                        <span className="input-group-text">Default Center</span>
                       </div>
                       <input
                         type="text"
@@ -852,7 +889,7 @@ export default function ChoroEditBar(props) {
 
                     <div className="input-group setting-zoom">
                       <div className="input-group-prepend">
-                        <span className="input-group-text default-zoom" id="">Default Zoom</span>
+                        <span className="input-group-text default-zoom">Default Zoom</span>
                       </div>
                       <input
                         type="text"
@@ -871,6 +908,23 @@ export default function ChoroEditBar(props) {
                 </Accordion.Item>
 
                 <Accordion.Item eventKey="3">
+                  <Accordion.Header>Edit Legend</Accordion.Header>
+                  <Accordion.Body>
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <span className="input-group-text default-zoom">Legend Title</span>
+                      </div>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={legendTitle}
+                        onChange={(event) => handleLegendTitleChange(event)}
+                      />
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+
+                <Accordion.Item eventKey="4">
                   <Accordion.Header>Download</Accordion.Header>
                   <Accordion.Body>
                     <div>

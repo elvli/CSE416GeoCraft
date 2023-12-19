@@ -27,15 +27,15 @@ export default function LineEditSideBar(props) {
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Start Latitude', 'Start Longitude', 'End Latitude', 'End Longitude', 'Color']);
   const [legendTableData, setLegendTableData] = useState(
     [
-  {'Color': 'White' , 'Description' : '' },
-  {'Color': 'Black' , 'Description' : '' },
-  {'Color': 'Red' , 'Description' : '' },
-  {'Color': 'Orange' , 'Description' : '' },
-  {'Color': 'Yellow' , 'Description' : '' },
-  {'Color': 'Green' , 'Description' : '' },
-  {'Color': 'Blue' , 'Description' : '' },
-  {'Color': 'Purple' , 'Description' : '' },
-]);
+      { 'Color': 'White', 'Description': '' },
+      { 'Color': 'Black', 'Description': '' },
+      { 'Color': 'Red', 'Description': '' },
+      { 'Color': 'Orange', 'Description': '' },
+      { 'Color': 'Yellow', 'Description': '' },
+      { 'Color': 'Green', 'Description': '' },
+      { 'Color': 'Blue', 'Description': '' },
+      { 'Color': 'Purple', 'Description': '' },
+    ]);
   const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
   const [legendTitle, setLegendTitle] = useState('');
   const [jsonData, setJsonData] = useState('');
@@ -243,7 +243,7 @@ export default function LineEditSideBar(props) {
     setLegendTableData(updatedData);
   };
 
-  const handleLegnedTitleChange = (event) => {
+  const handleLegendTitleChange = (event) => {
     setLegendTitle(event.target.value)
   }
 
@@ -263,8 +263,8 @@ export default function LineEditSideBar(props) {
     mapData.settings.longitude = settingsValues[1]
     mapData.settings.latitude = settingsValues[0]
     mapData.settings.zoom = settingsValues[2]
-    mapData.legend3 = legendTableData
-    mapData.legend3Title = legendTitle
+    mapData.legend = legendTableData
+    mapData.legendTitle = legendTitle
 
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
@@ -286,18 +286,19 @@ export default function LineEditSideBar(props) {
       }
       setTableData(newPoints);
       setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
-      if (points.legend3.length !=0){
-        var newLegend = []
-        for (let i in points.legend3) {
+      
+      if (points.legend.length !== 0) {
+        var newLegend = [];
+        for (let i in points.legend) {
           newLegend.push({
-            'Color': points.legend3[i]['Color'],
-            'Description': points.legend3[i]['Description']
+            'Color': points.legend[i]['Color'],
+            'Description': points.legend[i]['Description']
           });
         }
-          setLegendTableData(newLegend)
+        setLegendTableData(newLegend);
       }
-      setLegendTitle(points.legend3Title)
-      
+      setLegendTitle(points.legendTitle);
+
     }
     catch {
       console.log('cannot load mapdata');
@@ -509,11 +510,11 @@ export default function LineEditSideBar(props) {
                         Remove GeoJson Data
                       </Button>
                     </div>
-                  
+
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="3">
-                
+
                   <Accordion.Header>Edit Legend</Accordion.Header>
                   <Accordion.Body>
                     <div className='legend-title'>
@@ -521,10 +522,10 @@ export default function LineEditSideBar(props) {
                         <div className="input-group-prepend">
                           <span className="input-group-text default-zoom" id="">Legend Title</span>
                         </div>
-                        <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegnedTitleChange(event)} />
+                        <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
                       </div>
                     </div>
-                  
+
                     <div className="table-responsive table-custom-scrollbar">
                       <Table striped bordered hover>
                         <thead>
@@ -549,14 +550,14 @@ export default function LineEditSideBar(props) {
                                   key={colIndex}
                                 >
                                   {
-                                    colIndex !== 0  ? (
+                                    colIndex !== 0 ? (
                                       <input className='cells'
                                         type="text"
                                         value={row[colName]}
                                         onChange={(event) => handleEditLegendChange(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                       />
-                                    ) : row[colName] 
+                                    ) : row[colName]
                                   }
                                 </td>
                               ))}
