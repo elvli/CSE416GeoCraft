@@ -214,7 +214,7 @@ export default function MapBackground(props) {
                 regionName = hoveredRegion.properties[admName];
                 break;
               }
-              else if(hoveredRegion.properties.hasOwnProperty('NAME')) {
+              else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
                 regionId = hoveredRegion.properties['NAME'];
                 regionName = hoveredRegion.properties['NAME'];
                 break;
@@ -315,7 +315,26 @@ export default function MapBackground(props) {
               features: []
             });
           }
-          
+          map.current.getSource('point-map').setData({
+            type: 'FeatureCollection',
+            features: []
+          });
+          map.current.getSource('line-map').setData({
+            type: 'FeatureCollection',
+            features: []
+          });
+          map.current.getSource('earthquakes').setData({
+            type: 'FeatureCollection',
+            features: []
+          });
+          map.current.getSource('choro-map').setData({
+            type: 'FeatureCollection',
+            features: []
+          });
+          map.current.getSource('propSymbol-map').setData({
+            type: 'FeatureCollection',
+            features: []
+          });
 
 
 

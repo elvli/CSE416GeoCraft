@@ -7,8 +7,10 @@ import EditChoroRegionModal from '../EditRegionModal/EditChoroRegionModal';
 import MapNameModal from '../MapNameModal/MapNameModal';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import PublishMapModal from '../PublishMapModal/PublishMapModal';
+import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal'
 import mapboxgl from 'mapbox-gl';
 import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
+import DeleteRowTransaction from '../../transactions/Choro/DeleteRowTransaction'
 import ChangeDataHeaderTransaction from '../../transactions/Choro/ChangeDataHeaderTransaction';
 import ChangeLegendTitleTransaction from '../../transactions/Choro/ChangeLegendTitleTransaction';
 import ChangeStepTransaction from '../../transactions/Choro/ChangeStepTransaction';
@@ -33,6 +35,7 @@ export default function ChoroEditBar(props) {
   const [showName, setShowName] = useState(false);
   const [showRegion, setShowRegion] = useState(false);
   const [showDataError, setShowDataError] = useState(false);
+  const [showGeoModal, setShowGeoModal] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -266,6 +269,13 @@ export default function ChoroEditBar(props) {
     }
   };
 
+  const handleDeleteRow = (rowIndex) => {
+    const deletedRow = tableData[rowIndex];
+
+    const deleteRowTransaction = new DeleteRowTransaction(rowIndex, deletedRow, setTableData);
+    tps.addTransaction(deleteRowTransaction);
+  };
+
   const handleEditChange = (event, rowIndex, colName) => {
     const oldValue = tableData[rowIndex][colName];
     const newValue = event.target.value;
@@ -383,7 +393,7 @@ export default function ChoroEditBar(props) {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID</th>
+            {/* <th>ID</th> */}
             <th>Region</th>
             <th
               className={`th-editable ${isEditing === 2 ? 'editing' : ''}`}
@@ -406,13 +416,14 @@ export default function ChoroEditBar(props) {
                 tableHeaders[2]
               )}
             </th>
+            <th>Delete</th>
           </tr>
         </thead>
 
         <tbody>
           {tableData.map((row, rowIndex) => (
             <tr key={row.id}>
-              <td>{row.id}</td>
+              {/* Omitted the id column */}
               <td>
                 <p>{row.region}</p>
               </td>
@@ -420,11 +431,16 @@ export default function ChoroEditBar(props) {
                 <input
                   className="cells"
                   type="text"
-                  value={(row.data === 0) ? '0' : row.data}
+                  value={(row.data === '0') ? '0' : row.data}
                   onChange={(event) => handleEditChange(event, rowIndex, 'data')}
                   onKeyDown={handleStepKeyDown}
                   onBlur={handleEditTableBlur}
                 />
+              </td>
+              <td>
+                <button onClick={() => handleDeleteRow(rowIndex)} className="choro-delete-row-btn btn btn-secondary">
+                  <i className="bi bi-trash"></i>
+                </button>
               </td>
             </tr>
           ))}
@@ -528,22 +544,7 @@ export default function ChoroEditBar(props) {
     };
   }, [prevSelectedRegions]);
 
-  // const changeRegionNameinData = (oldRegionName, newRegionName) => {
-  //   tableData.map(item => {
-  //     if (item.region === oldRegionName) {
-  //       return { ...item, region: newRegionName };
-  //     }
-  //     return item;
-  //   });
-  //   setTableData(tableData);
-
-  //   // console.log(prevSelectedRegions);
-  //   const newPrevSelectRegions = prevSelectedRegions.map(region => (region === oldRegionName ? newRegionName : region));
-  //   // console.log(newPrevSelectRegions);
-  //   setPrevSelectedRegions(newPrevSelectRegions);
-
-  //   console.log('JOBS DONE');
-  // }
+  // THIS HANDLES CHANGING A REGIONS NAME ON THE MAP. IT REFLECTS ON THE DATA TABLE AND THE MAP ITSELF.
   const changeRegionNameinData = (oldRegionName, newRegionName) => {
     const updatedTableData = tableData.map(item =>
       item.region === oldRegionName ? { ...item, region: newRegionName } : item
@@ -707,9 +708,15 @@ export default function ChoroEditBar(props) {
   const handleRemoveGeoJson = async () => {
     var mapData = await store.getMapDataById(mapId);
     mapData.GeoJson = null;
+    mapData.choroData = {};
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
+
+    // setTableData([]);
+    updateTable();
+    handleSave();
+    tps.clearAllTransactions();
   }
 
 
@@ -1016,6 +1023,9 @@ export default function ChoroEditBar(props) {
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
                       Set Defaults Here
                     </Button>
+                    <Button className="set-default-button" variant="btn btn-dark" onClick={() => setShowGeoModal(true)}>
+                      Remove GeoJson Data
+                    </Button>
                   </Accordion.Body>
                 </Accordion.Item>
 
@@ -1067,10 +1077,11 @@ export default function ChoroEditBar(props) {
         </div>
       </div>
       <DataErrorModal showDataError={showDataError} handleShowDataErrorClose={(event) => { setShowDataError(false) }} />
-      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
-      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
-      <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
       <EditChoroRegionModal editRegionShow={showRegion} handleEditRegionClose={(event) => { setShowRegion(false) }} mapId={mapId} region={selectedRegion} tps={tps} changeRegionNameinData={changeRegionNameinData} />
+      <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
+      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
+      <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} />
     </div>
   )
 }

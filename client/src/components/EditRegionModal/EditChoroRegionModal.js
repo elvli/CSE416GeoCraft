@@ -6,7 +6,7 @@ import EditRegionTransaction from "../../transactions/EditRegionTransaction";
 export default function EditChoroRegionModal(props) {
   const { editRegionShow, handleEditRegionClose, mapId, region, tps, changeRegionNameinData } = props
   const { store } = useContext(GlobalStoreContext);
-  const [json, setJson] = useState({})
+  // const [json, setJson] = useState({})
   const [validated, setValidated] = useState(false)
 
   function updateMapData(map, formData) {
