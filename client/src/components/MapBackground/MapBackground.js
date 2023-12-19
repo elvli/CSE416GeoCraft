@@ -658,12 +658,18 @@ export default function MapBackground(props) {
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-intensity', mapData.heatmap.int);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-radius', mapData.heatmap.rad);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-opacity', mapData.heatmap.opac);
-            div =
+            
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+              var title = ''
+              if (mapData.legendTitle) {
+                title = mapData.legendTitle;
+              }
+              var div =
                 <div id="state-legend" className="legend">
-                  <h4>{
+                  <h5>{
                     title === '' ? ('Legend') :
                       title
-                  }</h4>
+                  }</h5>
                   {mapData.legend.map((row) => (
                     row['description'] !== '' ? (
                       row.color === 'White' ? (
@@ -672,9 +678,15 @@ export default function MapBackground(props) {
                           {row.description}
                         </div>
                       ) :
-                        <div>
-                          <span style={{ backgroundColor: row.color }} />
-                          {row.description}
+                        <div className='container'>
+                          <div className='row'> 
+                          <div className='col-1'> 
+                            <span style={{ backgroundColor: row.color, borderRadius: '2px', width: '2vw', height: '3vh' }}></span>
+                          </div>
+                          
+                          <div className='col'> <h6>{row.description}</h6></div>
+                          
+                          </div>
                         </div>
                     ) : <div></div>
                   ))
@@ -682,6 +694,7 @@ export default function MapBackground(props) {
 
                 </div>
               setLegend(div);
+            }
           }
 
 

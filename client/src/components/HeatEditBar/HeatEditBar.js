@@ -18,6 +18,7 @@ import EditRegionModal from '../EditRegionModal/EditRegionModal';
 import shpParser from 'shpjs';
 import JSZip from 'jszip';
 import rewind from "@mapbox/geojson-rewind";
+import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitleTransaction';
 const shp = require("shpjs");
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -65,6 +66,7 @@ export default function HeatEditBar(props) {
   const [color4, setColor4] = useState("#EF8A62");
   const [color5, setColor5] = useState("#B2182B");
   const [legendData, setLegendData] = useState([])
+  const [legendTitle, setLegendTitle] = useState("");
   const [currentMag, setCurrentMag] = useState([
     'interpolate',
     ['linear'],
@@ -236,6 +238,8 @@ export default function HeatEditBar(props) {
           mapData.GeoJson = json.GeoJson
           mapData.lineData = json.lineData
           mapData.settings = json.settings
+          mapData.legend = json.legend
+          mapData.legendTitle = json.legendTitle
           await store.updateMapDataById(mapId, mapData)
           await store.setCurrentList(mapId, 0)
           updateTable()
@@ -476,7 +480,28 @@ export default function HeatEditBar(props) {
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
     mapData.heatmap = { data: tableData, color: currentColor, mag: currentMag, int: currentInt, rad: currentRad, opac: currentOpac }
-
+    var legendPoints = []
+    for (let i = 0; i < tableData.length; i++) {
+      legendPoints.push((tableData[i].magnitude))
+      
+    }
+     legendPoints.sort(function(a,b) { return a - b;})
+    var legendPointsLength = legendPoints.length - 1
+    var len1 = Math.floor(legendPointsLength*0.8)
+    var len2 = Math.floor(legendPointsLength*0.6)
+    var len3 = Math.floor(legendPointsLength*0.4)
+    var len4 = Math.floor(legendPointsLength*0.2)
+    var legendDataSet = [
+      {color: color5, description: legendPoints[legendPointsLength]},
+      {color: color4, description: legendPoints[len1]},
+      {color: color3, description: legendPoints[len2]},
+      {color: color2, description: legendPoints[len3]},
+      {color: color1, description: legendPoints[len4]}
+    ]
+    mapData.legend = legendDataSet
+    mapData.legendTitle = legendTitle
+    
+    //console.log(tableData)
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
     var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
@@ -497,7 +522,7 @@ export default function HeatEditBar(props) {
       var legendPoints = []
       for (let i = 0; i < points.heatmap.data.length; i++) {
         newPoints.push(points.heatmap.data[i]);
-        legendPoints.push(points.heatmap.data[i][2])
+        legendPoints.push(points.heatmap.data[i]['magnitude'])
       }
 
       setCurrentColor(points.heatmap.color)
@@ -529,7 +554,7 @@ export default function HeatEditBar(props) {
 
 
       setTableData(newPoints);
-
+      setLegendData(legendPoints)
       setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
 
 
@@ -767,7 +792,10 @@ export default function HeatEditBar(props) {
     tps.addTransaction(transaction)
 
   }
-
+  const handleLegendTitleChange = (event) => {
+    let transaction = new EditLegendTitleTransaction(legendTitle, event.target.value, setLegendTitle)
+    tps.addTransaction(transaction)
+  }
   // const [selectRangeMag, setSelectRangeMag] = useState(false);
   // const [selectRangeIntensity, setSelectRangeIntensity] = useState(false);
   // const [selectRangeRadius, setSelectRangeRadius] = useState(false);
@@ -893,6 +921,16 @@ export default function HeatEditBar(props) {
     <br></br>
     <Row>
       When zoom level is at Zoom X or less X will be used, if it's at Zoom Y or greater it will switch to Y
+    </Row>
+    <Row>
+      <div className='legend-title'>
+        <div className="input-group setting-zoom">
+          <div className="input-group-prepend">
+            <span className="input-group-text default-zoom" id="">Legend Title</span>
+          </div>
+          <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
+        </div>
+      </div>
     </Row>
   </div>
 
