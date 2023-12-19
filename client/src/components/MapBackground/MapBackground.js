@@ -363,6 +363,37 @@ export default function MapBackground(props) {
               })
             )
             map.current.getSource('point-map').setData(myGeoJSON);
+
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+              var title = ''
+              if (mapData.legendTitle) {
+                title = mapData.legendTitle;
+              }
+              var div =
+                <div id="state-legend" className="legend">
+                  <h4>{
+                    title === '' ? ('Legend') :
+                      title
+                  }</h4>
+                  {mapData.legend.map((row) => (
+                    row['description'] !== '' ? (
+                      row.color === 'White' ? (
+                        <div className='legendTip'>
+                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                          {row.description}
+                        </div>
+                      ) :
+                        <div>
+                          <span style={{ backgroundColor: row.color }} />
+                          {row.description}
+                        </div>
+                    ) : <div></div>
+                  ))
+                  }
+
+                </div>
+              setLegend(div);
+            }
           }
 
 
@@ -421,6 +452,37 @@ export default function MapBackground(props) {
               })
             )
             map.current.getSource('propSymbol-map').setData(myGeoJSON);
+
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+              var title = ''
+              if (mapData.legendTitle) {
+                title = mapData.legendTitle;
+              }
+              var div =
+                <div id="state-legend" className="legend">
+                  <h4>{
+                    title === '' ? ('Legend') :
+                      title
+                  }</h4>
+                  {mapData.legend.map((row) => (
+                    row['description'] !== '' ? (
+                      row.color === 'White' ? (
+                        <div className='legendTip'>
+                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                          {row.description}
+                        </div>
+                      ) :
+                        <div>
+                          <span style={{ backgroundColor: row.color }} />
+                          {row.description}
+                        </div>
+                    ) : <div></div>
+                  ))
+                  }
+
+                </div>
+              setLegend(div);
+            }
 
           }
 
@@ -490,7 +552,6 @@ export default function MapBackground(props) {
             map.current.getSource('line-map').setData(myGeoJSON);
 
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              console.log('HI LEGEND')
               var title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;

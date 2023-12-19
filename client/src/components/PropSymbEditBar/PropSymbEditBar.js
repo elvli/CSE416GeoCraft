@@ -9,9 +9,12 @@ import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
 import PointMapTransaction from '../../transactions/Point/PointMapTransaction';
 import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
+import EditChangeLegendTransaction from '../../transactions/Point/EditLegendChangeTransaction';
+import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitleTransaction';
 import rewind from "@mapbox/geojson-rewind";
 import jsTPS from '../../common/jsTPS';
 import './PropSymbEditBar.scss'
+
 
 export default function PropSymbEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -31,6 +34,19 @@ export default function PropSymbEditBar(props) {
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([41.8473, 12.7971, 5.43]);
   const [tps, setTPS] = useState(new jsTPS);
+  const [legendTableData, setLegendTableData] = useState(
+    [
+      { 'color': 'White', 'description': '' },
+      { 'color': 'Black', 'description': '' },
+      { 'color': 'Red', 'description': '' },
+      { 'color': 'Orange', 'description': '' },
+      { 'color': 'Yellow', 'description': '' },
+      { 'color': 'Green', 'description': '' },
+      { 'color': 'Blue', 'description': '' },
+      { 'color': 'Purple', 'description': '' },
+    ]);
+  const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
+  const [legendTitle, setLegendTitle] = useState("");
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -230,6 +246,16 @@ export default function PropSymbEditBar(props) {
     console.log(tps.getSize)
   }
 
+  const handleEditLegendChange = (event, rowIndex, colName) => {
+    let transaction = new EditChangeLegendTransaction(legendTableData[rowIndex][colName], event.target.value, legendTableData, setLegendTableData, rowIndex, colName)
+    tps.addTransaction(transaction)
+  };
+
+  const handleLegendTitleChange = (event) => {
+    let transaction = new EditLegendTitleTransaction(legendTitle, event.target.value, setLegendTitle)
+    tps.addTransaction(transaction)
+  }
+
   const handleEditBlur = () => {
     setIsEditing(null);
   };
@@ -246,6 +272,8 @@ export default function PropSymbEditBar(props) {
     mapData.settings.longitude = settingsValues[1];
     mapData.settings.latitude = settingsValues[0];
     mapData.settings.zoom = settingsValues[2];
+    mapData.legend = legendTableData
+    mapData.legendTitle = legendTitle
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -265,6 +293,21 @@ export default function PropSymbEditBar(props) {
         });
       }
       setTableData(newPoints);
+      setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
+      
+      if (points.legend.length !== 0) {
+        var newLegend = [];
+        for (let i in points.legend) {
+          newLegend.push({
+            'color': points.legend[i]['color'],
+            'description': points.legend[i]['description']
+          });
+        }
+        setLegendTableData(newLegend);
+      }
+      if (points.legendTitle){
+        setLegendTitle(points.legendTitle);
+      }
     }
     catch {
       console.log('cannot load mapdata');
@@ -493,6 +536,61 @@ export default function PropSymbEditBar(props) {
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="3">
+
+                  <Accordion.Header>Edit Legend</Accordion.Header>
+                  <Accordion.Body>
+                    <div className='legend-title'>
+                      <div className="input-group setting-zoom">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text default-zoom" id="">Legend Title</span>
+                        </div>
+                        <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
+                      </div>
+                    </div>
+
+                    <div className="table-responsive table-custom-scrollbar">
+                      <Table striped bordered hover>
+                        <thead>
+                          <tr>
+                            {legendHeaders.map((header, index) => (
+                              <th
+                                key={index + 1}
+                              >
+                                {
+                                  header
+                                }
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          {legendTableData.map((row, rowIndex) => (
+                            <tr key={row.id}>
+                              {Object.keys(row).map((colName, colIndex) => (
+                                <td
+                                  key={colIndex}
+                                >
+                                  {
+                                    colIndex !== 0 ? (
+                                      <input className='cells'
+                                        type="text"
+                                        value={row[colName]}
+                                        onChange={(event) => handleEditLegendChange(event, rowIndex, colName)}
+                                        onBlur={handleEditBlur}
+                                      />
+                                    ) : row[colName]
+                                  }
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="4">
                   <Accordion.Header>Download</Accordion.Header>
                   <Accordion.Body>
                     <div>

@@ -62,7 +62,7 @@ const mapDataSchema = new Schema(
         description: String,
       }], required: false
     },
-    legendTitle: { type: String }
+    legendTitle: { type: String, required: false },
   },
   { timestamps: true },
 )

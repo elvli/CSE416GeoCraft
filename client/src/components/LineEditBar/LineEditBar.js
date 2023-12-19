@@ -10,6 +10,8 @@ import PointMapTransaction from '../../transactions/Point/PointMapTransaction';
 import jsTPS from '../../common/jsTPS';
 import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
 import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
+import EditChangeLegendTransaction from '../../transactions/Point/EditLegendChangeTransaction';
+import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitleTransaction';
 import MapNameModal from '../MapNameModal/MapNameModal';
 
 
@@ -37,7 +39,7 @@ export default function LineEditSideBar(props) {
       { 'color': 'Purple', 'description': '' },
     ]);
   const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
-  const [legendTitle, setLegendTitle] = useState('');
+  const [legendTitle, setLegendTitle] = useState("");
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
@@ -234,17 +236,13 @@ export default function LineEditSideBar(props) {
   }
 
   const handleEditLegendChange = (event, rowIndex, colName) => {
-    const updatedData = legendTableData.map((row, index) => {
-      if (index === rowIndex) {
-        return { ...row, [colName]: event.target.value };
-      }
-      return row;
-    });
-    setLegendTableData(updatedData);
+    let transaction = new EditChangeLegendTransaction(legendTableData[rowIndex][colName], event.target.value, legendTableData, setLegendTableData, rowIndex, colName)
+    tps.addTransaction(transaction)
   };
 
   const handleLegendTitleChange = (event) => {
-    setLegendTitle(event.target.value)
+    let transaction = new EditLegendTitleTransaction(legendTitle, event.target.value, setLegendTitle)
+    tps.addTransaction(transaction)
   }
 
   const handleEditBlur = () => {
@@ -297,7 +295,10 @@ export default function LineEditSideBar(props) {
         }
         setLegendTableData(newLegend);
       }
-      setLegendTitle(points.legendTitle);
+      if (points.legendTitle){
+        setLegendTitle(points.legendTitle);
+      }
+      
 
     }
     catch {

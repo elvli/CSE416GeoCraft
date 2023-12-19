@@ -15,37 +15,37 @@ export default function HomeScreen() {
   const mapbox = useRef(null);
 
 
-  async function handleClose(event) {
+  async function handleClose() {
     setNewMapShow(false)
   }
-  async function handlePublish(event) {
+  async function handlePublish() {
     setPublishMapShow(true)
   }
-  async function handlePublishClose(event) {
+  async function handlePublishClose() {
     setPublishMapShow(false)
   }
-  async function handleNewMap(event) {
+  async function handleNewMap() {
     setNewMapShow(true)
   }
-  async function handleDeleteMapClose(event) {
+  async function handleDeleteMapClose() {
     setDeleteMapShow(false)
   }
-  async function handleDeleteMap(event) {
+  async function handleDeleteMap() {
     setDeleteMapShow(true);
   }
-  async function handleEditRegionClose(event) {
+  async function handleEditRegionClose() {
     setEditRegionShow(false)
   }
-  async function handleEditRegion(event) {
+  async function handleEditRegion() {
     setEditRegionShow(true);
   }
-  async function handleForkClose(event) {
+  async function handleForkClose() {
     setForkMapShow(false)
   }
-  async function handleFork(event) {
+  async function handleFork() {
     setForkMapShow(true);
   }
-  async function handleExportClose(event) {
+  async function handleExportClose() {
     setExportMapShow(false)
   }
   async function handleExport(event) {
