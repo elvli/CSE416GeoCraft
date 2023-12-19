@@ -1,13 +1,14 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { GlobalStoreContext } from '../../store';
 import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
-import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare } from 'react-bootstrap-icons';
+import { GlobalStoreContext } from '../../store';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
 import MapNameModal from '../MapNameModal/MapNameModal';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
+import PublishMapModal from '../PublishMapModal/PublishMapModal';
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
-import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
-import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 import PointMapTransaction from '../../transactions/Point/PointMapTransaction';
+import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
+import SettingsChangeTransaction from '../../transactions/SettingsChangeTransaction';
 import rewind from "@mapbox/geojson-rewind";
 import jsTPS from '../../common/jsTPS';
 import './PropSymbEditBar.scss'
@@ -19,6 +20,8 @@ export default function PropSymbEditBar(props) {
   // State variables
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
+  const [showName, setShowName] = useState(false);
+  const [publishMapShow, setPublishMapShow] = useState(false);
   const [showGeoModal, setShowGeoModal] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
@@ -26,9 +29,8 @@ export default function PropSymbEditBar(props) {
   const [tableHeaders, setTableHeaders] = useState(['ID', 'Latitude', 'Longitude', 'Color', 'Size']);
   const [jsonData, setJsonData] = useState('');
   const downloadLinkRef = useRef(null);
-  const [settingsValues, setSettingsValues] = useState([41.8473, 12.7971, 5.43])
-  const [tps, setTPS] = useState(new jsTPS)
-  const [showName, setShowName] = useState(false);
+  const [settingsValues, setSettingsValues] = useState([41.8473, 12.7971, 5.43]);
+  const [tps, setTPS] = useState(new jsTPS);
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -116,6 +118,12 @@ export default function PropSymbEditBar(props) {
     }
   };
 
+  async function handlePublish(event) {
+    setPublishMapShow(true)
+  }
+  async function handlePublishClose(event) {
+    setPublishMapShow(false)
+  }
 
   // THESE FUNCTIONS HANDLE FILE LOADING
   const handleFileChange = (event) => {
@@ -352,6 +360,12 @@ export default function PropSymbEditBar(props) {
             </Row>
 
             <Row>
+              <Button className="edit-button" variant="dark" onClick={handlePublish}>
+                <FileEarmarkArrowUp />
+              </Button>
+            </Row>
+
+            <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
@@ -507,6 +521,7 @@ export default function PropSymbEditBar(props) {
           </div>
         </div>
       </div>
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
