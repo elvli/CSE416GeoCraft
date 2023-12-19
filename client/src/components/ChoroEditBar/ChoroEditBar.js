@@ -186,7 +186,8 @@ export default function ChoroEditBar(props) {
       isLayerAdded.current = false;
       setChoroRenders((prev) => prev + 1);
 
-      setSettingsValues([mapData.settings.latitude, mapData.settings.longitude, mapData.settings.zoom])
+      setSettingsValues([mapData.settings.latitude, mapData.settings.longitude, mapData.settings.zoom]);
+      setLegendTitle(mapData.legendTitle);
     }
     catch {
       console.log('cannot load mapdata');
@@ -295,12 +296,16 @@ export default function ChoroEditBar(props) {
     const changeDataHeaderTransaction = new ChangeDataHeaderTransaction(
       oldTableHeaders,
       newTableHeaders,
-      setTableHeaders,  // assuming setTableHeaders is your state update function
-      setIsEditing      // assuming setIsEditing is your state update function
+      setTableHeaders,
+      setIsEditing
     );
     tps.addTransaction(changeDataHeaderTransaction);
   };
 
+
+
+
+  // THIS HANDLES THE SAVING OF ALL DATA IN EVERY INPUT FIELD TO mapData
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId);
 
@@ -318,6 +323,7 @@ export default function ChoroEditBar(props) {
     var correctedStepCount = (stepCount === '') ? '5' : Math.min(25, Math.max(1, parseFloat(stepCount))).toString();
     setStepCount(correctedStepCount);
 
+    // THIS SETS THE DATA HEADER FOR THE DATA TABLE AND CHECKS IF ITS AND EMPTY STRING ''
     var dataHeader = (tableHeaders[2] === '') ? mapData.choroData.choroSettings.headerValue : tableHeaders[2];
     mapData.choroData.choroSettings = { propName: propName, theme: choroTheme, stepCount: correctedStepCount, headerValue: dataHeader };
 
@@ -330,10 +336,10 @@ export default function ChoroEditBar(props) {
     mapData.settings = { latitude: settingsValues[0], longitude: settingsValues[1], zoom: settingsValues[2] }
     setTableHeaders([tableHeaders[0], tableHeaders[1], mapData.choroData.choroSettings.headerValue]);
 
-    
+
     // THIS SETS THE DATA FOR THE MAP LEGEND
     mapData.legendTitle = legendTitle;
-    mapData.legend = legendTableData;
+    mapData.legend = generateLegend();
 
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
@@ -494,10 +500,10 @@ export default function ChoroEditBar(props) {
   useEffect(() => {
     const addLayer = () => {
       const regionsArray = tableData.map(entry => entry.region);
+      const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+      const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
 
       for (var i = 0; i < regionsArray.length; i++) {
-        const dataValues = tableData.map(entry => parseInt(entry.data, 10));
-        const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
         var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient, dataRange);
         const layerId = `${regionsArray[i]}-choro`;
 
@@ -571,6 +577,39 @@ export default function ChoroEditBar(props) {
   const handleLegendEditBlur = () => {
     setIsEditing(null);
   };
+
+  const createIntervals = (dataRange, steps) => {
+    const [min, max] = dataRange;
+    const intervalSize = (max - min) / steps;
+
+    const intervals = [];
+
+    for (let i = 0; i < steps; i++) {
+      const start = min + i * intervalSize;
+      const end = i === steps - 1 ? max : start + intervalSize - 1;
+
+      intervals.push([Math.round(start), Math.round(end)]);
+    }
+
+    return intervals;
+  }
+
+  const generateLegend = () => {
+    const regionsArray = tableData.map(entry => entry.region);
+    const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+    const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
+    const intervals = createIntervals(dataRange, stepCount);
+
+    var legendTable = [];
+
+    for (var i = 0; i < regionsArray.length; i++) {
+      var color = interpolateColor(getValueForRegion(regionsArray[i]), findGradient(choroTheme).gradient, dataRange);
+      const description = `${color[0]}-${color[1]}`;
+      
+      legendTable.push({color: color, Description: description});
+
+    }
+  }
 
 
 
@@ -919,6 +958,7 @@ export default function ChoroEditBar(props) {
                         className="form-control"
                         value={legendTitle}
                         onChange={(event) => handleLegendTitleChange(event)}
+                        onBlur={handleLegendEditBlur}
                       />
                     </div>
                   </Accordion.Body>
