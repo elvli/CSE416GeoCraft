@@ -17,11 +17,16 @@ export default function EditRegionModal(props) {
         const json = mapData.GeoJson
         let j = 0
         for(let i = 0; i < json["features"].length; i++) {
-          if(json['features'][i].properties['NAME_1']&&json['features'][i].properties['NAME_1'] === region) {
+          if(json['features'][i].properties.hasOwnProperty('NAME_1')&&json['features'][i].properties['NAME_1'] === region) {
             json['features'][i].properties['NAME_1'] = formData.get("mapName");
             j = i
           }
+          else if(json['features'][i].properties.hasOwnProperty('NAME')&&json['features'][i].properties['NAME'] === region) {
+            json['features'][i].properties['NAME'] = formData.get("mapName");
+            j = i
+          }
         }
+       // console.log(json)
       //console.log(json['features'][j].properties['NAME_1'])
       await store.updateMapDataById(mapId, mapData);
       await store.setCurrentList(mapId, 0)

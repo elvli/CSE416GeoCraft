@@ -214,6 +214,11 @@ export default function MapBackground(props) {
                 regionName = hoveredRegion.properties[admName];
                 break;
               }
+              else if(hoveredRegion.properties.hasOwnProperty('NAME')) {
+                regionId = hoveredRegion.properties['NAME'];
+                regionName = hoveredRegion.properties['NAME'];
+                break;
+              }
             }
 
             mapbox.current.setFilter('highlight-region', ['==', admId, regionId]);
