@@ -88,7 +88,7 @@ export default function EditProfileModal(props) {
                 />
               </Form.Group>
             </Row>
-{/* 
+            {/* 
             <Form.Group>
               <Form.Label>Change email</Form.Label>
 
@@ -110,7 +110,6 @@ export default function EditProfileModal(props) {
                 defaultValue={currentUsername}
               />
             </Form.Group> */}
-
             <Form.Group>
               <Form.Label>Change profile banner</Form.Label>
 
@@ -127,12 +126,11 @@ export default function EditProfileModal(props) {
             </Form.Group>
 
             <Form.Group>
-              <Form.Label>Change about me</Form.Label>
+              <Form.Label><div style={{ marginTop: "10px" }}>Change about me</div></Form.Label>
 
               <textarea
                 className="map-name form-control"
                 name="changeAboutMe"
-                rows="4"
                 defaultValue={(username === auth.getUsername()) ? auth.user.aboutMe : aboutMeText}
                 style={{ resize: "none" }} // Add the style to prevent resizing
               />

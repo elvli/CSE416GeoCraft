@@ -26,8 +26,6 @@ export default function MapBackground(props) {
     try {
       // THIS IS THE ID FOR THE ADMINISTRATIVE LEVELS, ID_0 WOULD BE THE HIGHEST (NATIONAL BORDERS AND SUCH)
       // ID_5 WOULD BE ONE OF THE LOWEST LEVELS (COUNTY/TOWN BORDERS AND THE LIKE)
-      let admId = 'ID_0';
-
       mapbox.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/dark-v11',
@@ -180,62 +178,6 @@ export default function MapBackground(props) {
           }
         });
 
-        mapbox.current.addLayer({
-          id: 'highlight-region',
-          type: 'fill',
-          source: 'map-source',
-          paint: {
-            'fill-color': '#FFFFFF',
-            'fill-opacity': 1
-          },
-          filter: ['==', admId, ''],
-        });
-
-        const popup = new mapboxgl.Popup({
-          closeButton: false,
-          closeOnClick: false,
-          className: 'region-name-popup',
-        });
-
-        // This highlights a region and creates a popup with the region when you hover over it
-        mapbox.current.on('mousemove', 'geojson-border-fill', (e) => {
-          const hoveredRegion = e.features[0];
-
-          if (hoveredRegion) {
-            let regionId;
-            let regionName;
-
-            for (let i = 5; i >= 0; i--) {
-              admId = `ID_${i}`;
-              const admName = `NAME_${i}`;
-              if (hoveredRegion.properties.hasOwnProperty(admName)) {
-
-                regionId = hoveredRegion.properties[admId];
-                regionName = hoveredRegion.properties[admName];
-                break;
-              }
-              else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
-                regionId = hoveredRegion.properties['NAME'];
-                regionName = hoveredRegion.properties['NAME'];
-                break;
-              }
-            }
-
-            mapbox.current.setFilter('highlight-region', ['==', admId, regionId]);
-            mapbox.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
-
-            popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(mapbox.current);
-          }
-        });
-
-        // This unhighlights a region and removes the popup when no longer hovering over it
-        mapbox.current.on('mouseleave', 'geojson-border-fill', () => {
-          mapbox.current.setFilter('highlight-region', ['==', admId, '']);
-          mapbox.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
-
-          popup.remove();
-        }
-        );
         generateHeatMap({
           type: 'FeatureCollection',
           features: []
@@ -336,14 +278,81 @@ export default function MapBackground(props) {
             features: []
           });
 
+          setLegend(<></>);
 
 
-          setLegend(<></>)
+
+
           // THIS HANDLES RENDERING POINT MAP DATA
 
           if (store.currentList && store.currentList.mapType === "point") {
             // THIS REMOVES ANY LAYERS ADDED FROM PREVIOUS MAPS
             layerCleanUp();
+
+
+
+
+            // THIS HANDLES HOVERING OVER REGIONS
+            let admId = 'ID_0';
+
+            map.current.addLayer({
+              id: 'highlight-region',
+              type: 'fill',
+              source: 'map-source',
+              paint: {
+                'fill-color': '#FFFFFF',
+                'fill-opacity': 1
+              },
+              filter: ['==', admId, ''],
+            });
+
+            const popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              className: 'region-name-popup',
+            });
+
+            // This highlights a region and creates a popup with the region when you hover over it
+            map.current.on('mousemove', 'geojson-border-fill', (e) => {
+              const hoveredRegion = e.features[0];
+
+              if (hoveredRegion) {
+                let regionId;
+                let regionName;
+
+                for (let i = 5; i >= 0; i--) {
+                  admId = `ID_${i}`;
+                  const admName = `NAME_${i}`;
+                  if (hoveredRegion.properties.hasOwnProperty(admName)) {
+
+                    regionId = hoveredRegion.properties[admId];
+                    regionName = hoveredRegion.properties[admName];
+                    break;
+                  }
+                  else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
+                    regionId = hoveredRegion.properties['NAME'];
+                    regionName = hoveredRegion.properties['NAME'];
+                    break;
+                  }
+                }
+
+                map.current.setFilter('highlight-region', ['==', admId, regionId]);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+
+                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(map.current);
+              }
+            });
+
+            // This unhighlights a region and removes the popup when no longer hovering over it
+            map.current.on('mouseleave', 'geojson-border-fill', () => {
+              map.current.setFilter('highlight-region', ['==', admId, '']);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+
+              popup.remove();
+            });
+
+
+
 
             // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('propSymbol-map').setData({
@@ -448,6 +457,71 @@ export default function MapBackground(props) {
               features: []
             });
 
+
+
+
+            // THIS HANDLES HOVERING OVER REGIONS
+            let admId = 'ID_0';
+
+            map.current.addLayer({
+              id: 'highlight-region',
+              type: 'fill',
+              source: 'map-source',
+              paint: {
+                'fill-color': '#FFFFFF',
+                'fill-opacity': 1
+              },
+              filter: ['==', admId, ''],
+            });
+
+            const popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              className: 'region-name-popup',
+            });
+
+            // This highlights a region and creates a popup with the region when you hover over it
+            map.current.on('mousemove', 'geojson-border-fill', (e) => {
+              const hoveredRegion = e.features[0];
+
+              if (hoveredRegion) {
+                let regionId;
+                let regionName;
+
+                for (let i = 5; i >= 0; i--) {
+                  admId = `ID_${i}`;
+                  const admName = `NAME_${i}`;
+                  if (hoveredRegion.properties.hasOwnProperty(admName)) {
+
+                    regionId = hoveredRegion.properties[admId];
+                    regionName = hoveredRegion.properties[admName];
+                    break;
+                  }
+                  else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
+                    regionId = hoveredRegion.properties['NAME'];
+                    regionName = hoveredRegion.properties['NAME'];
+                    break;
+                  }
+                }
+
+                map.current.setFilter('highlight-region', ['==', admId, regionId]);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+
+                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(map.current);
+              }
+            });
+
+            // This unhighlights a region and removes the popup when no longer hovering over it
+            map.current.on('mouseleave', 'geojson-border-fill', () => {
+              map.current.setFilter('highlight-region', ['==', admId, '']);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+
+              popup.remove();
+            });
+
+
+
+
             pointsCollection = []
             if (mapData.propPoints) {
               for (let i in mapData.propPoints) {
@@ -482,11 +556,11 @@ export default function MapBackground(props) {
             map.current.getSource('propSymbol-map').setData(myGeoJSON);
 
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              var title = ''
+              title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
-              var div =
+              div =
                 <div id="state-legend" className="legend">
                   <h4>{
                     title === '' ? ('Legend') :
@@ -538,6 +612,71 @@ export default function MapBackground(props) {
               features: []
             });
 
+
+
+
+            // THIS HANDLES HOVERING OVER REGIONS
+            let admId = 'ID_0';
+
+            map.current.addLayer({
+              id: 'highlight-region',
+              type: 'fill',
+              source: 'map-source',
+              paint: {
+                'fill-color': '#FFFFFF',
+                'fill-opacity': 1
+              },
+              filter: ['==', admId, ''],
+            });
+
+            const popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              className: 'region-name-popup',
+            });
+
+            // This highlights a region and creates a popup with the region when you hover over it
+            map.current.on('mousemove', 'geojson-border-fill', (e) => {
+              const hoveredRegion = e.features[0];
+
+              if (hoveredRegion) {
+                let regionId;
+                let regionName;
+
+                for (let i = 5; i >= 0; i--) {
+                  admId = `ID_${i}`;
+                  const admName = `NAME_${i}`;
+                  if (hoveredRegion.properties.hasOwnProperty(admName)) {
+
+                    regionId = hoveredRegion.properties[admId];
+                    regionName = hoveredRegion.properties[admName];
+                    break;
+                  }
+                  else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
+                    regionId = hoveredRegion.properties['NAME'];
+                    regionName = hoveredRegion.properties['NAME'];
+                    break;
+                  }
+                }
+
+                map.current.setFilter('highlight-region', ['==', admId, regionId]);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+
+                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(map.current);
+              }
+            });
+
+            // This unhighlights a region and removes the popup when no longer hovering over it
+            map.current.on('mouseleave', 'geojson-border-fill', () => {
+              map.current.setFilter('highlight-region', ['==', admId, '']);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+
+              popup.remove();
+            });
+
+
+
+
             pointsCollection = []
             if (mapData.lineData) {
               for (let i in mapData.lineData) {
@@ -546,16 +685,16 @@ export default function MapBackground(props) {
                     && mapData.lineData[i]['endlongitude'] && mapData.lineData[i]['endlatitude']
                     && !isNaN(mapData.lineData[i]['endlongitude']) && !isNaN(mapData.lineData[i]['endlatitude'])
                   )) {
-                    if (mapData.lineData[i]['startlatitude'] !== '' && mapData.lineData[i]['startlongitude'] !== '' 
+                  if (mapData.lineData[i]['startlatitude'] !== '' && mapData.lineData[i]['startlongitude'] !== ''
                     && mapData.lineData[i]['endlatitude'] !== '' && mapData.lineData[i]['endlongitude'] !== '') {
-                      
-                  var slatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['startlatitude'])));
-                  var slongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['startlongitude'])));
-                  var elatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['endlatitude'])));
-                  var elongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['endlongitude'])));
 
-                  pointsCollection.push([slatitude, slongitude, mapData.lineData[i]['id'], elatitude, elongitude, mapData.lineData[i]['color']])
-                    }
+                    var slatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['startlatitude'])));
+                    var slongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['startlongitude'])));
+                    var elatitude = Math.min(90, Math.max(-90, parseFloat(mapData.lineData[i]['endlatitude'])));
+                    var elongitude = Math.min(180, Math.max(-180, parseFloat(mapData.lineData[i]['endlongitude'])));
+
+                    pointsCollection.push([slatitude, slongitude, mapData.lineData[i]['id'], elatitude, elongitude, mapData.lineData[i]['color']])
+                  }
 
                 }
               }
@@ -584,11 +723,11 @@ export default function MapBackground(props) {
             map.current.getSource('line-map').setData(myGeoJSON);
 
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              var title = ''
+              title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
-              var div =
+              div =
                 <div id="state-legend" className="legend">
                   <h4>{
                     title === '' ? ('Legend') :
@@ -639,6 +778,70 @@ export default function MapBackground(props) {
               features: []
             });
 
+
+
+            // THIS HANDLES HOVERING OVER REGIONS
+            let admId = 'ID_0';
+
+            map.current.addLayer({
+              id: 'highlight-region',
+              type: 'fill',
+              source: 'map-source',
+              paint: {
+                'fill-color': '#FFFFFF',
+                'fill-opacity': 1
+              },
+              filter: ['==', admId, ''],
+            });
+
+            const popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              className: 'region-name-popup',
+            });
+
+            // This highlights a region and creates a popup with the region when you hover over it
+            map.current.on('mousemove', 'geojson-border-fill', (e) => {
+              const hoveredRegion = e.features[0];
+
+              if (hoveredRegion) {
+                let regionId;
+                let regionName;
+
+                for (let i = 5; i >= 0; i--) {
+                  admId = `ID_${i}`;
+                  const admName = `NAME_${i}`;
+                  if (hoveredRegion.properties.hasOwnProperty(admName)) {
+
+                    regionId = hoveredRegion.properties[admId];
+                    regionName = hoveredRegion.properties[admName];
+                    break;
+                  }
+                  else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
+                    regionId = hoveredRegion.properties['NAME'];
+                    regionName = hoveredRegion.properties['NAME'];
+                    break;
+                  }
+                }
+
+                map.current.setFilter('highlight-region', ['==', admId, regionId]);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+
+                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(map.current);
+              }
+            });
+
+            // This unhighlights a region and removes the popup when no longer hovering over it
+            map.current.on('mouseleave', 'geojson-border-fill', () => {
+              map.current.setFilter('highlight-region', ['==', admId, '']);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+
+              popup.remove();
+            });
+
+
+
+
             var tableData = mapData.heatmap.data
             var arr = []
             if (mapData.heatmap) {
@@ -662,13 +865,13 @@ export default function MapBackground(props) {
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-intensity', mapData.heatmap.int);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-radius', mapData.heatmap.rad);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-opacity', mapData.heatmap.opac);
-            
+
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              var title = ''
+              title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
-              var div =
+              div =
                 <div id="state-legend" className="legend">
                   <h5>{
                     title === '' ? ('Legend') :
@@ -683,13 +886,13 @@ export default function MapBackground(props) {
                         </div>
                       ) :
                         <div className='container'>
-                          <div className='row'> 
-                          <div className='col-1'> 
-                            <span style={{ backgroundColor: row.color, borderRadius: '2px', width: '2vw', height: '3vh' }}></span>
-                          </div>
-                          
-                          <div className='col'> <h6>{row.description}</h6></div>
-                          
+                          <div className='row'>
+                            <div className='col-1'>
+                              <span style={{ backgroundColor: row.color, borderRadius: '2px', width: '2vw', height: '3vh' }}></span>
+                            </div>
+
+                            <div className='col'> <h6>{row.description}</h6></div>
+
                           </div>
                         </div>
                     ) : <div></div>
@@ -729,6 +932,7 @@ export default function MapBackground(props) {
             var propName = mapData.choroData.choroSettings.propName;
             var choroTheme = mapData.choroData.choroSettings.theme;
             var stepCount = mapData.choroData.choroSettings.stepCount;
+            var headerValue = mapData.choroData.choroSettings.headerValue;
 
             const dataValues = tableData.map(entry => parseInt(entry.data, 10));
             const dataRange = [Math.min(...dataValues), Math.max(...dataValues)];
@@ -868,7 +1072,6 @@ export default function MapBackground(props) {
             }
 
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              console.log('HI LEGEND choro')
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
@@ -901,9 +1104,81 @@ export default function MapBackground(props) {
               setLegend(div);
             }
 
+            function findRegionValue(regionName) {
+              var result = tableData.find(entry => entry.region === regionName);
+              return result ? result.data : '0';
+            }
+
+            // THIS HANDLES HOVERING OVER REGIONS
+            let admId = 'ID_0';
+
+            map.current.addLayer({
+              id: 'highlight-region',
+              type: 'fill',
+              source: 'map-source',
+              paint: {
+                'fill-color': '#FFFFFF',
+                'fill-opacity': 1
+              },
+              filter: ['==', admId, ''],
+            });
+
+            const popup = new mapboxgl.Popup({
+              closeButton: false,
+              closeOnClick: false,
+              className: 'region-name-popup',
+            });
+
+            // This highlights a region and creates a popup with the region when you hover over it
+            map.current.on('mousemove', 'geojson-border-fill', (e) => {
+              const hoveredRegion = e.features[0];
+
+              if (hoveredRegion) {
+                let regionId;
+                let regionName;
+
+                for (let i = 5; i >= 0; i--) {
+                  admId = `ID_${i}`;
+                  const admName = `NAME_${i}`;
+                  if (hoveredRegion.properties.hasOwnProperty(admName)) {
+
+                    regionId = hoveredRegion.properties[admId];
+                    regionName = hoveredRegion.properties[admName];
+                    break;
+                  }
+                  else if (hoveredRegion.properties.hasOwnProperty('NAME')) {
+                    regionId = hoveredRegion.properties['NAME'];
+                    regionName = hoveredRegion.properties['NAME'];
+                    break;
+                  }
+                }
+
+                map.current.setFilter('highlight-region', ['==', admId, regionId]);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+
+
+                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p> <p>${headerValue} : ${findRegionValue(regionName)}</p>`).addTo(map.current);
+              }
+            });
+
+            // This unhighlights a region and removes the popup when no longer hovering over it
+            map.current.on('mouseleave', 'geojson-border-fill', () => {
+              map.current.setFilter('highlight-region', ['==', admId, '']);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+
+              popup.remove();
+            });
+
+
+
+
+
             // THIS SETS THE TEMPORARY ARRAY OF LAYER IDS TO THE STATE layersToRemove
             setLayersToRemove(choroLayerIDs);
           }
+
+
+
 
           else {
             // IF THE MAP TYPE IS NOT ONE OF THE FIVE WE SUPPORT, LOAD SET DATA TO {}
