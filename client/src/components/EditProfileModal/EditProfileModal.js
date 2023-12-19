@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button, Modal, Row, Col } from "react-bootstrap";
 import AuthContext from '../../auth'
 import GlobalStoreContext from "../../store";
@@ -17,6 +17,7 @@ export default function EditProfileModal(props) {
   const currentUsername = auth.getUsername();
   const currentAboutMe = auth.getAboutMe();
   const navigate = useNavigate();
+  const { username } = useParams();
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -132,7 +133,7 @@ export default function EditProfileModal(props) {
                 className="map-name form-control"
                 name="changeAboutMe"
                 rows="4"
-                defaultValue={auth.user.aboutMe}
+                defaultValue={(username === auth.getUsername()) ? auth.user.aboutMe : aboutMeText}
                 style={{ resize: "none" }} // Add the style to prevent resizing
               />
             </Form.Group>
