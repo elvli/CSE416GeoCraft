@@ -2,9 +2,9 @@ import React, { useState, useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../../store'
 import { Button, Dropdown } from 'react-bootstrap';
 import { Map, PeopleFill, PersonFill, Plus, FunnelFill } from 'react-bootstrap-icons';
-import MapCard from '../MapCard/MapCard';
-import AuthContext from '../../auth'
-import './LeftSideBar.scss'
+import { MapCard } from '../../components';
+import AuthContext from '../../auth';
+import './LeftSideBar.scss';
 
 export default function LeftSideBar(props) {
   const { store } = useContext(GlobalStoreContext);

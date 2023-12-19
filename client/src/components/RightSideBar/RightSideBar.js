@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { Button } from 'react-bootstrap';
-import { ChatRightText, Send } from 'react-bootstrap-icons';
-import CommentCard from '../CommentCard/CommentCard';
+import { ChatRightText, Send } from 'react-bootstrap-icons'; import { CommentCard } from '../../components';
 import AuthContext from '../../auth'
 import { GlobalStoreContext } from '../../store';
 import "./RightSideBar.scss";

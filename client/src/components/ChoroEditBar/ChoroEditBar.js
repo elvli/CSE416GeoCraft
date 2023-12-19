@@ -2,12 +2,7 @@ import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col, Dropdown } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
 import { XLg, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
-import DataErrorModal from '../DataErrorModal/DataErrorModal';
-import EditChoroRegionModal from '../EditRegionModal/EditChoroRegionModal';
-import MapNameModal from '../MapNameModal/MapNameModal';
-import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
-import PublishMapModal from '../PublishMapModal/PublishMapModal';
-import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal'
+import { DataErrorModal, EditChoroRegionModal, MapNameModal, SaveAndExitModal, PublishMapModal, RemoveGeoJsonModal } from '../../components'
 import mapboxgl from 'mapbox-gl';
 import AddRowTransaction from '../../transactions/Choro/AddRowTransaction';
 import DeleteRowTransaction from '../../transactions/Choro/DeleteRowTransaction'
@@ -21,6 +16,7 @@ import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 import jsTPS from '../../common/jsTPS';
 import rewind from "@mapbox/geojson-rewind";
 import chroma from 'chroma-js';
+import JSZip from 'jszip';
 import './ChoroEditBar.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
@@ -55,6 +51,7 @@ export default function ChoroEditBar(props) {
   const [legendTitle, setLegendTitle] = useState('');
 
   const [tps, setTPS] = useState(new jsTPS);
+  const shp = require("shpjs");
 
   // THIS HANDLES THE TOGGLING OF THE SIDEBAR
   function toggleSideBar(event) {
@@ -219,13 +216,13 @@ export default function ChoroEditBar(props) {
       if (extension === 'json') {
         var json = JSON.parse(text);
         var mapData = await store.getMapDataById(mapId);
-
         if (json.mapID) {
           mapData.GeoJson = json.GeoJson;
+          mapData.settings = json.settings;
           mapData.choroData.regionData = json.choroData.regionData;
           mapData.choroData.choroSettings = json.choroData.choroSettings;
-          mapData.settings = json.settings;
-
+          mapData.legend = json.legend;
+          mapData.legendTitle = json.legendTitle;
           await store.updateMapDataById(mapId, mapData);
           await store.setCurrentList(mapId, 0);
           updateTable();
@@ -234,27 +231,126 @@ export default function ChoroEditBar(props) {
         else if (json.type === 'FeatureCollection' || json.features) {
           mapData.GeoJson = json;
           await store.updateMapDataById(mapId, mapData);
-          await store.setCurrentList(mapId, 0)
+          await store.setCurrentList(mapId, 0);
         }
       }
 
       else if (extension === 'kml') {
-        mapData = await store.getMapDataById(mapId);
+        mapData = await store.getMapDataById(mapId)
         var tj = require('@mapbox/togeojson')
         var kml = new DOMParser().parseFromString(text, "text/xml"); // create xml dom object
         json = tj.kml(kml); // convert xml dom to geojson
         rewind(json, false); // correct right hand rule
-        mapData.GeoJson = json;
-        await store.updateMapDataById(mapId, mapData);
-        await store.setCurrentList(mapId, 0);
+        mapData.GeoJson = json
+        await store.updateMapDataById(mapId, mapData)
+        await store.setCurrentList(mapId, 0)
       }
 
-      // var json = JSON.parse(text);
-      // mapData.GeoJson = json;
-      // await store.updateMapDataById(mapId, mapData);
-      // await store.setCurrentList(mapId, 0)
+      else if (extension === "zip") {
+        var zip = new JSZip();
+        var shpArr = [];
+        var dbfArr = [];
+        var arr = []
+        var shpArr0 = []
+        var dbfArr0 = []
+        var arr0 = []
+        var count = 0
+        var count1 = 0
+        async function shpCombiner() {
+          zip.loadAsync(text).then(function (zips) {
+            Object.keys(zips.files).forEach(function (filename) {
+              count++;
+            })
+            count--;
+            console.log(count);
+            Object.keys(zips.files).forEach(function (filename) {
+              zip.files[filename].async('string').then(function (fileData) {
+                if (filename.split(".")[1] !== "txt") {
+
+                  zip.file(filename).async('blob').then(async (blob) => {
+                    const buffer = await blob.arrayBuffer();
+                    console.log(filename);
+                    if (buffer && buffer.byteLength > 0) {
+                      try {
+                        count1++
+                        console.log(count1)
+                        if (filename.endsWith("adm1.shp")) {
+
+                          shpArr = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr.length === 1) {
+                            arr = [shpArr, arr[0]]
+                          }
+                          else {
+                            arr.push(shpArr)
+                          }
+
+                        }
+                        else if (filename.endsWith("adm1.dbf")) {
+                          dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr.push(dbfArr)
+
+                        }
+                        if (filename.endsWith("adm0.shp")) {
+
+                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr0.length === 1) {
+                            arr0 = [shpArr0, arr0[0]]
+                          }
+                          else {
+                            arr0.push(shpArr0)
+                          }
+
+                        }
+                        else if (filename.endsWith("adm0.dbf")) {
+                          dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr0.push(dbfArr0)
+
+                        }
+
+                        if (count === count1) {
+                          console.log(dbfArr0)
+                          if (arr.length === 2) {
+                            let combined = await shp.combine(arr)
+
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                          else {
+                            let combined = await shp.combine(arr0)
+
+                            mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+
+                        }
+                      } catch (error) {
+                        console.error("Error parsing shapefile:", error);
+                      }
+                      if (filename.split(".").pop() === "dbf" || filename.split(".").pop() === "shp") {
+                      }
+                    } else {
+                      console.error("Invalid or empty shapefile buffer");
+                    }
+                  });
+                }
+              })
+            })
+          })
+        }
+        await shpCombiner();
+      }
     };
-    reader.readAsText(file);
+    if (extension === "zip" || extension === "shp") {
+      reader.readAsArrayBuffer(file);
+    }
+    else {
+      reader.readAsText(file);
+    }
+
   }
 
 
@@ -963,9 +1059,9 @@ export default function ChoroEditBar(props) {
                     className="d-flex flex-column" >
                     <div className="drop-zone">
                       <div className="drop-zone-text">
-                        Attach a .json, .kml, or .shp file.
+                        Attach a .json, .kml, or .zip file.
                       </div>
-                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
+                      <input type="file" id="my_file_input" accept=".json,.kml,.zip" onChange={handleFileChange} />
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>

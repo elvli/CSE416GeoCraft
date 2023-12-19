@@ -14,41 +14,40 @@ export default function HomeScreen() {
   const { store } = useContext(GlobalStoreContext);
   const mapbox = useRef(null);
 
-
   async function handleClose() {
-    setNewMapShow(false)
+    setNewMapShow(false);
   }
   async function handlePublish() {
-    setPublishMapShow(true)
+    setPublishMapShow(true);
   }
   async function handlePublishClose() {
-    setPublishMapShow(false)
+    setPublishMapShow(false);
   }
   async function handleNewMap() {
-    setNewMapShow(true)
+    setNewMapShow(true);
   }
   async function handleDeleteMapClose() {
-    setDeleteMapShow(false)
+    setDeleteMapShow(false);
   }
   async function handleDeleteMap() {
     setDeleteMapShow(true);
   }
   async function handleEditRegionClose() {
-    setEditRegionShow(false)
+    setEditRegionShow(false);
   }
   async function handleEditRegion() {
     setEditRegionShow(true);
   }
   async function handleForkClose() {
-    setForkMapShow(false)
+    setForkMapShow(false);
   }
   async function handleFork() {
     setForkMapShow(true);
   }
   async function handleExportClose() {
-    setExportMapShow(false)
+    setExportMapShow(false);
   }
-  async function handleExport(event) {
+  async function handleExport() {
     store.setCurrentList(store.currentList._id, null);
     setExportMapShow(true);
   }
@@ -59,7 +58,7 @@ export default function HomeScreen() {
 
   return (
     <div>
-      <div style={{ height: '5vh' }} />
+      <div style={{ height: '5vh', backgroundColor: 'black' }} />
       <AppBanner />
       <div className="row1">
 
