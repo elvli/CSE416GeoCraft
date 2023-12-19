@@ -173,8 +173,8 @@ function AuthContextProvider(props) {
           loggedIn: false,
           firstName: response.data.user.firstName,
           LasttName: response.data.user.LastName,
-          username: response.data.user.username,
-          email: response.data.user.email,
+          // username: response.data.user.username,
+          // email: response.data.user.email,
           aboutMe: response.data.user.aboutMe,
           profilePicture: response.data.user.profilePicture
         }

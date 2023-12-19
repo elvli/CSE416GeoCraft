@@ -34,22 +34,22 @@ export default function EditProfileModal(props) {
       const user = {
         firstName: formData.get("changeFirstName"),
         lastName: formData.get("changeLastName"),
-        username: formData.get("changeUsername"),
-        email: formData.get("changeEmail"),
+        // username: formData.get("changeUsername"),
+        // email: formData.get("changeEmail"),
         aboutMe: formData.get("changeAboutMe")
       }
 
       auth.updateUser(user);
       store.updateMultipleMaps({
         current: currentUsername,
-        username: formData.get("changeUsername"),
-        email: formData.get("changeEmail"),
+        // username: formData.get("changeUsername"),
+        // email: formData.get("changeEmail"),
       })
 
       handleEditProfileClose(event);
 
-      let username = formData.get("changeUsername")
-      navigate(`/profile/${username}`)
+      // let username = formData.get("changeUsername")
+      // navigate(`/profile/${username}`)
     }
   };
   const handleClosing = (event) => {
@@ -87,7 +87,7 @@ export default function EditProfileModal(props) {
                 />
               </Form.Group>
             </Row>
-
+{/* 
             <Form.Group>
               <Form.Label>Change email</Form.Label>
 
@@ -108,7 +108,7 @@ export default function EditProfileModal(props) {
                 type="text"
                 defaultValue={currentUsername}
               />
-            </Form.Group>
+            </Form.Group> */}
 
             <Form.Group>
               <Form.Label>Change profile banner</Form.Label>
