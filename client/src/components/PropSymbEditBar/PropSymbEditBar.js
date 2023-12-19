@@ -15,6 +15,7 @@ import rewind from "@mapbox/geojson-rewind";
 import jsTPS from '../../common/jsTPS';
 import './PropSymbEditBar.scss'
 import EditRegionModal from '../EditRegionModal/EditRegionModal';
+import JSZip from 'jszip';
 
 
 export default function PropSymbEditBar(props) {
@@ -51,6 +52,7 @@ export default function PropSymbEditBar(props) {
     ]);
   const [legendHeaders, setLegendHeaders] = useState(['Color', 'Description']);
   const [legendTitle, setLegendTitle] = useState("");
+  const shp = require("shpjs");
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -131,10 +133,13 @@ export default function PropSymbEditBar(props) {
   // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
   // INTO ANY OF THE INPUTS
   const handleStepKeyDown = (event) => {
-    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter';
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowReft' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
 
-    if (!isNumericOrBackspace) {
-      event.preventDefault();
+    // ALLOW DEFAULT BEHAVIOR OR CUT, COPY, PASTE, AND SELECT
+    if (!(event.ctrlKey && ['x', 'X', 'c', 'C', 'v', 'V', 'a', 'A'].includes(event.key))) {
+      if (!isNumericOrBackspace) {
+        event.preventDefault();
+      }
     }
   };
 
@@ -187,12 +192,153 @@ export default function PropSymbEditBar(props) {
         await store.setCurrentList(mapId, 0)
       }
 
+      else if (extension === "zip") {  
+        var zip = new JSZip();
+        var shpArr = [];
+        var dbfArr = [];
+        var arr = []
+        var shpArr0 = []
+        var dbfArr0 = []
+        var arr0 = []
+        var count = 0
+        var count1 = 0
+        async function shpCombiner() {
+          zip.loadAsync(text).then(function (zips) {
+            Object.keys(zips.files).forEach(function (filename) {
+              count++
+              
+              
+            })
+            count--
+            console.log(count)
+            Object.keys(zips.files).forEach(function (filename) {
+              zip.files[filename].async('string').then(function (fileData){
+                if(filename.split(".")[1] != "txt") {
+                  
+                  zip.file(filename).async('blob').then( async (blob) => {                    
+                    const buffer = await blob.arrayBuffer();
+                    console.log(filename);
+                    if (buffer && buffer.byteLength > 0) {
+                      // Parse the shapefile here
+  
+  
+                     
+  
+                      try {
+                        count1++
+                        console.log(count1)
+                        if(filename.endsWith("adm1.shp") ) {
+                          
+                           shpArr = (shp.parseShp(buffer /*optional prj str*/));
+                           if(arr.length == 1) {
+                            arr = [shpArr, arr[0]]
+                           }
+                           else {
+                            arr.push(shpArr)
+                           }
+                           
+                        }
+                        else if(filename.endsWith("adm1.dbf")) {
+                           dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
+                           arr.push(dbfArr)
+                           
+                        }
+                        if(filename.endsWith("adm0.shp") ) {
+                          
+                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
+                          if(arr0.length == 1) {
+                           arr0 = [shpArr0, arr0[0]]
+                          }
+                          else {
+                           arr0.push(shpArr0)
+                          }
+                          
+                        }
+                        else if(filename.endsWith("adm0.dbf")) {
+                            dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
+                            arr0.push(dbfArr0)
+                            
+                        }
+                        // if(arr.length == 2) {
+                        //   let combined = await shp.combine(arr)
+                          
+                        //   var mapData = await store.getMapDataById(mapId)
+                        //   mapData.GeoJson = combined
+                        //   await store.updateMapDataById(mapId, mapData)
+                        //   await store.setCurrentList(mapId, 0)
+                        // }
+                        
+                        if(count == count1) {
+                          console.log(dbfArr0)
+                          if(arr.length == 2) {
+                            let combined = await shp.combine(arr)
+                            
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                          else {
+                            let combined = await shp.combine(arr0)
+                          
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                            
+                        } 
+                        
+  
+  
+        
+                      } catch (error) {
+                        console.error("Error parsing shapefile:", error);
+                      }
+  
+  
+                      if(filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp" ) {
+                        
+                        }
+                    
+                    } else {
+                      console.error("Invalid or empty shapefile buffer");
+                    }
+                    
+                  }); 
+                }
+                
+              })
+            })
+          })
+        }
+        await shpCombiner()
+                    
+
+        
+        // let arr2 = await shp.combine([shpArr, dbfArr])
+        // console.log(shpArr)
+        
+         
+        
+        //json = shpHandler(text);
+        
+      }
+
+
+
       // var json = JSON.parse(text);
       // mapData.GeoJson = json;
       // await store.updateMapDataById(mapId, mapData);
       // await store.setCurrentList(mapId, 0)
     };
-    reader.readAsText(file);
+    if(extension === "zip" || extension === "shp") {
+      reader.readAsArrayBuffer(file);
+    }
+    else {
+      reader.readAsText(file);
+    }
+    
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
@@ -266,7 +412,6 @@ export default function PropSymbEditBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId);
-    mapData.propPoints = tableData;
 
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
@@ -279,9 +424,23 @@ export default function PropSymbEditBar(props) {
     mapData.legend = legendTableData
     mapData.legendTitle = legendTitle
 
+    var cleanedTableData = cleanTableData();
+    mapData.propPoints = cleanTableData();
+    setTableData(cleanedTableData);
+    mapData.propPoints = tableData;
+
     await store.updateMapDataById(mapId, mapData);
     await store.setCurrentList(mapId, 0);
   }
+
+  const cleanTableData = () => {
+    return tableData.map(item => ({
+      ...item,
+      latitude: /^-?\d+(.\d+)?$/.test(item.latitude) ? item.latitude : '',
+      longitude: /^-?\d+(.\d+)?$/.test(item.longitude) ? item.longitude : '',
+      size: /^-?\d+(.\d+)?$/.test(item.size) ? item.size : '',
+    }));
+  };
 
   const updateTable = async () => {
     try {
@@ -428,13 +587,13 @@ export default function PropSymbEditBar(props) {
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleUndo}>
+              <Button className="edit-button" variant="dark" onClick={handleUndo} disabled={!tps.hasTransactionToUndo()}>
                 <ArrowCounterclockwise />
               </Button>
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleRedo}>
+              <Button className="edit-button" variant="dark" onClick={handleRedo} disabled={!tps.hasTransactionToRedo()}>
                 <ArrowClockwise />
               </Button>
             </Row>
@@ -469,9 +628,9 @@ export default function PropSymbEditBar(props) {
                     className="d-flex flex-column" >
                     <div className="drop-zone">
                       <div className="drop-zone-text">
-                        Attach a .json, .kml, or .shp file.
+                        Attach a .json, .kml, or .zip file.
                       </div>
-                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
+                      <input type="file" id="my_file_input" accept=".json,.kml,.zip" onChange={handleFileChange} />
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>

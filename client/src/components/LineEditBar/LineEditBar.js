@@ -13,9 +13,13 @@ import SetDefaultsTransaction from '../../transactions/SetDefaultsTransaction';
 import EditChangeLegendTransaction from '../../transactions/Point/EditLegendChangeTransaction';
 import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitleTransaction';
 import MapNameModal from '../MapNameModal/MapNameModal';
-
+import JSZip from 'jszip';
+import EditRegionModal from '../EditRegionModal/EditRegionModal';
 
 export default function LineEditSideBar(props) {
+  const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [showRegion, setShowRegion] = useState(false);
   const { mapId, points, settings, map } = props;
   const { store } = useContext(GlobalStoreContext);
 
@@ -45,6 +49,7 @@ export default function LineEditSideBar(props) {
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
   const [tps, setTPS] = useState(new jsTPS)
   const [showName, setShowName] = useState(false);
+  const shp = require("shpjs");
 
   function toggleSideBar(event) {
     event.preventDefault();
@@ -125,10 +130,13 @@ export default function LineEditSideBar(props) {
   // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
   // INTO ANY OF THE INPUTS
   const handleStepKeyDown = (event) => {
-    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter';
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowReft' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
 
-    if (!isNumericOrBackspace) {
-      event.preventDefault();
+    // ALLOW DEFAULT BEHAVIOR OR CUT, COPY, PASTE, AND SELECT
+    if (!(event.ctrlKey && ['x', 'X', 'c', 'C', 'v', 'V', 'a', 'A'].includes(event.key))) {
+      if (!isNumericOrBackspace) {
+        event.preventDefault();
+      }
     }
   };
 
@@ -175,12 +183,153 @@ export default function LineEditSideBar(props) {
         await store.setCurrentList(mapId, 0)
       }
 
+      else if (extension === "zip") {  
+        var zip = new JSZip();
+        var shpArr = [];
+        var dbfArr = [];
+        var arr = []
+        var shpArr0 = []
+        var dbfArr0 = []
+        var arr0 = []
+        var count = 0
+        var count1 = 0
+        async function shpCombiner() {
+          zip.loadAsync(text).then(function (zips) {
+            Object.keys(zips.files).forEach(function (filename) {
+              count++
+              
+              
+            })
+            count--
+            console.log(count)
+            Object.keys(zips.files).forEach(function (filename) {
+              zip.files[filename].async('string').then(function (fileData){
+                if(filename.split(".")[1] != "txt") {
+                  
+                  zip.file(filename).async('blob').then( async (blob) => {                    
+                    const buffer = await blob.arrayBuffer();
+                    console.log(filename);
+                    if (buffer && buffer.byteLength > 0) {
+                      // Parse the shapefile here
+  
+  
+                     
+  
+                      try {
+                        count1++
+                        console.log(count1)
+                        if(filename.endsWith("adm1.shp") ) {
+                          
+                           shpArr = (shp.parseShp(buffer /*optional prj str*/));
+                           if(arr.length == 1) {
+                            arr = [shpArr, arr[0]]
+                           }
+                           else {
+                            arr.push(shpArr)
+                           }
+                           
+                        }
+                        else if(filename.endsWith("adm1.dbf")) {
+                           dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
+                           arr.push(dbfArr)
+                           
+                        }
+                        if(filename.endsWith("adm0.shp") ) {
+                          
+                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
+                          if(arr0.length == 1) {
+                           arr0 = [shpArr0, arr0[0]]
+                          }
+                          else {
+                           arr0.push(shpArr0)
+                          }
+                          
+                        }
+                        else if(filename.endsWith("adm0.dbf")) {
+                            dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
+                            arr0.push(dbfArr0)
+                            
+                        }
+                        // if(arr.length == 2) {
+                        //   let combined = await shp.combine(arr)
+                          
+                        //   var mapData = await store.getMapDataById(mapId)
+                        //   mapData.GeoJson = combined
+                        //   await store.updateMapDataById(mapId, mapData)
+                        //   await store.setCurrentList(mapId, 0)
+                        // }
+                        
+                        if(count == count1) {
+                          console.log(dbfArr0)
+                          if(arr.length == 2) {
+                            let combined = await shp.combine(arr)
+                            
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                          else {
+                            let combined = await shp.combine(arr0)
+                          
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                            
+                        } 
+                        
+  
+  
+        
+                      } catch (error) {
+                        console.error("Error parsing shapefile:", error);
+                      }
+  
+  
+                      if(filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp" ) {
+                        
+                        }
+                    
+                    } else {
+                      console.error("Invalid or empty shapefile buffer");
+                    }
+                    
+                  }); 
+                }
+                
+              })
+            })
+          })
+        }
+        await shpCombiner()
+                    
+
+        
+        // let arr2 = await shp.combine([shpArr, dbfArr])
+        // console.log(shpArr)
+        
+         
+        
+        //json = shpHandler(text);
+        
+      }
+
+
+
       // var json = JSON.parse(text);
       // mapData.GeoJson = json;
       // await store.updateMapDataById(mapId, mapData);
       // await store.setCurrentList(mapId, 0)
     };
-    reader.readAsText(file);
+    if(extension === "zip" || extension === "shp") {
+      reader.readAsArrayBuffer(file);
+    }
+    else {
+      reader.readAsText(file);
+    }
+    
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
@@ -231,8 +380,8 @@ export default function LineEditSideBar(props) {
   };
 
   const handleEditChangeTransaction = (event, rowIndex, colName) => { // 0 is update table, 1 is row stuff
-    let transaction = new PointMapTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
-    tps.addTransaction(transaction)
+      let transaction = new PointMapTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
+      tps.addTransaction(transaction)
   }
 
   const handleEditLegendChange = (event, rowIndex, colName) => {
@@ -251,7 +400,6 @@ export default function LineEditSideBar(props) {
 
   const handleSave = async () => {
     var mapData = await store.getMapDataById(mapId)
-    mapData.lineData = tableData;
 
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
@@ -264,9 +412,24 @@ export default function LineEditSideBar(props) {
     mapData.legend = legendTableData
     mapData.legendTitle = legendTitle
 
+    var cleanedTableData = cleanTableData();
+    mapData.lineData = cleanTableData();
+    setTableData(cleanedTableData);
+    mapData.lineData = tableData;
+
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
+
+  const cleanTableData = () => {
+    return tableData.map(item => ({
+      ...item,
+      startlatitude: /^-?\d+(.\d+)?$/.test(item.startlatitude) ? item.startlatitude : '',
+      startlongitude: /^-?\d+(.\d+)?$/.test(item.startlongitude) ? item.startlongitude : '',
+      endlongitude: /^-?\d+(.\d+)?$/.test(item.endlongitude) ? item.endlongitude : '',
+      endlatitude: /^-?\d+(.\d+)?$/.test(item.endlatitude) ? item.endlatitude : ''
+    }));
+  };
 
   const updateTable = async () => {
     try {
@@ -284,7 +447,7 @@ export default function LineEditSideBar(props) {
       }
       setTableData(newPoints);
       setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
-      
+
       if (points.legend.length !== 0) {
         var newLegend = [];
         for (let i in points.legend) {
@@ -295,10 +458,10 @@ export default function LineEditSideBar(props) {
         }
         setLegendTableData(newLegend);
       }
-      if (points.legendTitle){
+      if (points.legendTitle) {
         setLegendTitle(points.legendTitle);
       }
-      
+
 
     }
     catch {
@@ -343,6 +506,47 @@ export default function LineEditSideBar(props) {
     }
   }, []);
 
+  useEffect(() => {
+    const regionSelectHandler = (event) => {
+      event.preventDefault()
+      const clickedRegion = event.features[0];
+      var propertyName;
+
+      if (clickedRegion) {
+
+        let regionName;
+
+        // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
+        for (let i = 5; i >= 0; i--) {
+          propertyName = `NAME_${i}`;
+          if (clickedRegion.properties.hasOwnProperty(propertyName)) {
+            regionName = clickedRegion.properties[propertyName];
+            break;
+          }
+          else if (clickedRegion.properties.hasOwnProperty('NAME')) {
+            regionName = clickedRegion.properties['NAME'];
+          }
+          else {
+            regionName = ''
+          }
+        }
+
+        // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
+        setSelectedRegion(regionName);
+        setShowRegion(true)
+
+      }
+    };
+
+    // WHEN A REGION IS CLICKED ON, RUN regionSelectHandler
+    map.current.on('dblclick', 'geojson-border-fill', regionSelectHandler);
+
+    //CLEAN UP
+    return () => {
+      map.current.off('click', 'geojson-border-fill', regionSelectHandler);
+    };
+  }, [prevSelectedRegions]);
+
 
   const handleSetDefaults = () => {
     const oldSettings = [...settingsValues];
@@ -379,13 +583,13 @@ export default function LineEditSideBar(props) {
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleUndo}>
+              <Button className="edit-button" variant="dark" onClick={handleUndo} disabled={!tps.hasTransactionToUndo()}>
                 <ArrowCounterclockwise />
               </Button>
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleRedo}>
+              <Button className="edit-button" variant="dark" onClick={handleRedo} disabled={!tps.hasTransactionToRedo()}>
                 <ArrowClockwise />
               </Button>
             </Row>
@@ -414,9 +618,9 @@ export default function LineEditSideBar(props) {
                     className="d-flex flex-column" >
                     <div className="drop-zone">
                       <div className="drop-zone-text">
-                        Attach a .json, .kml, or .shp file.
+                        Attach a .json, .kml, or .zip file.
                       </div>
-                      <input type="file" id="my_file_input" accept=".json,.kml,.shp" onChange={handleFileChange} />
+                      <input type="file" id="my_file_input" accept=".json,.kml,.zip" onChange={handleFileChange} />
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
@@ -601,6 +805,7 @@ export default function LineEditSideBar(props) {
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
+      <EditRegionModal editRegionShow={showRegion} handleEditRegionClose={(event) => { setShowRegion(false) }} mapId={mapId} region={selectedRegion} tps={tps}>   </EditRegionModal>
     </div>
   )
 }
