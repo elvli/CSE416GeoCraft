@@ -571,7 +571,8 @@ export default function MapBackground(props) {
                 }
               })
             )
-
+            map.current.getSource('propSymbol-map').setData(myGeoJSON);
+            
             const currentUrl = window.location.href.toLowerCase();
 
             // if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
