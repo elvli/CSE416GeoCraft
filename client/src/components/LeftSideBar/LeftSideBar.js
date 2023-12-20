@@ -147,8 +147,8 @@ export default function LeftSideBar(props) {
               />
             </div>
 
-            <div className="col-md-4">
-              <Dropdown className='filter-btn'>
+            <div className="col-md-4 filter-btn" style={{width:'0px'}}>
+              <Dropdown>
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   <FunnelFill />
                 </Dropdown.Toggle>
