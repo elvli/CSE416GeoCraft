@@ -17,11 +17,16 @@ export default function EditRegionModal(props) {
       const mapData = await store.getMapDataById(mapId);
 
       const json = mapData.GeoJson;
-
       for (let i = 0; i < json["features"].length; i++) {
-        if (json['features'][i].properties.hasOwnProperty('NAME_1') && json['features'][i].properties['NAME_1'] === oldName) {
-          json['features'][i].properties['NAME_1'] = newName;
+        // for (let i = 5; i >= 0; i--) {
+        //   const admName = `NAME_${i}`;
+        // }
+        if (json['features'][i].properties.hasOwnProperty('NAME_2') && json['features'][i].properties['NAME_2'] === oldName) {
+          json['features'][i].properties['NAME_2'] = newName;
         }
+        else if (json['features'][i].properties.hasOwnProperty('NAME_1') && json['features'][i].properties['NAME_1'] === oldName) {
+          json['features'][i].properties['NAME_1'] = newName;
+        }        
         else if (json['features'][i].properties.hasOwnProperty('NAME') && json['features'][i].properties['NAME'] === oldName) {
           json['features'][i].properties['NAME'] = newName;
         }
