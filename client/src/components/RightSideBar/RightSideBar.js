@@ -5,16 +5,18 @@ import AuthContext from '../../auth'
 import { GlobalStoreContext } from '../../store';
 import "./RightSideBar.scss";
 
-export default function RightSideBar() {
+export default function RightSideBar(props) {
+  const { isRightSidebarToggled, toggleRightSidebar } = props;
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
-  const [isToggled, setIsToggled] = useState(false);
+  // const [isToggled, setIsToggled] = useState(false);
   const [textInput, setTextInput] = useState('');
 
-  function toggleSideBar(event) {
-    event.preventDefault();
-    setIsToggled(!isToggled);
-  }
+
+  // function toggleSideBar(event) {
+  //   event.preventDefault();
+  //   setIsToggled(!isToggled);
+  // }
 
   const handleInputChange = (event) => {
     setTextInput(event.target.value);
@@ -54,9 +56,9 @@ export default function RightSideBar() {
   }
 
   return (
-    <div className={`d-flex ${isToggled ? 'toggled' : ''}`} id="right-wrapper">
+    <div className={`d-flex ${isRightSidebarToggled ? 'toggled' : ''}`} id="right-wrapper">
       <nav className="navbar">
-        <button className="btn btn-light" id="right-menu-toggle" onClick={toggleSideBar}>
+        <button className="btn btn-light" id="right-menu-toggle" onClick={toggleRightSidebar}>
           <ChatRightText style={{ marginLeft: '-8px', marginBottom: '4px' }} />
         </button>
       </nav>

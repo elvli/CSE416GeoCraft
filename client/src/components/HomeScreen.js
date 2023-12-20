@@ -11,6 +11,7 @@ export default function HomeScreen() {
   const [forkMapShow, setForkMapShow] = useState(false);
   const [exportMapShow, setExportMapShow] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
+  const [isRightSidebarToggled, setIsRightSidebarToggled] = useState(false);
   const { store } = useContext(GlobalStoreContext);
   const mapbox = useRef(null);
 
@@ -52,6 +53,10 @@ export default function HomeScreen() {
     setExportMapShow(true);
   }
 
+  function toggleRightSidebar() {
+    setIsRightSidebarToggled(!isRightSidebarToggled);
+  }
+
   useEffect(() => {
     store.loadIdNamePairs();
   }, []);
@@ -63,12 +68,13 @@ export default function HomeScreen() {
       <div className="row1">
 
         <div className="background">
-          <MapBackground map={mapbox} />
+          <MapBackground map={mapbox} isRightSidebarToggled={isRightSidebarToggled} />
         </div>
 
         <div className="foreground">
           <LeftSideBar handleNewMap={handleNewMap} handleDeleteMap={handleDeleteMap} handleEditRegion={handleEditRegion} handleFork={handleFork} handleExport={handleExport} handlePublish={handlePublish} />
-          {!store.currentList ? <></> : !store.currentList.published ? <></> : <RightSideBar />}
+          {!store.currentList ? <></> : !store.currentList.published ? <></> : <RightSideBar isRightSidebarToggled={isRightSidebarToggled} toggleRightSidebar={toggleRightSidebar}
+          />}
         </div>
 
       </div>
