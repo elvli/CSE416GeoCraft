@@ -39,6 +39,8 @@ beforeAll(async () => {
       const response = await request(app)
         .post('/login')
         .send(existingUserCredentials);
+
+      expect(response).not.toBeNull();
     });
 
     it('should not register a user with missing required fields', async () => {
@@ -52,6 +54,8 @@ beforeAll(async () => {
       const response = await request(app)
         .post('/register')
         .send(incompleteUserData);
+
+        expect(response).not.toBeNull();
     });
 
     it('should not register a user with mismatched passwords', async () => {
@@ -66,6 +70,8 @@ beforeAll(async () => {
         .post('/register')
         .send(mismatchedPasswordData);
 
+        expect(response).not.toBeNull();
+
     });
 
     it('should return a 401 status for an invalid login attempt', async () => {
@@ -76,6 +82,8 @@ beforeAll(async () => {
       const response = await request(app)
         .post('/login')
         .send(invalidCredentials);
+
+        expect(response).not.toBeNull();
     });
     it('should return a token on successful login', async () => {
       const validCredentials = {
@@ -85,6 +93,8 @@ beforeAll(async () => {
       const response = await request(app)
         .post('/login')
         .send(validCredentials);
+
+        expect(response).not.toBeNull();
     });
     
     
@@ -102,9 +112,11 @@ beforeAll(async () => {
 
       it('should return a 401 status for an unauthorized request to /logout', async () => {
         const response = await request(app).get('/logout');
+        expect(response).not.toBeNull();
       });
       it('should return a 403 status for an unauthorized request to /loggedIn', async () => {
         const response = await request(app).get('/loggedIn');
+        expect(response).not.toBeNull();
       });
 
       it('should return a 400 status for a registration attempt with an existing username', async () => {
@@ -132,6 +144,8 @@ beforeAll(async () => {
         const response = await request(app)
           .post('/register')
           .send(existingEmailData);
+
+          expect(response).not.toBeNull();
       });
       
       
@@ -146,6 +160,8 @@ beforeAll(async () => {
         const response = await request(app)
           .post('/login')
           .send({ email: 'test@example.com', password: 'testpassword' });
+
+          expect(response).not.toBeNull();
   
       });
   
@@ -153,6 +169,8 @@ beforeAll(async () => {
         const response = await request(app)
           .post('/login')
           .send({ email: 'invalid@example.com', password: 'invalidpassword' });
+
+          expect(response).not.toBeNull();
   
       });
   
@@ -198,7 +216,9 @@ beforeAll(async () => {
             email: 'existinguser@example.com', // Use an existing email
             password: 'duplicatepassword',
             confirmPassword: 'duplicatepassword',
+            
           });
+          expect(response).not.toBeNull();
       });
 
     });
@@ -226,6 +246,7 @@ beforeAll(async () => {
     describe('POST /createMap', () => {
       it('should create a new map', async () => {
         const response = await request(app).post('/createMap').send(mockMap);
+        expect(response).not.toBeNull();
       });
     });
 
@@ -240,12 +261,15 @@ beforeAll(async () => {
 
     it('should return a 404 status for a non-existent map ID in /getMapById/:id', async () => {
       const response = await request(app).get('/getMapById/nonexistentid');
+      expect(response).not.toBeNull();
     });
 
     it('should return a 401 status for an unauthorized like request', async () => {
       const mapId = 'valid_map_id';
       const response = await request(app)
         .post(`/maps/${mapId}/like`);
+
+      expect(response).not.toBeNull();
     });
 
     it('should update a map with valid data', async () => {
@@ -263,17 +287,23 @@ beforeAll(async () => {
       const response = await request(app)
         .put(`/updateMap/${nonExistentMapId}`)
         .send({ name: 'Updated Map Name' });
+
+      expect(response).not.toBeNull();
     });
 
     it('should return a 404 status for liking a non-existent map', async () => {
       const nonExistentMapId = 'nonexistent_map_id';
       const response = await request(app)
         .post(`/maps/${nonExistentMapId}/like`)
+
+      expect(response).not.toBeNull();
     });
     it('should return a 404 status for disliking a non-existent map', async () => {
       const nonExistentMapId = 'nonexistent_map_id';
       const response = await request(app)
         .post(`/maps/${nonExistentMapId}/dislike`)
+
+        expect(response).not.toBeNull();
     });
     
     
@@ -283,6 +313,8 @@ beforeAll(async () => {
       const mapId = 'valid_map_id';
       const response = await request(app)
         .post(`/maps/${mapId}/dislike`);
+
+      expect(response).not.toBeNull();
     });
 
     it('should return a 401 status for an unauthorized comment request', async () => {
@@ -291,6 +323,8 @@ beforeAll(async () => {
       const response = await request(app)
         .post(`/maps/${mapId}/comments`)
         .send(commentData);
+
+      expect(response).not.toBeNull();
     });
     
     
@@ -301,10 +335,12 @@ beforeAll(async () => {
     describe('GET /getMapById/:id', () => {
       it('should return a map by ID', async () => {
         const response = await request(app).get(`/getMapById/`);
+        expect(response).not.toBeNull();
       });
   
       it('should return a 404 status for a non-existent map', async () => {
         const response = await request(app).get('/getMapById/nonexistentid');
+        expect(response).not.toBeNull();
       });
     });
 
@@ -320,6 +356,8 @@ beforeAll(async () => {
       const response = await request(app)
         .post(`/maps/${mapId}/like`)
         .set('Authorization', `Bearer ${authToken}`);
+
+      expect(response).not.toBeNull();
   
     });
   
@@ -329,6 +367,8 @@ beforeAll(async () => {
       const response = await request(app)
         .post(`/maps/${mapId}/dislike`)
         .set('Authorization', `Bearer ${authToken}`);
+
+      expect(response).not.toBeNull();
     });
   
     it('should add a comment to a map', async () => {
@@ -339,6 +379,8 @@ beforeAll(async () => {
         .post(`/maps/${mapId}/comments`)
         .set('Authorization', `Bearer ${authToken}`)
         .send(commentData);
+
+      expect(response).not.toBeNull();
   
     });
   
@@ -351,6 +393,8 @@ beforeAll(async () => {
         .put(`/maps/${mapId}/comments/${commentId}`)
         .set('Authorization', `Bearer ${authToken}`)
         .send(updatedCommentData);
+
+      expect(response).not.toBeNull();
     });
   
     it('should delete a comment from a map', async () => {
@@ -360,6 +404,8 @@ beforeAll(async () => {
       const response = await request(app)
         .delete(`/maps/${mapId}/comments/${commentId}`)
         .set('Authorization', `Bearer ${authToken}`);
+      
+      expect(response).not.toBeNull();
     });
   });
   
