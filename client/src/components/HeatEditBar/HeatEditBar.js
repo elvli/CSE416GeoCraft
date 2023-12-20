@@ -898,7 +898,7 @@ export default function HeatEditBar(props) {
           <div className="input-group-prepend">
             <span className="input-group-text default-zoom" id="">Legend Title</span>
           </div>
-          <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
+          <input type="text" className="form-control" value={legendTitle} maxLength='40' onChange={(event) => handleLegendTitleChange(event)} />
         </div>
       </div>
     </Row>
@@ -1040,8 +1040,6 @@ export default function HeatEditBar(props) {
                         Attach a .json, .kml, or .shp file {"(must be in zip)"}.
                       </div>
                       <input type="file" id="my_file_input" accept=".json,.kml,.zip" onChange={handleFileChange} />
-                      {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
-                      {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
@@ -1062,6 +1060,7 @@ export default function HeatEditBar(props) {
                                   <input
                                     type="text"
                                     value={header ?? ''}
+                                    maxLength='40'
                                     onChange={(event) => handleHeaderChange(event, index + 1)}
                                   />
                                 ) : (
@@ -1087,6 +1086,7 @@ export default function HeatEditBar(props) {
                                         onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                         onKeyDown={handleStepKeyDown}
+                                        maxLength='40'
                                       />
                                     ) : colIndex !== 4 ? (
                                       row[colName]
@@ -1128,15 +1128,15 @@ export default function HeatEditBar(props) {
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
-                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} maxLength='40' onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} maxLength='40' onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <div className="input-group setting-zoom">
                       <div className="input-group-prepend">
                         <span className="input-group-text default-zoom" id="">Default Zoom</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} maxLength='40' onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >

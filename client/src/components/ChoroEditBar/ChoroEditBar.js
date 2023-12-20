@@ -486,6 +486,7 @@ export default function ChoroEditBar(props) {
                   className='data-header-input'
                   type="text"
                   value={tempTableHeaders[2]}
+                  maxLength='40'
                   onChange={changeTempDataHeader}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
@@ -514,6 +515,7 @@ export default function ChoroEditBar(props) {
                   className="cells"
                   type="text"
                   value={(row.data === '0') ? '0' : row.data}
+                  maxLength='40'
                   onChange={(event) => handleEditChange(event, rowIndex, 'data')}
                   onKeyDown={handleStepKeyDown}
                   onBlur={handleEditTableBlur}
@@ -952,6 +954,7 @@ export default function ChoroEditBar(props) {
         className="form-control"
         placeholder='Steps'
         value={stepCount}
+        maxLength='40'
         onChange={handleStepChange}
         onKeyDown={handleStepKeyDown}
       />
@@ -1075,6 +1078,7 @@ export default function ChoroEditBar(props) {
                         className="form-control"
                         placeholder='Latitude'
                         value={settingsValues[0]}
+                        maxLength='40'
                         onChange={(event) => handleSettingChange(event, 0)}
                         onKeyDown={handleStepKeyDown}
                       />
@@ -1083,6 +1087,7 @@ export default function ChoroEditBar(props) {
                         className="form-control"
                         placeholder='Longitude'
                         value={settingsValues[1]}
+                        maxLength='40'
                         onChange={(event) => handleSettingChange(event, 1)}
                         onKeyDown={handleStepKeyDown}
                       />
@@ -1097,6 +1102,7 @@ export default function ChoroEditBar(props) {
                         className="form-control"
                         placeholder='Zoom'
                         value={settingsValues[2]}
+                        maxLength='40'
                         onChange={(event) => handleSettingChange(event, 2)}
                         onKeyDown={handleStepKeyDown}
                       />
@@ -1122,6 +1128,7 @@ export default function ChoroEditBar(props) {
                         type="text"
                         className="form-control"
                         value={legendTitle}
+                        maxLength='40'
                         onChange={(event) => handleLegendTitleChange(event)}
                         onBlur={handleLegendEditBlur}
                       />
