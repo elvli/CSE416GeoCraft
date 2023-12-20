@@ -3,7 +3,7 @@ import { Button, Table, AccordionHeader, Row, Col, Dropdown, Form } from 'react-
 import './HeatEditBar.scss'
 import Accordion from 'react-bootstrap/Accordion';
 import { GlobalStoreContext } from '../../store'
-import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal'
 import { HexColorPicker } from "react-colorful";
 import MapNameModal from '../MapNameModal/MapNameModal';
@@ -19,6 +19,7 @@ import shpParser from 'shpjs';
 import JSZip from 'jszip';
 import rewind from "@mapbox/geojson-rewind";
 import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitleTransaction';
+import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
 const shp = require("shpjs");
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -30,10 +31,11 @@ export default function HeatEditBar(props) {
   const [showHeat, setShowHeat] = useState(false)
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null)
-  const [tableData, setTableData] = useState([{ id: 1, longitude: 0, latitude: 0, magnitude: 0 }]);
+  const [tableData, setTableData] = useState([{ id: 1, latitude: 0, longitude: 0, magnitude: 0 }]);
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude', 'Magnitude'
   ]);
+  const [publishMapShow, setPublishMapShow] = useState(false);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
   const [rangeMag1, setRangeMag1] = useState(0);
   const [rangeMag2, setRangeMag2] = useState(0);
@@ -76,6 +78,7 @@ export default function HeatEditBar(props) {
     6,//5
     1//6
   ],)
+  const [showGeoModal, setShowGeoModal] = useState(false);
   const [currentInt, setCurrentInt] = useState([
     'interpolate',
     ['linear'],
@@ -444,7 +447,13 @@ export default function HeatEditBar(props) {
 
     setTableData(newTable)
   }
+  const handleRemoveGeoJson = async () => {
+    var mapData = await store.getMapDataById(mapId)
+    mapData.GeoJson = null
 
+    await store.updateMapDataById(mapId, mapData)
+    await store.setCurrentList(mapId, 0)
+  }
 
   const handleHeaderChange = (event, index) => {
     const updatedHeaders = [...tableHeaders];
@@ -580,7 +589,12 @@ export default function HeatEditBar(props) {
     const rewait = await store.setPrint(arg)
   }
 
-
+  async function handlePublish(event) {
+    setPublishMapShow(true)
+  }
+  async function handlePublishClose(event) {
+    setPublishMapShow(false)
+  }
 
 
 
@@ -1046,6 +1060,11 @@ export default function HeatEditBar(props) {
               </Button>
             </Row>
             <Row>
+              <Button className="edit-button" variant="dark" onClick={handlePublish}>
+                <FileEarmarkArrowUp />
+              </Button>
+            </Row>
+            <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
@@ -1169,6 +1188,9 @@ export default function HeatEditBar(props) {
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
                       Set Defaults Here
                     </Button>
+                    <Button className="remove-geojson-button" variant="btn btn-dark" onClick={() => setShowGeoModal(true)}>
+                        Remove GeoJson Data
+                      </Button>
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="4">
@@ -1204,6 +1226,7 @@ export default function HeatEditBar(props) {
       {/* <HeatPointModal saveAndExitShow={showHeat} handlesaveAndExitShowClose={(event) => { setShowHeat(false) }} handleHeatMap={handleHeatMap} handleAddRow={handleAddRow}  /> */}
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
       <EditRegionModal editRegionShow={showRegion} handleEditRegionClose={(event) => { setShowRegion(false) }} mapId={mapId} region={selectedRegion} tps={tps}>   </EditRegionModal>
+      <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
     </div >
   )
 }
