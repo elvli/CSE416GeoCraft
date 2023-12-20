@@ -353,13 +353,16 @@ export default function ChoroEditBar(props) {
   };
 
   const handleDeleteRow = (rowIndex, regionName) => {
-    const deletedRow = tableData[rowIndex];
-    const deleteRowTransaction = new DeleteRowTransaction(rowIndex, deletedRow, setTableData);
-    tps.addTransaction(deleteRowTransaction);
-
     if (map.current.getLayer(`${regionName}-choro`)) {
-      map.current.removeLayer(`${regionName}-choro`);
+      var layerData = {
+        filter: map.current.getLayer(`${regionName}-choro`).filter,
+        paint: map.current.getPaintProperty(`${regionName}-choro`, 'fill-color'),
+      };
     }
+
+    const deletedRow = tableData[rowIndex];
+    const deleteRowTransaction = new DeleteRowTransaction(rowIndex, deletedRow, setTableData, map, regionName, layerData);
+    tps.addTransaction(deleteRowTransaction);
   };
 
   const handleEditChange = (event, rowIndex, colName) => {
