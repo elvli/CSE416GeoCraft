@@ -103,7 +103,12 @@ export default function MapCard(props) {
 
         <div className="card-body">
           <p className="card-text comment-text">
-            By: <Link to={`/profile/${map.ownerName}`} className="owner-link" onClick={(e) => e.stopPropagation()}>
+            By: <Link to={`/profile/${map.ownerName}`} className="owner-link" onClick={(e) => e.stopPropagation()} style={{
+                textDecoration: 'none', // Remove default underline
+                color: '#007BFF', // Set a modern color
+                fontWeight: 'bold', // Add bold font weight
+                // Add other styles as needed
+              }}>
               {map.ownerName}
             </Link>
           </p>

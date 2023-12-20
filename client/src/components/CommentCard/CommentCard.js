@@ -80,7 +80,12 @@ export default function CommentCard(props) {
             <Col>
               <Row>
                 <p>
-                  <Link to={`/profile/${user}`} className="comment-username" onClick={(e) => e.stopPropagation()}>
+                  <Link to={`/profile/${user}`} className="comment-username" onClick={(e) => e.stopPropagation()} style={{
+                      textDecoration: 'none', // Remove default underline
+                      color: '#007BFF', // Set a modern color
+                      fontWeight: 'bold', // Add bold font weight
+                      // Add other styles as needed
+                    }}>
                     {user}
                   </Link>
                 </p>
