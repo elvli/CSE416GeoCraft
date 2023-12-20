@@ -41,7 +41,7 @@ export default function LeftSideBar(props) {
   if (publishedMaps || !auth.loggedIn) {
     maps = <div>
       {
-        store.idNamePairs.map((pair) => {
+        store.idNamePairs.filter(pair => pair.name.toUpperCase().includes(queryInput.toUpperCase())).map((pair) => {
           if (pair.published) {
             return <MapCard
               key={pair._id}
