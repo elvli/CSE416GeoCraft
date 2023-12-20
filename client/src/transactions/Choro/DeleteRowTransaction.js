@@ -12,6 +12,7 @@ export default class AddRowTransaction extends jsTPS_Transaction {
     this.setTableData((prevTableData) => {
       const updatedData = [...prevTableData];
       updatedData.splice(this.rowIndex, 1);
+      
       return updatedData;
     });
   }
@@ -20,6 +21,7 @@ export default class AddRowTransaction extends jsTPS_Transaction {
     this.setTableData((prevTableData) => {
       const updatedData = [...prevTableData];
       updatedData.splice(this.rowIndex, 0, this.deletedRow);
+      
       return updatedData;
     });
   }

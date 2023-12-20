@@ -295,6 +295,10 @@ export default function MapBackground(props) {
             // THIS HANDLES HOVERING OVER REGIONS
             let admId = 'ID_0';
 
+            if (map.current.getLayer('highlight-region')) {
+              map.current.removeLayer('highlight-region');
+            }
+
             map.current.addLayer({
               id: 'highlight-region',
               type: 'fill',
@@ -463,6 +467,10 @@ export default function MapBackground(props) {
             // THIS HANDLES HOVERING OVER REGIONS
             let admId = 'ID_0';
 
+            if (map.current.getLayer('highlight-region')) {
+              map.current.removeLayer('highlight-region');
+            }
+
             map.current.addLayer({
               id: 'highlight-region',
               type: 'fill',
@@ -617,6 +625,10 @@ export default function MapBackground(props) {
 
             // THIS HANDLES HOVERING OVER REGIONS
             let admId = 'ID_0';
+
+            if (map.current.getLayer('highlight-region')) {
+              map.current.removeLayer('highlight-region');
+            }
 
             map.current.addLayer({
               id: 'highlight-region',
@@ -782,6 +794,10 @@ export default function MapBackground(props) {
 
             // THIS HANDLES HOVERING OVER REGIONS
             let admId = 'ID_0';
+
+            if (map.current.getLayer('highlight-region')) {
+              map.current.removeLayer('highlight-region');
+            }
 
             map.current.addLayer({
               id: 'highlight-region',
@@ -1111,6 +1127,10 @@ export default function MapBackground(props) {
 
             // THIS HANDLES HOVERING OVER REGIONS
             let admId = 'ID_0';
+
+            if (map.current.getLayer('highlight-region')) {
+              map.current.removeLayer('highlight-region');
+            }
 
             map.current.addLayer({
               id: 'highlight-region',

@@ -352,11 +352,14 @@ export default function ChoroEditBar(props) {
     }
   };
 
-  const handleDeleteRow = (rowIndex) => {
+  const handleDeleteRow = (rowIndex, regionName) => {
     const deletedRow = tableData[rowIndex];
-
     const deleteRowTransaction = new DeleteRowTransaction(rowIndex, deletedRow, setTableData);
     tps.addTransaction(deleteRowTransaction);
+
+    if (map.current.getLayer(`${regionName}-choro`)) {
+      map.current.removeLayer(`${regionName}-choro`);
+    }
   };
 
   const handleEditChange = (event, rowIndex, colName) => {
@@ -522,7 +525,7 @@ export default function ChoroEditBar(props) {
                 />
               </td>
               <td>
-                <button onClick={() => handleDeleteRow(rowIndex)} className="choro-delete-row-btn btn btn-secondary">
+                <button onClick={() => handleDeleteRow(rowIndex, row.region)} className="choro-delete-row-btn btn btn-secondary">
                   <i className="bi bi-trash"></i>
                 </button>
               </td>
@@ -827,7 +830,7 @@ export default function ChoroEditBar(props) {
   // THIS ASSIGNS THE APPROPRIATE COLOR FOR THE REGIONS VALUE
   function interpolateColor(value, gradient, dataRange) {
     const gradientArray = generateColors(parseFloat(stepCount), gradient);
-    const stepSize = (dataRange[1] - dataRange[0]) / stepCount;
+    const stepSize = (dataRange[1] - dataRange[0]) / parseFloat(stepCount);
 
     // FIND THE CORRESPONDING INDEX BASED ON THE value AND dataRange
     const index = Math.max(
@@ -838,6 +841,13 @@ export default function ChoroEditBar(props) {
       )
     );
     const resultColor = gradientArray[index];
+
+    //  console.log('gradientArray', gradientArray, typeof(gradientArray));
+    //  console.log('stepSize', stepSize, typeof(stepSize));
+    //  console.log('stepCount', stepCount, typeof(stepCount));
+    //  console.log('parseFloat(stepCount)', parseFloat(stepCount), typeof(parseFloat(stepCount)));
+    //  console.log('gradientArray', resultColor, typeof(resultColor));
+
 
     return resultColor;
   }
