@@ -81,7 +81,7 @@ loginUser = async (req, res) => {
     // LOGIN THE USER
     const token = auth.signToken(existingUser._id);
     // const expirationDate = new Date(Date.now() + (7 * 24 * 60 * 60 * 1000));
-    const expiration = 7 * 24 * 60 * 60 * 1000;
+    const expiration = 7 * 24 * 60 * 60 * 100000;
 
     res.cookie("token", token, {
       httpOnly: true,
