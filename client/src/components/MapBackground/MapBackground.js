@@ -221,6 +221,11 @@ export default function MapBackground(props) {
     const updateMapData = async () => {
       try {
         layerCleanUp();
+
+        const localURL = "http://localhost:3000/edit/".toLowerCase();
+        console.log('localURL', localURL)
+        const liveURL = "https://geocraftmaps.azurewebsites.net/edit/".toLowerCase();
+
         if (store.currentList) {
           // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
           const mapData = await store.getMapDataById(store.currentList._id);
@@ -403,7 +408,9 @@ export default function MapBackground(props) {
             )
             map.current.getSource('point-map').setData(myGeoJSON);
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+            const currentUrl = window.location.href.toLowerCase();
+
+            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
               var title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
@@ -563,9 +570,9 @@ export default function MapBackground(props) {
               })
             )
 
-            map.current.getSource('propSymbol-map').setData(myGeoJSON);
+            const currentUrl = window.location.href.toLowerCase();
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
@@ -736,7 +743,9 @@ export default function MapBackground(props) {
             )
             map.current.getSource('line-map').setData(myGeoJSON);
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+            const currentUrl = window.location.href.toLowerCase();
+
+            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
@@ -886,7 +895,9 @@ export default function MapBackground(props) {
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-radius', mapData.heatmap.rad);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-opacity', mapData.heatmap.opac);
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+            const currentUrl = window.location.href.toLowerCase();
+
+            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
@@ -1097,7 +1108,9 @@ export default function MapBackground(props) {
               tryAddLayer();
             }
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
+            const currentUrl = window.location.href.toLowerCase();
+
+            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
@@ -1229,6 +1242,25 @@ export default function MapBackground(props) {
 
         if (store.currentList) {
           if (store.currentList && store.currentList.mapType === "point") {
+
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('earthquakes').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
               var title = ''
               if (mapData.legendTitle) {
@@ -1263,6 +1295,24 @@ export default function MapBackground(props) {
 
 
           else if (store.currentList && store.currentList.mapType === "line") {
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+            map.current.getSource('point-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('earthquakes').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
               if (mapData.legendTitle) {
@@ -1297,6 +1347,24 @@ export default function MapBackground(props) {
 
 
           else if (store.currentList && store.currentList.mapType === "propSymb") {
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+            map.current.getSource('point-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('earthquakes').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
               if (mapData.legendTitle) {
@@ -1331,6 +1399,24 @@ export default function MapBackground(props) {
 
 
           else if (store.currentList && store.currentList.mapType === "heat") {
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+            map.current.getSource('point-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
               if (mapData.legendTitle) {
@@ -1372,8 +1458,25 @@ export default function MapBackground(props) {
 
           else if (store.currentList && store.currentList.mapType === "choro") {
             var tableData = mapData.choroData.regionData;
-
             const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+            map.current.getSource('point-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('earthquakes').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
 
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
