@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button, Modal, Row, Col } from "react-bootstrap";
 import AuthContext from '../../auth'
 import GlobalStoreContext from "../../store";
+import { SketchPicker } from 'react-color';
 import "./EditProfileModal.scss";
 
 export default function EditProfileModal(props) {
@@ -18,6 +19,7 @@ export default function EditProfileModal(props) {
   const currentAboutMe = auth.getAboutMe();
   const navigate = useNavigate();
   const { username } = useParams();
+  const [color, setColor] = useState('#ffffff');
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -59,6 +61,10 @@ export default function EditProfileModal(props) {
 
   };
 
+  const handleColorChange = (newColor) => {
+    setColor(newColor.hex);
+  };
+
   return (
     <div>
       <Modal centered show={editProfileShow} onHide={handleEditProfileClose}>
@@ -78,7 +84,10 @@ export default function EditProfileModal(props) {
                   defaultValue={currentFirstName}
                 />
               </Form.Group>
+              </Row>
 
+              <Row>
+              <Form.Label>Change last name</Form.Label>
               <Form.Group as={Col}>
                 <Form.Control
                   className="map-name"
@@ -111,18 +120,8 @@ export default function EditProfileModal(props) {
               />
             </Form.Group> */}
             <Form.Group>
-              <Form.Label>Change profile banner</Form.Label>
-
-              <Form.Select name="profileBanner">
-                <option value="">Choose a color for your profile banner</option>
-                <option value="Red">Red</option>
-                <option value="Orange">Orange</option>
-                <option value="Yellow">Yellow</option>
-                <option value="Green">Green</option>
-                <option value="Blue">Blue</option>
-                <option value="Indigo">Indigo</option>
-                <option value="Purple">Violet</option>
-              </Form.Select>
+              <Form.Label>Change profile banner color</Form.Label>
+              <SketchPicker color={color} onChange={handleColorChange}/>
             </Form.Group>
 
             <Form.Group>
