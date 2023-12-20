@@ -622,6 +622,7 @@ export default function PointEditBar(props) {
                                     type="text"
                                     value={header ?? ''}
                                     onChange={(event) => handleHeaderChange(event, index + 1)}
+                                    maxlength="12"
                                   />
                                 ) : (
                                   header
@@ -646,6 +647,7 @@ export default function PointEditBar(props) {
                                         onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                         onKeyDown={handleStepKeyDown}
+                                        maxlength="12"
                                       />
                                     ) : colIndex !== 3 ? (
                                       row[colName]
@@ -681,15 +683,15 @@ export default function PointEditBar(props) {
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
-                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Latitude' maxlength="12" value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Longitude' maxlength="12" value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <div className="input-group setting-zoom">
                       <div className="input-group-prepend">
                         <span className="input-group-text default-zoom" id="">Default Zoom</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" placeholder='Zoom' maxlength="12" value={settingsValues[2]} onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
@@ -713,7 +715,7 @@ export default function PointEditBar(props) {
                         <div className="input-group-prepend">
                           <span className="input-group-text default-zoom" id="">Legend Title</span>
                         </div>
-                        <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
+                        <input maxlength="40" type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
                       </div>
                     </div>
 
@@ -747,6 +749,7 @@ export default function PointEditBar(props) {
                                         value={row[colName]}
                                         onChange={(event) => handleEditLegendChange(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
+                                        maxlength="40"
                                       />
                                     ) : row[colName]
                                   }

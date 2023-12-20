@@ -43,7 +43,7 @@ export default function MapNameModal(props) {
           <Modal.Body>
             <Form.Group>
               <Form.Label>Enter the Name of Your Map</Form.Label>
-              <Form.Control className="map-name" name="mapName" required type="text" placeholder={store.currentList.name} />
+              <Form.Control className="map-name" name="mapName" required type="text" placeholder={store.currentList.name} maxLength={'40'}/>
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>

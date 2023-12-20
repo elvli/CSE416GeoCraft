@@ -79,6 +79,7 @@ export default function RightSideBar() {
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
                 disabled={!auth.loggedIn}
+                maxLength={'150'}
               />
             </div>
             <div className="col-md-4">
