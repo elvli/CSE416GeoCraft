@@ -263,7 +263,7 @@ export default function ProfilePage() {
             <div className="mb-5">
               <p className="lead fw-normal mb-1">About Me</p>
               <div className="p-4 about-me-container" >
-                <p className="font-italic mb-1">{(username === auth.getUsername()) ? auth.user.aboutMe : aboutMeText}</p>
+                <p className="font-italic mb-1" style={{ whiteSpace: 'pre-line' }}>{(username === auth.getUsername()) ? auth.user.aboutMe : aboutMeText}</p>
 
               </div>
             </div>
