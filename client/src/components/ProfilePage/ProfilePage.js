@@ -23,8 +23,10 @@ export default function ProfilePage() {
   const [imageName, setImageName] = useState('');
   const [color, setColor] = useState('');
   const fileInputRef = useRef(null);
+  const [rerender, setRerender] = useState(false);
 
   const { username } = useParams();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,7 +38,7 @@ export default function ProfilePage() {
     };
 
     fetchData();
-  }, []);
+  }, [username]);
 
   useEffect(() => {
     const fetchImageName = async () => {
@@ -49,7 +51,7 @@ export default function ProfilePage() {
     };
 
     fetchImageName();
-  }, []);
+  }, [username]);
 
   useEffect(() => {
     const fetchColor = async () => {
@@ -62,7 +64,7 @@ export default function ProfilePage() {
     };
 
     fetchColor();
-  }, []);
+  }, [username]);
 
   const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
   const version = "v1702872120/";
