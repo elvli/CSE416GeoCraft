@@ -1,5 +1,5 @@
-import React from "react";
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Form, Button, Modal } from 'react-bootstrap'
 import GlobalStoreContext from "../../store";
 import "./MapCreateModal.scss";
@@ -8,9 +8,11 @@ export default function MapCreateModal(props) {
   const { show, handleClose } = props;
   const { store } = useContext(GlobalStoreContext);
   const [validated, setValidated] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+    
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
@@ -19,14 +21,19 @@ export default function MapCreateModal(props) {
     else {
       event.preventDefault();
       event.stopPropagation();
+
       const formData = new FormData(event.currentTarget);
-      store.createNewMap(
-        formData.get("mapName"),
-        formData.get("mapType")
-      )
-      handleClose(event)
+      store.createNewMap(formData.get("mapName"), formData.get("mapType"))
+        .then((newMapID) => {
+          navigate(`/edit/${newMapID}`);
+          handleClose(event);
+        })
+        .catch((error) => {
+          console.error('Error creating new map:', error);
+        });
     }
   };
+
   const handleClosing = (event) => {
     setValidated(false);
     handleClose(event)
@@ -42,7 +49,7 @@ export default function MapCreateModal(props) {
           <Modal.Body>
             <Form.Group>
               <Form.Label>Enter the Name of Your Map</Form.Label>
-              <Form.Control className="map-name" name='mapName' required type="text" placeholder="Map Name" maxLength={'40'}/>
+              <Form.Control className="map-name" name='mapName' required type="text" placeholder="Map Name" maxLength={'40'} />
             </Form.Group>
             <br />
             <Form.Group>
