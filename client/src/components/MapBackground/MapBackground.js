@@ -286,10 +286,28 @@ export default function MapBackground(props) {
           // THIS HANDLES RENDERING POINT MAP DATA
 
           if (store.currentList && store.currentList.mapType === "point") {
+            map.current.scrollZoom.enable();
+
             // THIS REMOVES ANY LAYERS ADDED FROM PREVIOUS MAPS
             layerCleanUp();
 
-
+            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+            map.current.getSource('propSymbol-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('line-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('earthquakes').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
+            map.current.getSource('choro-map').setData({
+              type: 'FeatureCollection',
+              features: []
+            });
 
 
             // THIS HANDLES HOVERING OVER REGIONS
@@ -353,27 +371,6 @@ export default function MapBackground(props) {
               map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.2);
 
               popup.remove();
-            });
-
-
-
-
-            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
-            map.current.getSource('propSymbol-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('line-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('earthquakes').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('choro-map').setData({
-              type: 'FeatureCollection',
-              features: []
             });
 
             var pointsCollection = []
@@ -443,6 +440,9 @@ export default function MapBackground(props) {
           // THIS HANDLES RENDERING PROPORTIONAL SYMBOLS MAP DATA
 
           else if (store.currentList && store.currentList.mapType === "propSymb") {
+            if (window.location.href === 'http://localhost:3000/' || window.location.href === 'https://geocraftmaps.azurewebsites.net/')
+            map.current.scrollZoom.disable();
+
             // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('point-map').setData({
               type: 'FeatureCollection',
@@ -561,6 +561,7 @@ export default function MapBackground(props) {
                 }
               })
             )
+
             map.current.getSource('propSymbol-map').setData(myGeoJSON);
 
             if (mapData && mapData.legend && mapData.legend.length !== 0) {
@@ -589,11 +590,9 @@ export default function MapBackground(props) {
                     ) : <div></div>
                   ))
                   }
-
                 </div>
               setLegend(div);
             }
-
           }
 
 
@@ -602,6 +601,8 @@ export default function MapBackground(props) {
           // THIS HANDLES RENDERING LINE MAP DATA
 
           else if (store.currentList && store.currentList.mapType === "line") {
+            map.current.scrollZoom.enable();
+
             // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('point-map').setData({
               type: 'FeatureCollection',
@@ -772,6 +773,8 @@ export default function MapBackground(props) {
           // THIS HANDLES RENDERING HEAT DATA
 
           else if (store.currentList && store.currentList.mapType === "heat") {
+            map.current.scrollZoom.enable();
+
             // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('propSymbol-map').setData({
               type: 'FeatureCollection',
@@ -926,6 +929,8 @@ export default function MapBackground(props) {
           // THIS HANDLES RENDERING CHOROPLETH MAP DATA
 
           else if (store.currentList && store.currentList.mapType === "choro") {
+            map.current.scrollZoom.enable();
+
             // THIS REF SIGNALS WHETHER A CHOROPLETH MAP WAS ALREADY BEEN RENDERED OR NOT
             isLayerAdded.current = false;
 
@@ -1177,7 +1182,7 @@ export default function MapBackground(props) {
                 map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
 
 
-                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p> <p>${headerValue} : ${findRegionValue(regionName)}</p>`).addTo(map.current);
+                popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p> <p>${headerValue}: ${findRegionValue(regionName)}</p>`).addTo(map.current);
               }
             });
 
