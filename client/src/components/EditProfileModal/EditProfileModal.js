@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Form, Button, Modal, Row, Col } from "react-bootstrap";
 import AuthContext from '../../auth'
@@ -21,6 +21,19 @@ export default function EditProfileModal(props) {
   const { username } = useParams();
   const [color, setColor] = useState('#ffffff');
 
+  useEffect(() => {
+    const fetchColor = async () => {
+      try {
+        const result = await auth.getColor(username);
+        setColor(result || ''); // If result is falsy, set an empty string
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchColor();
+  }, []);
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
 
@@ -37,8 +50,7 @@ export default function EditProfileModal(props) {
       const user = {
         firstName: formData.get("changeFirstName"),
         lastName: formData.get("changeLastName"),
-        // username: formData.get("changeUsername"),
-        // email: formData.get("changeEmail"),
+        color: color,
         aboutMe: formData.get("changeAboutMe")
       }
 

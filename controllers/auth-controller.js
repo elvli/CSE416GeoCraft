@@ -1,3 +1,4 @@
+const { color } = require('@cloudinary/url-gen/qualifiers/background');
 const auth = require('../auth')
 const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
@@ -25,7 +26,8 @@ getLoggedIn = async (req, res) => {
         email: loggedInUser.email,
         username: loggedInUser.username,
         aboutMe: loggedInUser.aboutMe,
-        profilePicture: loggedInUser.profilePicture
+        profilePicture: loggedInUser.profilePicture,
+        color: loggedInUser.color,
       }
     })
   } catch (err) {
@@ -42,7 +44,8 @@ getUserByUsername = async (req, res) => {
         email: userInfo.email,
         username: userInfo.username,
         aboutMe: userInfo.aboutMe,
-        profilePicture: userInfo.profilePicture
+        profilePicture: userInfo.profilePicture,
+        color: userInfo.color
       }
     })
   }
@@ -99,6 +102,7 @@ loginUser = async (req, res) => {
         username: existingUser.username,
         aboutMe: existingUser.aboutMe,
         profilePicture: existingUser.profilePicture,
+        color: existingUser.color
       }
     })
 
@@ -118,7 +122,7 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture } = req.body;
+    const { firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture, color } = req.body;
     if (password.length < 8) {
       return res
         .status(400)
@@ -155,7 +159,7 @@ registerUser = async (req, res) => {
     const saltRounds = 10;
     const salt = await bcrypt.genSalt(saltRounds);
     const passwordHash = await bcrypt.hash(password, salt);
-    const newUser = new User({ firstName, lastName, username, email, passwordHash, aboutMe, profilePicture });
+    const newUser = new User({ firstName, lastName, username, email, passwordHash, aboutMe, profilePicture, color });
     const savedUser = await newUser.save();
 
     // LOGIN THE USER
@@ -174,7 +178,8 @@ registerUser = async (req, res) => {
         username: savedUser.username,
         email: savedUser.email,
         aboutMe: savedUser.aboutMe,
-        profilePicture: savedUser.profilePicture
+        profilePicture: savedUser.profilePicture,
+        color: savedUser.color
       }
     })
 
@@ -203,7 +208,8 @@ updateUser = async (req, res) => {
         username: body.username,
         email: body.email,
         aboutMe: body.aboutMe,
-        profilePicture: body.profilePicture
+        profilePicture: body.profilePicture,
+        color: body.color
       },
       { new: true, runValidators: true }
     )

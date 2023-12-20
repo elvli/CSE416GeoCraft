@@ -21,6 +21,7 @@ export default function ProfilePage() {
   const [publishMapShow, setPublishMapShow] = useState(false);
   const [aboutMeText, setAboutMeText] = useState('');
   const [imageName, setImageName] = useState('');
+  const [color, setColor] = useState('');
   const fileInputRef = useRef(null);
 
   const { username } = useParams();
@@ -48,6 +49,19 @@ export default function ProfilePage() {
     };
 
     fetchImageName();
+  }, []);
+
+  useEffect(() => {
+    const fetchColor = async () => {
+      try {
+        const result = await auth.getColor(username);
+        setColor(result || ''); // If result is falsy, set an empty string
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchColor();
   }, []);
 
   const cloudinaryBaseUrl = "https://res.cloudinary.com/djmyzbhnk/image/upload/";
@@ -170,7 +184,7 @@ export default function ProfilePage() {
       <div className="row d-flex justify-content-center align-items-center h-100">
         <div className="col">
 
-          <div className="text-white d-flex flex-row profile-banner">
+          <div className="text-white d-flex flex-row profile-banner" style = {{backgroundColor: ((username === auth.getUsername()) ? auth.user.color : color)}}>
             <div className="ms-4 mt-5 d-flex flex-column position-relative">
               <div className="img-container">
                 <Image

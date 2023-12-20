@@ -23,6 +23,7 @@ function AuthContextProvider(props) {
     email: null,
     aboutMe: "Click edit profile to add an about me.",
     profilePicture: "yx196dx8ua5em7hfgc1a",
+    color: "Black"
   });
   const history = useNavigate();
 
@@ -75,7 +76,8 @@ function AuthContextProvider(props) {
           username: payload.username,
           email: payload.email,
           aboutMe: payload.aboutMe,
-          profilePicture: payload.profilePicture
+          profilePicture: payload.profilePicture,
+          color: payload.color,
         })
       }
       default:
@@ -96,9 +98,9 @@ function AuthContextProvider(props) {
     }
   }
 
-  auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture) {
+  auth.registerUser = async function (firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture, color) {
     try {
-      const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture);
+      const response = await api.registerUser(firstName, lastName, username, email, confirmEmail, password, confirmPassword, aboutMe, profilePicture, color);
       if (response.status === 200) {
         authReducer({
           type: AuthActionType.REGISTER_USER,
@@ -174,7 +176,8 @@ function AuthContextProvider(props) {
           // username: response.data.user.username,
           // email: response.data.user.email,
           aboutMe: response.data.user.aboutMe,
-          profilePicture: response.data.user.profilePicture
+          profilePicture: response.data.user.profilePicture,
+          color: response.data.user.color
         }
       })
       auth.getLoggedIn();
@@ -249,6 +252,22 @@ function AuthContextProvider(props) {
     }    
     return asyncgetUserByUsername()
   }
+
+  auth.getColor = function (username) {
+    async function asyncgetUserByUsername() {
+      try {
+        const response = await api.getUserByUsername(username);
+        if(response.data.user && response.data.user.color){
+          return response.data.user.color
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    }    
+    return asyncgetUserByUsername()
+  }
+
+
   auth.createEmailLink = function (email) {
     async function asyncCreateEmailLink() {
       try {

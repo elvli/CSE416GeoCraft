@@ -31,6 +31,7 @@ export default function SignUpScreen() {
       const formData = new FormData(event.currentTarget);
       const aboutMeDefault = "Click edit profile to add an about me.";
       const profilePictureDefault = 'yx196dx8ua5em7hfgc1a';
+      const colorDefault = "Black"
 
       auth.registerUser(
         formData.get('firstName'),
@@ -41,7 +42,8 @@ export default function SignUpScreen() {
         formData.get('password'),
         formData.get('confirmPassword'),
         aboutMeDefault,
-        profilePictureDefault
+        profilePictureDefault,
+        colorDefault
       );
     }
   };

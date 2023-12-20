@@ -12,6 +12,7 @@ const UserSchema = new Schema(
     aboutMe: { type: String },
     maps: [{ type: ObjectId, ref: 'Maps' }],
     profilePicture: { type: String },
+    color : {type: String},
   },
   { timestamps: true },
 )
