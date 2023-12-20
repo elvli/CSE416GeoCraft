@@ -226,7 +226,9 @@ export default function ProfilePage() {
             </div>
 
             <div className="ms-3 username-text">
-              <h2>{username}</h2>
+            <h2 className={`outlined-text ${username === auth.getUsername() ? 'outlined-text' : ''}`}>
+              {username}
+            </h2>
             </div>
           </div>
 
