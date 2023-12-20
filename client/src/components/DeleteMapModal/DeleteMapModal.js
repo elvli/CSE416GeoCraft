@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import GlobalStoreContext from "../../store";
-import "./DeleteMapModal.scss";
 
 export default function DeleteMapModal(props) {
   const { deleteMapShow, handleDeleteMapClose } = props

@@ -5,7 +5,7 @@ import Modal from "react-bootstrap/Modal";
 import { useState, useContext } from "react";
 import GlobalStoreContext from "../../store";
 export default function MapNameModal(props) {
-  const { mapNameShow, handleMapNameClose, mapId } = props
+  const { mapNameShow, handleMapNameClose } = props
   const { store } = useContext(GlobalStoreContext);
   const [validated, setValidated] = useState(false)
 
@@ -22,7 +22,6 @@ export default function MapNameModal(props) {
         const formData = new FormData(event.currentTarget);
         const map = store.currentList
         map.name = formData.get("mapName");
-        console.log(map)
         store.updateLikeDislike(map._id, map);
         
         handleMapNameClose(event)

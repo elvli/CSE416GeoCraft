@@ -61,26 +61,17 @@ export default function PointEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
-    // store.undo();
 
     if (tps.hasTransactionToUndo()) {
-      console.log('undo attempted')
       tps.undoTransaction();
-    }
-    else {
-      console.log('no action to undo')
     }
   }
 
   function handleRedo(event) {
     event.preventDefault();
-    // store.redo();
+
     if (tps.hasTransactionToRedo()) {
-      console.log('redo attempted')
       tps.doTransaction();
-    }
-    else {
-      console.log('no action to redo')
     }
   }
 
@@ -194,7 +185,7 @@ export default function PointEditBar(props) {
         await store.setCurrentList(mapId, 0)
       }
 
-      else if (extension === "zip") {  
+      else if (extension === "zip") {
         var zip = new JSZip();
         var shpArr = [];
         var dbfArr = [];
@@ -208,73 +199,69 @@ export default function PointEditBar(props) {
           zip.loadAsync(text).then(function (zips) {
             Object.keys(zips.files).forEach(function (filename) {
               count++
-              
-              
+
+
             })
-            count--
-            console.log(count)
+            count--;
             Object.keys(zips.files).forEach(function (filename) {
-              zip.files[filename].async('string').then(function (fileData){
-                if(filename.split(".")[1] != "txt") {
-                  
-                  zip.file(filename).async('blob').then( async (blob) => {                    
+              zip.files[filename].async('string').then(function (fileData) {
+                if (filename.split(".")[1] != "txt") {
+
+                  zip.file(filename).async('blob').then(async (blob) => {
                     const buffer = await blob.arrayBuffer();
-                    console.log(filename);
                     if (buffer && buffer.byteLength > 0) {
                       // Parse the shapefile here
-  
-  
-                     
-  
+
+
+
+
                       try {
-                        count1++
-                        console.log(count1)
-                        if(filename.endsWith("adm1.shp") ) {
-                          
-                           shpArr = (shp.parseShp(buffer /*optional prj str*/));
-                           if(arr.length == 1) {
+                        count1++;
+                        if (filename.endsWith("adm1.shp")) {
+
+                          shpArr = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr.length == 1) {
                             arr = [shpArr, arr[0]]
-                           }
-                           else {
-                            arr.push(shpArr)
-                           }
-                           
-                        }
-                        else if(filename.endsWith("adm1.dbf")) {
-                           dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
-                           arr.push(dbfArr)
-                           
-                        }
-                        if(filename.endsWith("adm0.shp") ) {
-                          
-                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
-                          if(arr0.length == 1) {
-                           arr0 = [shpArr0, arr0[0]]
                           }
                           else {
-                           arr0.push(shpArr0)
+                            arr.push(shpArr)
                           }
-                          
+
                         }
-                        else if(filename.endsWith("adm0.dbf")) {
-                            dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
-                            arr0.push(dbfArr0)
-                            
+                        else if (filename.endsWith("adm1.dbf")) {
+                          dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr.push(dbfArr)
+
+                        }
+                        if (filename.endsWith("adm0.shp")) {
+
+                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr0.length == 1) {
+                            arr0 = [shpArr0, arr0[0]]
+                          }
+                          else {
+                            arr0.push(shpArr0)
+                          }
+
+                        }
+                        else if (filename.endsWith("adm0.dbf")) {
+                          dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr0.push(dbfArr0)
+
                         }
                         // if(arr.length == 2) {
                         //   let combined = await shp.combine(arr)
-                          
+
                         //   var mapData = await store.getMapDataById(mapId)
                         //   mapData.GeoJson = combined
                         //   await store.updateMapDataById(mapId, mapData)
                         //   await store.setCurrentList(mapId, 0)
                         // }
-                        
-                        if(count == count1) {
-                          console.log(dbfArr0)
-                          if(arr.length == 2) {
+
+                        if (count == count1) {
+                          if (arr.length == 2) {
                             let combined = await shp.combine(arr)
-                            
+
                             var mapData = await store.getMapDataById(mapId)
                             mapData.GeoJson = combined
                             await store.updateMapDataById(mapId, mapData)
@@ -282,65 +269,48 @@ export default function PointEditBar(props) {
                           }
                           else {
                             let combined = await shp.combine(arr0)
-                          
+
                             var mapData = await store.getMapDataById(mapId)
                             mapData.GeoJson = combined
                             await store.updateMapDataById(mapId, mapData)
                             await store.setCurrentList(mapId, 0)
                           }
-                            
-                        } 
-                        
-  
-  
-        
+
+                        }
+
+
+
+
                       } catch (error) {
                         console.error("Error parsing shapefile:", error);
                       }
-  
-  
-                      if(filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp" ) {
-                        
-                        }
-                    
+
+
+                      if (filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp") {
+
+                      }
+
                     } else {
                       console.error("Invalid or empty shapefile buffer");
                     }
-                    
-                  }); 
+
+                  });
                 }
-                
+
               })
             })
           })
         }
         await shpCombiner()
-                    
-
-        
-        // let arr2 = await shp.combine([shpArr, dbfArr])
-        // console.log(shpArr)
-        
-         
-        
-        //json = shpHandler(text);
-        
       }
-
-
-
-      // var json = JSON.parse(text);
-      // mapData.GeoJson = json;
-      // await store.updateMapDataById(mapId, mapData);
-      // await store.setCurrentList(mapId, 0)
     };
-    if(extension === "zip" || extension === "shp") {
+    if (extension === "zip" || extension === "shp") {
       reader.readAsArrayBuffer(file);
     }
     else {
       reader.readAsText(file);
     }
-    
+
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
@@ -401,10 +371,8 @@ export default function PointEditBar(props) {
   };
 
   const handleEditChangeTransaction = (event, rowIndex, colName) => { // 0 is update table, 1 is row stuff
-    console.log(event.target.value, tableData[rowIndex][colName])
     let transaction = new PointMapTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
-    tps.addTransaction(transaction)
-    console.log(tps.getSize)
+    tps.addTransaction(transaction);
   }
 
   const handleEditBlur = () => {
@@ -456,7 +424,7 @@ export default function PointEditBar(props) {
       }
       setTableData(newPoints);
       setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
-      
+
       if (points.legend.length !== 0) {
         var newLegend = [];
         for (let i in points.legend) {
@@ -467,7 +435,7 @@ export default function PointEditBar(props) {
         }
         setLegendTableData(newLegend);
       }
-      if (points.legendTitle){
+      if (points.legendTitle) {
         setLegendTitle(points.legendTitle);
       }
     }
@@ -535,7 +503,7 @@ export default function PointEditBar(props) {
       var propertyName;
 
       if (clickedRegion) {
-        
+
         let regionName;
 
         // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
@@ -545,18 +513,18 @@ export default function PointEditBar(props) {
             regionName = clickedRegion.properties[propertyName];
             break;
           }
-          else if(clickedRegion.properties.hasOwnProperty('NAME')) {
+          else if (clickedRegion.properties.hasOwnProperty('NAME')) {
             regionName = clickedRegion.properties['NAME'];
           }
           else {
             regionName = ''
           }
         }
-        
+
         // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
         setSelectedRegion(regionName);
         setShowRegion(true)
-    
+
       }
     };
 

@@ -201,7 +201,6 @@ function GlobalStoreContextProvider(props) {
         data.legendTitle = mapData.legendTitle
         const res = await api.updateMapDataById(response.data.map._id, data);
         if (res.data.success) {
-          console.log('Successfully updated mapdata')
           store.loadIdNamePairs()
         }
 

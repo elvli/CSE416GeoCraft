@@ -126,7 +126,6 @@ function AuthContextProvider(props) {
   auth.loginUser = async function (email, password) {
     try {
       const response = await api.loginUser(email, password);
-      console.log('LOGIN SUCCESS')
       if (response.status === 200) {
         authReducer({
           type: AuthActionType.LOGIN_USER,
@@ -152,7 +151,6 @@ function AuthContextProvider(props) {
   }
 
   auth.logoutUser = async function () {
-    console.log('LOG OUT STARTED');
     const response = await api.logoutUser();
     if (response.status === 200) {
       authReducer({
@@ -279,7 +277,6 @@ function AuthContextProvider(props) {
     
   }
   auth.verifyLink = function (id, token) {
-    console.log("PING PONG")
     async function asyncVerify() {
       const response = await api.verifyLink(id, token)
       if(response.data.success) return true

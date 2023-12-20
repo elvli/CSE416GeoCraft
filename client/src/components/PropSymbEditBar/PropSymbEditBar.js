@@ -61,26 +61,17 @@ export default function PropSymbEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
-    // store.undo();
 
     if (tps.hasTransactionToUndo()) {
-      console.log('undo attempted')
       tps.undoTransaction();
-    }
-    else {
-      console.log('no action to undo')
     }
   }
 
   function handleRedo(event) {
     event.preventDefault();
-    // store.redo();
+
     if (tps.hasTransactionToRedo()) {
-      console.log('redo attempted')
       tps.doTransaction();
-    }
-    else {
-      console.log('no action to redo')
     }
   }
 
@@ -212,14 +203,12 @@ export default function PropSymbEditBar(props) {
               
             })
             count--
-            console.log(count)
             Object.keys(zips.files).forEach(function (filename) {
               zip.files[filename].async('string').then(function (fileData){
                 if(filename.split(".")[1] != "txt") {
                   
                   zip.file(filename).async('blob').then( async (blob) => {                    
                     const buffer = await blob.arrayBuffer();
-                    console.log(filename);
                     if (buffer && buffer.byteLength > 0) {
                       // Parse the shapefile here
   
@@ -228,7 +217,6 @@ export default function PropSymbEditBar(props) {
   
                       try {
                         count1++
-                        console.log(count1)
                         if(filename.endsWith("adm1.shp") ) {
                           
                            shpArr = (shp.parseShp(buffer /*optional prj str*/));
@@ -271,7 +259,6 @@ export default function PropSymbEditBar(props) {
                         // }
                         
                         if(count == count1) {
-                          console.log(dbfArr0)
                           if(arr.length == 2) {
                             let combined = await shp.combine(arr)
                             
@@ -315,24 +302,7 @@ export default function PropSymbEditBar(props) {
           })
         }
         await shpCombiner()
-                    
-
-        
-        // let arr2 = await shp.combine([shpArr, dbfArr])
-        // console.log(shpArr)
-        
-         
-        
-        //json = shpHandler(text);
-        
       }
-
-
-
-      // var json = JSON.parse(text);
-      // mapData.GeoJson = json;
-      // await store.updateMapDataById(mapId, mapData);
-      // await store.setCurrentList(mapId, 0)
     };
     if(extension === "zip" || extension === "shp") {
       reader.readAsArrayBuffer(file);
@@ -392,10 +362,8 @@ export default function PropSymbEditBar(props) {
   };
 
   const handleEditChangeTransaction = (event, rowIndex, colName) => { // 0 is update table, 1 is row stuff
-    console.log(event.target.value, tableData[rowIndex][colName])
     let transaction = new PointMapTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
     tps.addTransaction(transaction)
-    console.log(tps.getSize)
   }
 
   const handleEditLegendChange = (event, rowIndex, colName) => {

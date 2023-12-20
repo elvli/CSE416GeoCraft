@@ -4,36 +4,33 @@ import GlobalStoreContext from "../../store";
 import EditRegionTransaction from "../../transactions/EditRegionTransaction";
 
 export default function EditRegionModal(props) {
-  const { editRegionShow, handleEditRegionClose, mapId, region, tps } = props
+  const { editRegionShow, handleEditRegionClose, mapId, region, tps } = props;
   const { store } = useContext(GlobalStoreContext);
-  const [json, setJson] = useState({})
-  const [validated, setValidated] = useState(false)
+  const [json, setJson] = useState({});
+  const [validated, setValidated] = useState(false);
 
   function updateMapData(map, formData) {
     const initialRegion = region;
     const newRegion = formData.get("mapName");
     async function asyncUpdateMapData(mapId, newName, oldName) {
 
-      const mapData = await store.getMapDataById(mapId)
+      const mapData = await store.getMapDataById(mapId);
 
-      const json = mapData.GeoJson
-      let j = 0
+      const json = mapData.GeoJson;
+
       for (let i = 0; i < json["features"].length; i++) {
         if (json['features'][i].properties.hasOwnProperty('NAME_1') && json['features'][i].properties['NAME_1'] === oldName) {
           json['features'][i].properties['NAME_1'] = newName;
-          j = i
         }
         else if (json['features'][i].properties.hasOwnProperty('NAME') && json['features'][i].properties['NAME'] === oldName) {
           json['features'][i].properties['NAME'] = newName;
-          j = i
         }
       }
-      console.log(json['features'][j].properties['NAME_1'])
       await store.updateMapDataById(mapId, mapData);
-      await store.setCurrentList(mapId, 0)
+      await store.setCurrentList(mapId, 0);
     }
-    let transaction = new EditRegionTransaction(asyncUpdateMapData, map, newRegion, initialRegion)
-    tps.addTransaction(transaction)
+    let transaction = new EditRegionTransaction(asyncUpdateMapData, map, newRegion, initialRegion);
+    tps.addTransaction(transaction);
 
   }
 
@@ -49,15 +46,15 @@ export default function EditRegionModal(props) {
       event.stopPropagation();
 
       const formData = new FormData(event.currentTarget);
-      updateMapData(mapId, formData)
+      updateMapData(mapId, formData);
 
-      handleEditRegionClose(event)
+      handleEditRegionClose(event);
     }
   };
 
   const handleClosing = (event) => {
     setValidated(false);
-    handleEditRegionClose(event)
+    handleEditRegionClose(event);
   }
 
   return (

@@ -1,6 +1,5 @@
 import React from "react";
 import { Form, Button, Modal } from "react-bootstrap";
-import "./RemoveGeoJsonModal.scss";
 
 export default function RemoveGeoJsonModal(props) {
   const { removeGeoShow, handleRemoveGeoShowClose, removeGeo } = props

@@ -131,7 +131,7 @@ export default function HeatEditBar(props) {
   const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
   const regionEditFunctions = {
-    
+
   }
   const downloadLinkRef = useRef(null);
 
@@ -142,23 +142,17 @@ export default function HeatEditBar(props) {
 
   function handleUndo(event) {
     event.preventDefault();
+
     if (tps.hasTransactionToUndo()) {
-      console.log('undo attempted')
       tps.undoTransaction();
-    }
-    else {
-      console.log('no action to undo')
     }
   }
 
   function handleRedo(event) {
     event.preventDefault();
+
     if (tps.hasTransactionToRedo()) {
-      console.log('redo attempted')
       tps.doTransaction();
-    }
-    else {
-      console.log('no action to redo')
     }
   }
 
@@ -263,7 +257,7 @@ export default function HeatEditBar(props) {
         await store.setCurrentList(mapId, 0)
       }
 
-      else if (extension === "zip") {  
+      else if (extension === "zip") {
         var zip = new JSZip();
         var shpArr = [];
         var dbfArr = [];
@@ -277,73 +271,69 @@ export default function HeatEditBar(props) {
           zip.loadAsync(text).then(function (zips) {
             Object.keys(zips.files).forEach(function (filename) {
               count++
-              
-              
+
+
             })
             count--
-            console.log(count)
             Object.keys(zips.files).forEach(function (filename) {
-              zip.files[filename].async('string').then(function (fileData){
-                if(filename.split(".")[1] != "txt") {
-                  
-                  zip.file(filename).async('blob').then( async (blob) => {                    
+              zip.files[filename].async('string').then(function (fileData) {
+                if (filename.split(".")[1] != "txt") {
+
+                  zip.file(filename).async('blob').then(async (blob) => {
                     const buffer = await blob.arrayBuffer();
-                    console.log(filename);
                     if (buffer && buffer.byteLength > 0) {
                       // Parse the shapefile here
-  
-  
-                     
-  
+
+
+
+
                       try {
                         count1++
-                        console.log(count1)
-                        if(filename.endsWith("adm1.shp") ) {
-                          
-                           shpArr = (shp.parseShp(buffer /*optional prj str*/));
-                           if(arr.length == 1) {
+                        if (filename.endsWith("adm1.shp")) {
+
+                          shpArr = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr.length == 1) {
                             arr = [shpArr, arr[0]]
-                           }
-                           else {
-                            arr.push(shpArr)
-                           }
-                           
-                        }
-                        else if(filename.endsWith("adm1.dbf")) {
-                           dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
-                           arr.push(dbfArr)
-                           
-                        }
-                        if(filename.endsWith("adm0.shp") ) {
-                          
-                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
-                          if(arr0.length == 1) {
-                           arr0 = [shpArr0, arr0[0]]
                           }
                           else {
-                           arr0.push(shpArr0)
+                            arr.push(shpArr)
                           }
-                          
+
                         }
-                        else if(filename.endsWith("adm0.dbf")) {
-                            dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
-                            arr0.push(dbfArr0)
-                            
+                        else if (filename.endsWith("adm1.dbf")) {
+                          dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr.push(dbfArr)
+
+                        }
+                        if (filename.endsWith("adm0.shp")) {
+
+                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr0.length == 1) {
+                            arr0 = [shpArr0, arr0[0]]
+                          }
+                          else {
+                            arr0.push(shpArr0)
+                          }
+
+                        }
+                        else if (filename.endsWith("adm0.dbf")) {
+                          dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr0.push(dbfArr0)
+
                         }
                         // if(arr.length == 2) {
                         //   let combined = await shp.combine(arr)
-                          
+
                         //   var mapData = await store.getMapDataById(mapId)
                         //   mapData.GeoJson = combined
                         //   await store.updateMapDataById(mapId, mapData)
                         //   await store.setCurrentList(mapId, 0)
                         // }
-                        
-                        if(count == count1) {
-                          console.log(dbfArr0)
-                          if(arr.length == 2) {
+
+                        if (count == count1) {
+                          if (arr.length == 2) {
                             let combined = await shp.combine(arr)
-                            
+
                             var mapData = await store.getMapDataById(mapId)
                             mapData.GeoJson = combined
                             await store.updateMapDataById(mapId, mapData)
@@ -351,66 +341,49 @@ export default function HeatEditBar(props) {
                           }
                           else {
                             let combined = await shp.combine(arr0)
-                          
+
                             var mapData = await store.getMapDataById(mapId)
                             mapData.GeoJson = combined
                             await store.updateMapDataById(mapId, mapData)
                             await store.setCurrentList(mapId, 0)
                           }
-                            
-                        } 
-                        
-  
-  
-        
+
+                        }
+
+
+
+
                       } catch (error) {
                         console.error("Error parsing shapefile:", error);
                       }
-  
-  
-                      if(filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp" ) {
-                        
-                        }
-                    
+
+
+                      if (filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp") {
+
+                      }
+
                     } else {
                       console.error("Invalid or empty shapefile buffer");
                     }
-                    
-                  }); 
+
+                  });
                 }
-                
+
               })
             })
           })
         }
         await shpCombiner()
-        console.log("APPLES")
-                    
-
-        
-        // let arr2 = await shp.combine([shpArr, dbfArr])
-        // console.log(shpArr)
-        
-         
-        
-        //json = shpHandler(text);
-        
       }
 
-
-
-      // var json = JSON.parse(text);
-      // mapData.GeoJson = json;
-      // await store.updateMapDataById(mapId, mapData);
-      // await store.setCurrentList(mapId, 0)
     };
-    if(extension === "zip" || extension === "shp") {
+    if (extension === "zip" || extension === "shp") {
       reader.readAsArrayBuffer(file);
     }
     else {
       reader.readAsText(file);
     }
-    
+
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
@@ -467,10 +440,8 @@ export default function HeatEditBar(props) {
     setTableData(updatedData);
   };
   const handleEditChangeTransaction = (event, rowIndex, colName) => { // 0 is update table, 1 is row stuff
-    console.log(event.target.value, tableData[rowIndex][colName])
     let transaction = new HeatTableTransaction([handleEditChange, handleAddRow, handleRemoveRow], 0, tableData[rowIndex][colName], event.target.value, rowIndex, colName)
-    tps.addTransaction(transaction)
-    console.log(tps.getSize)
+    tps.addTransaction(transaction);
   }
 
   const handleEditBlur = () => {
@@ -478,30 +449,29 @@ export default function HeatEditBar(props) {
   };
 
   const handleSave = async () => {
-    var mapData = await store.getMapDataById(mapId)
+    var mapData = await store.getMapDataById(mapId);
     mapData.heatmap = { data: tableData, color: currentColor, mag: currentMag, int: currentInt, rad: currentRad, opac: currentOpac }
-    var legendPoints = []
+    var legendPoints = [];
     for (let i = 0; i < tableData.length; i++) {
-      legendPoints.push((tableData[i].magnitude))
-      
+      legendPoints.push((tableData[i].magnitude));
+
     }
-     legendPoints.sort(function(a,b) { return a - b;})
-    var legendPointsLength = legendPoints.length - 1
-    var len1 = Math.floor(legendPointsLength*0.8)
-    var len2 = Math.floor(legendPointsLength*0.6)
-    var len3 = Math.floor(legendPointsLength*0.4)
-    var len4 = Math.floor(legendPointsLength*0.2)
+    legendPoints.sort(function (a, b) { return a - b; });
+    var legendPointsLength = legendPoints.length - 1;
+    var len1 = Math.floor(legendPointsLength * 0.8);
+    var len2 = Math.floor(legendPointsLength * 0.6);
+    var len3 = Math.floor(legendPointsLength * 0.4);
+    var len4 = Math.floor(legendPointsLength * 0.2);
     var legendDataSet = [
-      {color: color5, description: legendPoints[legendPointsLength]},
-      {color: color4, description: legendPoints[len1]},
-      {color: color3, description: legendPoints[len2]},
-      {color: color2, description: legendPoints[len3]},
-      {color: color1, description: legendPoints[len4]}
+      { color: color5, description: legendPoints[legendPointsLength] },
+      { color: color4, description: legendPoints[len1] },
+      { color: color3, description: legendPoints[len2] },
+      { color: color2, description: legendPoints[len3] },
+      { color: color1, description: legendPoints[len4] },
     ]
     mapData.legend = legendDataSet
     mapData.legendTitle = legendTitle
-    
-    //console.log(tableData)
+
     var latitude = Math.min(90, Math.max(-90, parseFloat(settingsValues[0])));
     var longitude = Math.min(180, Math.max(-180, parseFloat(settingsValues[1])));
     var zoom = Math.min(22, Math.max(1, parseFloat(settingsValues[2])));
@@ -952,6 +922,7 @@ export default function HeatEditBar(props) {
     );
     tps.addTransaction(setDefaultsTransaction);
   }
+
   useEffect(() => {
     store.updateMapData({
       type: 'heat',
@@ -961,26 +932,8 @@ export default function HeatEditBar(props) {
         data: currentColor
       }
     })
-  }, [currentColor])
-  // useEffect(() => {
-  //   setCurrentColor([
-  //     'interpolate',
-  //     ['linear'],
-  //     ['heatmap-density'],
-  //     0,
-  //     'rgba(33,102,172,0)',
-  //     0.2,
-  //     color1,
-  //     0.4,
-  //     color2,
-  //     0.6,
-  //     color3,
-  //     0.8,
-  //     color4,
-  //     1,
-  //     color5
-  //   ])
-  // }, [color1, color2, color3, color4, color5])
+  }, [currentColor]);
+
   useEffect(() => {
     try {
       updateTable();
@@ -989,6 +942,7 @@ export default function HeatEditBar(props) {
       console.log('cannot update table');
     }
   }, []);
+
   useEffect(() => {
     const regionSelectHandler = (event) => {
       event.preventDefault()
@@ -996,7 +950,7 @@ export default function HeatEditBar(props) {
       var propertyName;
 
       if (clickedRegion) {
-        
+
         let regionName;
 
         // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
@@ -1006,18 +960,18 @@ export default function HeatEditBar(props) {
             regionName = clickedRegion.properties[propertyName];
             break;
           }
-          else if(clickedRegion.properties.hasOwnProperty('NAME')) {
+          else if (clickedRegion.properties.hasOwnProperty('NAME')) {
             regionName = clickedRegion.properties['NAME'];
           }
           else {
             regionName = ''
           }
         }
-        
+
         // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
         setSelectedRegion(regionName);
         setShowRegion(true)
-    
+
       }
     };
 
@@ -1155,7 +1109,7 @@ export default function HeatEditBar(props) {
                       {/* {!isValidFile && (<div className="text-danger mt-2">Invalid file type. Please select a json, kml, or shp file.</div>)} */}
                       {/* {selectedFile && isValidFile && (<span>{selectedFile.name}</span>)} */}
                     </div>
-       
+
 
                   </Accordion.Body>
                 </Accordion.Item>

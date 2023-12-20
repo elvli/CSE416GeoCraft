@@ -50,8 +50,6 @@ export default function MapCard(props) {
     if (!store.currentList || store.currentList._id !== map._id) {
       store.setCurrentList(map._id, null);
     }
-    // store.setCurrentList(map._id, null);
-    // console.log('iadwdawd', store.currentList)
   }
 
   let dropdown = <div className='options-button'>

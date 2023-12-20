@@ -160,8 +160,6 @@ registerUser = async (req, res) => {
 
     // LOGIN THE USER
     const token = auth.signToken(savedUser._id);
-    console.log("auth-controller: " + savedUser.aboutMe)
-    console.log(savedUser.profilePicture)
 
     await res.cookie("token", token, {
       httpOnly: true,
@@ -260,9 +258,7 @@ createEmailLink = async (req, res) => {
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
+      } 
     });
 
     return res.status(200).json({
@@ -306,7 +302,6 @@ resetPassword = async (req, res) => {
 
   user.save()
     .then(() => {
-      console.log('Password saved!')
       return res.status(201).json({
         success: true
       })
