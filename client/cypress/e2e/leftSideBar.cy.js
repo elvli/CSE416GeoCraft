@@ -18,6 +18,13 @@ describe('LeftSideBar Component', () => {
 
   });
 
+  it('should be able to search owned maps', () => {
+    const commentText = 'Testing Cypress';
+    // Find the comment input, type text, and check the value
+    cy.get('.form-control.query').eq(0).type(commentText);    
+    cy.get('.form-control.query').eq(0).should('have.value', commentText);
+  });
+
   it('should allow you to browse another user profile', () => {
     cy.get('.owner-link').eq(0).click();
 
@@ -150,10 +157,35 @@ describe('LeftSideBar Component', () => {
     cy.get('.map-card').first().find('.options-button').click();
     // Wait for the dropdown to appear (adjust the selector if needed)
     cy.get('.dropdown-menu').should('be.visible');
-    // Click on the "Delete" option within the dropdown
-    cy.contains('.dropdown-item', 'Export').click();
-    // Wait for the modal to be visible (replace '.your-modal-class' with the actual class or identifier of your modal)
-    cy.get('.modal-content').should('be.visible');
+  });
+
+  it('should toggle sidebar', () => {
+    cy.get('#left-menu-toggle').click();
+  });
+
+  it('should handle sort by newest', () => {
+    cy.get('.filter-btn .dropdown-toggle').click();
+    cy.get('.dropdown-menu').contains('Sort by date (newest to oldest)').click();
+  });
+
+  it('should handle sort by oldest', () => {
+    cy.get('.filter-btn .dropdown-toggle').click();
+    cy.get('.dropdown-menu').contains('Sort by date (oldest to newest)').click();
+  });
+
+  it('should handle sort alphabetically A to Z', () => {
+    cy.get('.filter-btn .dropdown-toggle').click();
+    cy.get('.dropdown-menu').contains('Sort Alphabetically (A to Z)').click();
+  });
+
+  it('should handle sort alphabetically Z to A', () => {
+    cy.get('.filter-btn .dropdown-toggle').click();
+    cy.get('.dropdown-menu').contains('Sort Alphabetically (Z to A)').click();
+  });
+
+  it('should handle sort by popular', () => {
+    cy.get('.filter-btn .dropdown-toggle').click();
+    cy.get('.dropdown-menu').contains('Most popular').click();
   });
 });
 

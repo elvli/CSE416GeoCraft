@@ -38,4 +38,34 @@ describe('EditSideBar Component', () => {
       cy.get('#edit-close-button').click();
       cy.get('.modal-content').should('be.visible');
     });
+
+    it('should toggle sidebar', () => {
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+      cy.get('#edit-left-tool .edit-button').eq(0).click();
+    });
+  
+    it('should handle save', () => {
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+      cy.get('#edit-left-tool .edit-button').eq(1).click();
+    });
+  
+    it('should handle undo', () => {
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+      cy.get('#edit-left-tool .edit-button').eq(2).click();
+    });
+  
+    it('should handle redo', () => {
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+      cy.get('#edit-left-tool .edit-button').eq(3).click();
+    });
+  
+    it('should show map name modal', () => {
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+      cy.get('#edit-left-tool .edit-button').eq(4).click();
+    });
+  
+    it('should show close modal', () => {
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+      cy.get('#edit-left-tool #edit-close-button').click();
+    });
   });
