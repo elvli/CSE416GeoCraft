@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
-import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './LineEditBar.scss';
 import rewind from "@mapbox/geojson-rewind";
@@ -15,6 +15,7 @@ import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitle
 import MapNameModal from '../MapNameModal/MapNameModal';
 import JSZip from 'jszip';
 import EditRegionModal from '../EditRegionModal/EditRegionModal';
+import PublishMapModal from '../PublishMapModal/PublishMapModal';
 
 export default function LineEditSideBar(props) {
   const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
@@ -49,6 +50,7 @@ export default function LineEditSideBar(props) {
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
   const [tps, setTPS] = useState(new jsTPS)
   const [showName, setShowName] = useState(false);
+  const [publishMapShow, setPublishMapShow] = useState(false);
   const shp = require("shpjs");
 
   function toggleSideBar(event) {
@@ -139,6 +141,13 @@ export default function LineEditSideBar(props) {
       }
     }
   };
+
+  async function handlePublish(event) {
+    setPublishMapShow(true)
+  }
+  async function handlePublishClose(event) {
+    setPublishMapShow(false)
+  }
 
 
   // THESE FUNCTIONS HANDLE FILE LOADING
@@ -603,6 +612,12 @@ export default function LineEditSideBar(props) {
             </Row>
 
             <Row>
+              <Button className="edit-button" variant="dark" onClick={handlePublish}>
+                <FileEarmarkArrowUp />
+              </Button>
+            </Row>
+
+            <Row>
               <Button className="edit-button" id="edit-close-button" variant="dark" onClick={() => setShow(true)}>
                 <XLg />
               </Button>
@@ -663,6 +678,7 @@ export default function LineEditSideBar(props) {
                                         onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                         onKeyDown={handleStepKeyDown}
+                                        maxlength="12"
                                       />
                                     ) : colIndex !== 5 ? (
                                       row[colName]
@@ -698,8 +714,8 @@ export default function LineEditSideBar(props) {
                       <div className="input-group-prepend">
                         <span className="input-group-text" id="">Default Center</span>
                       </div>
-                      <input type="text" className="form-control" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
-                      <input type="text" className="form-control" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" maxlength="12" placeholder='Latitude' value={settingsValues[0]} onChange={(event) => handleSettingChange(event, 0)} onKeyDown={handleStepKeyDown} />
+                      <input type="text" className="form-control" maxlength="12" placeholder='Longitude' value={settingsValues[1]} onChange={(event) => handleSettingChange(event, 1)} onKeyDown={handleStepKeyDown} />
                     </div>
 
                     <div className="input-group setting-zoom">
@@ -729,7 +745,7 @@ export default function LineEditSideBar(props) {
                         <div className="input-group-prepend">
                           <span className="input-group-text default-zoom" id="">Legend Title</span>
                         </div>
-                        <input type="text" className="form-control" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
+                        <input type="text" className="form-control" maxlength="40" value={legendTitle} onChange={(event) => handleLegendTitleChange(event)} />
                       </div>
                     </div>
 
@@ -763,6 +779,7 @@ export default function LineEditSideBar(props) {
                                         value={row[colName]}
                                         onChange={(event) => handleEditLegendChange(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
+                                        maxlength="40"
                                       />
                                     ) : row[colName]
                                   }
@@ -804,6 +821,7 @@ export default function LineEditSideBar(props) {
           </div>
         </div>
       </div>
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />

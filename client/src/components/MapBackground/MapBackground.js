@@ -11,9 +11,9 @@ export default function MapBackground(props) {
   const { map } = props;
   const { store } = useContext(GlobalStoreContext);
   const mapContainer = store.container;
-  const [lng, setLng] = useState(12.7971);
-  const [lat, setLat] = useState(41.8473);
-  const [zoom, setZoom] = useState(5.43);
+  const [lng, setLng] = useState(-73.1231);
+  const [lat, setLat] = useState(40.9172);
+  const [zoom, setZoom] = useState(14.83);
   const [update, setUpdate] = useState(false)
   const [layersToRemove, setLayersToRemove] = useState([]);
   const downloadLinkRef = useRef(null);
@@ -301,7 +301,7 @@ export default function MapBackground(props) {
               source: 'map-source',
               paint: {
                 'fill-color': '#FFFFFF',
-                'fill-opacity': 1
+                'fill-opacity': .2
               },
               filter: ['==', admId, ''],
             });
@@ -337,7 +337,7 @@ export default function MapBackground(props) {
                 }
 
                 map.current.setFilter('highlight-region', ['==', admId, regionId]);
-                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', .5);
 
                 popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(map.current);
               }
@@ -346,7 +346,7 @@ export default function MapBackground(props) {
             // This unhighlights a region and removes the popup when no longer hovering over it
             map.current.on('mouseleave', 'geojson-border-fill', () => {
               map.current.setFilter('highlight-region', ['==', admId, '']);
-              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.2);
 
               popup.remove();
             });
@@ -505,7 +505,7 @@ export default function MapBackground(props) {
                 }
 
                 map.current.setFilter('highlight-region', ['==', admId, regionId]);
-                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', .5);
 
                 popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(map.current);
               }
@@ -514,7 +514,7 @@ export default function MapBackground(props) {
             // This unhighlights a region and removes the popup when no longer hovering over it
             map.current.on('mouseleave', 'geojson-border-fill', () => {
               map.current.setFilter('highlight-region', ['==', admId, '']);
-              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.2);
 
               popup.remove();
             });
@@ -660,7 +660,7 @@ export default function MapBackground(props) {
                 }
 
                 map.current.setFilter('highlight-region', ['==', admId, regionId]);
-                map.current.setPaintProperty('highlight-region', 'fill-opacity', 1);
+                map.current.setPaintProperty('highlight-region', 'fill-opacity', .5);
 
                 popup.setLngLat(e.lngLat).setHTML(`<p>${regionName}</p>`).addTo(map.current);
               }
@@ -669,7 +669,7 @@ export default function MapBackground(props) {
             // This unhighlights a region and removes the popup when no longer hovering over it
             map.current.on('mouseleave', 'geojson-border-fill', () => {
               map.current.setFilter('highlight-region', ['==', admId, '']);
-              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.5);
+              map.current.setPaintProperty('highlight-region', 'fill-opacity', 0.2);
 
               popup.remove();
             });
