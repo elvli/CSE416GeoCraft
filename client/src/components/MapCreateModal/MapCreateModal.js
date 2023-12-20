@@ -27,7 +27,7 @@ export default function MapCreateModal(props) {
           formData.get("mapType")
         );
 
-        navigate(`/edit/${newMapID}`);
+        // navigate(`/edit/${newMapID}`);
         handleClose(event);
       } catch (error) {
         console.error('Error creating map:', error);
