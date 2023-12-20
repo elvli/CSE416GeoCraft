@@ -10,27 +10,28 @@ export default function MapCreateModal(props) {
   const [validated, setValidated] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     const form = event.currentTarget;
-    
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
       setValidated(true);
-    }
-    else {
+    } else {
       event.preventDefault();
       event.stopPropagation();
-
       const formData = new FormData(event.currentTarget);
-      store.createNewMap(formData.get("mapName"), formData.get("mapType"))
-        .then((newMapID) => {
-          navigate(`/edit/${newMapID}`);
-          handleClose(event);
-        })
-        .catch((error) => {
-          console.error('Error creating new map:', error);
-        });
+
+      try {
+        const newMapID = await store.createNewMap(
+          formData.get("mapName"),
+          formData.get("mapType")
+        );
+
+        navigate(`/edit/${newMapID}`);
+        handleClose(event);
+      } catch (error) {
+        console.error('Error creating map:', error);
+      }
     }
   };
 

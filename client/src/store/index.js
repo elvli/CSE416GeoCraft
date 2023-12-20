@@ -153,6 +153,7 @@ function GlobalStoreContextProvider(props) {
       const nextResponse = await api.createMapData(response.data.map._id)
       if (nextResponse.status === 201) {
         store.loadIdNamePairs()
+        return response.data.map._id;
       }
       else {
         console.log("mapData failed");
