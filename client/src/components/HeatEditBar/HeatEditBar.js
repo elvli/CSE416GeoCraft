@@ -267,6 +267,9 @@ export default function HeatEditBar(props) {
         var arr0 = []
         var count = 0
         var count1 = 0
+        var shpArr1 = []
+        var dbfArr1 = []
+        var arr1 = []
         async function shpCombiner() {
           zip.loadAsync(text).then(function (zips) {
             Object.keys(zips.files).forEach(function (filename) {
@@ -321,6 +324,22 @@ export default function HeatEditBar(props) {
                           arr0.push(dbfArr0)
 
                         }
+                        if (filename.endsWith("adm2.shp")) {
+
+                          shpArr1 = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr1.length == 1) {
+                            arr1 = [shpArr1, arr1[0]]
+                          }
+                          else {
+                            arr1.push(shpArr1)
+                          }
+
+                        }
+                        else if (filename.endsWith("adm2.dbf")) {
+                          dbfArr1 = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr1.push(dbfArr1)
+
+                        }
                         // if(arr.length == 2) {
                         //   let combined = await shp.combine(arr)
 
@@ -331,7 +350,15 @@ export default function HeatEditBar(props) {
                         // }
 
                         if (count == count1) {
-                          if (arr.length == 2) {
+                          if (arr1.length == 2) {
+                            let combined = await shp.combine(arr1)
+
+                            var mapData = await store.getMapDataById(mapId)
+                            mapData.GeoJson = combined
+                            await store.updateMapDataById(mapId, mapData)
+                            await store.setCurrentList(mapId, 0)
+                          }
+                          else if (arr.length == 2) {
                             let combined = await shp.combine(arr)
 
                             var mapData = await store.getMapDataById(mapId)
