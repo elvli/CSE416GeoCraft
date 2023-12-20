@@ -41,7 +41,7 @@ export default function LeftSideBar(props) {
   if (publishedMaps || !auth.loggedIn) {
     maps = <div>
       {
-        store.idNamePairs.map((pair) => {
+        store.idNamePairs.filter(pair => pair.name.toUpperCase().includes(queryInput.toUpperCase())).map((pair) => {
           if (pair.published) {
             return <MapCard
               key={pair._id}
@@ -147,8 +147,8 @@ export default function LeftSideBar(props) {
               />
             </div>
 
-            <div className="col-md-4">
-              <Dropdown className='filter-btn'>
+            <div className="col-md-4 filter-btn" style={{width:'0px'}}>
+              <Dropdown>
                 <Dropdown.Toggle variant="light" id="dropdown-basic">
                   <FunnelFill />
                 </Dropdown.Toggle>

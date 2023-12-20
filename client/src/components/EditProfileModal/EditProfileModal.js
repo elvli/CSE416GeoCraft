@@ -144,6 +144,7 @@ export default function EditProfileModal(props) {
                 name="changeAboutMe"
                 defaultValue={(username === auth.getUsername()) ? auth.user.aboutMe : aboutMeText}
                 style={{ resize: "none" }} // Add the style to prevent resizing
+                maxLength={'100'}
               />
             </Form.Group>
 
