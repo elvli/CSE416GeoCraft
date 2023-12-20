@@ -198,7 +198,7 @@ function GlobalStoreContextProvider(props) {
         data.settings.longitude = mapData.settings.longitude
         data.settings.latitude = mapData.settings.latitude
         data.settings.zoom = mapData.settings.zoom
-        data.legend= mapData.legend
+        data.legend = mapData.legend
         data.legendTitle = mapData.legendTitle
         const res = await api.updateMapDataById(response.data.map._id, data);
         if (res.data.success) {

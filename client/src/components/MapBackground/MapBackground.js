@@ -4,6 +4,7 @@ import GlobalStoreContext from '../../store';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import mapboxgl from 'mapbox-gl';
 import chroma from 'chroma-js';
+import html2canvas from 'html2canvas';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZWx2ZW5saTU0IiwiYSI6ImNsb3RiazljdTA3aXkycm1tZWUzYXNiMTkifQ.aknGR78_Aed8cL6MXu6KNA';
 
@@ -441,7 +442,7 @@ export default function MapBackground(props) {
 
           else if (store.currentList && store.currentList.mapType === "propSymb") {
             if (window.location.href === 'http://localhost:3000/' || window.location.href === 'https://geocraftmaps.azurewebsites.net/')
-            map.current.scrollZoom.disable();
+              map.current.scrollZoom.disable();
 
             // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
             map.current.getSource('point-map').setData({
@@ -1222,66 +1223,89 @@ export default function MapBackground(props) {
 
 
 
-  // useEffect(() => {
-  //   if (store.print === 1) {
-  //     var string = store.currentList.name
-  //     let link = document.createElement('a');
-  //     link.download = string.concat('.png');
-  //     link.href = map.current.getCanvas().toDataURL('image/png');
-  //     link.click();
-
-  //     store.setPrint(0)
-
-  //   }
-  //   else if (store.print === 2) {
-  //     console.log(map.current.getCanvas().toDataURL('image/jpeg'))
-  //     string = store.currentList.name
-  //     let link = document.createElement('a');
-  //     link.download = string.concat('.jpg');
-  //     link.href = map.current.getCanvas().toDataURL('image/jpeg');
-  //     link.click();
-
-  //     store.setPrint(0)
-  //   }
-  // }, [store.print]);
+  // THIS HANDLES EXPORTING THE MAP AS AN IMAGE (.png or .jpg)
 
   useEffect(() => {
     if (store.print === 1 || store.print === 2) {
-      const canvas = map.current.getCanvas();
-      const originalWidth = canvas.width;
-      const originalHeight = canvas.height;
+      const format = store.print === 1 ? 'png' : 'jpg';
+      const dataURL = map.current.getCanvas().toDataURL(`image/${format}`);
 
-      const inchesWidth = originalWidth / 96;
-      const inchesHeight = originalHeight / 96;
-      console.log(inchesWidth, inchesHeight)
-
-      const offScreenCanvas = document.createElement('canvas');
-      offScreenCanvas.width = originalWidth * 4;
-      offScreenCanvas.height = originalHeight * 4;
-      offScreenCanvas.style.width = `${inchesWidth * 4}in`;
-      offScreenCanvas.style.height = `${inchesHeight * 4}in`;
-
-      const offScreenContext = offScreenCanvas.getContext('2d');
-
-      // DRAW THE MAP ON THE OFF SCREEN CANVAS
-      offScreenContext.drawImage(canvas, 0, 0, offScreenCanvas.width, offScreenCanvas.height);
-
-      const string = store.currentList.name;
       const link = document.createElement('a');
+      link.download = `${store.currentList.name}.${format}`;
+      link.href = dataURL;
 
-      if (store.print === 1) {
-        link.download = string.concat('.png');
-        link.href = offScreenCanvas.toDataURL('image/png');
-      } else if (store.print === 2) {
-        link.download = string.concat('.jpg');
-        link.href = offScreenCanvas.toDataURL('image/jpeg');
-      }
-
-      link.click();
+      captureLegendImage().then((dataUrl) => {
+        overlayLegend(link.href, dataUrl, format);
+      })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
 
       store.setPrint(0);
     }
   }, [store.print]);
+
+  // THIS FUNCTION OVERLAYS THE LEGEND ONTO THE MAP IMAGE
+  function overlayLegend(baseImageUrl, overlayImageUrl, outputFormat) {
+    const baseImage = new Image();
+    const overlayImage = new Image();
+
+    baseImage.onload = function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = baseImage.width;
+      canvas.height = baseImage.height;
+      const context = canvas.getContext('2d');
+
+      // THIS DRAWS THE MAP IMAGE AND USES IT AS THE BASE
+      context.drawImage(baseImage, 0, 0, baseImage.width, baseImage.height);
+
+      overlayImage.onload = function () {
+        // THIS SETS THE COORDINANTS FOR WHERE WE WANT TO PLACE THE LEGEND (BOTTOM RIGHT CORNER)
+        const overlayX = baseImage.width - overlayImage.width;
+        const overlayY = baseImage.height - overlayImage.height;
+
+        // DRAW THE LEGEND OVER THE MAP IMAEG
+        context.drawImage(overlayImage, overlayX, overlayY, overlayImage.width, overlayImage.height);
+
+        // CREATE THE URL FOR THE COMBINED IMAGE
+        const downloadLink = document.createElement('a');
+        downloadLink.href = canvas.toDataURL(`image/${outputFormat}`);
+        downloadLink.download = `${store.currentList.name}.${outputFormat}`;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      };
+
+      overlayImage.src = overlayImageUrl;
+    };
+
+    baseImage.src = baseImageUrl;
+  }
+
+
+  // THIS CREATES AN IMAGE OF OUR LEGEND AND PRODUCES A URL
+  const captureLegendImage = () => {
+    return new Promise((resolve, reject) => {
+      // THIS IS OUR LEGEND ELEMENT
+      const legendElement = document.getElementById('state-legend');
+
+      // IF THERE IS A LEGEND, USE html2canvas TO CONVERT IT TO AN IMAGE (.png)
+      if (legendElement) {
+        html2canvas(legendElement)
+          .then((canvas) => {
+            const dataUrl = canvas.toDataURL('image/png');
+            resolve(dataUrl);
+          })
+          .catch((error) => {
+            console.error('Error capturing legend image:', error);
+            reject(error);
+          });
+      } else {
+        reject(new Error('Legend element not found'));
+      }
+    });
+  };
 
 
 
@@ -1413,7 +1437,7 @@ export default function MapBackground(props) {
 
 
 
-  // THIS IS A LAYER CLEAN UP FUNCTION, IT REMOVES ANY EXISTING LAYERS 
+  // THIS IS A LAYER CLEAN UP FUNCTION, IT REMOVES ANY EXISTING LAYERS FROM MAPBOX
   const layerCleanUp = () => {
     layersToRemove.forEach(layerID => {
       // CHECK IF LAYER EXISTS BEFORE REMOVING

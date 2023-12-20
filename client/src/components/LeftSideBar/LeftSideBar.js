@@ -7,11 +7,11 @@ import AuthContext from '../../auth';
 import './LeftSideBar.scss';
 
 export default function LeftSideBar(props) {
+  const { handleNewMap, handleDeleteMap, handleFork, handleExport, handlePublish } = props;
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const [isToggled, setIsToggled] = useState(false);
   const [queryInput, setQueryInput] = useState('');
-  const { handleNewMap, handleDeleteMap, handleFork, handleExport, handlePublish } = props;
   const [publishedMaps, setPublishedMaps] = useState(false);
   const SortMenu = {
     A_Z: "A-Z",
@@ -34,7 +34,7 @@ export default function LeftSideBar(props) {
     handleDeleteMap: handleDeleteMap,
     handleFork: handleFork,
     handleExport: handleExport,
-    handlePublish: handlePublish,
+    handlePublish: handlePublish
   }
 
   var maps;

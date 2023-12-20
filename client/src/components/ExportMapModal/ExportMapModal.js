@@ -1,11 +1,10 @@
-import React, { useState, useContext, useRef }from "react";
+import React, { useState, useContext, useRef } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 import GlobalStoreContext from "../../store";
 import "./ExportMapModal.scss";
 
 export default function ExportMapModal(props) {
   const downloadLinkRef = useRef(null);
-  const [jsonData, setJsonData] = useState('');
   const { exportMapShow, handleExportMapClose } = props
   const [validated, setValidated] = useState(false);
   const { store } = useContext(GlobalStoreContext);
