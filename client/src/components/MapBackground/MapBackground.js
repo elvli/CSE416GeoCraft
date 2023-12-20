@@ -410,13 +410,15 @@ export default function MapBackground(props) {
 
             const currentUrl = window.location.href.toLowerCase();
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            // if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
               var title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
               var div =
-                <div id="state-legend" className="legend">
+                // <div id="state-legend" className="legend">
+                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
                   <h4>{
                     title === '' ? ('Legend') :
                       title
@@ -572,13 +574,15 @@ export default function MapBackground(props) {
 
             const currentUrl = window.location.href.toLowerCase();
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            // if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
               div =
-                <div id="state-legend" className="legend">
+                // <div id="state-legend" className="legend">
+                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
                   <h4>{
                     title === '' ? ('Legend') :
                       title
@@ -745,13 +749,15 @@ export default function MapBackground(props) {
 
             const currentUrl = window.location.href.toLowerCase();
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            // if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
               div =
-                <div id="state-legend" className="legend">
+                // <div id="state-legend" className="legend">
+                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
                   <h4>{
                     title === '' ? ('Legend') :
                       title
@@ -897,13 +903,15 @@ export default function MapBackground(props) {
 
             const currentUrl = window.location.href.toLowerCase();
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            // if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
               div =
-                <div id="state-legend" className="legend">
+                // <div id="state-legend" className="legend">
+                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
                   <h5>{
                     title === '' ? ('Legend') :
                       title
@@ -1110,36 +1118,40 @@ export default function MapBackground(props) {
 
             const currentUrl = window.location.href.toLowerCase();
 
-            if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            // if (mapData && mapData.legend && mapData.legend.length !== 0 && (currentUrl.includes(localURL.toLowerCase()) || currentUrl.includes(liveURL))) {
+            if (mapData && mapData.legend && mapData.legend.length !== 0) {
               title = ''
               if (mapData.legendTitle) {
                 title = mapData.legendTitle;
               }
               div =
-                <div id="state-legend" className="legend">
+                // <div id="state-legend" className="legend">
+                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
                   <h4>{
                     title === '' ? ('Legend') :
                       title
                   }</h4>
-                  {dataValues.length !== 0 && (
-                    mapData.legend.map((row) => (
-                      row['description'] !== '' ? (
-                        row.color === 'White' ? (
-                          <div className='legendTip'>
-                            <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                            {row.description}
-                          </div>
-                        ) : (
-                          <div>
-                            <span style={{ backgroundColor: row.color }} />
-                            {row.description}
-                          </div>
-                        )
-                      ) : <div key={row.description}></div>
-                    ))
-                  )}
+                  {
+                    dataValues.length !== 0 && (
+                      mapData.legend.map((row) => (
+                        row['description'] !== '' ? (
+                          row.color === 'White' ? (
+                            <div className='legendTip'>
+                              <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+                              {row.description}
+                            </div>
+                          ) : (
+                            <div>
+                              <span style={{ backgroundColor: row.color }} />
+                              {row.description}
+                            </div>
+                          )
+                        ) : <div key={row.description}></div>
+                      ))
+                    )
+                  }
 
-                </div>
+                </div >
               setLegend(div);
             }
 
@@ -1227,300 +1239,298 @@ export default function MapBackground(props) {
     };
 
     updateMapData();
-  }, [update || store.currentList]);
-
-
-
-
-  // THIS HANDLES RENDERING THE LEGEND ON THE HOMESCREEN
-
-  useEffect(() => {
-    setUpdate(false);
-    const updateMapData = async () => {
-      try {
-        const mapData = await store.getMapDataById(store.currentList._id);
-
-        if (store.currentList) {
-          if (store.currentList && store.currentList.mapType === "point") {
-
-            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
-            map.current.getSource('propSymbol-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('line-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('earthquakes').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('choro-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              var title = ''
-              if (mapData.legendTitle) {
-                title = mapData.legendTitle;
-              }
-              var div =
-                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
-                  <h4>{
-                    title === '' ? ('Legend') :
-                      title
-                  }</h4>
-                  {mapData.legend.map((row) => (
-                    row['description'] !== '' ? (
-                      row.color === 'White' ? (
-                        <div className='legendTip'>
-                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                          {row.description}
-                        </div>
-                      ) :
-                        <div>
-                          <span style={{ backgroundColor: row.color }} />
-                          {row.description}
-                        </div>
-                    ) : <div></div>
-                  ))
-                  }
-
-                </div>
-              setLegend(div);
-            }
-          }
-
-
-          else if (store.currentList && store.currentList.mapType === "line") {
-            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
-            map.current.getSource('point-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('propSymbol-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('earthquakes').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('choro-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              title = ''
-              if (mapData.legendTitle) {
-                title = mapData.legendTitle;
-              }
-              div =
-                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
-                  <h4>{
-                    title === '' ? ('Legend') :
-                      title
-                  }</h4>
-                  {mapData.legend.map((row) => (
-                    row['description'] !== '' ? (
-                      row.color === 'White' ? (
-                        <div className='legendTip'>
-                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                          {row.description}
-                        </div>
-                      ) :
-                        <div>
-                          <span style={{ backgroundColor: row.color }} />
-                          {row.description}
-                        </div>
-                    ) : <div></div>
-                  ))
-                  }
-
-                </div>
-              setLegend(div);
-            }
-          }
-
-
-          else if (store.currentList && store.currentList.mapType === "propSymb") {
-            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
-            map.current.getSource('point-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('line-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('earthquakes').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('choro-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              title = ''
-              if (mapData.legendTitle) {
-                title = mapData.legendTitle;
-              }
-              div =
-                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
-                  <h4>{
-                    title === '' ? ('Legend') :
-                      title
-                  }</h4>
-                  {mapData.legend.map((row) => (
-                    row['description'] !== '' ? (
-                      row.color === 'White' ? (
-                        <div className='legendTip'>
-                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                          {row.description}
-                        </div>
-                      ) :
-                        <div>
-                          <span style={{ backgroundColor: row.color }} />
-                          {row.description}
-                        </div>
-                    ) : <div></div>
-                  ))
-                  }
-
-                </div>
-              setLegend(div);
-            }
-          }
-
-
-          else if (store.currentList && store.currentList.mapType === "heat") {
-            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
-            map.current.getSource('point-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('propSymbol-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('line-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('choro-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              title = ''
-              if (mapData.legendTitle) {
-                title = mapData.legendTitle;
-              }
-              div =
-                <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
-                  <h5>{
-                    title === '' ? ('Legend') :
-                      title
-                  }</h5>
-                  {mapData.legend.map((row) => (
-                    row['description'] !== '' ? (
-                      row.color === 'White' ? (
-                        <div className='legendTip'>
-                          <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                          {row.description}
-                        </div>
-                      ) :
-                        <div className='container'>
-                          <div className='row'>
-                            <div className='col-1'>
-                              <span style={{ backgroundColor: row.color, borderRadius: '2px', width: '2vw', height: '3vh' }}></span>
-                            </div>
-
-                            <div className='col'> <h6>{row.description}</h6></div>
-
-                          </div>
-                        </div>
-                    ) : <div></div>
-                  ))
-                  }
-
-                </div>
-              setLegend(div);
-            }
-          }
-
-
-          else if (store.currentList && store.currentList.mapType === "choro") {
-            var tableData = mapData.choroData.regionData;
-            const dataValues = tableData.map(entry => parseInt(entry.data, 10));
-
-            // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
-            map.current.getSource('point-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('propSymbol-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('line-map').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-            map.current.getSource('earthquakes').setData({
-              type: 'FeatureCollection',
-              features: []
-            });
-
-            if (mapData && mapData.legend && mapData.legend.length !== 0) {
-              title = ''
-              if (mapData.legendTitle) {
-                title = mapData.legendTitle;
-              }
-              div =
-                <div id="state-legend" className={`legend ${((isRightSidebarToggled || !store.currentList.published)) ? '' : 'toggled'} `}>
-                  <h4>{
-                    title === '' ? ('Legend') :
-                      title
-                  }</h4>
-                  {dataValues.length !== 0 && (
-                    mapData.legend.map((row) => (
-                      row['description'] !== '' ? (
-                        row.color === 'White' ? (
-                          <div className='legendTip'>
-                            <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
-                            {row.description}
-                          </div>
-                        ) : (
-                          <div>
-                            <span style={{ backgroundColor: row.color }} />
-                            {row.description}
-                          </div>
-                        )
-                      ) : <div key={row.description}></div>
-                    ))
-                  )}
-
-                </div>
-              setLegend(div);
-            }
-          }
-        }
-      } catch (error) {
-        console.error('Error updating map data:', error);
-      }
-    }
-
-    if (((window.location.href === 'http://localhost:3000/') || (window.location.href === 'https://geocraftmaps.azurewebsites.net/'))) {
-      updateMapData();
-    }
   }, [update || store.currentList, isRightSidebarToggled]);
+
+
+  // // THIS HANDLES RENDERING THE LEGEND ON THE HOMESCREEN
+
+  // useEffect(() => {
+  //   setUpdate(false);
+  //   const updateMapData = async () => {
+  //     try {
+  //       const mapData = await store.getMapDataById(store.currentList._id);
+
+  //       if (store.currentList) {
+  //         if (store.currentList && store.currentList.mapType === "point") {
+
+  //           // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+  //           map.current.getSource('propSymbol-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('line-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('earthquakes').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('choro-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+
+  //           if (mapData && mapData.legend && mapData.legend.length !== 0) {
+  //             var title = ''
+  //             if (mapData.legendTitle) {
+  //               title = mapData.legendTitle;
+  //             }
+  //             var div =
+  //               <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
+  //                 <h4>{
+  //                   title === '' ? ('Legend') :
+  //                     title
+  //                 }</h4>
+  //                 {mapData.legend.map((row) => (
+  //                   row['description'] !== '' ? (
+  //                     row.color === 'White' ? (
+  //                       <div className='legendTip'>
+  //                         <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+  //                         {row.description}
+  //                       </div>
+  //                     ) :
+  //                       <div>
+  //                         <span style={{ backgroundColor: row.color }} />
+  //                         {row.description}
+  //                       </div>
+  //                   ) : <div></div>
+  //                 ))
+  //                 }
+
+  //               </div>
+  //             setLegend(div);
+  //           }
+  //         }
+
+
+  //         else if (store.currentList && store.currentList.mapType === "line") {
+  //           // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+  //           map.current.getSource('point-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('propSymbol-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('earthquakes').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('choro-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+
+  //           if (mapData && mapData.legend && mapData.legend.length !== 0) {
+  //             title = ''
+  //             if (mapData.legendTitle) {
+  //               title = mapData.legendTitle;
+  //             }
+  //             div =
+  //               <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
+  //                 <h4>{
+  //                   title === '' ? ('Legend') :
+  //                     title
+  //                 }</h4>
+  //                 {mapData.legend.map((row) => (
+  //                   row['description'] !== '' ? (
+  //                     row.color === 'White' ? (
+  //                       <div className='legendTip'>
+  //                         <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+  //                         {row.description}
+  //                       </div>
+  //                     ) :
+  //                       <div>
+  //                         <span style={{ backgroundColor: row.color }} />
+  //                         {row.description}
+  //                       </div>
+  //                   ) : <div></div>
+  //                 ))
+  //                 }
+
+  //               </div>
+  //             setLegend(div);
+  //           }
+  //         }
+
+
+  //         else if (store.currentList && store.currentList.mapType === "propSymb") {
+  //           // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+  //           map.current.getSource('point-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('line-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('earthquakes').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('choro-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+
+  //           if (mapData && mapData.legend && mapData.legend.length !== 0) {
+  //             title = ''
+  //             if (mapData.legendTitle) {
+  //               title = mapData.legendTitle;
+  //             }
+  //             div =
+  //               <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
+  //                 <h4>{
+  //                   title === '' ? ('Legend') :
+  //                     title
+  //                 }</h4>
+  //                 {mapData.legend.map((row) => (
+  //                   row['description'] !== '' ? (
+  //                     row.color === 'White' ? (
+  //                       <div className='legendTip'>
+  //                         <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+  //                         {row.description}
+  //                       </div>
+  //                     ) :
+  //                       <div>
+  //                         <span style={{ backgroundColor: row.color }} />
+  //                         {row.description}
+  //                       </div>
+  //                   ) : <div></div>
+  //                 ))
+  //                 }
+
+  //               </div>
+  //             setLegend(div);
+  //           }
+  //         }
+
+
+  //         else if (store.currentList && store.currentList.mapType === "heat") {
+  //           // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+  //           map.current.getSource('point-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('propSymbol-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('line-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('choro-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+
+  //           if (mapData && mapData.legend && mapData.legend.length !== 0) {
+  //             title = ''
+  //             if (mapData.legendTitle) {
+  //               title = mapData.legendTitle;
+  //             }
+  //             div =
+  //               <div id="state-legend" className={`legend ${(isRightSidebarToggled || !store.currentList.published) ? '' : 'toggled'} `}>
+  //                 <h5>{
+  //                   title === '' ? ('Legend') :
+  //                     title
+  //                 }</h5>
+  //                 {mapData.legend.map((row) => (
+  //                   row['description'] !== '' ? (
+  //                     row.color === 'White' ? (
+  //                       <div className='legendTip'>
+  //                         <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+  //                         {row.description}
+  //                       </div>
+  //                     ) :
+  //                       <div className='container'>
+  //                         <div className='row'>
+  //                           <div className='col-1'>
+  //                             <span style={{ backgroundColor: row.color, borderRadius: '2px', width: '2vw', height: '3vh' }}></span>
+  //                           </div>
+
+  //                           <div className='col'> <h6>{row.description}</h6></div>
+
+  //                         </div>
+  //                       </div>
+  //                   ) : <div></div>
+  //                 ))
+  //                 }
+
+  //               </div>
+  //             setLegend(div);
+  //           }
+  //         }
+
+
+  //         else if (store.currentList && store.currentList.mapType === "choro") {
+  //           var tableData = mapData.choroData.regionData;
+  //           const dataValues = tableData.map(entry => parseInt(entry.data, 10));
+
+  //           // THIS CLEARS GEOGRAPHIC DATA FROM OTHER MAP TYPES
+  //           map.current.getSource('point-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('propSymbol-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('line-map').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+  //           map.current.getSource('earthquakes').setData({
+  //             type: 'FeatureCollection',
+  //             features: []
+  //           });
+
+  //           if (mapData && mapData.legend && mapData.legend.length !== 0) {
+  //             title = ''
+  //             if (mapData.legendTitle) {
+  //               title = mapData.legendTitle;
+  //             }
+  //             div =
+  //               <div id="state-legend" className={`legend ${((isRightSidebarToggled || !store.currentList.published)) ? '' : 'toggled'} `}>
+  //                 <h4>{
+  //                   title === '' ? ('Legend') :
+  //                     title
+  //                 }</h4>
+  //                 {dataValues.length !== 0 && (
+  //                   mapData.legend.map((row) => (
+  //                     row['description'] !== '' ? (
+  //                       row.color === 'White' ? (
+  //                         <div className='legendTip'>
+  //                           <span style={{ backgroundColor: row.color, border: '1px solid black' }} />
+  //                           {row.description}
+  //                         </div>
+  //                       ) : (
+  //                         <div>
+  //                           <span style={{ backgroundColor: row.color }} />
+  //                           {row.description}
+  //                         </div>
+  //                       )
+  //                     ) : <div key={row.description}></div>
+  //                   ))
+  //                 )}
+
+  //               </div>
+  //             setLegend(div);
+  //           }
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Error updating map data:', error);
+  //     }
+  //   }
+
+  //   if (((window.location.href === 'http://localhost:3000/') || (window.location.href === 'https://geocraftmaps.azurewebsites.net/'))) {
+  //     updateMapData();
+  //   }
+  // }, [update || store.currentList, isRightSidebarToggled]);
 
 
 
