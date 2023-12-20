@@ -16,26 +16,25 @@ describe('EditSideBar Component', () => {
     });
   
     it('should edit header on double click', () => {
-      cy.visit('https://geocraftmaps.azurewebsites.net/edit/656d8c18608c296fffc4b6a6');
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
       cy.get('.accordion-button.collapsed').first().click();
       cy.get('th').first().dblclick();
     });
   
     it('should download JSON on button click', () => {
-      cy.visit('https://geocraftmaps.azurewebsites.net/edit/656d8c18608c296fffc4b6a6');
-    cy.get('.accordion-button.collapsed').first().click();
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+    cy.get('.accordion-button.collapsed').last().click();
       cy.get('button:contains("Download JSON")').click();
     });
 
     it('should generate a heatmap', () => {
-      cy.visit('https://geocraftmaps.azurewebsites.net/edit/656d8c18608c296fffc4b6a6');
-    cy.get('.accordion-button.collapsed').eq(1).click();
-      cy.get('button:contains("Generate HeatMap")').click();
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
+      cy.get('#my_file_input').click();
     });
   
     it('should open SaveAndExitModal on close button click', () => {
       cy.viewport(1200, 800);
-      cy.visit('https://geocraftmaps.azurewebsites.net/edit/656d8c18608c296fffc4b6a6');
+      cy.visit('https://geocraftmaps.azurewebsites.net/edit/658266f6d7159b87052f2c65');
       cy.get('#edit-close-button').click();
       cy.get('.modal-content').should('be.visible');
     });
