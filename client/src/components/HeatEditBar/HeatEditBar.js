@@ -456,7 +456,7 @@ export default function HeatEditBar(props) {
       }
       
     }
-
+    tps.clearAllTransactions()
     setTableData(newTable)
   }
   const handleRemoveGeoJson = async () => {
