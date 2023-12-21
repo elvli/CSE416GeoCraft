@@ -20,6 +20,8 @@ import JSZip from 'jszip';
 import rewind from "@mapbox/geojson-rewind";
 import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitleTransaction';
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
+import DataErrorModal from '../DataErrorModal/DataErrorModal';
+import PublishMapModal from '../PublishMapModal/PublishMapModal';
 const shp = require("shpjs");
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -31,11 +33,11 @@ export default function HeatEditBar(props) {
   const [showHeat, setShowHeat] = useState(false)
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null)
-  const [tableData, setTableData] = useState([{ id: 1, latitude: 0, longitude: 0, magnitude: 0 }]);
+  const [tableData, setTableData] = useState([]);
   const [tableHeaders, setTableHeaders] = useState([
     'ID', 'Latitude', 'Longitude', 'Magnitude'
   ]);
-  const [publishMapShow, setPublishMapShow] = useState(false);
+  
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
   const [rangeMag1, setRangeMag1] = useState(0);
   const [rangeMag2, setRangeMag2] = useState(0);
@@ -68,6 +70,7 @@ export default function HeatEditBar(props) {
   const [color4, setColor4] = useState("#EF8A62");
   const [color5, setColor5] = useState("#B2182B");
   const [legendData, setLegendData] = useState([])
+  const [publishMapShow, setPublishMapShow] = useState(false);
   const [legendTitle, setLegendTitle] = useState("");
   const [currentMag, setCurrentMag] = useState([
     'interpolate',
@@ -133,6 +136,7 @@ export default function HeatEditBar(props) {
   const [tps, setTPS] = useState(new jsTPS)
   const [prevSelectedRegions, setPrevSelectedRegions] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
+  const [showDataError, setShowDataError] = useState(false);
   const regionEditFunctions = {
 
   }
@@ -517,10 +521,46 @@ export default function HeatEditBar(props) {
     mapData.settings.longitude = settingsValues[1];
     mapData.settings.latitude = settingsValues[0];
     mapData.settings.zoom = settingsValues[2];
+    var cleanedTableData = cleanTableData();
+
+    mapData.heatmap.data = cleanTableData();
+    setTableData(cleanedTableData);
+    mapData.heatmap.data = tableData;
 
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
+
+  // THIS CLEANS THE TABLE DATA. IT SETS EMPTY STRINGS TO '0' AND REMOVE CHARACTERS
+  // THAT AREN'T DIGITS OR THE NEGATIVE SIGN '-'
+  const cleanTableData = () => {
+    let dataReplaced = false; // Initialize dataReplaced to false
+
+    const cleanedData = tableData.map(item => {
+      const latitude = /^-?\d+(.\d+)?$/.test(item.latitude) ? item.latitude : '';
+      const longitude = /^-?\d+(.\d+)?$/.test(item.longitude) ? item.longitude : '';
+      const size = /^-?\d+(.\d+)?$/.test(item.size) ? item.size : '';
+
+      // Check if any value is an empty string and set dataReplaced to true
+      if (latitude === '' || longitude === '' || size === '') {
+        dataReplaced = true;
+      }
+
+      return {
+        ...item,
+        latitude,
+        longitude,
+        size
+      };
+    });
+
+    // If data was replaced at least once, set showDataError to true
+    if (dataReplaced) {
+      setShowDataError(true);
+    }
+
+    return cleanedData
+  };
 
   const updateTable = async () => {
     try {
@@ -1185,13 +1225,15 @@ export default function HeatEditBar(props) {
                       </div>
                       <input type="text" className="form-control" placeholder='Zoom' value={settingsValues[2]} maxLength='40' onChange={(event) => handleSettingChange(event, 2)} onKeyDown={handleStepKeyDown} />
                     </div>
-
+                    
                     <Button className="set-default-button" variant="btn btn-dark" onClick={handleSetDefaults} >
                       Set Defaults Here
                     </Button>
-                    <Button className="remove-geojson-button" variant="btn btn-dark" onClick={() => setShowGeoModal(true)}>
-                      Remove GeoJson Data
-                    </Button>
+                    <div>
+                      <Button className="remove-geojson-button" variant="btn btn-dark" onClick={() => setShowGeoModal(true)}>
+                        Remove GeoJson Data
+                      </Button>
+                    </div>
                   </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="4">
@@ -1223,6 +1265,8 @@ export default function HeatEditBar(props) {
           </div>
         </div>
       </div>
+      <DataErrorModal showDataError={showDataError} handleShowDataErrorClose={(event) => { setShowDataError(false) }} save={handleSave} />
+      <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       {/* <HeatPointModal saveAndExitShow={showHeat} handlesaveAndExitShowClose={(event) => { setShowHeat(false) }} handleHeatMap={handleHeatMap} handleAddRow={handleAddRow}  /> */}
       <MapNameModal mapNameShow={showName} handleMapNameClose={(event) => { setShowName(false) }} mapId={mapId} />
