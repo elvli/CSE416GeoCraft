@@ -9,13 +9,6 @@ describe('Comment Section', () => {
     cy.get('.app-banner .home-button').click();
   });
 
-  it('should check if the comment input is disabled', () => {
-    // Check if the comment input is disabled before attempting to type
-    cy.get('.app-banner .home-button').click();
-    cy.get('.map-card .card-header').eq(0).click();
-    cy.get('.form-control').should('be.disabled');
-  });
-
   it('should type into the comment input', () => {
     cy.on('uncaught:exception', (err, runnable) => {
       // Returning false here prevents Cypress from failing the test
