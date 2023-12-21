@@ -238,7 +238,7 @@ export default function HeatEditBar(props) {
         var mapData = await store.getMapDataById(mapId)
         if (json.mapID) {
           mapData.GeoJson = json.GeoJson
-          mapData.heat = json.heat
+          mapData.heatmap = json.heatmap
           mapData.settings = json.settings
           mapData.legend = json.legend
           mapData.legendTitle = json.legendTitle
