@@ -238,7 +238,7 @@ export default function HeatEditBar(props) {
         var mapData = await store.getMapDataById(mapId)
         if (json.mapID) {
           mapData.GeoJson = json.GeoJson
-          mapData.lineData = json.lineData
+          mapData.heat = json.heat
           mapData.settings = json.settings
           mapData.legend = json.legend
           mapData.legendTitle = json.legendTitle
@@ -521,8 +521,8 @@ export default function HeatEditBar(props) {
     mapData.settings.longitude = settingsValues[1];
     mapData.settings.latitude = settingsValues[0];
     mapData.settings.zoom = settingsValues[2];
-    var cleanedTableData = cleanTableData();
 
+    var cleanedTableData = cleanTableData();
     mapData.heatmap.data = cleanTableData();
     setTableData(cleanedTableData);
     mapData.heatmap.data = tableData;
@@ -539,7 +539,7 @@ export default function HeatEditBar(props) {
     const cleanedData = tableData.map(item => {
       const latitude = /^-?\d+(.\d+)?$/.test(item.latitude) ? item.latitude : '';
       const longitude = /^-?\d+(.\d+)?$/.test(item.longitude) ? item.longitude : '';
-      const size = /^-?\d+(.\d+)?$/.test(item.size) ? item.size : '';
+      const size = /^-?\d+(.\d+)?$/.test(item.magnitude) ? item.magnitude : '';
 
       // Check if any value is an empty string and set dataReplaced to true
       if (latitude === '' || longitude === '' || size === '') {
