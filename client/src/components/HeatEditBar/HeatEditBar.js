@@ -1111,13 +1111,13 @@ export default function HeatEditBar(props) {
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleUndo}>
+              <Button className="edit-button" variant="dark" onClick={handleUndo} disabled={!tps.hasTransactionToUndo()}>
                 <ArrowCounterclockwise />
               </Button>
             </Row>
 
             <Row>
-              <Button className="edit-button" variant="dark" onClick={handleRedo}>
+              <Button className="edit-button" variant="dark" onClick={handleRedo} disabled={!tps.hasTransactionToRedo()}>
                 <ArrowClockwise />
               </Button>
             </Row>
