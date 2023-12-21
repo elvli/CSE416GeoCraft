@@ -22,6 +22,7 @@ import EditLegendTitleTransaction from '../../transactions/Point/EditLegendTitle
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
 import DataErrorModal from '../DataErrorModal/DataErrorModal';
 import PublishMapModal from '../PublishMapModal/PublishMapModal';
+import ChangeDataHeaderTransaction from '../../transactions/Choro/ChangeDataHeaderTransaction';
 const shp = require("shpjs");
 export default function HeatEditBar(props) {
   const { mapId, points, settings, map } = props;
@@ -35,9 +36,9 @@ export default function HeatEditBar(props) {
   const [isEditingHeader, setIsEditingHeader] = useState(null)
   const [tableData, setTableData] = useState([]);
   const [tableHeaders, setTableHeaders] = useState([
-    'ID', 'Latitude', 'Longitude', 'Magnitude'
+    'ID', 'Latitude', 'Longitude', 'Value'
   ]);
-  
+  const [tempTableHeaders, setTempTableHeaders] = useState(['ID', 'Latitude', 'Longitude', 'Value']);
   const [settingsValues, setSettingsValues] = useState([40.9257, -73.1409, 15]);
   const [rangeMag1, setRangeMag1] = useState(0);
   const [rangeMag2, setRangeMag2] = useState(0);
@@ -485,6 +486,19 @@ export default function HeatEditBar(props) {
     tps.addTransaction(transaction);
   }
 
+  const handleEditHeaderBlur = () => {
+    const oldTableHeaders = tableHeaders.slice();
+    const newTableHeaders = tempTableHeaders.slice();
+
+    const changeDataHeaderTransaction = new ChangeDataHeaderTransaction(
+      oldTableHeaders,
+      newTableHeaders,
+      setTableHeaders,
+      setIsEditing
+    );
+    tps.addTransaction(changeDataHeaderTransaction);
+  };
+
   const handleEditBlur = () => {
     setIsEditing(null);
   };
@@ -530,6 +544,12 @@ export default function HeatEditBar(props) {
     await store.updateMapDataById(mapId, mapData)
     await store.setCurrentList(mapId, 0)
   }
+  // THIS CHANGES THE HEADER OF THE VALUE COLUMN (THIRD FROM LEFT)
+  const changeTempDataHeader = (event) => {
+    const newHeaders = [...tableHeaders];
+    newHeaders[3] = event.target.value
+    setTempTableHeaders(newHeaders);
+  };
 
   // THIS CLEANS THE TABLE DATA. IT SETS EMPTY STRINGS TO '0' AND REMOVE CHARACTERS
   // THAT AREN'T DIGITS OR THE NEGATIVE SIGN '-'
@@ -1137,25 +1157,35 @@ export default function HeatEditBar(props) {
                     <div className="table-responsive table-custom-scrollbar">
                       <Table striped bordered hover>
                         <thead>
-                          <tr>
-                            {tableHeaders.map((header, index) => (
-                              <th
-                                key={index + 1}
-                                onBlur={handleHeaderBlur}
-                              >
-                                {isEditingHeader === index + 1 ? (
-                                  <input
-                                    type="text"
-                                    value={header ?? ''}
-                                    maxLength='40'
-                                    onChange={(event) => handleHeaderChange(event, index + 1)}
-                                  />
-                                ) : (
-                                  header
-                                )}
-                              </th>
-                            ))}
-                          </tr>
+                        <tr>
+                          {/* <th>ID</th> */}
+                          <th>ID</th>
+                          <th className='point-map-edit-header-Latitude'>Latitude</th>
+                          <th className='point-map-edit-header-Latitude'>Longitude</th>
+                          <th
+                            className={`th-editable ${isEditing === 3 ? 'editing' : ''}`}
+                            onDoubleClick={() => setIsEditing(3)}
+                          >
+                            {isEditing === 3 ? (
+                              <input
+                                className='data-header-input'
+                                type="text"
+                                value={tempTableHeaders[3]}
+                                maxLength='40'
+                                onChange={changeTempDataHeader}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter') {
+                                    handleEditHeaderBlur();
+                                  }
+                                }}
+                                onBlur={handleEditHeaderBlur}
+                              />
+                            ) : (
+                              tableHeaders[3]
+                            )}
+                          </th>
+                          
+                        </tr>
                         </thead>
 
                         <tbody>
