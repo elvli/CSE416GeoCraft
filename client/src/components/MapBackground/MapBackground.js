@@ -1540,7 +1540,7 @@ export default function MapBackground(props) {
 
   useEffect(() => {
     if (store.print === 1 || store.print === 2) {
-      const format = store.print === 1 ? 'png' : 'jpeg';
+      const format = store.print === 1 ? 'png' : 'jpg';
       const dataURL = map.current.getCanvas().toDataURL(`image / ${format} `);
 
       const link = document.createElement('a');

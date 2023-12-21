@@ -27,7 +27,7 @@ export default function ExportMapModal(props) {
       if (downloadType === 'json') {
         downloadJson();
       }
-      else if (downloadType === 'jpeg') {
+      else if (downloadType === 'jpg') {
         downloadPic(2);
       }
       else {
@@ -80,7 +80,7 @@ export default function ExportMapModal(props) {
               <Form.Select name='fileType' required >
                 <option value="">Select export type</option>
                 <option value="json">JSON</option>
-                <option value="jpeg">JPEG</option>
+                <option value="jpg">JPG</option>
                 <option value="png">PNG</option>
               </Form.Select>
             </Form.Group>

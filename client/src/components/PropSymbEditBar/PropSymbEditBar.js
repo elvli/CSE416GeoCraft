@@ -3,6 +3,7 @@ import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
 import MapNameModal from '../MapNameModal/MapNameModal';
+import DataErrorModal from '../DataErrorModal/DataErrorModal';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import PublishMapModal from '../PublishMapModal/PublishMapModal';
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
@@ -29,6 +30,7 @@ export default function PropSymbEditBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [showName, setShowName] = useState(false);
+  const [showDataError, setShowDataError] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
   const [showGeoModal, setShowGeoModal] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
@@ -124,7 +126,7 @@ export default function PropSymbEditBar(props) {
   // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
   // INTO ANY OF THE INPUTS
   const handleStepKeyDown = (event) => {
-    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowReft' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
 
     // ALLOW DEFAULT BEHAVIOR OR CUT, COPY, PASTE, AND SELECT
     if (!(event.ctrlKey && ['x', 'X', 'c', 'C', 'v', 'V', 'a', 'A'].includes(event.key))) {
@@ -185,7 +187,7 @@ export default function PropSymbEditBar(props) {
         await store.setCurrentList(mapId, 0)
       }
 
-      else if (extension === "zip") {  
+      else if (extension === "zip") {
         var zip = new JSZip();
         var shpArr = [];
         var dbfArr = [];
@@ -202,55 +204,55 @@ export default function PropSymbEditBar(props) {
           zip.loadAsync(text).then(function (zips) {
             Object.keys(zips.files).forEach(function (filename) {
               count++
-              
-              
+
+
             })
             count--
             Object.keys(zips.files).forEach(function (filename) {
-              zip.files[filename].async('string').then(function (fileData){
-                if(filename.split(".")[1] != "txt") {
-                  
-                  zip.file(filename).async('blob').then( async (blob) => {                    
+              zip.files[filename].async('string').then(function (fileData) {
+                if (filename.split(".")[1] != "txt") {
+
+                  zip.file(filename).async('blob').then(async (blob) => {
                     const buffer = await blob.arrayBuffer();
                     if (buffer && buffer.byteLength > 0) {
                       // Parse the shapefile here
-  
-  
-                     
-  
+
+
+
+
                       try {
                         count1++
-                        if(filename.endsWith("adm1.shp") ) {
-                          
-                           shpArr = (shp.parseShp(buffer /*optional prj str*/));
-                           if(arr.length == 1) {
+                        if (filename.endsWith("adm1.shp")) {
+
+                          shpArr = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr.length == 1) {
                             arr = [shpArr, arr[0]]
-                           }
-                           else {
-                            arr.push(shpArr)
-                           }
-                           
-                        }
-                        else if(filename.endsWith("adm1.dbf")) {
-                           dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
-                           arr.push(dbfArr)
-                           
-                        }
-                        if(filename.endsWith("adm0.shp") ) {
-                          
-                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
-                          if(arr0.length == 1) {
-                           arr0 = [shpArr0, arr0[0]]
                           }
                           else {
-                           arr0.push(shpArr0)
+                            arr.push(shpArr)
                           }
-                          
+
                         }
-                        else if(filename.endsWith("adm0.dbf")) {
-                            dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
-                            arr0.push(dbfArr0)
-                            
+                        else if (filename.endsWith("adm1.dbf")) {
+                          dbfArr = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr.push(dbfArr)
+
+                        }
+                        if (filename.endsWith("adm0.shp")) {
+
+                          shpArr0 = (shp.parseShp(buffer /*optional prj str*/));
+                          if (arr0.length == 1) {
+                            arr0 = [shpArr0, arr0[0]]
+                          }
+                          else {
+                            arr0.push(shpArr0)
+                          }
+
+                        }
+                        else if (filename.endsWith("adm0.dbf")) {
+                          dbfArr0 = (shp.parseDbf(buffer /*optional prj str*/));
+                          arr0.push(dbfArr0)
+
                         }
                         if (filename.endsWith("adm2.shp")) {
 
@@ -270,14 +272,14 @@ export default function PropSymbEditBar(props) {
                         }
                         // if(arr.length == 2) {
                         //   let combined = await shp.combine(arr)
-                          
+
                         //   var mapData = await store.getMapDataById(mapId)
                         //   mapData.GeoJson = combined
                         //   await store.updateMapDataById(mapId, mapData)
                         //   await store.setCurrentList(mapId, 0)
                         // }
-                        
-                        if(count == count1) {
+
+                        if (count == count1) {
                           if (arr1.length == 2) {
                             let combined = await shp.combine(arr1)
 
@@ -302,28 +304,28 @@ export default function PropSymbEditBar(props) {
                             await store.updateMapDataById(mapId, mapData)
                             await store.setCurrentList(mapId, 0)
                           }
-                            
-                        } 
-                        
-  
-  
-        
+
+                        }
+
+
+
+
                       } catch (error) {
                         console.error("Error parsing shapefile:", error);
                       }
-  
-  
-                      if(filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp" ) {
-                        
-                        }
-                    
+
+
+                      if (filename.split(".").pop() == "dbf" || filename.split(".").pop() == "shp") {
+
+                      }
+
                     } else {
                       console.error("Invalid or empty shapefile buffer");
                     }
-                    
-                  }); 
+
+                  });
                 }
-                
+
               })
             })
           })
@@ -331,13 +333,13 @@ export default function PropSymbEditBar(props) {
         await shpCombiner()
       }
     };
-    if(extension === "zip" || extension === "shp") {
+    if (extension === "zip" || extension === "shp") {
       reader.readAsArrayBuffer(file);
     }
     else {
       reader.readAsText(file);
     }
-    
+
   }
 
   // THESE FUNCTIONS ARE FOR MANIPULATING THE DATA TABLE
@@ -430,13 +432,35 @@ export default function PropSymbEditBar(props) {
     await store.setCurrentList(mapId, 0);
   }
 
+  // THIS CLEANS THE TABLE DATA. IT SETS EMPTY STRINGS TO '0' AND REMOVE CHARACTERS
+  // THAT AREN'T DIGITS OR THE NEGATIVE SIGN '-'
   const cleanTableData = () => {
-    return tableData.map(item => ({
-      ...item,
-      latitude: /^-?\d+(.\d+)?$/.test(item.latitude) ? item.latitude : '',
-      longitude: /^-?\d+(.\d+)?$/.test(item.longitude) ? item.longitude : '',
-      size: /^-?\d+(.\d+)?$/.test(item.size) ? item.size : '',
-    }));
+    let dataReplaced = false; // Initialize dataReplaced to false
+
+    const cleanedData = tableData.map(item => {
+      const latitude = /^-?\d+(.\d+)?$/.test(item.latitude) ? item.latitude : '';
+      const longitude = /^-?\d+(.\d+)?$/.test(item.longitude) ? item.longitude : '';
+      const size = /^-?\d+(.\d+)?$/.test(item.size) ? item.size : '';
+
+      // Check if any value is an empty string and set dataReplaced to true
+      if (latitude === '' || longitude === '' || size === '') {
+        dataReplaced = true;
+      }
+
+      return {
+        ...item,
+        latitude,
+        longitude,
+        size
+      };
+    });
+
+    // If data was replaced at least once, set showDataError to true
+    if (dataReplaced) {
+      setShowDataError(true);
+    }
+
+    return cleanedData
   };
 
   const updateTable = async () => {
@@ -454,7 +478,7 @@ export default function PropSymbEditBar(props) {
       }
       setTableData(newPoints);
       setSettingsValues([points.settings.latitude, points.settings.longitude, points.settings.zoom])
-      
+
       if (points.legend.length !== 0) {
         var newLegend = [];
         for (let i in points.legend) {
@@ -465,7 +489,7 @@ export default function PropSymbEditBar(props) {
         }
         setLegendTableData(newLegend);
       }
-      if (points.legendTitle){
+      if (points.legendTitle) {
         setLegendTitle(points.legendTitle);
       }
     }
@@ -533,7 +557,7 @@ export default function PropSymbEditBar(props) {
       var propertyName;
 
       if (clickedRegion) {
-        
+
         let regionName;
 
         // THIS FINDS THE PROPERTY NAME FOR THE LOWEST ADMINISTRATIVE LEVEL
@@ -543,18 +567,18 @@ export default function PropSymbEditBar(props) {
             regionName = clickedRegion.properties[propertyName];
             break;
           }
-          else if(clickedRegion.properties.hasOwnProperty('NAME')) {
+          else if (clickedRegion.properties.hasOwnProperty('NAME')) {
             regionName = clickedRegion.properties['NAME'];
           }
           else {
             regionName = ''
           }
         }
-        
+
         // IF THIS REGION ISN'T IN THE TABLE, ADD IT SO USERS CAN EDIT IT, OTHERWISE JUMP TO IT ON THE TABLE
         setSelectedRegion(regionName);
         setShowRegion(true)
-    
+
       }
     };
 
@@ -677,7 +701,7 @@ export default function PropSymbEditBar(props) {
                                         onChange={(event) => handleEditChangeTransaction(event, rowIndex, colName)}
                                         onBlur={handleEditBlur}
                                         onKeyDown={handleStepKeyDown}
-                                        maxlength={colName !== 'size' ? ('40'):'3'}
+                                        maxlength={colName !== 'size' ? ('40') : '3'}
                                       />
                                     ) : colIndex !== 3 ? (
                                       row[colName]
@@ -821,6 +845,7 @@ export default function PropSymbEditBar(props) {
           </div>
         </div>
       </div>
+      <DataErrorModal showDataError={showDataError} handleShowDataErrorClose={(event) => { setShowDataError(false) }} save={handleSave} />
       <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />

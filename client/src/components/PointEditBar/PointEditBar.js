@@ -3,6 +3,7 @@ import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
 import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
 import MapNameModal from '../MapNameModal/MapNameModal';
+import DataErrorModal from '../DataErrorModal/DataErrorModal';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import PublishMapModal from '../PublishMapModal/PublishMapModal';
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
@@ -30,6 +31,7 @@ export default function PointEditBar(props) {
   const [show, setShow] = useState(false);
   const [showName, setShowName] = useState(false);
   const [showGeoModal, setShowGeoModal] = useState(false);
+  const [showDataError, setShowDataError] = useState(false);
   const [publishMapShow, setPublishMapShow] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
@@ -124,7 +126,7 @@ export default function PointEditBar(props) {
   // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
   // INTO ANY OF THE INPUTS
   const handleStepKeyDown = (event) => {
-    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowReft' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
 
     // ALLOW DEFAULT BEHAVIOR OR CUT, COPY, PASTE, AND SELECT
     if (!(event.ctrlKey && ['x', 'X', 'c', 'C', 'v', 'V', 'a', 'A'].includes(event.key))) {
@@ -429,12 +431,34 @@ export default function PointEditBar(props) {
     await store.setCurrentList(mapId, 0)
   }
 
+
+  // THIS CLEANS THE TABLE DATA. IT SETS EMPTY STRINGS TO '0' AND REMOVE CHARACTERS
+  // THAT AREN'T DIGITS OR THE NEGATIVE SIGN '-'
   const cleanTableData = () => {
-    return tableData.map(item => ({
-      ...item,
-      latitude: /^-?\d+(.\d+)?$/.test(item.latitude) ? item.latitude : '',
-      longitude: /^-?\d+(.\d+)?$/.test(item.longitude) ? item.longitude : '',
-    }));
+    let dataReplaced = false; // Initialize dataReplaced to false
+
+    const cleanedData = tableData.map(item => {
+      const latitude = /^-?\d+(.\d+)?$/.test(item.latitude) ? item.latitude : '';
+      const longitude = /^-?\d+(.\d+)?$/.test(item.longitude) ? item.longitude : '';
+
+      // Check if any value is an empty string and set dataReplaced to true
+      if (latitude === '' || longitude === '') {
+        dataReplaced = true;
+      }
+
+      return {
+        ...item,
+        latitude,
+        longitude
+      };
+    });
+
+    // If data was replaced at least once, set showDataError to true
+    if (dataReplaced) {
+      setShowDataError(true);
+    }
+
+    return cleanedData
   };
 
   const updateTable = async () => {
@@ -818,6 +842,7 @@ export default function PointEditBar(props) {
           </div>
         </div>
       </div>
+      <DataErrorModal showDataError={showDataError} handleShowDataErrorClose={(event) => { setShowDataError(false) }} save={handleSave} />
       <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />

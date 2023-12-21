@@ -17,7 +17,8 @@ export default function DataErrorModal(props) {
 
         <Modal.Body>
           <h5>We've dectected one or more invalid data points.</h5>
-          <p>All invalid data points have been set to 0.</p>
+          <p>You have most likely copied and pasted a space or symbol, or left some data blank.</p>
+          <p>All invalid data points have been set to 0 or ''.</p>
         </Modal.Body>
 
         <Modal.Footer className="d-flex justify-content-center">

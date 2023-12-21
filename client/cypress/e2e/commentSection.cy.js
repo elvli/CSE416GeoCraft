@@ -4,7 +4,9 @@ describe('Comment Section', () => {
     cy.visit('https://geocraftmaps.azurewebsites.net/');
     cy.get('.card.map-card').eq(0).click()
   });
-  it('should collapse when the button is clicked', () => {
+
+  it('should return home when the button is clicked', () => {
+    cy.get('.app-banner .home-button').click();
   });
 
   it('should check if the comment input is disabled', () => {

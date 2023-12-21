@@ -1,10 +1,11 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Button, Table, Accordion, Row, Col } from 'react-bootstrap';
 import { GlobalStoreContext } from '../../store';
-import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp } from 'react-bootstrap-icons';
+import { XLg, PlusCircleFill, ViewStacked, Save, ArrowClockwise, ArrowCounterclockwise, PencilSquare, FileEarmarkArrowUp, FastForwardCircleFill } from 'react-bootstrap-icons';
 import SaveAndExitModal from '../SaveAndExitModal/SaveAndExitModal';
 import './LineEditBar.scss';
 import rewind from "@mapbox/geojson-rewind";
+import DataErrorModal from '../DataErrorModal/DataErrorModal';
 import RemoveGeoJsonModal from '../RemoveGeoJsonModal/RemoveGeoJsonModal';
 import PointMapTransaction from '../../transactions/Point/PointMapTransaction';
 import jsTPS from '../../common/jsTPS';
@@ -28,6 +29,7 @@ export default function LineEditSideBar(props) {
   const [isToggled, setIsToggled] = useState(false);
   const [show, setShow] = useState(false);
   const [showGeoModal, setShowGeoModal] = useState(false);
+  const [showDataError, setShowDataError] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [isEditingHeader, setIsEditingHeader] = useState(null);
   const [tableData, setTableData] = useState(points);
@@ -132,7 +134,7 @@ export default function LineEditSideBar(props) {
   // THIS FUNCTION PREVENTS USERS FROM INPUTING CHARACTERS ASIDE FROM '-' AND '.' 
   // INTO ANY OF THE INPUTS
   const handleStepKeyDown = (event) => {
-    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowReft' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
+    const isNumericOrBackspace = /^\d$/.test(event.key) || event.key === '-' || event.key === '.' || event.key === 'Backspace' || event.key === 'Enter' || event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Tab';
 
     // ALLOW DEFAULT BEHAVIOR OR CUT, COPY, PASTE, AND SELECT
     if (!(event.ctrlKey && ['x', 'X', 'c', 'C', 'v', 'V', 'a', 'A'].includes(event.key))) {
@@ -459,14 +461,37 @@ export default function LineEditSideBar(props) {
     await store.setCurrentList(mapId, 0)
   }
 
+  // THIS CLEANS THE TABLE DATA. IT SETS EMPTY STRINGS TO '0' AND REMOVE CHARACTERS
+  // THAT AREN'T DIGITS OR THE NEGATIVE SIGN '-'
   const cleanTableData = () => {
-    return tableData.map(item => ({
-      ...item,
-      startlatitude: /^-?\d+(.\d+)?$/.test(item.startlatitude) ? item.startlatitude : '',
-      startlongitude: /^-?\d+(.\d+)?$/.test(item.startlongitude) ? item.startlongitude : '',
-      endlongitude: /^-?\d+(.\d+)?$/.test(item.endlongitude) ? item.endlongitude : '',
-      endlatitude: /^-?\d+(.\d+)?$/.test(item.endlatitude) ? item.endlatitude : ''
-    }));
+    let dataReplaced = false; // Initialize dataReplaced to false
+
+    const cleanedData = tableData.map(item => {
+      const startlatitude = /^-?\d+(.\d+)?$/.test(item.startlatitude) ? item.startlatitude : '';
+      const startlongitude = /^-?\d+(.\d+)?$/.test(item.startlongitude) ? item.startlongitude : '';
+      const endlongitude = /^-?\d+(.\d+)?$/.test(item.endlongitude) ? item.endlongitude : '';
+      const endlatitude = /^-?\d+(.\d+)?$/.test(item.endlatitude) ? item.endlatitude : '';
+
+      // Check if any value is an empty string and set dataReplaced to true
+      if (startlatitude === '' || startlongitude === '' || endlongitude === '' || endlatitude === '') {
+        dataReplaced = true;
+      }
+
+      return {
+        ...item,
+        startlatitude,
+        startlongitude,
+        endlongitude,
+        endlatitude
+      };
+    });
+
+    // If data was replaced at least once, set showDataError to true
+    if (dataReplaced) {
+      setShowDataError(true);
+    }
+
+    return cleanedData
   };
 
   const updateTable = async () => {
@@ -848,6 +873,7 @@ export default function LineEditSideBar(props) {
           </div>
         </div>
       </div>
+      <DataErrorModal showDataError={showDataError} handleShowDataErrorClose={(event) => { setShowDataError(false) }} save={handleSave} />
       <PublishMapModal publishMapShow={publishMapShow} handlePublishMapClose={handlePublishClose} />
       <SaveAndExitModal saveAndExitShow={show} handlesaveAndExitShowClose={(event) => { setShow(false) }} save={handleSave} />
       <RemoveGeoJsonModal removeGeoShow={showGeoModal} handleRemoveGeoShowClose={(event) => { setShowGeoModal(false) }} removeGeo={handleRemoveGeoJson} />
