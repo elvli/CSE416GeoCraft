@@ -896,11 +896,30 @@ export default function MapBackground(props) {
             };
             json['features'] = arr;
             generateHeatMap(json, mapData.heatmap.color);
+            var pointColors = [
+              'interpolate',
+              ['linear'],
+              ['get', 'mag'],
+              1,
+              'rgba(33,102,172,0)',
+              2,
+              mapData.heatmap.color[6],
+              3,
+              mapData.heatmap.color[8],
+              4,
+              mapData.heatmap.color[10],
+              5,
+              mapData.heatmap.color[12],
+              6,
+              mapData.heatmap.color[14]
+              ]
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-color', mapData.heatmap.color);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-weight', mapData.heatmap.mag);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-intensity', mapData.heatmap.int);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-radius', mapData.heatmap.rad);
             map.current.setPaintProperty('earthquakes-heat', 'heatmap-opacity', mapData.heatmap.opac);
+            map.current.setPaintProperty('earthquakes-point', 'circle-color', pointColors)
+            
 
             const currentUrl = window.location.href.toLowerCase();
 
