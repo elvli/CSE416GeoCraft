@@ -448,7 +448,13 @@ export default function HeatEditBar(props) {
       newTable.push(tableData[i])
     }
     for (let i = 0; i < arr.length; i++) {
-      newTable.push({ id: newTable.length + 1, latitude: arr[i]['geometry']['coordinates'][1], longitude: arr[i]['geometry']['coordinates'][0], magnitude: arr[i]['properties']['mag'] })
+      if(arr[i]['properties']['mag']) {
+        newTable.push({ id: newTable.length + 1, latitude: arr[i]['geometry']['coordinates'][1], longitude: arr[i]['geometry']['coordinates'][0], magnitude: arr[i]['properties']['mag'] })
+      }
+      else {
+        newTable.push({ id: newTable.length + 1, latitude: arr[i]['geometry']['coordinates'][1], longitude: arr[i]['geometry']['coordinates'][0], magnitude: Math.floor(Math.random() * 100) + 1 })
+      }
+      
     }
 
     setTableData(newTable)
